@@ -1,6 +1,6 @@
-let words=[], recordings=[], correctionRecordings={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, chunks=[], mineUrl=null, selectedTones=[];
+let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, chunks=[], mineUrl=null, selectedTones=[];
 let results=[];
-const correctionBuffers=new Map(), CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20;
+const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 function saveResults(){updateProgress()}
@@ -38,6 +38,9 @@ async function load(){
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
+  const qualityResponse=await fetch('../data/audio_cmn_syllable_quality.json');
+  if(!qualityResponse.ok)throw new Error(`Syllable quality data failed: HTTP ${qualityResponse.status}`);
+  correctionQuality=await qualityResponse.json();
   $('progress').textContent='';
   rebuildIndex();
 }
@@ -49,22 +52,9 @@ function recordingsFor(w){
     return r.surface_pattern?r.surface_pattern===expected:!ambiguous;
   });
 }
-function publicPinyinRecording(w){
-  const syllables=w.pinyin_syllables||[], tones=w.lexical_tones||[];
-  if(syllables.length!==1||tones.length!==1||![1,2,3,4].includes(tones[0]))return null;
-  const key=correctionKey(syllables[0],String(tones[0]));
-  const recording=correctionRecordings[key];
-  if(!recording)return null;
-  return {
-    url:`../${recording.audio_path}`,
-    key,
-    source:recording.source,
-    speaker:'Public pinyin recording',
-    filename:recording.audio_path.split('/').pop(),
-  };
-}
 function nativePlayback(w,r){
-  return publicPinyinRecording(w)||{
+  return {
+    playable:Boolean(audioURL(r)),
     url:audioURL(r),
     source:r?.source||null,
     speaker:r?.speaker||'unknown',
@@ -78,7 +68,7 @@ function hasAlignedCorrections(w){
 function hasVerifiedCorrections(w){
   const tones=(expectedPattern(w)||'').split('-');
   return (w.pinyin_syllables||[]).every((pinyin,index)=>
-    tones[index]==='N'||Boolean(correctionRecordings[correctionKey(pinyin,tones[index])])
+    tones[index]==='N'||Boolean(correctionSelection(correctionKey(pinyin,tones[index])))
   );
 }
 function filtered(){return words.filter(w=>{
@@ -86,7 +76,7 @@ function filtered(){return words.filter(w=>{
   if(syllables==='one' && count!==1)return false;
   if(syllables==='two' && count!==2)return false;
   if($('sandhiOnly').checked && !w.sandhi_tags.length)return false;
-  if((!recordingsFor(w).length&&!publicPinyinRecording(w)) || !hasAlignedCorrections(w) || !hasVerifiedCorrections(w))return false;
+  if(!recordingsFor(w).length || !hasAlignedCorrections(w) || !hasVerifiedCorrections(w))return false;
   return true;
 })}
 function choose(a){return a[Math.floor(Math.random()*a.length)]}
@@ -118,9 +108,9 @@ function next(play=false){
   current._graded=false;
   const correct=patternFor(current,currentRec);
   current._correct=correct;
-  $('prompt').innerHTML=`<div class="muted">Listen first — word hidden until you answer</div>${currentNative?.url?`<div class="muted">Speaker: ${escapeHTML(currentNative.speaker)} · ${escapeHTML(sourceName(currentNative.source||''))}</div>`:'<div class="muted">No local recording for this item.</div>'}`;
+  $('prompt').innerHTML=`<div class="muted">Listen first — word hidden until you answer</div>${currentNative?.playable?`<div class="muted">Speaker: ${escapeHTML(currentNative.speaker)} · ${escapeHTML(sourceName(currentNative.source||''))}</div>`:'<div class="muted">No local recording for this item.</div>'}`;
   $('reveal').classList.add('hidden'); renderToneChoices();
-  if(currentRec && play)playNative();
+  if(currentNative?.playable && play)playNative();
 }
 function grade(p,correct){
   current._graded=true;
@@ -148,10 +138,6 @@ function stopNative(){
 }
 function playNative(){
   const u=currentNative?.url;if(!u)return;
-  if(currentNative.key){
-    playPinyinKey(currentNative.key);
-    return;
-  }
   stopCorrection();
   stopNative();
   const audio=new Audio(u);
@@ -162,31 +148,66 @@ function playNative(){
 function correctionKey(pinyin,tone){
   return pinyin.toLowerCase().replace(/ü/g,'v')+tone;
 }
-function correctionURL(key){
-  const tts=correctionRecordings[key];
-  return tts?.audio_path?`../${tts.audio_path}`:null;
+function correctionSelection(key){
+  const quality=correctionQuality[key];
+  if(quality?.status==='bad'){
+    const replacement=correctionRecordings[key];
+    return replacement?.audio_path?{
+      url:`../${replacement.audio_path}`,
+      enhanced:true,
+      source:replacement.source,
+    }:null;
+  }
+  const audioCmnKey=key==='ju4'?'jv4':key;
+  return {
+    url:`../audio/audio_cmn/syllabs/cmn-${audioCmnKey}.mp3`,
+    enhanced:false,
+    source:'audio_cmn',
+  };
 }
 function getCorrectionContext(){
   if(!correctionContext)correctionContext=new (window.AudioContext||window.webkitAudioContext)();
   return correctionContext;
 }
-async function correctionBuffer(key){
-  if(correctionBuffers.has(key))return correctionBuffers.get(key);
+async function rawPinyinBuffer(key){
+  if(rawPinyinBuffers.has(key))return rawPinyinBuffers.get(key);
   const promise=(async()=>{
-    const url=correctionURL(key);
-    if(!url)throw new Error(`No verified correction recording for ${key}`);
-    const response=await fetch(url);
+    const selected=correctionSelection(key);
+    if(!selected)throw new Error(`No verified correction recording for ${key}`);
+    const response=await fetch(selected.url);
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const context=getCorrectionContext();
-    const decoded=await context.decodeAudioData(await response.arrayBuffer());
-    const lead=Math.round(decoded.sampleRate*CORRECTION_LEAD_SECONDS);
-    const tail=Math.round(decoded.sampleRate*CORRECTION_TAIL_SECONDS);
-    const padded=context.createBuffer(decoded.numberOfChannels,lead+decoded.length+tail,decoded.sampleRate);
-    for(let channel=0;channel<decoded.numberOfChannels;channel++)padded.copyToChannel(decoded.getChannelData(channel),channel,lead);
-    return padded;
+    return context.decodeAudioData(await response.arrayBuffer());
   })();
-  correctionBuffers.set(key,promise);
-  try{return await promise}catch(error){correctionBuffers.delete(key);throw error}
+  rawPinyinBuffers.set(key,promise);
+  try{return await promise}catch(error){rawPinyinBuffers.delete(key);throw error}
+}
+async function pinyinSequenceBuffer(keys){
+  const cacheKey=keys.join('+');
+  if(correctionBuffers.has(cacheKey))return correctionBuffers.get(cacheKey);
+  const promise=(async()=>{
+    const context=getCorrectionContext();
+    const decoded=await Promise.all(keys.map(rawPinyinBuffer));
+    const sampleRate=decoded[0].sampleRate;
+    if(decoded.some(buffer=>buffer.sampleRate!==sampleRate))throw new Error('Pinyin sample rates do not match');
+    const channels=Math.max(...decoded.map(buffer=>buffer.numberOfChannels));
+    const lead=Math.round(sampleRate*CORRECTION_LEAD_SECONDS);
+    const tail=Math.round(sampleRate*CORRECTION_TAIL_SECONDS);
+    const gap=Math.round(sampleRate*NATIVE_SYLLABLE_GAP_SECONDS);
+    const length=lead+tail+decoded.reduce((total,buffer)=>total+buffer.length,0)+gap*Math.max(0,decoded.length-1);
+    const combined=context.createBuffer(channels,length,sampleRate);
+    let offset=lead;
+    for(const buffer of decoded){
+      for(let channel=0;channel<channels;channel++){
+        const sourceChannel=Math.min(channel,buffer.numberOfChannels-1);
+        combined.copyToChannel(buffer.getChannelData(sourceChannel),channel,offset);
+      }
+      offset+=buffer.length+gap;
+    }
+    return combined;
+  })();
+  correctionBuffers.set(cacheKey,promise);
+  try{return await promise}catch(error){correctionBuffers.delete(cacheKey);throw error}
 }
 function stopCorrection(){
   correctionPlayId++;
@@ -198,7 +219,7 @@ function stopCorrection(){
   }
 }
 function connectPinyinSource(source,context,key){
-  if(correctionRecordings[key]){
+  if(correctionSelection(key)?.enhanced){
     const highpass=context.createBiquadFilter();
     highpass.type='highpass';
     highpass.frequency.value=70;
@@ -220,22 +241,25 @@ function connectPinyinSource(source,context,key){
   }
 }
 async function playPinyinKey(key){
+  return playPinyinSequence([key]);
+}
+async function playPinyinSequence(keys){
   stopNative();
   stopCorrection();
   const playId=correctionPlayId;
   try{
     const context=getCorrectionContext();
     await context.resume();
-    const buffer=await correctionBuffer(key);
+    const buffer=await pinyinSequenceBuffer(keys);
     if(playId!==correctionPlayId)return;
     const source=context.createBufferSource();
     source.buffer=buffer;
-    connectPinyinSource(source,context,key);
+    connectPinyinSource(source,context,keys[0]);
     source.onended=()=>{if(correctionSource===source)correctionSource=null};
     correctionSource=source;
     source.start();
   }catch(error){
-    if(playId===correctionPlayId)console.error(`Correction audio failed for ${key}`,error);
+    if(playId===correctionPlayId)console.error(`Pinyin audio failed for ${keys.join('+')}`,error);
   }
 }
 async function playCorrection(index,tone){

@@ -47,31 +47,16 @@ Definitions are sourced from the
 maintained by MDBG. Those definition fields are distributed under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Correction buttons prefer the public-domain
+Correction buttons prefer the human audio-cmn syllable recordings. The
+public-domain
 [`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
-corpus, which covers nearly every syllable-tone key used by the HSK data.
-Items requiring an uncovered key are excluded rather than playing an
-unverified or incorrectly labeled fallback. The browser applies a gentle
-presence/high-shelf EQ with headroom to reduce the public corpus's muffled
-character without changing pitch or timing.
+corpus is used only for audio-cmn clips explicitly marked bad in
+`data/audio_cmn_syllable_quality.json`. Items requiring a bad clip with no good
+replacement are excluded rather than playing an incorrect sound. The browser
+applies a gentle presence/high-shelf EQ with headroom only to public fallback
+clips, without changing pitch or timing.
 
-One-syllable native prompts also use the validated public pinyin recording when
-available. This avoids malformed audio-cmn word files while keeping
-multi-syllable prompts on human word recordings.
-
-## Add the packaged HSK eSpeak TTS set
-
-The optional 11,092-entry eSpeak Mandarin archive set remains separate from
-human recordings. Import it with:
-
-```bash
-python3 scripts/import_hsk_tts_archives.py /path/to/hsk_mandarin_tts_all_11092_per100_archives
-```
-
-This validates every HSK ID, word, and tone pattern before extracting audio.
-The archive importer is retained for local experiments, but eSpeak is not
-offered by the app and is never used for correction buttons. Extracted audio
-and local manifests are ignored by Git.
+Native word prompts always use the real human audio-cmn word recording.
 
 ## Add local human audio
 

@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import math
 import struct
 import tempfile
@@ -24,7 +25,6 @@ build_hsk = load_script('build_hsk_data.py')
 download_syllables = load_script('download_audio_cmn_syllables.py')
 add_definitions = load_script('add_definitions.py')
 check_syllables = load_script('check_audio_cmn_syllables.py')
-import_tts = load_script('import_hsk_tts_archives.py')
 download_public_pinyin = load_script('download_public_pinyin_syllables.py')
 
 
@@ -108,11 +108,11 @@ class PipelineValidationTests(unittest.TestCase):
 
     def test_correction_stops_existing_audio_before_decode(self):
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
-        function = source.split('async function playPinyinKey', 1)[1].split(
+        function = source.split('async function playPinyinSequence', 1)[1].split(
             'async function playCorrection', 1
         )[0]
-        self.assertLess(function.index('stopNative();'), function.index('await correctionBuffer'))
-        self.assertLess(function.index('stopCorrection();'), function.index('await correctionBuffer'))
+        self.assertLess(function.index('stopNative();'), function.index('await pinyinSequenceBuffer'))
+        self.assertLess(function.index('stopCorrection();'), function.index('await pinyinSequenceBuffer'))
         correction = source.split('async function playCorrection', 1)[1].split(
             "$('play').onclick", 1
         )[0]
@@ -121,45 +121,18 @@ class PipelineValidationTests(unittest.TestCase):
             'function correctionKey', 1
         )[0]
         self.assertLess(native.index('stopCorrection();'), native.index('new Audio'))
-        correction_url = source.split('function correctionURL', 1)[1].split(
+        correction_url = source.split('function correctionSelection', 1)[1].split(
             'function getCorrectionContext', 1
         )[0]
         self.assertIn('correctionRecordings[key]', correction_url)
-        self.assertNotIn('audio/audio_cmn/syllabs', correction_url)
+        self.assertIn('audio/audio_cmn/syllabs', correction_url)
         self.assertIn("clarity.type='highshelf'", source)
         self.assertIn("presence.type='peaking'", source)
-        native_selection = source.split('function publicPinyinRecording', 1)[1].split(
+        native_selection = source.split('function nativePlayback', 1)[1].split(
             'function hasAlignedCorrections', 1
         )[0]
-        self.assertIn('correctionRecordings[key]', native_selection)
-        self.assertIn('publicPinyinRecording(w)||', native_selection)
-
-    def test_tts_manifest_requires_exact_hsk_assignment(self):
-        row = {
-            'index':'1',
-            'hsk_id':'L1-0001',
-            'word':'爱',
-            'traditional':'愛',
-            'pinyin':'ài',
-            'lexical_pattern':'4',
-            'default_surface_pattern':'4',
-            'audio_path':'audio/batch_001/00001_爱.mp3',
-        }
-        item = {
-            'id':'L1-0001',
-            'word':'爱',
-            'traditional':'愛',
-            'pinyin':'ài',
-            'lexical_pattern':'4',
-            'default_surface_pattern':'4',
-        }
-        self.assertEqual(
-            import_tts.validate_row(row,item).as_posix(),
-            'audio/batch_001/00001_爱.mp3',
-        )
-        row['default_surface_pattern']='2'
-        with self.assertRaises(ValueError):
-            import_tts.validate_row(row,item)
+        self.assertNotIn('correctionRecordings', native_selection)
+        self.assertIn('audioURL(r)', native_selection)
 
     def test_public_pinyin_archive_only_indexes_toned_mp3_files(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -172,6 +145,15 @@ class PipelineValidationTests(unittest.TestCase):
             with zipfile.ZipFile(archive_path) as archive:
                 members=download_public_pinyin.corpus_members(archive)
         self.assertEqual(set(members), {'ma2','tian3'})
+
+    def test_bad_human_syllables_have_explicit_fallback_policy(self):
+        quality = json.loads(
+            (ROOT / 'data' / 'audio_cmn_syllable_quality.json').read_text(
+                encoding='utf-8'
+            )
+        )
+        self.assertEqual(quality['ma2']['replacement'], 'pinyin_public')
+        self.assertIsNone(quality['mou3']['replacement'])
 
 
 if __name__ == '__main__':
