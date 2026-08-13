@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mandarin Tone Trainer</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<header><div><h1>Mandarin Tone Trainer</h1><p>Mandarin listening and tone-pattern practice using isolated-word audio.</p></div><div id="progress"></div></header>
+<section class="controls">
+<label>Syllables <select id="syllables"><option value="all">Any length</option><option value="one">1 syllable</option><option value="multi">2+ syllables</option></select></label>
+<label><input type="checkbox" id="sandhiOnly"> Sandhi only</label>
+<button id="next">Next</button></section>
+<section class="card">
+<div id="prompt">Listen, then choose the tone for each syllable.</div>
+<div class="audio-row"><button id="play">▶ Native</button><button id="record">● Record me</button><button id="playMine" disabled>▶ Me</button><button id="overlay" disabled>▶ Overlay</button></div>
+<div id="answers" class="answers"></div>
+<div id="reveal" class="reveal hidden"></div>
+</section>
+<section class="help progress-panel"><button id="resetProgress">Reset saved results</button></section>
+<section class="help"><h2>What this trains</h2><p>Listen to the Mandarin word, then choose the tone for each syllable. The answer uses the expected heard tone pattern, including tone-sandhi rules where available.</p><p id="audioStatus"></p></section>
+</main><script src="app.js"></script></body></html>
