@@ -1,16 +1,65 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mandarin Tone Trainer</title><link rel="stylesheet" href="style.css"></head>
-<body><main>
-<header><div><h1>Mandarin Tone Trainer</h1><p>Mandarin listening and tone-pattern practice using isolated-word audio.</p></div><div id="progress"></div></header>
-<section class="controls">
-<label>Syllables <select id="syllables"><option value="all">Any length</option><option value="one">1 syllable</option><option value="multi">2+ syllables</option></select></label>
-<label><input type="checkbox" id="sandhiOnly"> Sandhi only</label>
-<button id="next">Next</button></section>
-<section class="card">
-<div id="prompt">Listen, then choose the tone for each syllable.</div>
-<div class="audio-row"><button id="play">▶ Native</button><button id="record">● Record me</button><button id="playMine" disabled>▶ Me</button><button id="overlay" disabled>▶ Overlay</button></div>
-<div id="answers" class="answers"></div>
-<div id="reveal" class="reveal hidden"></div>
-</section>
-<section class="help progress-panel"><button id="resetProgress">Reset saved results</button></section>
-<section class="help"><h2>What this trains</h2><p>Listen to the Mandarin word, then choose the tone for each syllable. The answer uses the expected heard tone pattern, including tone-sandhi rules where available.</p><p id="audioStatus"></p></section>
-</main><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1ea">
+  <title>Mandarin Tone Trainer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div class="intro">
+        <p class="eyebrow">听 · 辨 · 说</p>
+        <h1>Mandarin Tone Trainer</h1>
+        <p class="subtitle">Build a sharper ear through focused listening and tone-pattern practice.</p>
+      </div>
+      <div id="progress" class="progress" aria-live="polite"></div>
+    </header>
+
+    <section class="controls" aria-label="Practice settings">
+      <label class="select-control" for="syllables">
+        <span>Syllables</span>
+        <select id="syllables">
+          <option value="all">Any length</option>
+          <option value="one">1 syllable</option>
+          <option value="multi">2+ syllables</option>
+        </select>
+      </label>
+      <label class="checkbox-control" for="sandhiOnly">
+        <input type="checkbox" id="sandhiOnly">
+        <span>Sandhi only</span>
+      </label>
+      <button id="next" class="primary-button" type="button">Next word <span aria-hidden="true">→</span></button>
+    </section>
+
+    <section class="card" aria-label="Tone practice">
+      <div id="prompt" class="prompt" aria-live="polite">Listen, then choose the tone for each syllable.</div>
+      <div class="audio-row" aria-label="Audio controls">
+        <button id="play" class="audio-button native-button" type="button"><span aria-hidden="true">▶</span> Native</button>
+        <button id="record" class="audio-button record-button" type="button"><span aria-hidden="true">●</span> Record me</button>
+        <button id="playMine" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Me</button>
+        <button id="overlay" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Overlay</button>
+      </div>
+      <div id="answers" class="answers"></div>
+      <div id="reveal" class="reveal hidden" aria-live="polite"></div>
+    </section>
+
+    <section class="help progress-panel" aria-label="Progress controls">
+      <div>
+        <h2>Your practice</h2>
+        <p>Results stay available for this practice session.</p>
+      </div>
+      <button id="resetProgress" class="quiet-button" type="button">Reset results</button>
+    </section>
+
+    <section class="help">
+      <h2>What this trains</h2>
+      <p>Listen to the Mandarin word, then choose the tone for each syllable. The answer uses the expected heard tone pattern, including tone-sandhi rules where available.</p>
+      <p id="audioStatus" class="audio-status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

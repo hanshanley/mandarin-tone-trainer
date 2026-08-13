@@ -15,16 +15,30 @@ Every **recording** can additionally store its own `surface_pattern`. That clip-
 
 Neutral tone is represented as `N`.
 
-## Run
+## Set up and run
+
+Downloaded audio is intentionally excluded from Git. After cloning the
+repository, download the complete audio-cmn word and syllable collections,
+build the local index, and start the server:
 
 ```bash
 cd mandarin-tone-trainer
+
+python3 scripts/download_audio_cmn.py --all-source
+python3 scripts/download_audio_cmn_syllables.py
+python3 scripts/import_local_audio.py
+python3 scripts/add_pinyin_syllables.py
+
 python3 scripts/serve.py
 ```
 
 Then open `http://localhost:8000/app/`. The app selects `audio-cmn` by default
-when that source is present and exposes other indexed Mandarin sources through
-the Audio source selector.
+when that source is present. The commands download 8,596 word recordings and
+1,707 tone-specific syllable clips. They are resumable, so running them again
+keeps valid existing files.
+
+The generated `audio/` and downloaded `imports/` directories are ignored by
+Git and should not be committed.
 
 ## Add local human audio
 
@@ -69,8 +83,10 @@ matching isolated-word MP3, and writes Mandarin/language/license provenance
 sidecars:
 
 ```bash
-python3 scripts/download_audio_cmn.py
+python3 scripts/download_audio_cmn.py --all-source
+python3 scripts/download_audio_cmn_syllables.py
 python3 scripts/import_local_audio.py
+python3 scripts/add_pinyin_syllables.py
 ```
 
 Use `--quality 64k` for smaller files, or `--limit 20` to smoke-test first.
@@ -79,7 +95,23 @@ audio-cmn, including source vocabulary not present in the local HSK 3.0 list.
 The source is CC-BY-SA and covers the older HSK 2000 vocabulary, so missing
 words in the HSK 3.0 list are expected. The importer preserves each source
 recording separately and marks it as verified Mandarin (`language_code: zh`).
-For corrective syllable playback, run `python3 scripts/download_audio_cmn_syllables.py`.
+To check the downloaded syllable clips for suspicious internal gaps:
+
+```bash
+python3 scripts/check_audio_cmn_syllables.py
+```
+
+Correction playback always uses the tone-specific `syllabs` recordings, never
+an unlabeled word recording. Words with multiple HSK readings are excluded
+unless a recording has an explicit matching `surface_pattern`, preventing one
+Hanzi spelling from being paired with the wrong reading.
+
+To add playback padding without modifying or repeatedly re-encoding the source
+clips, write to the separate default output directory:
+
+```bash
+python3 scripts/pad_audio_cmn_syllables.py
+```
 
 ## Small OpenAI TTS sample
 

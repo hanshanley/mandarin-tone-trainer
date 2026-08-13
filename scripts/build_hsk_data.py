@@ -111,7 +111,7 @@ def sandhi_surface(word, tones):
                 surf[k]=2
         i=j
 
-    return surf, sorted(set(tags)), (aligned or not any(t in tags for t in ['bu_before_t4','yi_before_t4','yi_before_non_t4']))
+    return surf, sorted(set(tags)), aligned
 
 
 def pattern(ts):
