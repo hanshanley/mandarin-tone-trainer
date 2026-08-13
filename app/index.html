@@ -22,9 +22,9 @@
       <label class="select-control" for="syllables">
         <span>Syllables</span>
         <select id="syllables">
-          <option value="all">Any length</option>
-          <option value="one">1 syllable</option>
-          <option value="multi">2+ syllables</option>
+          <option value="one" selected>1 syllable</option>
+          <option value="two">2 syllables</option>
+          <option value="all">Any syllable</option>
         </select>
       </label>
       <label class="checkbox-control" for="sandhiOnly">
@@ -54,11 +54,6 @@
       <button id="resetProgress" class="quiet-button" type="button">Reset results</button>
     </section>
 
-    <section class="help">
-      <h2>What this trains</h2>
-      <p>Listen to the Mandarin word, then choose the tone for each syllable. The answer uses the expected heard tone pattern, including tone-sandhi rules where available.</p>
-      <p id="audioStatus" class="audio-status" aria-live="polite"></p>
-    </section>
   </main>
   <script src="app.js"></script>
 </body>

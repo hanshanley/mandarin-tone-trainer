@@ -26,8 +26,10 @@ cd mandarin-tone-trainer
 
 python3 scripts/download_audio_cmn.py --all-source
 python3 scripts/download_audio_cmn_syllables.py
+python3 scripts/download_public_pinyin_syllables.py
 python3 scripts/import_local_audio.py
 python3 scripts/add_pinyin_syllables.py
+python3 scripts/add_definitions.py
 
 python3 scripts/serve.py
 ```
@@ -39,6 +41,37 @@ keeps valid existing files.
 
 The generated `audio/` and downloaded `imports/` directories are ignored by
 Git and should not be committed.
+
+Definitions are sourced from the
+[official CC-CEDICT download](https://www.mdbg.net/chinese/dictionary?page=cedict)
+maintained by MDBG. Those definition fields are distributed under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+Correction buttons prefer the public-domain
+[`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
+corpus, which covers nearly every syllable-tone key used by the HSK data.
+Items requiring an uncovered key are excluded rather than playing an
+unverified or incorrectly labeled fallback. The browser applies a gentle
+presence/high-shelf EQ with headroom to reduce the public corpus's muffled
+character without changing pitch or timing.
+
+One-syllable native prompts also use the validated public pinyin recording when
+available. This avoids malformed audio-cmn word files while keeping
+multi-syllable prompts on human word recordings.
+
+## Add the packaged HSK eSpeak TTS set
+
+The optional 11,092-entry eSpeak Mandarin archive set remains separate from
+human recordings. Import it with:
+
+```bash
+python3 scripts/import_hsk_tts_archives.py /path/to/hsk_mandarin_tts_all_11092_per100_archives
+```
+
+This validates every HSK ID, word, and tone pattern before extracting audio.
+The archive importer is retained for local experiments, but eSpeak is not
+offered by the app and is never used for correction buttons. Extracted audio
+and local manifests are ignored by Git.
 
 ## Add local human audio
 
@@ -87,6 +120,7 @@ python3 scripts/download_audio_cmn.py --all-source
 python3 scripts/download_audio_cmn_syllables.py
 python3 scripts/import_local_audio.py
 python3 scripts/add_pinyin_syllables.py
+python3 scripts/add_definitions.py
 ```
 
 Use `--quality 64k` for smaller files, or `--limit 20` to smoke-test first.
@@ -106,8 +140,10 @@ an unlabeled word recording. Words with multiple HSK readings are excluded
 unless a recording has an explicit matching `surface_pattern`, preventing one
 Hanzi spelling from being paired with the wrong reading.
 
-To add playback padding without modifying or repeatedly re-encoding the source
-clips, write to the separate default output directory:
+The browser adds 120 ms of leading silence and 200 ms of trailing silence to
+the decoded correction audio in memory. It copies the decoded PCM unchanged,
+so pitch, timing, and consonant distinctions are preserved without another
+lossy encode. For exported padded MP3 copies, use:
 
 ```bash
 python3 scripts/pad_audio_cmn_syllables.py
