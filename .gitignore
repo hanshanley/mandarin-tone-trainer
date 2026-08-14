@@ -1,0 +1,23 @@
+# Downloaded and generated audio
+/audio/
+/imports/
+/data/pinyin_public_recordings.json
+/www/
+
+# Local Python and macOS artifacts
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Node and Capacitor artifacts
+/node_modules/
+/android/.gradle/
+/android/.idea/
+/android/captures/
+/android/local.properties
+/android/**/build/
+
+# Android signing material
+/keystore.properties
+*.jks
+*.keystore
