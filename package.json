@@ -1,0 +1,26 @@
+{
+  "name": "mandarin-tone-trainer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline Mandarin tone training app for Android and the browser",
+  "scripts": {
+    "build:mobile": "node scripts/build_mobile_assets.mjs",
+    "cap:sync": "npm run build:mobile && npx cap sync android",
+    "assets:android": "npx @capacitor/assets generate --android --iconBackgroundColor '#176b50' --iconBackgroundColorDark '#10523d' --splashBackgroundColor '#f4f1ea' --splashBackgroundColorDark '#17211d'",
+    "android:open": "npm run cap:sync && npx cap open android",
+    "android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run cap:sync && cd android && ./gradlew assembleRelease",
+    "test": "python3 -m unittest discover -s tests -q"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.0",
+    "@capacitor/core": "8.5.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "3.0.5",
+    "@capacitor/cli": "8.5.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

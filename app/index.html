@@ -42,6 +42,7 @@
         <button id="playMine" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Me</button>
         <button id="overlay" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Overlay</button>
       </div>
+      <div id="audioStatus" class="audio-status" role="status" aria-live="polite"></div>
       <div id="answers" class="answers"></div>
       <div id="reveal" class="reveal hidden" aria-live="polite"></div>
     </section>
@@ -53,6 +54,16 @@
       </div>
       <button id="resetProgress" class="quiet-button" type="button">Reset results</button>
     </section>
+
+    <details class="help credits">
+      <summary>About and audio credits</summary>
+      <p>This offline trainer uses human Mandarin recordings from the CC-BY-SA
+        <a href="https://www.openslr.org/18/" target="_blank" rel="noreferrer">audio-cmn corpus</a>,
+        definitions from CC BY-SA
+        <a href="https://www.mdbg.net/chinese/dictionary?page=cedict" target="_blank" rel="noreferrer">CC-CEDICT</a>,
+        and public-domain pinyin audio only when a reviewed human syllable needs a fallback.
+      </p>
+    </details>
 
   </main>
   <script src="app.js"></script>
