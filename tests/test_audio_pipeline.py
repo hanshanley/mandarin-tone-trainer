@@ -2,6 +2,7 @@ import importlib.util
 import json
 import math
 import struct
+import subprocess
 import tempfile
 import unittest
 import wave
@@ -121,11 +122,26 @@ class PipelineValidationTests(unittest.TestCase):
             'function correctionKey', 1
         )[0]
         self.assertLess(native.index('stopCorrection();'), native.index('new Audio'))
+        self.assertIn('isPlaybackInterruption(error)', native)
+        self.assertIn('isPlaybackInterruption(error)', source.split("$('playMine').onclick", 1)[1])
+        next_word = source.split('function next', 1)[1].split('function grade', 1)[0]
+        self.assertIn('clearPersonalRecording();', next_word)
+        recording = source.split("$('record').onclick", 1)[1].split("$('playMine').onclick", 1)[0]
+        self.assertIn('setPracticeControlsDisabled(true);', recording)
+        self.assertIn('setPracticeControlsDisabled(false);', recording)
+        self.assertIn('if(recordingStarting)return;', recording)
+        self.assertLess(
+            recording.index("recordingStarting=true;"),
+            recording.index('await navigator.mediaDevices.getUserMedia'),
+        )
+        self.assertIn('const sessionChunks=[];', recording)
+        self.assertNotIn('chunks=[]', recording)
+        self.assertIn('RAW_BUFFER_CACHE_LIMIT=64', source)
+        self.assertIn('CORRECTION_BUFFER_CACHE_LIMIT=32', source)
         correction_url = source.split('function correctionSelection', 1)[1].split(
             'function getCorrectionContext', 1
         )[0]
-        self.assertIn('correctionRecordings[key]', correction_url)
-        self.assertIn('audio/audio_cmn/syllabs', correction_url)
+        self.assertIn('CorrectionAudio.correctionSelection', correction_url)
         self.assertIn("clarity.type='highshelf'", source)
         self.assertIn("presence.type='peaking'", source)
         native_selection = source.split('function nativePlayback', 1)[1].split(
@@ -154,6 +170,35 @@ class PipelineValidationTests(unittest.TestCase):
         )
         self.assertEqual(quality['ma2']['replacement'], 'pinyin_public')
         self.assertIsNone(quality['mou3']['replacement'])
+
+    def test_shared_correction_policy_handles_corpus_quirks(self):
+        script = """
+const policy=require('./app/correction_audio.js');
+const results={
+  umlaut:policy.correctionKey('lü','4'),
+  ju:policy.correctionSelection('ju4',{},{}),
+  erhua:policy.correctionSelection('r2',{},{}),
+  fallback:policy.correctionSelection(
+    'ma2',
+    {ma2:{status:'bad'}},
+    {ma2:{audio_path:'audio/pinyin_public/ma2.mp3',source:'public'}}
+  ),
+};
+process.stdout.write(JSON.stringify(results));
+"""
+        output = subprocess.check_output(
+            ['node', '-e', script],
+            cwd=ROOT,
+            text=True,
+        )
+        results = json.loads(output)
+        self.assertEqual(results['umlaut'], 'lv4')
+        self.assertTrue(results['ju']['audio_path'].endswith('cmn-jv4.mp3'))
+        self.assertIsNone(results['erhua'])
+        self.assertEqual(
+            results['fallback']['audio_path'],
+            'audio/pinyin_public/ma2.mp3',
+        )
 
 
 if __name__ == '__main__':

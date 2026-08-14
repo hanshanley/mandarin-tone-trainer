@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import CorrectionAudio from '../app/correction_audio.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'www');
-const APP_FILES = ['index.html', 'style.css', 'app.js'];
+const APP_FILES = ['index.html', 'style.css', 'correction_audio.js', 'app.js'];
 const DATA_FILES = [
   'hsk_words.json',
   'definitions.json',
@@ -40,17 +41,13 @@ function requireFile(relativePath, description) {
   return stats.size;
 }
 
-function correctionKey(pinyin, tone) {
-  return `${pinyin.toLowerCase().replaceAll('ü', 'v')}${tone}`;
-}
-
 function collectAudioFiles(directory) {
   const files = [];
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
     const entryPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       files.push(...collectAudioFiles(entryPath));
-    } else if (entry.isFile()) {
+    } else if (entry.isFile() && path.extname(entry.name).toLowerCase() === '.mp3') {
       files.push(entryPath);
     }
   }
@@ -70,6 +67,7 @@ const recordings = readJSON('data/recordings.json');
 const correctionRecordings = readJSON('data/pinyin_public_recordings.json');
 const correctionQuality = readJSON('data/audio_cmn_syllable_quality.json');
 const referencedAudio = new Set();
+const syllableAudioRoot = path.join(ROOT, 'audio', 'audio_cmn', 'syllabs');
 
 for (const recording of recordings) {
   if (!recording.audio_path) {
@@ -78,10 +76,8 @@ for (const recording of recordings) {
   referencedAudio.add(recording.audio_path);
 }
 
-for (const recording of Object.values(correctionRecordings)) {
-  if (recording.audio_path) {
-    referencedAudio.add(recording.audio_path);
-  }
+for (const filePath of collectAudioFiles(syllableAudioRoot)) {
+  referencedAudio.add(path.relative(ROOT, filePath));
 }
 
 for (const word of words) {
@@ -94,33 +90,19 @@ for (const word of words) {
     if (tone === 'N') {
       return;
     }
-    const key = correctionKey(pinyin, tone);
-    if (correctionQuality[key]?.status === 'bad') {
-      const fallback = correctionRecordings[key];
-      if (fallback?.audio_path) {
-        referencedAudio.add(fallback.audio_path);
-      }
-      return;
-    }
-    const audioCmnKey = key === 'ju4' ? 'jv4' : key;
-    referencedAudio.add(`audio/audio_cmn/syllabs/cmn-${audioCmnKey}.mp3`);
+    const key = CorrectionAudio.correctionKey(pinyin, tone);
+    const selected = CorrectionAudio.correctionSelection(
+      key,
+      correctionQuality,
+      correctionRecordings,
+    );
+    if (selected?.audio_path) referencedAudio.add(selected.audio_path);
   });
 }
 
 let referencedBytes = 0;
 for (const relativePath of referencedAudio) {
   referencedBytes += requireFile(relativePath, 'referenced audio');
-}
-
-const audioRoot = path.join(ROOT, 'audio');
-const audioFiles = collectAudioFiles(audioRoot);
-let audioBytes = 0;
-for (const filePath of audioFiles) {
-  const stats = fs.statSync(filePath);
-  if (stats.size === 0) {
-    throw new Error(`Empty audio file: ${path.relative(ROOT, filePath)}`);
-  }
-  audioBytes += stats.size;
 }
 
 fs.rmSync(OUTPUT, { recursive: true, force: true });
@@ -131,7 +113,11 @@ for (const file of APP_FILES) {
 for (const file of DATA_FILES) {
   fs.copyFileSync(path.join(ROOT, 'data', file), path.join(OUTPUT, 'data', file));
 }
-fs.cpSync(audioRoot, path.join(OUTPUT, 'audio'), { recursive: true });
+for (const relativePath of referencedAudio) {
+  const targetPath = path.join(OUTPUT, relativePath);
+  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+  fs.copyFileSync(path.join(ROOT, relativePath), targetPath);
+}
 
 const dataBytes = DATA_FILES.reduce(
   (total, file) => total + fs.statSync(path.join(ROOT, 'data', file)).size,
@@ -139,7 +125,7 @@ const dataBytes = DATA_FILES.reduce(
 );
 const totalBytes = APP_FILES.reduce(
   (total, file) => total + fs.statSync(path.join(ROOT, 'app', file)).size,
-  dataBytes + audioBytes,
+  dataBytes + referencedBytes,
 );
 
 console.log(
@@ -148,7 +134,6 @@ console.log(
     `  ${words.length.toLocaleString()} vocabulary entries`,
     `  ${recordings.length.toLocaleString()} word recordings`,
     `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,
-    `  ${audioFiles.length.toLocaleString()} bundled audio files`,
     `  ${(totalBytes / 1024 / 1024).toFixed(1)} MiB total`,
   ].join('\n'),
 );

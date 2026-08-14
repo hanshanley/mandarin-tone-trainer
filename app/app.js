@@ -1,9 +1,21 @@
-let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, chunks=[], mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[];
+let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[];
 let results=[];
-const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
+const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 function saveResults(){updateProgress()}
+function isPlaybackInterruption(error){return error?.name==='AbortError'}
+function cachedValue(cache,key){
+  if(!cache.has(key))return null;
+  const value=cache.get(key);
+  cache.delete(key);
+  cache.set(key,value);
+  return value;
+}
+function cacheValue(cache,key,value,limit){
+  cache.set(key,value);
+  while(cache.size>limit)cache.delete(cache.keys().next().value);
+}
 function setAudioStatus(message='',error=false){
   $('audioStatus').textContent=message;
   $('audioStatus').classList.toggle('error',error);
@@ -11,6 +23,10 @@ function setAudioStatus(message='',error=false){
 function resetRecordButton(){
   $('record').innerHTML='<span aria-hidden="true">●</span> Record me';
   $('record').setAttribute('aria-pressed','false');
+}
+function setPracticeControlsDisabled(disabled){
+  for(const id of ['play','next','syllables','sandhiOnly'])$(id).disabled=disabled;
+  document.querySelectorAll('.tone-choice').forEach(button=>button.disabled=disabled);
 }
 function updateProgress(){
   const correct=results.filter(r=>r.correct).length;
@@ -106,6 +122,7 @@ function renderToneChoices(){
 }
 function next(play=false){
   stopAllAudio();
+  clearPersonalRecording();
   setAudioStatus();
   const pool=filtered();
   if(!pool.length){
@@ -156,6 +173,13 @@ function stopPersonalAudio(){
   }
   overlayAudios=[];
 }
+function clearPersonalRecording(){
+  stopPersonalAudio();
+  if(mineUrl)URL.revokeObjectURL(mineUrl);
+  mineUrl=null;
+  $('playMine').disabled=true;
+  $('overlay').disabled=true;
+}
 function stopAllAudio(){
   stopNative();
   stopCorrection();
@@ -171,36 +195,23 @@ function playNative(){
   audio.onended=()=>{if(nativeAudio===audio)nativeAudio=null};
   audio.play().then(()=>setAudioStatus('Playing the native recording.')).catch(error=>{
     if(nativeAudio===audio)nativeAudio=null;
+    if(isPlaybackInterruption(error))return;
     setAudioStatus('The native recording could not be played.',true);
     console.error('Native audio failed',error);
   });
 }
-function correctionKey(pinyin,tone){
-  return pinyin.toLowerCase().replace(/ü/g,'v')+tone;
-}
+function correctionKey(pinyin,tone){return CorrectionAudio.correctionKey(pinyin,tone)}
 function correctionSelection(key){
-  const quality=correctionQuality[key];
-  if(quality?.status==='bad'){
-    const replacement=correctionRecordings[key];
-    return replacement?.audio_path?{
-      url:`../${replacement.audio_path}`,
-      enhanced:true,
-      source:replacement.source,
-    }:null;
-  }
-  const audioCmnKey=key==='ju4'?'jv4':key;
-  return {
-    url:`../audio/audio_cmn/syllabs/cmn-${audioCmnKey}.mp3`,
-    enhanced:false,
-    source:'audio_cmn',
-  };
+  const selected=CorrectionAudio.correctionSelection(key,correctionQuality,correctionRecordings);
+  return selected?{...selected,url:`../${selected.audio_path}`}:null;
 }
 function getCorrectionContext(){
   if(!correctionContext)correctionContext=new (window.AudioContext||window.webkitAudioContext)();
   return correctionContext;
 }
 async function rawPinyinBuffer(key){
-  if(rawPinyinBuffers.has(key))return rawPinyinBuffers.get(key);
+  const cached=cachedValue(rawPinyinBuffers,key);
+  if(cached)return cached;
   const promise=(async()=>{
     const selected=correctionSelection(key);
     if(!selected)throw new Error(`No verified correction recording for ${key}`);
@@ -209,12 +220,16 @@ async function rawPinyinBuffer(key){
     const context=getCorrectionContext();
     return context.decodeAudioData(await response.arrayBuffer());
   })();
-  rawPinyinBuffers.set(key,promise);
-  try{return await promise}catch(error){rawPinyinBuffers.delete(key);throw error}
+  cacheValue(rawPinyinBuffers,key,promise,RAW_BUFFER_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(rawPinyinBuffers.get(key)===promise)rawPinyinBuffers.delete(key);
+    throw error;
+  }
 }
 async function pinyinSequenceBuffer(keys){
   const cacheKey=keys.join('+');
-  if(correctionBuffers.has(cacheKey))return correctionBuffers.get(cacheKey);
+  const cached=cachedValue(correctionBuffers,cacheKey);
+  if(cached)return cached;
   const promise=(async()=>{
     const context=getCorrectionContext();
     const decoded=await Promise.all(keys.map(rawPinyinBuffer));
@@ -236,8 +251,11 @@ async function pinyinSequenceBuffer(keys){
     }
     return combined;
   })();
-  correctionBuffers.set(cacheKey,promise);
-  try{return await promise}catch(error){correctionBuffers.delete(cacheKey);throw error}
+  cacheValue(correctionBuffers,cacheKey,promise,CORRECTION_BUFFER_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(correctionBuffers.get(cacheKey)===promise)correctionBuffers.delete(cacheKey);
+    throw error;
+  }
 }
 function stopCorrection(){
   correctionPlayId++;
@@ -304,7 +322,14 @@ async function playCorrection(index,tone){
     stopCorrection();
     return;
   }
-  return playPinyinKey(correctionKey(pinyin,tone));
+  const key=correctionKey(pinyin,tone);
+  if(!correctionSelection(key)){
+    stopNative();
+    stopCorrection();
+    setAudioStatus('No comparison recording is available for this tone.');
+    return;
+  }
+  return playPinyinKey(key);
 }
 $('play').onclick=playNative;
 $('next').onclick=()=>next(true);
@@ -312,6 +337,7 @@ $('syllables').onchange=()=>next(true);
 $('sandhiOnly').onchange=()=>next(true);
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
 $('record').onclick=async()=>{
+  if(recordingStarting)return;
   if(mediaRecorder?.state==='recording'){
     mediaRecorder.stop();
     setAudioStatus('Finishing your recording.');
@@ -322,48 +348,68 @@ $('record').onclick=async()=>{
     return;
   }
   stopAllAudio();
+  recordingStarting=true;
+  $('record').disabled=true;
+  setAudioStatus('Waiting for microphone permission…');
+  let stream=null;
   let failed=false;
   try{
-    mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    chunks=[];
-    const recorder=new MediaRecorder(mediaStream);
+    stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const sessionChunks=[];
+    const recorder=new MediaRecorder(stream);
+    mediaStream=stream;
     mediaRecorder=recorder;
-    recorder.ondataavailable=event=>{if(event.data.size)chunks.push(event.data)};
+    recorder.ondataavailable=event=>{if(event.data.size)sessionChunks.push(event.data)};
     recorder.onerror=event=>{
       failed=true;
-      mediaStream?.getTracks().forEach(track=>track.stop());
-      mediaStream=null;
+      const isCurrent=mediaRecorder===recorder||mediaStream===stream;
+      stream.getTracks().forEach(track=>track.stop());
+      if(mediaStream===stream)mediaStream=null;
       if(mediaRecorder===recorder)mediaRecorder=null;
+      if(!isCurrent)return;
+      recordingStarting=false;
+      $('record').disabled=false;
       resetRecordButton();
+      setPracticeControlsDisabled(false);
       setAudioStatus(`Recording failed${event.error?.message?`: ${event.error.message}`:'.'}`,true);
     };
     recorder.onstop=()=>{
-      mediaStream?.getTracks().forEach(track=>track.stop());
-      mediaStream=null;
+      const isCurrent=mediaRecorder===recorder||mediaStream===stream;
+      stream.getTracks().forEach(track=>track.stop());
+      if(mediaStream===stream)mediaStream=null;
       if(mediaRecorder===recorder)mediaRecorder=null;
+      if(!isCurrent)return;
+      recordingStarting=false;
+      $('record').disabled=false;
       resetRecordButton();
+      setPracticeControlsDisabled(false);
       if(failed)return;
-      const blob=new Blob(chunks,{type:recorder.mimeType});
-      chunks=[];
+      const blob=new Blob(sessionChunks,{type:recorder.mimeType});
       if(!blob.size){
         setAudioStatus('No audio was captured. Try recording again.',true);
         return;
       }
-      if(mineUrl)URL.revokeObjectURL(mineUrl);
       mineUrl=URL.createObjectURL(blob);
       $('playMine').disabled=false;
       $('overlay').disabled=false;
       setAudioStatus('Your recording is ready.');
     };
+    clearPersonalRecording();
+    setPracticeControlsDisabled(true);
+    recordingStarting=false;
+    $('record').disabled=false;
     recorder.start();
     $('record').innerHTML='<span aria-hidden="true">■</span> Stop';
     $('record').setAttribute('aria-pressed','true');
     setAudioStatus('Recording… Tap Stop when you are finished.');
   }catch(error){
-    mediaStream?.getTracks().forEach(track=>track.stop());
-    mediaStream=null;
-    mediaRecorder=null;
+    stream?.getTracks().forEach(track=>track.stop());
+    if(mediaStream===stream)mediaStream=null;
+    if(!mediaStream)mediaRecorder=null;
+    recordingStarting=false;
+    $('record').disabled=false;
     resetRecordButton();
+    setPracticeControlsDisabled(false);
     const message=error.name==='NotAllowedError'
       ?'Microphone permission was denied. Allow it in Android Settings to record yourself.'
       :error.name==='NotFoundError'
@@ -383,6 +429,7 @@ $('playMine').onclick=()=>{
   audio.onended=()=>{if(mineAudio===audio)mineAudio=null};
   audio.play().then(()=>setAudioStatus('Playing your recording.')).catch(error=>{
     if(mineAudio===audio)mineAudio=null;
+    if(isPlaybackInterruption(error))return;
     setAudioStatus('Your recording could not be played.',true);
     console.error('Recorded audio failed',error);
   });
@@ -401,6 +448,7 @@ $('overlay').onclick=async()=>{
     setAudioStatus('Playing the native and recorded audio together.');
   }catch(error){
     stopPersonalAudio();
+    if(isPlaybackInterruption(error))return;
     setAudioStatus('Overlay playback could not be started.',true);
     console.error('Overlay audio failed',error);
   }
@@ -413,7 +461,7 @@ document.addEventListener('visibilitychange',()=>{
 window.addEventListener('beforeunload',()=>{
   mediaStream?.getTracks().forEach(track=>track.stop());
   stopAllAudio();
-  if(mineUrl)URL.revokeObjectURL(mineUrl);
+  clearPersonalRecording();
 });
 resetRecordButton();
 if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){

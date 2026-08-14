@@ -34,8 +34,8 @@ python3 scripts/add_definitions.py
 python3 scripts/serve.py
 ```
 
-Then open `http://localhost:8000/app/`. The app selects `audio-cmn` by default
-when that source is present. The commands download 8,596 word recordings and
+Then open `http://localhost:8000/app/`. Native word prompts currently use only
+the `audio-cmn` source. The commands download 8,596 word recordings and
 1,707 tone-specific syllable clips. They are resumable, so running them again
 keeps valid existing files.
 
@@ -45,8 +45,9 @@ Git and should not be committed.
 ## Build and install the private Android app
 
 The Android app is a Capacitor wrapper around the same browser app. It bundles
-the generated data and complete local audio tree, so practice and recording
-work without a network connection. The current release APK is about 184 MB.
+the generated data and every audio file reachable by the trainer, so practice
+and recording work without a network connection. The current release APK is
+about 154 MiB (161 MB).
 
 Prerequisites:
 
@@ -114,10 +115,10 @@ Files app, and allow **Install unknown apps** for Files when Android prompts.
 The first use of **Record me** requests microphone permission. The rest of the
 trainer remains usable if that permission is denied.
 
-Run `npm run assets:android` after changing `resources/logo.svg` to regenerate
-the launcher and splash artwork. Android build output, copied web assets,
-downloaded audio, local SDK settings, and signing material are all excluded
-from Git.
+If `resources/logo.svg` changes, regenerate the committed launcher and splash
+resources with Android Studio's Image Asset tools. Android build output,
+copied web assets, downloaded audio, local SDK settings, and signing material
+are all excluded from Git.
 
 Definitions are sourced from the
 [official CC-CEDICT download](https://www.mdbg.net/chinese/dictionary?page=cedict)
@@ -168,7 +169,9 @@ Then:
 python3 scripts/import_local_audio.py
 ```
 
-Reload the app. It randomizes among all indexed recordings for the chosen word.
+The importer preserves these recordings in `data/recordings.json`, but the
+current trainer intentionally selects only verified `audio_cmn` word prompts.
+Support for choosing other indexed sources is future work.
 
 ## Bootstrap direct HSK audio with audio-cmn
 
@@ -224,7 +227,8 @@ python3 scripts/import_local_audio.py
 
 The default sample uses `coral`, `marin`, and `cedar` with
 `gpt-4o-mini-tts`. These files are synthetic Mandarin examples, not native
-speaker recordings.
+speaker recordings. They are indexed for future source-selection support but
+are not selected by the current trainer.
 
 ## Forvo: inventory every Mandarin pronunciation
 
