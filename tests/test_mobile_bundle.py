@@ -78,10 +78,9 @@ class MobileBundleTests(unittest.TestCase):
             for key in required_corrections
             if key in corrections
             and quality['pinyin_public'].get(key, {}).get('status') != 'bad'
-            and (
-                quality['preferred_sources'].get(key) == 'pinyin_public'
-                or quality['audio_cmn'].get(key, {}).get('replacement')
-                == 'pinyin_public'
+            and not (
+                quality['audio_cmn'].get(key, {}).get('status') == 'bad'
+                and quality['audio_cmn'][key].get('replacement') is None
             )
         }
         expected = {Path(recording['audio_path']) for recording in recordings}

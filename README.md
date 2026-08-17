@@ -35,11 +35,11 @@ python3 scripts/serve.py
 ```
 
 Then open `http://localhost:8000/app/`. Native word prompts currently use only
-the `audio-cmn` source. Tone-choice comparisons use the human `audio-cmn`
-syllables by default, with independent public pinyin clips selected for known
-fallbacks and clearer overrides. The commands download 8,596 word recordings
-and 1,707 tone-specific syllable clips. They are resumable, so running them
-again keeps valid existing files.
+the `audio-cmn` source. Tone-choice comparisons use the independently indexed
+public pinyin corpus by default and fall back to reviewed human `audio-cmn`
+syllables when a public clip is missing or quarantined. The commands download
+8,596 word recordings and 1,707 tone-specific syllable clips. They are
+resumable, so running them again keeps valid existing files.
 
 The generated `audio/` and downloaded `imports/` directories are ignored by
 Git and should not be committed.
@@ -127,10 +127,10 @@ Definitions are sourced from the
 maintained by MDBG. Those definition fields are distributed under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Correction buttons prefer the human audio-cmn syllables. The public-domain
+Correction buttons prefer the public-domain
 [`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
-corpus supplies replacements for known bad clips and explicit clarity
-overrides. Known defects and source preferences are recorded in
+corpus and fall back to human audio-cmn syllables when a public clip is
+unavailable or quarantined. Known defects are recorded in
 `data/correction_audio_quality.json`; items with no good source are excluded
 rather than playing an incorrect sound. Correction playback normalizes active
 speech loudness and uses a peak limiter; public clips also receive a gentle

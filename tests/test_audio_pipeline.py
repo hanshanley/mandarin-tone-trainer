@@ -233,25 +233,6 @@ class PipelineValidationTests(unittest.TestCase):
             quality['pinyin_public']['xiang1']['replacement'],
             'audio_cmn',
         )
-        self.assertEqual(
-            set(quality['preferred_sources']),
-            {
-                'gai1',
-                'gai2',
-                'gai3',
-                'gai4',
-                'gei1',
-                'gei2',
-                'gei3',
-                'gei4',
-                'cang2',
-                'zeng2',
-                'pao1',
-                'jie4',
-                'zhen4',
-            },
-        )
-
     def test_shared_correction_policy_handles_corpus_quirks(self):
         script = """
 const policy=require('./app/correction_audio.js');
@@ -259,14 +240,9 @@ const results={
   umlaut:policy.correctionKey('lü','4'),
   ju:policy.correctionSelection('ju4',{},{}),
   erhua:policy.correctionSelection('r2',{},{}),
-  defaultSource:policy.correctionSelection(
+  primary:policy.correctionSelection(
     'gai1',
     {},
-    {gai1:{audio_path:'audio/pinyin_public/gai1.mp3',source:'public'}}
-  ),
-  preferred:policy.correctionSelection(
-    'gai1',
-    {preferred_sources:{gai1:'pinyin_public'}},
     {gai1:{audio_path:'audio/pinyin_public/gai1.mp3',source:'public'}}
   ),
   reported:policy.correctionSelection(
@@ -315,11 +291,7 @@ process.stdout.write(JSON.stringify(results));
         self.assertTrue(results['ju']['audio_path'].endswith('cmn-jv4.mp3'))
         self.assertIsNone(results['erhua'])
         self.assertEqual(
-            results['defaultSource']['audio_path'],
-            'audio/audio_cmn/syllabs/cmn-gai1.mp3',
-        )
-        self.assertEqual(
-            results['preferred']['audio_path'],
+            results['primary']['audio_path'],
             'audio/pinyin_public/gai1.mp3',
         )
         self.assertEqual(
@@ -394,13 +366,15 @@ process.stdout.write(JSON.stringify(selected));
             'cang2',
             'zeng2',
             'pao1',
+            'jie4',
+            'zhen4',
+            'zan1',
         }
         public_count = 0
         unavailable_audio_cmn = {'r1', 'r2', 'r3', 'r4'}
         for key, recording in selected.items():
             audio_cmn_review = quality['audio_cmn'].get(key, {})
             public_review = quality['pinyin_public'].get(key, {})
-            preferred_source = quality['preferred_sources'].get(key)
             if audio_cmn_review.get('replacement_audio_path'):
                 self.assertEqual(
                     recording['audio_path'],
@@ -422,10 +396,7 @@ process.stdout.write(JSON.stringify(selected));
                 )
             ):
                 self.assertIsNone(recording, key)
-            elif (
-                preferred_source == 'pinyin_public'
-                or audio_cmn_review.get('replacement') == 'pinyin_public'
-            ) and key in public and public_review.get('status') != 'bad':
+            elif key in public and public_review.get('status') != 'bad':
                 public_count += 1
                 self.assertEqual(recording['audio_path'], public[key]['audio_path'])
                 self.assertEqual(recording['source'], public[key]['source'])
@@ -436,7 +407,7 @@ process.stdout.write(JSON.stringify(selected));
                     f"audio/audio_cmn/syllabs/cmn-{'jv4' if key == 'ju4' else key}.mp3",
                 )
                 self.assertFalse(recording['enhanced'])
-        self.assertGreaterEqual(public_count, len(reported))
+        self.assertGreater(public_count, 1000)
         for key in reported:
             self.assertEqual(
                 selected[key]['audio_path'],
@@ -480,7 +451,6 @@ process.stdout.write(JSON.stringify(selected));
             self.assertEqual(Path(recording['audio_path']).stem, key)
             self.assertTrue(recording['source_url'].endswith(f'/{key}.mp3'))
         self.assertLessEqual(set(quality['pinyin_public']), set(public))
-        self.assertLessEqual(set(quality['preferred_sources']), set(public))
 
         audio_root = ROOT / 'audio'
         if not audio_root.exists():

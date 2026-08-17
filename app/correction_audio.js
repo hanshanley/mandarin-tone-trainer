@@ -27,13 +27,12 @@
   function correctionSelection(key,quality,recordings){
     const audioCmnReview=quality.audio_cmn?.[key]||quality[key];
     const publicReview=quality.pinyin_public?.[key];
-    const preferredSource=quality.preferred_sources?.[key];
     const audioCmnUnavailable=unavailableAudioCmnKeys.has(key);
     const audioCmnBad=audioCmnReview?.status==='bad';
     if(audioCmnReview?.status==='bad'&&audioCmnReview.replacement===null)return null;
     const publicRecording=recordings[key];
     const publicAvailable=publicRecording?.audio_path&&publicReview?.status!=='bad';
-    if(preferredSource==='pinyin_public'&&publicAvailable)return {
+    if(publicAvailable)return {
       audio_path:publicRecording.audio_path,
       enhanced:true,
       source:publicRecording.source,

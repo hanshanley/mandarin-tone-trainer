@@ -59,20 +59,5 @@
       "reason": "Reported as incorrect or unnatural.",
       "replacement": "audio_cmn"
     }
-  },
-  "preferred_sources": {
-    "gai1": "pinyin_public",
-    "gai2": "pinyin_public",
-    "gai3": "pinyin_public",
-    "gai4": "pinyin_public",
-    "gei1": "pinyin_public",
-    "gei2": "pinyin_public",
-    "gei3": "pinyin_public",
-    "gei4": "pinyin_public",
-    "cang2": "pinyin_public",
-    "zeng2": "pinyin_public",
-    "pao1": "pinyin_public",
-    "jie4": "pinyin_public",
-    "zhen4": "pinyin_public"
   }
 }
