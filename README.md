@@ -132,9 +132,9 @@ Correction buttons prefer the human audio-cmn syllables. The public-domain
 corpus supplies replacements for known bad clips and explicit clarity
 overrides. Known defects and source preferences are recorded in
 `data/correction_audio_quality.json`; items with no good source are excluded
-rather than playing an incorrect sound. The browser applies a gentle
-presence/high-shelf EQ with headroom only to public clips, without changing
-pitch or timing.
+rather than playing an incorrect sound. Correction playback normalizes active
+speech loudness and uses a peak limiter; public clips also receive a gentle
+presence/high-shelf EQ with headroom, without changing pitch or timing.
 
 Native word prompts always use the real human audio-cmn word recording.
 

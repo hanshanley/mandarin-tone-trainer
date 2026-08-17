@@ -4,8 +4,25 @@
   else root.CorrectionAudio=api;
 })(typeof globalThis!=='undefined'?globalThis:this,()=>{
   const unavailableAudioCmnKeys=new Set(['r1','r2','r3','r4']);
+  const NORMALIZATION_TARGET_RMS=.16, NORMALIZATION_ACTIVITY_THRESHOLD=.01, NORMALIZATION_MAX_PEAK=.90, NORMALIZATION_MAX_BOOST=12;
   function correctionKey(pinyin,tone){
     return pinyin.toLowerCase().replace(/ü/g,'v')+tone;
+  }
+  function normalizationGain(channels){
+    let activeEnergy=0,activeCount=0,peak=0;
+    for(const channel of channels){
+      for(const sample of channel){
+        const magnitude=Math.abs(sample);
+        peak=Math.max(peak,magnitude);
+        if(magnitude>=NORMALIZATION_ACTIVITY_THRESHOLD){
+          activeEnergy+=sample*sample;
+          activeCount++;
+        }
+      }
+    }
+    if(!activeCount||!peak)return 1;
+    const rms=Math.sqrt(activeEnergy/activeCount);
+    return Math.min(NORMALIZATION_TARGET_RMS/rms,NORMALIZATION_MAX_PEAK/peak,NORMALIZATION_MAX_BOOST);
   }
   function correctionSelection(key,quality,recordings){
     const audioCmnReview=quality.audio_cmn?.[key]||quality[key];
@@ -21,7 +38,20 @@
       enhanced:true,
       source:publicRecording.source,
     };
-    if(!audioCmnUnavailable&&!audioCmnBad){
+    if(audioCmnBad){
+      if(audioCmnReview.replacement_audio_path)return {
+        audio_path:audioCmnReview.replacement_audio_path,
+        enhanced:false,
+        source:audioCmnReview.replacement_source||'audio_cmn',
+      };
+      if(audioCmnReview.replacement==='pinyin_public'&&publicAvailable)return {
+        audio_path:publicRecording.audio_path,
+        enhanced:true,
+        source:publicRecording.source,
+      };
+      return null;
+    }
+    if(!audioCmnUnavailable){
       const audioCmnKey=key==='ju4'?'jv4':key;
       return {
         audio_path:`audio/audio_cmn/syllabs/cmn-${audioCmnKey}.mp3`,
@@ -29,12 +59,12 @@
         source:'audio_cmn',
       };
     }
-    if((audioCmnReview?.replacement==='pinyin_public'||audioCmnUnavailable)&&publicAvailable)return {
+    if(publicAvailable)return {
       audio_path:publicRecording.audio_path,
       enhanced:true,
       source:publicRecording.source,
     };
     return null;
   }
-  return {correctionKey,correctionSelection};
+  return {correctionKey,correctionSelection,normalizationGain};
 });

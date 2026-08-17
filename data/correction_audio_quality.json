@@ -38,7 +38,9 @@
     "mou3": {
       "status": "bad",
       "reason": "Sounds like mao3 instead of mou3.",
-      "replacement": null
+      "replacement": "isolated_word",
+      "replacement_audio_path": "audio/audio_cmn/某/cmn-某.mp3",
+      "replacement_source": "audio_cmn"
     }
   },
   "pinyin_public": {
@@ -50,6 +52,11 @@
     "lian4": {
       "status": "bad",
       "reason": "Audio payload duplicates lian1 and has the wrong tone contour.",
+      "replacement": "audio_cmn"
+    },
+    "xiang1": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unnatural.",
       "replacement": "audio_cmn"
     }
   },
@@ -63,6 +70,9 @@
     "gei3": "pinyin_public",
     "gei4": "pinyin_public",
     "cang2": "pinyin_public",
-    "zeng2": "pinyin_public"
+    "zeng2": "pinyin_public",
+    "pao1": "pinyin_public",
+    "jie4": "pinyin_public",
+    "zhen4": "pinyin_public"
   }
 }

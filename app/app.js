@@ -1,6 +1,6 @@
-let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[];
+let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
-const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
+const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 function saveResults(){updateProgress()}
@@ -24,9 +24,11 @@ function resetRecordButton(){
   $('record').innerHTML='<span aria-hidden="true">●</span> Record me';
   $('record').setAttribute('aria-pressed','false');
 }
+function updateBackButton(){$('back').disabled=!quizHistory.length}
 function setPracticeControlsDisabled(disabled){
-  for(const id of ['play','next','syllables','sandhiOnly'])$(id).disabled=disabled;
+  for(const id of ['play','back','next','syllables','sandhiOnly'])$(id).disabled=disabled;
   document.querySelectorAll('.tone-choice').forEach(button=>button.disabled=disabled);
+  if(!disabled)updateBackButton();
 }
 function updateProgress(){
   const correct=results.filter(r=>r.correct).length;
@@ -120,14 +122,66 @@ function renderToneChoices(){
     $('answers').appendChild(column);
   });
 }
-function next(play=false){
+function currentSnapshot(){
+  if(!current)return null;
+  return {
+    word:current,
+    recording:currentRec,
+    correct:current._correct,
+    graded:current._graded,
+    selectedTones:[...selectedTones],
+    promptHTML:$('prompt').innerHTML,
+    revealHTML:$('reveal').innerHTML,
+    revealHidden:$('reveal').classList.contains('hidden'),
+  };
+}
+function restoreToneState(state){
+  selectedTones=[...state.selectedTones];
+  const correctTones=state.correct.split('-');
+  selectedTones.forEach((tone,index)=>{
+    if(!tone)return;
+    const column=$('answers').children[index];
+    const selected=column.querySelector(`[data-tone="${tone}"]`);
+    selected.classList.add('selected');
+    if(!state.graded)return;
+    selected.classList.add(tone===correctTones[index]?'correct':'wrong');
+    if(tone!==correctTones[index])column.querySelector(`[data-tone="${correctTones[index]}"]`).classList.add('correct-answer');
+  });
+}
+function back(play=false){
+  if(!quizHistory.length)return;
+  stopAllAudio();
+  clearPersonalRecording();
+  setAudioStatus();
+  const state=quizHistory.pop();
+  current=state.word;
+  currentRec=state.recording;
+  currentNative=nativePlayback(current,currentRec);
+  current._correct=state.correct;
+  current._graded=state.graded;
+  $('prompt').innerHTML=state.promptHTML;
+  renderToneChoices();
+  restoreToneState(state);
+  $('reveal').innerHTML=state.revealHTML;
+  $('reveal').classList.toggle('hidden',state.revealHidden);
+  updateBackButton();
+  if(currentNative?.playable&&play)playNative();
+}
+function next(play=false,remember=true){
+  if(remember){
+    const snapshot=currentSnapshot();
+    if(snapshot){
+      quizHistory.push(snapshot);
+      while(quizHistory.length>QUIZ_HISTORY_LIMIT)quizHistory.shift();
+    }
+  }
   stopAllAudio();
   clearPersonalRecording();
   setAudioStatus();
   const pool=filtered();
   if(!pool.length){
     current=null; currentRec=null; currentNative=null; $('prompt').innerHTML='<div class="muted">No words match the current filters.</div><p>Try another syllable-count setting or turn off Sandhi only.</p>';
-    $('answers').innerHTML=''; return;
+    $('answers').innerHTML=''; $('reveal').classList.add('hidden'); updateBackButton(); return;
   }
   current=choose(pool); const rs=recordingsFor(current); currentRec=rs.length?choose(rs):null; currentNative=nativePlayback(current,currentRec);
   current._graded=false;
@@ -135,6 +189,7 @@ function next(play=false){
   current._correct=correct;
   $('prompt').innerHTML=`<div class="muted">Listen first — word hidden until you answer</div>${currentNative?.playable?`<div class="muted">Speaker: ${escapeHTML(currentNative.speaker)} · ${escapeHTML(sourceName(currentNative.source||''))}</div>`:'<div class="muted">No local recording for this item.</div>'}`;
   $('reveal').classList.add('hidden'); renderToneChoices();
+  updateBackButton();
   if(currentNative?.playable && play)playNative();
 }
 function grade(p,correct){
@@ -243,9 +298,16 @@ async function pinyinSequenceBuffer(keys){
     const combined=context.createBuffer(channels,length,sampleRate);
     let offset=lead;
     for(const buffer of decoded){
+      const sourceChannels=Array.from(
+        {length:buffer.numberOfChannels},
+        (_,channel)=>buffer.getChannelData(channel),
+      );
+      const gain=CorrectionAudio.normalizationGain(sourceChannels);
       for(let channel=0;channel<channels;channel++){
         const sourceChannel=Math.min(channel,buffer.numberOfChannels-1);
-        combined.copyToChannel(buffer.getChannelData(sourceChannel),channel,offset);
+        const input=buffer.getChannelData(sourceChannel);
+        const output=combined.getChannelData(channel);
+        for(let index=0;index<input.length;index++)output[offset+index]=input[index]*gain;
       }
       offset+=buffer.length+gap;
     }
@@ -267,6 +329,12 @@ function stopCorrection(){
   }
 }
 function connectPinyinSource(source,context,key){
+  const limiter=context.createDynamicsCompressor();
+  limiter.threshold.value=-3;
+  limiter.knee.value=0;
+  limiter.ratio.value=20;
+  limiter.attack.value=.003;
+  limiter.release.value=.12;
   if(correctionSelection(key)?.enhanced){
     const highpass=context.createBiquadFilter();
     highpass.type='highpass';
@@ -283,9 +351,9 @@ function connectPinyinSource(source,context,key){
     clarity.gain.value=3;
     const headroom=context.createGain();
     headroom.gain.value=.88;
-    source.connect(highpass).connect(presence).connect(clarity).connect(headroom).connect(context.destination);
+    source.connect(highpass).connect(presence).connect(clarity).connect(headroom).connect(limiter).connect(context.destination);
   }else{
-    source.connect(context.destination);
+    source.connect(limiter).connect(context.destination);
   }
 }
 async function playPinyinKey(key){
@@ -332,9 +400,10 @@ async function playCorrection(index,tone){
   return playPinyinKey(key);
 }
 $('play').onclick=playNative;
+$('back').onclick=()=>back(true);
 $('next').onclick=()=>next(true);
-$('syllables').onchange=()=>next(true);
-$('sandhiOnly').onchange=()=>next(true);
+$('syllables').onchange=()=>{quizHistory=[];next(true,false)};
+$('sandhiOnly').onchange=()=>{quizHistory=[];next(true,false)};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
 $('record').onclick=async()=>{
   if(recordingStarting)return;
@@ -469,7 +538,8 @@ if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){
   setAudioStatus('Audio recording is not available on this device.',true);
 }
 updateProgress();
-load().then(()=>next(true)).catch(error=>{
+updateBackButton();
+load().then(()=>next(true,false)).catch(error=>{
   console.error(error);
   $('prompt').innerHTML=`<div class="muted">The practice data could not load.</div><p>${error.message}. Start the app with <code>python3 scripts/serve.py</code> and open its localhost URL.</p>`;
   $('answers').innerHTML='';

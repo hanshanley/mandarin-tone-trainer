@@ -219,6 +219,28 @@ select {
   background: var(--accent-dark);
 }
 
+.practice-navigation {
+  display: flex;
+  gap: 0.65rem;
+  margin-left: auto;
+}
+
+.practice-navigation .primary-button {
+  margin-left: 0;
+}
+
+.back-button {
+  color: var(--accent-dark);
+  border-color: #c9ded4;
+  background: var(--surface);
+  font-weight: 750;
+}
+
+.back-button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .card {
   min-height: 340px;
   padding: clamp(1.25rem, 4vw, 2rem);
@@ -524,6 +546,17 @@ code {
   .primary-button {
     width: 100%;
     margin-left: 0;
+  }
+
+  .practice-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .back-button {
+    width: 100%;
   }
 
   .card {

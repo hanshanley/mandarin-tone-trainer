@@ -160,6 +160,9 @@ class PipelineValidationTests(unittest.TestCase):
             'function getCorrectionContext', 1
         )[0]
         self.assertIn('CorrectionAudio.correctionSelection', correction_url)
+        self.assertIn('CorrectionAudio.normalizationGain', source)
+        self.assertIn('createDynamicsCompressor()', source)
+        self.assertIn('limiter.threshold.value=-3', source)
         self.assertIn("clarity.type='highshelf'", source)
         self.assertIn("presence.type='peaking'", source)
         native_selection = source.split('function nativePlayback', 1)[1].split(
@@ -167,6 +170,22 @@ class PipelineValidationTests(unittest.TestCase):
         )[0]
         self.assertNotIn('correctionRecordings', native_selection)
         self.assertIn('audioURL(r)', native_selection)
+
+    def test_back_button_restores_previous_quiz_state(self):
+        index = (ROOT / 'app' / 'index.html').read_text(encoding='utf-8')
+        source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
+        self.assertIn('id="back"', index)
+        self.assertIn('id="back" class="back-button" type="button" disabled', index)
+        self.assertIn('QUIZ_HISTORY_LIMIT=50', source)
+        self.assertIn('function currentSnapshot()', source)
+        self.assertIn('selectedTones:[...selectedTones]', source)
+        self.assertIn('recording:currentRec', source)
+        self.assertIn('function restoreToneState(state)', source)
+        self.assertIn('function back(play=false)', source)
+        self.assertIn('quizHistory.pop()', source)
+        self.assertIn("$('back').onclick=()=>back(true);", source)
+        self.assertIn("load().then(()=>next(true,false))", source)
+        self.assertIn("quizHistory=[];next(true,false)", source)
 
     def test_public_pinyin_archive_only_indexes_toned_mp3_files(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -197,13 +216,21 @@ class PipelineValidationTests(unittest.TestCase):
                 audio_cmn_quality[key]['replacement'],
                 'pinyin_public',
             )
-        self.assertIsNone(audio_cmn_quality['mou3']['replacement'])
+        self.assertEqual(audio_cmn_quality['mou3']['replacement'], 'isolated_word')
+        self.assertEqual(
+            audio_cmn_quality['mou3']['replacement_audio_path'],
+            'audio/audio_cmn/某/cmn-某.mp3',
+        )
         self.assertEqual(
             quality['pinyin_public']['ao4']['replacement'],
             'audio_cmn',
         )
         self.assertEqual(
             quality['pinyin_public']['lian4']['replacement'],
+            'audio_cmn',
+        )
+        self.assertEqual(
+            quality['pinyin_public']['xiang1']['replacement'],
             'audio_cmn',
         )
         self.assertEqual(
@@ -219,6 +246,9 @@ class PipelineValidationTests(unittest.TestCase):
                 'gei4',
                 'cang2',
                 'zeng2',
+                'pao1',
+                'jie4',
+                'zhen4',
             },
         )
 
@@ -245,15 +275,33 @@ const results={
     {ma2:{audio_path:'audio/pinyin_public/ma2.mp3',source:'public'}}
   ),
   blocked:policy.correctionSelection(
+    'test3',
+    {audio_cmn:{test3:{status:'bad',replacement:null}}},
+    {test3:{audio_path:'audio/pinyin_public/test3.mp3',source:'public'}}
+  ),
+  isolated:policy.correctionSelection(
     'mou3',
-    {audio_cmn:{mou3:{status:'bad',replacement:null}}},
-    {mou3:{audio_path:'audio/pinyin_public/mou3.mp3',source:'public'}}
+    {audio_cmn:{mou3:{
+      status:'bad',
+      replacement:'isolated_word',
+      replacement_audio_path:'audio/audio_cmn/某/cmn-某.mp3',
+      replacement_source:'audio_cmn',
+    }}},
+    {}
   ),
   badPublic:policy.correctionSelection(
     'ao4',
     {pinyin_public:{ao4:{status:'bad',replacement:'audio_cmn'}}},
     {ao4:{audio_path:'audio/pinyin_public/ao4.mp3',source:'public'}}
   ),
+  normalization:{
+    quiet:policy.normalizationGain([Float32Array.from([.02,-.02,.02])]),
+    loud:policy.normalizationGain([Float32Array.from([.4,-.4,.4])]),
+    peakLimited:policy.normalizationGain([
+      Float32Array.from([.8,...Array(99).fill(.011)])
+    ]),
+    silent:policy.normalizationGain([Float32Array.from([0,0,0])]),
+  },
 };
 process.stdout.write(JSON.stringify(results));
 """
@@ -280,10 +328,22 @@ process.stdout.write(JSON.stringify(results));
         )
         self.assertIsNone(results['blocked'])
         self.assertEqual(
+            results['isolated']['audio_path'],
+            'audio/audio_cmn/某/cmn-某.mp3',
+        )
+        self.assertEqual(
             results['badPublic']['audio_path'],
             'audio/audio_cmn/syllabs/cmn-ao4.mp3',
         )
         self.assertFalse(results['badPublic']['enhanced'])
+        self.assertAlmostEqual(results['normalization']['quiet'], 8, places=6)
+        self.assertAlmostEqual(results['normalization']['loud'], 0.4, places=6)
+        self.assertAlmostEqual(
+            results['normalization']['peakLimited'],
+            1.125,
+            places=6,
+        )
+        self.assertEqual(results['normalization']['silent'], 1)
 
     def test_every_required_correction_uses_primary_or_explicit_fallback(self):
         script = """
@@ -319,6 +379,9 @@ process.stdout.write(JSON.stringify(selected));
                 encoding='utf-8'
             )
         )
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
         reported = {
             'gai1',
             'gai2',
@@ -330,6 +393,7 @@ process.stdout.write(JSON.stringify(selected));
             'gei4',
             'cang2',
             'zeng2',
+            'pao1',
         }
         public_count = 0
         unavailable_audio_cmn = {'r1', 'r2', 'r3', 'r4'}
@@ -337,7 +401,13 @@ process.stdout.write(JSON.stringify(selected));
             audio_cmn_review = quality['audio_cmn'].get(key, {})
             public_review = quality['pinyin_public'].get(key, {})
             preferred_source = quality['preferred_sources'].get(key)
-            if (
+            if audio_cmn_review.get('replacement_audio_path'):
+                self.assertEqual(
+                    recording['audio_path'],
+                    audio_cmn_review['replacement_audio_path'],
+                )
+                self.assertFalse(recording['enhanced'])
+            elif (
                 key in unavailable_audio_cmn
                 and (
                     key not in public
@@ -372,6 +442,20 @@ process.stdout.write(JSON.stringify(selected));
                 selected[key]['audio_path'],
                 public[key]['audio_path'],
             )
+        for word in words:
+            tones = (
+                word.get('default_surface_pattern')
+                or word.get('lexical_pattern')
+                or ''
+            ).split('-')
+            syllables = word.get('pinyin_syllables') or []
+            if len(tones) != len(syllables):
+                continue
+            for pinyin, tone in zip(syllables, tones):
+                if tone == 'N':
+                    continue
+                key = f"{pinyin.replace('ü', 'v')}{tone}"
+                self.assertIsNotNone(selected[key], f"{word['word']} requires {key}")
         audio_root = ROOT / 'audio'
         if audio_root.exists():
             missing = [
@@ -380,6 +464,50 @@ process.stdout.write(JSON.stringify(selected));
                 if recording and not (ROOT / recording['audio_path']).is_file()
             ]
             self.assertEqual(missing, [])
+
+    def test_correction_manifest_keys_match_paths_and_quality_entries(self):
+        public = json.loads(
+            (ROOT / 'data' / 'pinyin_public_recordings.json').read_text(
+                encoding='utf-8'
+            )
+        )
+        quality = json.loads(
+            (ROOT / 'data' / 'correction_audio_quality.json').read_text(
+                encoding='utf-8'
+            )
+        )
+        for key, recording in public.items():
+            self.assertEqual(Path(recording['audio_path']).stem, key)
+            self.assertTrue(recording['source_url'].endswith(f'/{key}.mp3'))
+        self.assertLessEqual(set(quality['pinyin_public']), set(public))
+        self.assertLessEqual(set(quality['preferred_sources']), set(public))
+
+        audio_root = ROOT / 'audio'
+        if not audio_root.exists():
+            return
+        manifest_paths = {
+            recording['audio_path']
+            for recording in public.values()
+        }
+        downloaded_public = {
+            path.relative_to(ROOT).as_posix()
+            for path in (audio_root / 'pinyin_public').glob('*.mp3')
+        }
+        self.assertEqual(downloaded_public, manifest_paths)
+        for key, recording in public.items():
+            self.assertTrue((ROOT / recording['audio_path']).is_file(), key)
+        audio_cmn_keys = set()
+        for path in (audio_root / 'audio_cmn' / 'syllabs').glob('cmn-*.mp3'):
+            key = path.stem.removeprefix('cmn-')
+            self.assertIn(key[-1], '12345', path.name)
+            self.assertTrue(key[:-1].replace('_', '').isalpha(), path.name)
+            audio_cmn_keys.add(key)
+        self.assertEqual(len(audio_cmn_keys), 1707)
+        for key, review in quality['audio_cmn'].items():
+            self.assertIn(key, audio_cmn_keys)
+            replacement_path = review.get('replacement_audio_path')
+            if replacement_path:
+                self.assertTrue((ROOT / replacement_path).is_file(), key)
 
     def test_duplicate_audio_payloads_are_blocked_by_quality_policy(self):
         audio_root = ROOT / 'audio'
