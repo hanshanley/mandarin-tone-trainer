@@ -31,7 +31,7 @@ class MobileBundleTests(unittest.TestCase):
             'data/definitions.json',
             'data/recordings.json',
             'data/pinyin_public_recordings.json',
-            'data/audio_cmn_syllable_quality.json',
+            'data/correction_audio_quality.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
@@ -58,20 +58,38 @@ class MobileBundleTests(unittest.TestCase):
             )
         )
         quality = json.loads(
-            (ROOT / 'data' / 'audio_cmn_syllable_quality.json').read_text(
+            (ROOT / 'data' / 'correction_audio_quality.json').read_text(
                 encoding='utf-8'
             )
         )
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
+        required_corrections = set()
+        for word in words:
+            syllables = word.get('pinyin_syllables') or []
+            required_corrections.update(
+                f"{pinyin.replace('ü', 'v')}{tone}"
+                for pinyin in syllables
+                for tone in range(1, 5)
+            )
+        selected_public = {
+            Path(corrections[key]['audio_path'])
+            for key in required_corrections
+            if key in corrections
+            and quality['pinyin_public'].get(key, {}).get('status') != 'bad'
+            and (
+                quality['preferred_sources'].get(key) == 'pinyin_public'
+                or quality['audio_cmn'].get(key, {}).get('replacement')
+                == 'pinyin_public'
+            )
+        }
         expected = {Path(recording['audio_path']) for recording in recordings}
         expected.update(
             path.relative_to(ROOT)
             for path in (AUDIO_ROOT / 'audio_cmn' / 'syllabs').glob('*.mp3')
         )
-        expected.update(
-            Path(corrections[key]['audio_path'])
-            for key, review in quality.items()
-            if review.get('status') == 'bad' and corrections.get(key, {}).get('audio_path')
-        )
+        expected.update(selected_public)
         bundled = {
             path.relative_to(self.bundle)
             for path in (self.bundle / 'audio').rglob('*.mp3')
@@ -81,7 +99,7 @@ class MobileBundleTests(unittest.TestCase):
         unreachable_fallbacks = {
             Path(recording['audio_path'])
             for key, recording in corrections.items()
-            if key not in quality or quality[key].get('status') != 'bad'
+            if Path(recording['audio_path']) not in selected_public
         }
         self.assertTrue(unreachable_fallbacks.isdisjoint(bundled))
 

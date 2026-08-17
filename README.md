@@ -35,9 +35,11 @@ python3 scripts/serve.py
 ```
 
 Then open `http://localhost:8000/app/`. Native word prompts currently use only
-the `audio-cmn` source. The commands download 8,596 word recordings and
-1,707 tone-specific syllable clips. They are resumable, so running them again
-keeps valid existing files.
+the `audio-cmn` source. Tone-choice comparisons use the human `audio-cmn`
+syllables by default, with independent public pinyin clips selected for known
+fallbacks and clearer overrides. The commands download 8,596 word recordings
+and 1,707 tone-specific syllable clips. They are resumable, so running them
+again keeps valid existing files.
 
 The generated `audio/` and downloaded `imports/` directories are ignored by
 Git and should not be committed.
@@ -125,14 +127,14 @@ Definitions are sourced from the
 maintained by MDBG. Those definition fields are distributed under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Correction buttons prefer the human audio-cmn syllable recordings. The
-public-domain
+Correction buttons prefer the human audio-cmn syllables. The public-domain
 [`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
-corpus is used only for audio-cmn clips explicitly marked bad in
-`data/audio_cmn_syllable_quality.json`. Items requiring a bad clip with no good
-replacement are excluded rather than playing an incorrect sound. The browser
-applies a gentle presence/high-shelf EQ with headroom only to public fallback
-clips, without changing pitch or timing.
+corpus supplies replacements for known bad clips and explicit clarity
+overrides. Known defects and source preferences are recorded in
+`data/correction_audio_quality.json`; items with no good source are excluded
+rather than playing an incorrect sound. The browser applies a gentle
+presence/high-shelf EQ with headroom only to public clips, without changing
+pitch or timing.
 
 Native word prompts always use the real human audio-cmn word recording.
 

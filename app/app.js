@@ -62,7 +62,7 @@ async function load(){
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
-  const qualityResponse=await fetch('../data/audio_cmn_syllable_quality.json');
+  const qualityResponse=await fetch('../data/correction_audio_quality.json');
   if(!qualityResponse.ok)throw new Error(`Syllable quality data failed: HTTP ${qualityResponse.status}`);
   correctionQuality=await qualityResponse.json();
   $('progress').textContent='';

@@ -11,7 +11,7 @@ const DATA_FILES = [
   'definitions.json',
   'recordings.json',
   'pinyin_public_recordings.json',
-  'audio_cmn_syllable_quality.json',
+  'correction_audio_quality.json',
 ];
 
 function readJSON(relativePath) {
@@ -65,7 +65,7 @@ requireFile(path.join('audio', 'audio_cmn', 'syllabs', 'cmn-ma1.mp3'), 'audio co
 const words = readJSON('data/hsk_words.json');
 const recordings = readJSON('data/recordings.json');
 const correctionRecordings = readJSON('data/pinyin_public_recordings.json');
-const correctionQuality = readJSON('data/audio_cmn_syllable_quality.json');
+const correctionQuality = readJSON('data/correction_audio_quality.json');
 const referencedAudio = new Set();
 const syllableAudioRoot = path.join(ROOT, 'audio', 'audio_cmn', 'syllabs');
 
@@ -81,23 +81,18 @@ for (const filePath of collectAudioFiles(syllableAudioRoot)) {
 }
 
 for (const word of words) {
-  const tones = (word.default_surface_pattern || word.lexical_pattern || '').split('-');
-  if (!Array.isArray(word.pinyin_syllables) || word.pinyin_syllables.length !== tones.length) {
-    continue;
-  }
-  word.pinyin_syllables.forEach((pinyin, index) => {
-    const tone = tones[index];
-    if (tone === 'N') {
-      return;
+  if (!Array.isArray(word.pinyin_syllables)) continue;
+  for (const pinyin of word.pinyin_syllables) {
+    for (const tone of ['1', '2', '3', '4']) {
+      const key = CorrectionAudio.correctionKey(pinyin, tone);
+      const selected = CorrectionAudio.correctionSelection(
+        key,
+        correctionQuality,
+        correctionRecordings,
+      );
+      if (selected?.audio_path) referencedAudio.add(selected.audio_path);
     }
-    const key = CorrectionAudio.correctionKey(pinyin, tone);
-    const selected = CorrectionAudio.correctionSelection(
-      key,
-      correctionQuality,
-      correctionRecordings,
-    );
-    if (selected?.audio_path) referencedAudio.add(selected.audio_path);
-  });
+  }
 }
 
 let referencedBytes = 0;

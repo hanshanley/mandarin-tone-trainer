@@ -1,0 +1,68 @@
+{
+  "audio_cmn": {
+    "jiao1": {
+      "status": "bad",
+      "reason": "Reported as distorted/unclear.",
+      "replacement": "pinyin_public"
+    },
+    "ma2": {
+      "status": "bad",
+      "reason": "Reported as an incorrect or unnatural syllable.",
+      "replacement": "pinyin_public"
+    },
+    "tian3": {
+      "status": "bad",
+      "reason": "Reported as an incorrect or unnatural syllable.",
+      "replacement": "pinyin_public"
+    },
+    "jiang4": {
+      "status": "bad",
+      "reason": "Final -ng is missing or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "pin1": {
+      "status": "bad",
+      "reason": "Reported as an incorrect or unnatural syllable.",
+      "replacement": "pinyin_public"
+    },
+    "xian3": {
+      "status": "bad",
+      "reason": "Reported as distorted or incorrect.",
+      "replacement": "pinyin_public"
+    },
+    "ming4": {
+      "status": "bad",
+      "reason": "Reported as distorted or incorrect.",
+      "replacement": "pinyin_public"
+    },
+    "mou3": {
+      "status": "bad",
+      "reason": "Sounds like mao3 instead of mou3.",
+      "replacement": null
+    }
+  },
+  "pinyin_public": {
+    "ao4": {
+      "status": "bad",
+      "reason": "Audio payload duplicates ao1 and has the wrong tone contour.",
+      "replacement": "audio_cmn"
+    },
+    "lian4": {
+      "status": "bad",
+      "reason": "Audio payload duplicates lian1 and has the wrong tone contour.",
+      "replacement": "audio_cmn"
+    }
+  },
+  "preferred_sources": {
+    "gai1": "pinyin_public",
+    "gai2": "pinyin_public",
+    "gai3": "pinyin_public",
+    "gai4": "pinyin_public",
+    "gei1": "pinyin_public",
+    "gei2": "pinyin_public",
+    "gei3": "pinyin_public",
+    "gei4": "pinyin_public",
+    "cang2": "pinyin_public",
+    "zeng2": "pinyin_public"
+  }
+}
