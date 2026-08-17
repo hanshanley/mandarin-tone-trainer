@@ -187,6 +187,17 @@ class PipelineValidationTests(unittest.TestCase):
         self.assertIn("load().then(()=>next(true,false))", source)
         self.assertIn("quizHistory=[];next(true,false)", source)
 
+    def test_comparison_voice_switches_all_tone_buttons(self):
+        index = (ROOT / 'app' / 'index.html').read_text(encoding='utf-8')
+        source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
+        self.assertIn('id="correctionSource"', index)
+        self.assertIn('value="pinyin_public" selected', index)
+        self.assertIn('value="audio_cmn"', index)
+        self.assertIn("$('correctionSource')?.value||'pinyin_public'", source)
+        self.assertIn("$('correctionSource').onchange=()=>", source)
+        self.assertIn('rawPinyinBuffers.clear();', source)
+        self.assertIn('correctionBuffers.clear();', source)
+
     def test_public_pinyin_archive_only_indexes_toned_mp3_files(self):
         with tempfile.TemporaryDirectory() as directory:
             archive_path = Path(directory) / 'corpus.zip'
@@ -245,6 +256,12 @@ const results={
     {},
     {gai1:{audio_path:'audio/pinyin_public/gai1.mp3',source:'public'}}
   ),
+  human:policy.correctionSelection(
+    'gai1',
+    {},
+    {gai1:{audio_path:'audio/pinyin_public/gai1.mp3',source:'public'}},
+    'audio_cmn'
+  ),
   reported:policy.correctionSelection(
     'ma2',
     {audio_cmn:{ma2:{status:'bad',replacement:'pinyin_public'}}},
@@ -295,6 +312,10 @@ process.stdout.write(JSON.stringify(results));
             'audio/pinyin_public/gai1.mp3',
         )
         self.assertEqual(
+            results['human']['audio_path'],
+            'audio/audio_cmn/syllabs/cmn-gai1.mp3',
+        )
+        self.assertEqual(
             results['reported']['audio_path'],
             'audio/pinyin_public/ma2.mp3',
         )
@@ -323,24 +344,29 @@ const policy=require('./app/correction_audio.js');
 const words=require('./data/hsk_words.json');
 const quality=require('./data/correction_audio_quality.json');
 const recordings=require('./data/pinyin_public_recordings.json');
-const selected={};
+const selected={},human={};
 for(const word of words){
   const syllables=word.pinyin_syllables||[];
   for(const pinyin of syllables){
     for(const tone of ['1','2','3','4']){
       const key=policy.correctionKey(pinyin,tone);
       selected[key]=policy.correctionSelection(key,quality,recordings);
+      human[key]=policy.correctionSelection(
+        key,quality,recordings,'audio_cmn'
+      );
     }
   }
 }
-process.stdout.write(JSON.stringify(selected));
+process.stdout.write(JSON.stringify({selected,human}));
 """
         output = subprocess.check_output(
             ['node', '-e', script],
             cwd=ROOT,
             text=True,
         )
-        selected = json.loads(output)
+        selections = json.loads(output)
+        selected = selections['selected']
+        human = selections['human']
         quality = json.loads(
             (ROOT / 'data' / 'correction_audio_quality.json').read_text(
                 encoding='utf-8'
@@ -408,6 +434,42 @@ process.stdout.write(JSON.stringify(selected));
                 )
                 self.assertFalse(recording['enhanced'])
         self.assertGreater(public_count, 1000)
+        for key, recording in human.items():
+            audio_cmn_review = quality['audio_cmn'].get(key, {})
+            public_review = quality['pinyin_public'].get(key, {})
+            public_available = (
+                key in public
+                and public_review.get('status') != 'bad'
+            )
+            if audio_cmn_review.get('replacement_audio_path'):
+                self.assertEqual(
+                    recording['audio_path'],
+                    audio_cmn_review['replacement_audio_path'],
+                )
+            elif audio_cmn_review.get('status') == 'bad':
+                if (
+                    audio_cmn_review.get('replacement') == 'pinyin_public'
+                    and public_available
+                ):
+                    self.assertEqual(
+                        recording['audio_path'],
+                        public[key]['audio_path'],
+                    )
+                else:
+                    self.assertIsNone(recording, key)
+            elif key in unavailable_audio_cmn:
+                if public_available:
+                    self.assertEqual(
+                        recording['audio_path'],
+                        public[key]['audio_path'],
+                    )
+                else:
+                    self.assertIsNone(recording, key)
+            else:
+                self.assertEqual(
+                    recording['audio_path'],
+                    f"audio/audio_cmn/syllabs/cmn-{'jv4' if key == 'ju4' else key}.mp3",
+                )
         for key in reported:
             self.assertEqual(
                 selected[key]['audio_path'],
@@ -427,11 +489,12 @@ process.stdout.write(JSON.stringify(selected));
                     continue
                 key = f"{pinyin.replace('ü', 'v')}{tone}"
                 self.assertIsNotNone(selected[key], f"{word['word']} requires {key}")
+                self.assertIsNotNone(human[key], f"{word['word']} requires {key}")
         audio_root = ROOT / 'audio'
         if audio_root.exists():
             missing = [
                 recording['audio_path']
-                for recording in selected.values()
+                for recording in [*selected.values(), *human.values()]
                 if recording and not (ROOT / recording['audio_path']).is_file()
             ]
             self.assertEqual(missing, [])

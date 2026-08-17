@@ -26,7 +26,7 @@ function resetRecordButton(){
 }
 function updateBackButton(){$('back').disabled=!quizHistory.length}
 function setPracticeControlsDisabled(disabled){
-  for(const id of ['play','back','next','syllables','sandhiOnly'])$(id).disabled=disabled;
+  for(const id of ['play','back','next','syllables','correctionSource','sandhiOnly'])$(id).disabled=disabled;
   document.querySelectorAll('.tone-choice').forEach(button=>button.disabled=disabled);
   if(!disabled)updateBackButton();
 }
@@ -257,7 +257,7 @@ function playNative(){
 }
 function correctionKey(pinyin,tone){return CorrectionAudio.correctionKey(pinyin,tone)}
 function correctionSelection(key){
-  const selected=CorrectionAudio.correctionSelection(key,correctionQuality,correctionRecordings);
+  const selected=CorrectionAudio.correctionSelection(key,correctionQuality,correctionRecordings,$('correctionSource')?.value||'pinyin_public');
   return selected?{...selected,url:`../${selected.audio_path}`}:null;
 }
 function getCorrectionContext(){
@@ -403,6 +403,12 @@ $('play').onclick=playNative;
 $('back').onclick=()=>back(true);
 $('next').onclick=()=>next(true);
 $('syllables').onchange=()=>{quizHistory=[];next(true,false)};
+$('correctionSource').onchange=()=>{
+  stopCorrection();
+  rawPinyinBuffers.clear();
+  correctionBuffers.clear();
+  setAudioStatus(`Using ${$('correctionSource').value==='audio_cmn'?'human':'reference'} comparison recordings.`);
+};
 $('sandhiOnly').onchange=()=>{quizHistory=[];next(true,false)};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
 $('record').onclick=async()=>{

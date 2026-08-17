@@ -135,6 +135,8 @@ unavailable or quarantined. Known defects are recorded in
 rather than playing an incorrect sound. Correction playback normalizes active
 speech loudness and uses a peak limiter; public clips also receive a gentle
 presence/high-shelf EQ with headroom, without changing pitch or timing.
+The **Comparison voice** setting switches every tone button between the clear
+reference corpus and human recordings for the current practice session.
 
 Native word prompts always use the real human audio-cmn word recording.
 
