@@ -169,6 +169,8 @@ class PipelineValidationTests(unittest.TestCase):
             )
         )
         self.assertEqual(quality['ma2']['replacement'], 'pinyin_public')
+        self.assertEqual(quality['xian3']['replacement'], 'pinyin_public')
+        self.assertEqual(quality['ming4']['replacement'], 'pinyin_public')
         self.assertIsNone(quality['mou3']['replacement'])
 
     def test_shared_correction_policy_handles_corpus_quirks(self):
@@ -199,6 +201,38 @@ process.stdout.write(JSON.stringify(results));
             results['fallback']['audio_path'],
             'audio/pinyin_public/ma2.mp3',
         )
+
+    def test_reported_syllables_use_fallback_at_the_correct_word_position(self):
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
+        quality = json.loads(
+            (ROOT / 'data' / 'audio_cmn_syllable_quality.json').read_text(
+                encoding='utf-8'
+            )
+        )
+        public = json.loads(
+            (ROOT / 'data' / 'pinyin_public_recordings.json').read_text(
+                encoding='utf-8'
+            )
+        )
+
+        examples = {
+            '保险': (1, 'xian3', 'audio/pinyin_public/xian3.mp3'),
+            '命运': (0, 'ming4', 'audio/pinyin_public/ming4.mp3'),
+        }
+        by_word = {item['word']: item for item in words}
+        for word, (position, key, expected_path) in examples.items():
+            item = by_word[word]
+            tones = (
+                item.get('default_surface_pattern') or item['lexical_pattern']
+            ).split('-')
+            actual_key = (
+                f"{item['pinyin_syllables'][position]}{tones[position]}"
+            )
+            self.assertEqual(actual_key, key)
+            self.assertEqual(quality[key]['replacement'], 'pinyin_public')
+            self.assertEqual(public[key]['audio_path'], expected_path)
 
 
 if __name__ == '__main__':
