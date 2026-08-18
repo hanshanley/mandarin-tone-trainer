@@ -139,6 +139,9 @@ The **Comparison voice** setting switches every tone button between the clear
 reference corpus and human recordings for the current practice session.
 
 Native word prompts always use the real human audio-cmn word recording.
+To avoid grading the wrong reading, metadata-free recordings are excluded when
+the same Hanzi has multiple pronunciations, and prosodically ambiguous tone
+groups require a recording-specific surface label before entering the quiz.
 
 ## Add local human audio
 

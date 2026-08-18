@@ -168,7 +168,7 @@ L1-0166,记,記,jì,V,1,4,4,,False,https://forvo.com/word/记/#zh
 L1-0167,记得,記得,jìde,V,1,4-N,4-N,neutral_tone,False,https://forvo.com/word/记得/#zh
 L1-0168,记住,記住,jìzhù,,1,4-N,4-N,neutral_tone,False,https://forvo.com/word/记住/#zh
 L1-0169,家,家,jiā,N/M,1,1,1,,False,https://forvo.com/word/家/#zh
-L1-0170,家里,家裡,jiā li,,1,1-3,1-3,,False,https://forvo.com/word/家里/#zh
+L1-0170,家里,家裡,jiā li,,1,1-3,1-N,neutral_tone,False,https://forvo.com/word/家里/#zh
 L1-0171,家人,家人,jiārén,N,1,1-2,1-2,,False,https://forvo.com/word/家人/#zh
 L1-0172,间,間,jiān,M,1,1,1,,False,https://forvo.com/word/间/#zh
 L1-0173,见,見,jiàn,V,1,4,4,,False,https://forvo.com/word/见/#zh
@@ -373,7 +373,7 @@ L1-0371,玩儿,玩兒,wánr,V,1,2-N,2-N,neutral_tone,False,https://forvo.com/wor
 L1-0372,晚,晚,wǎn,Adj,1,3,3,,False,https://forvo.com/word/晚/#zh
 L1-0373,晚饭,晚飯,wǎnfàn,N,1,3-4,3-4,,False,https://forvo.com/word/晚饭/#zh
 L1-0374,晚上,晚上,wǎnshang,N,1,3-N,3-N,neutral_tone,False,https://forvo.com/word/晚上/#zh
-L1-0375,网上,網上,wǎng shang,,1,3-4,3-4,,False,https://forvo.com/word/网上/#zh
+L1-0375,网上,網上,wǎng shang,,1,3-4,3-N,neutral_tone,False,https://forvo.com/word/网上/#zh
 L1-0376,网友,網友,wǎngyǒu,N,1,3-3,2-3,third_tone_sandhi,False,https://forvo.com/word/网友/#zh
 L1-0377,忘,忘,wàng,V,1,4,4,,False,https://forvo.com/word/忘/#zh
 L1-0378,忘记,忘記,wàngjì,V,1,4-4,4-4,,False,https://forvo.com/word/忘记/#zh
@@ -542,7 +542,7 @@ L2-0040,不少,不少,bù shǎo,,2,4-3,4-3,,False,https://forvo.com/word/不少/
 L2-0041,不同,不同,bù tóng,,2,4-2,4-2,,False,https://forvo.com/word/不同/#zh
 L2-0042,不行,不行,bùxíng,V/Adj,2,4-2,4-2,,False,https://forvo.com/word/不行/#zh
 L2-0043,不一定,不一定,bùyīdìng,Adv,2,4-1-4,4-2-4,yi_before_t4,False,https://forvo.com/word/不一定/#zh
-L2-0044,不一会儿,不一會兒,bù yīhuìr,,2,4-1-4,4-1-4,,False,https://forvo.com/word/不一会儿/#zh
+L2-0044,不一会儿,不一會兒,bù yīhuìr,,2,4-1-4-N,4-2-4-N,neutral_tone;yi_before_t4,False,https://forvo.com/word/不一会儿/#zh
 L2-0045,部分,部分,bùfen,N,2,4-N,4-N,neutral_tone,False,https://forvo.com/word/部分/#zh
 L2-0046,才,才,cái,Adv,2,2,2,,False,https://forvo.com/word/才/#zh
 L2-0047,菜单,菜單,càidān,N,2,4-1,4-1,,False,https://forvo.com/word/菜单/#zh
@@ -762,7 +762,7 @@ L2-0260,假,假,jiǎ,Adj,2,3,3,,False,https://forvo.com/word/假/#zh
 L2-0261,假期,假期,jiàqī,N,2,4-1,4-1,,False,https://forvo.com/word/假期/#zh
 L2-0262,检查,檢查,jiǎnchá,V/N,2,3-2,3-2,,False,https://forvo.com/word/检查/#zh
 L2-0263,见到,見到,jiàndào,,2,4-4,4-4,,False,https://forvo.com/word/见到/#zh
-L2-0264,见过,見過,jiànguo,,2,4,4,,False,https://forvo.com/word/见过/#zh
+L2-0264,见过,見過,jiànguo,,2,4-N,4-N,neutral_tone,False,https://forvo.com/word/见过/#zh
 L2-0265,件,件,jiàn,M,2,4,4,,False,https://forvo.com/word/件/#zh
 L2-0266,健康,健康,jiànkāng,Adj/N,2,4-1,4-1,,False,https://forvo.com/word/健康/#zh
 L2-0267,讲,講,jiǎng,V,2,3,3,,False,https://forvo.com/word/讲/#zh
@@ -1220,7 +1220,7 @@ L2-0718,照顾,照顧,zhàogù,V,2,4-N,4-N,neutral_tone,False,https://forvo.com/
 L2-0719,照片,照片,zhàopiàn,N,2,4-4,4-4,,False,https://forvo.com/word/照片/#zh
 L2-0720,照相,照相,zhàoxiàng,,2,4-4,4-4,,False,https://forvo.com/word/照相/#zh
 L2-0721,这么,這麼,zhème,Pron,2,4-N,4-N,neutral_tone,False,https://forvo.com/word/这么/#zh
-L2-0722,这时候,這時候,zhè shíhou,,2,4-2,4-2,,False,https://forvo.com/word/这时候/#zh
+L2-0722,这时候,這時候,zhè shíhou,,2,4-2-N,4-2-N,neutral_tone,False,https://forvo.com/word/这时候/#zh
 L2-0723,这样,這樣,zhèyàng,Pron,2,4-4,4-4,,False,https://forvo.com/word/这样/#zh
 L2-0724,真正,真正,zhēnzhèng,Adj,2,1-4,1-4,,False,https://forvo.com/word/真正/#zh
 L2-0725,正常,正常,zhèngcháng,Adj,2,4-2,4-2,,False,https://forvo.com/word/正常/#zh
@@ -2068,7 +2068,7 @@ L3-0794,消失,消失,xiāoshī,V,3,1-1,1-1,,False,https://forvo.com/word/消失
 L3-0795,消息,消息,xiāoxi,N,3,1-N,1-N,neutral_tone,False,https://forvo.com/word/消息/#zh
 L3-0796,效果,效果,xiàoguǒ,N,3,4-3,4-3,,False,https://forvo.com/word/效果/#zh
 L3-0797,写作,寫作,xiězuò,V,3,3-4,3-4,,False,https://forvo.com/word/写作/#zh
-L3-0798,血,血,xiě,N,3,4,4,,False,https://forvo.com/word/血/#zh
+L3-0798,血,血,xuè,N,3,4,4,,False,https://forvo.com/word/血/#zh
 L3-0799,心,心,xīn,N,3,1,1,,False,https://forvo.com/word/心/#zh
 L3-0800,信,信,xìn,V,3,4,4,,False,https://forvo.com/word/信/#zh
 L3-0801,信封,信封,xìnfēng,N,3,4-1,4-1,,False,https://forvo.com/word/信封/#zh
@@ -2864,7 +2864,7 @@ L4-0617,善于,善於,shànyú,V,4,4-2,4-2,,False,https://forvo.com/word/善于/
 L4-0618,伤害,傷害,shānghài,V,4,1-4,1-4,,False,https://forvo.com/word/伤害/#zh
 L4-0619,商务,商務,shāngwù,N,4,1-4,1-4,,False,https://forvo.com/word/商务/#zh
 L4-0620,赏,賞,shǎng,V,4,3,3,,False,https://forvo.com/word/赏/#zh
-L4-0621,上个月,上個月,shàng ge yuè,,4,4-4-4,4-4-4,,False,https://forvo.com/word/上个月/#zh
+L4-0621,上个月,上個月,shàng ge yuè,,4,4-4-4,4-N-4,neutral_tone,False,https://forvo.com/word/上个月/#zh
 L4-0622,上楼,上樓,shàng lóu,,4,4-2,4-2,,False,https://forvo.com/word/上楼/#zh
 L4-0623,上门,上門,shàngmén,,4,4-2,4-2,,False,https://forvo.com/word/上门/#zh
 L4-0624,烧,燒,shāo,V,4,1,1,,False,https://forvo.com/word/烧/#zh
@@ -2899,7 +2899,7 @@ L4-0652,收回,收回,shōuhuí,,4,1-2,1-2,,False,https://forvo.com/word/收回/
 L4-0653,收获,收穫,shōuhuò,V/N,4,1-4,1-4,,False,https://forvo.com/word/收获/#zh
 L4-0654,收益,收益,shōuyì,N,4,1-4,1-4,,False,https://forvo.com/word/收益/#zh
 L4-0655,手工,手工,shǒugōng,N,4,3-1,3-1,,False,https://forvo.com/word/手工/#zh
-L4-0656,手里,手裡,shǒu li,,4,3-3,2-3,third_tone_sandhi,False,https://forvo.com/word/手里/#zh
+L4-0656,手里,手裡,shǒu li,,4,3-3,3-N,neutral_tone,False,https://forvo.com/word/手里/#zh
 L4-0657,手术,手術,shǒushù,N,4,3-4,3-4,,False,https://forvo.com/word/手术/#zh
 L4-0658,手套,手套,shǒutào,N,4,3-4,3-4,,False,https://forvo.com/word/手套/#zh
 L4-0659,守,守,shǒu,V,4,3,3,,False,https://forvo.com/word/守/#zh
@@ -3028,10 +3028,10 @@ L4-0781,系统,系統,xìtǒng,N/Adj,4,4-3,4-3,,False,https://forvo.com/word/系
 L4-0782,细,細,xì,Adj,4,4,4,,False,https://forvo.com/word/细/#zh
 L4-0783,细节,細節,xìjié,N,4,4-2,4-2,,False,https://forvo.com/word/细节/#zh
 L4-0784,细致,細緻,xìzhì,Adj,4,4-4,4-4,,False,https://forvo.com/word/细致/#zh
-L4-0785,下个月,下個月,xià ge yuè,,4,4-4-4,4-4-4,,False,https://forvo.com/word/下个月/#zh
+L4-0785,下个月,下個月,xià ge yuè,,4,4-4-4,4-N-4,neutral_tone,False,https://forvo.com/word/下个月/#zh
 L4-0786,下降,下降,xiàjiàng,V,4,4-4,4-4,,False,https://forvo.com/word/下降/#zh
 L4-0787,下楼,下樓,xià lóu,,4,4-2,4-2,,False,https://forvo.com/word/下楼/#zh
-L4-0788,下载,下載,xiàzài,V,4,4-3,4-3,,False,https://forvo.com/word/下载/#zh
+L4-0788,下载,下載,xiàzài,V,4,4-4,4-4,,False,https://forvo.com/word/下载/#zh
 L4-0789,夏季,夏季,xiàjì,N,4,4-4,4-4,,False,https://forvo.com/word/夏季/#zh
 L4-0790,鲜,鮮,xiān,Adj,4,1,1,,False,https://forvo.com/word/鲜/#zh
 L4-0791,鲜花,鮮花,xiānhuā,N,4,1-1,1-1,,False,https://forvo.com/word/鲜花/#zh
@@ -3096,7 +3096,7 @@ L4-0849,研制,研製,yánzhì,V,4,2-4,2-4,,False,https://forvo.com/word/研制/
 L4-0850,盐,鹽,yán,N,4,2,2,,False,https://forvo.com/word/盐/#zh
 L4-0851,眼镜,眼鏡,yǎnjìng,N,4,3-4,3-4,,False,https://forvo.com/word/眼镜/#zh
 L4-0852,眼泪,眼淚,yǎnlèi,N,4,3-4,3-4,,False,https://forvo.com/word/眼泪/#zh
-L4-0853,眼里,眼裡,yǎnli,N,4,3,3,,False,https://forvo.com/word/眼里/#zh
+L4-0853,眼里,眼裡,yǎnlǐ,N,4,3-3,2-3,third_tone_sandhi,False,https://forvo.com/word/眼里/#zh
 L4-0854,演讲,演講,yǎnjiǎng,V,4,3-3,2-3,third_tone_sandhi,False,https://forvo.com/word/演讲/#zh
 L4-0855,阳台,陽臺,yángtái,N,4,2-2,2-2,,False,https://forvo.com/word/阳台/#zh
 L4-0856,养成,養成,yǎngchéng,V,4,3-2,3-2,,False,https://forvo.com/word/养成/#zh
@@ -3140,7 +3140,7 @@ L4-0893,优良,優良,yōuliáng,Adj,4,1-2,1-2,,False,https://forvo.com/word/优
 L4-0894,优美,優美,yōuměi,Adj,4,1-3,1-3,,False,https://forvo.com/word/优美/#zh
 L4-0895,优秀,優秀,yōuxiù,Adj,4,1-4,1-4,,False,https://forvo.com/word/优秀/#zh
 L4-0896,邮局,郵局,yóujú,N,4,2-2,2-2,,False,https://forvo.com/word/邮局/#zh
-L4-0897,有劲儿,有勁兒,yǒujìnr,,4,3-4,3-4,,False,https://forvo.com/word/有劲儿/#zh
+L4-0897,有劲儿,有勁兒,yǒujìnr,,4,3-4-N,3-4-N,neutral_tone,False,https://forvo.com/word/有劲儿/#zh
 L4-0898,有趣,有趣,yǒuqù,Adj,4,3-4,3-4,,False,https://forvo.com/word/有趣/#zh
 L4-0899,有限,有限,yǒuxiàn,Adj,4,3-4,3-4,,False,https://forvo.com/word/有限/#zh
 L4-0900,幼儿园,幼兒園,yòu'éryuán,N,4,4-2-2,4-2-2,,False,https://forvo.com/word/幼儿园/#zh
@@ -3246,7 +3246,7 @@ L4-0999,作为,作為,zuòwéi,Prep/V,4,4-2,4-2,,False,https://forvo.com/word/�
 L4-1000,做梦,做夢,zuòmèng,,4,4-4,4-4,,False,https://forvo.com/word/做梦/#zh
 L5-0001,安慰,安慰,ānwèi,V/Adj,5,1-4,1-4,,False,https://forvo.com/word/安慰/#zh
 L5-0002,岸,岸,àn,N,5,4,4,,False,https://forvo.com/word/岸/#zh
-L5-0003,岸上,岸上,àn shang,,5,4-4,4-4,,False,https://forvo.com/word/岸上/#zh
+L5-0003,岸上,岸上,àn shang,,5,4-4,4-N,neutral_tone,False,https://forvo.com/word/岸上/#zh
 L5-0004,按摩,按摩,ànmó,V,5,4-2,4-2,,False,https://forvo.com/word/按摩/#zh
 L5-0005,拔,拔,bá,V,5,2,2,,False,https://forvo.com/word/拔/#zh
 L5-0006,白酒,白酒,báijiǔ,N,5,2-3,2-3,,False,https://forvo.com/word/白酒/#zh
@@ -5393,7 +5393,7 @@ L6-1075,只管,只管,zhǐguǎn,Adv,6,3-3,2-3,third_tone_sandhi,False,https://fo
 L6-1076,指定,指定,zhǐdìng,V,6,3-4,3-4,,False,https://forvo.com/word/指定/#zh
 L6-1077,指数,指數,zhǐshù,N,6,3-4,3-4,,False,https://forvo.com/word/指数/#zh
 L6-1078,指头,指頭,zhǐtou,N,6,3-N,3-N,neutral_tone,False,https://forvo.com/word/指头/#zh
-L6-1079,指着,指著,zhǐzhe,,6,3,3,,False,https://forvo.com/word/指着/#zh
+L6-1079,指着,指著,zhǐzhe,,6,3-N,3-N,neutral_tone,False,https://forvo.com/word/指着/#zh
 L6-1080,至于,至於,zhìyú,V/Prep,6,4-2,4-2,,False,https://forvo.com/word/至于/#zh
 L6-1081,治病,治病,zhì bìng,,6,4-4,4-4,,False,https://forvo.com/word/治病/#zh
 L6-1082,智慧,智慧,zhìhuì,N,6,4-4,4-4,,False,https://forvo.com/word/智慧/#zh
@@ -5615,7 +5615,7 @@ L7-0157,逼迫,逼迫,bīpò,V,7-9,1-4,1-4,,False,https://forvo.com/word/逼迫/
 L7-0158,逼真,逼真,bīzhēn,Adj,7-9,1-1,1-1,,False,https://forvo.com/word/逼真/#zh
 L7-0159,鼻涕,鼻涕,bítì,N,7-9,2-4,2-4,,False,https://forvo.com/word/鼻涕/#zh
 L7-0160,比比皆是,比比皆是,bǐbǐ-jiēshì,,7-9,3-3-1-4,2-3-1-4,third_tone_sandhi,False,https://forvo.com/word/比比皆是/#zh
-L7-0161,比不上,比不上,bǐ bu shàng,,7-9,3-4-4,3-2-4,bu_before_t4,False,https://forvo.com/word/比不上/#zh
+L7-0161,比不上,比不上,bǐ bu shàng,,7-9,3-4-4,3-N-4,neutral_tone,False,https://forvo.com/word/比不上/#zh
 L7-0162,比起,比起,bǐqǐ,,7-9,3-3,2-3,third_tone_sandhi,False,https://forvo.com/word/比起/#zh
 L7-0163,比试,比試,bǐshi,V,7-9,3-4,3-4,,False,https://forvo.com/word/比试/#zh
 L7-0164,比喻,比喻,bǐyù,N/V,7-9,3-4,3-4,,False,https://forvo.com/word/比喻/#zh
@@ -5897,7 +5897,7 @@ L7-0439,衬托,襯托,chèntuō,V,7-9,4-1,4-1,,False,https://forvo.com/word/衬�
 L7-0440,趁,趁,chèn,Prep,7-9,4,4,,False,https://forvo.com/word/趁/#zh
 L7-0441,趁机,趁機,chènjī,Adv,7-9,4-1,4-1,,False,https://forvo.com/word/趁机/#zh
 L7-0442,趁早,趁早,chènzǎo,Adv,7-9,4-3,4-3,,False,https://forvo.com/word/趁早/#zh
-L7-0443,趁着,趁著,chènzhe,,7-9,4,4,,False,https://forvo.com/word/趁着/#zh
+L7-0443,趁着,趁著,chènzhe,,7-9,4-N,4-N,neutral_tone,False,https://forvo.com/word/趁着/#zh
 L7-0444,称呼,稱呼,chēnghu,V/N,7-9,1-N,1-N,neutral_tone,False,https://forvo.com/word/称呼/#zh
 L7-0445,称作,稱作,chēngzuò,,7-9,1-4,1-4,,False,https://forvo.com/word/称作/#zh
 L7-0446,成才,成才,chéngcái,V,7-9,2-2,2-2,,False,https://forvo.com/word/成才/#zh
@@ -6006,7 +6006,7 @@ L7-0548,出手,出手,chūshǒu,,7-9,1-3,1-3,,False,https://forvo.com/word/出�
 L7-0549,出头,出頭,chūtóu,,7-9,1-2,1-2,,False,https://forvo.com/word/出头/#zh
 L7-0550,出土,出土,chūtǔ,,7-9,1-3,1-3,,False,https://forvo.com/word/出土/#zh
 L7-0551,出息,出息,chūxi,N,7-9,1-N,1-N,neutral_tone,False,https://forvo.com/word/出息/#zh
-L7-0552,出血,出血,chūxiě,,7-9,1-4,1-4,,False,https://forvo.com/word/出血/#zh
+L7-0552,出血,出血,chūxuè,,7-9,1-4,1-4,,False,https://forvo.com/word/出血/#zh
 L7-0553,出演,出演,chūyǎn,V,7-9,1-3,1-3,,False,https://forvo.com/word/出演/#zh
 L7-0554,出洋相,出洋相,chū yángxiàng,,7-9,1-2-4,1-2-4,,False,https://forvo.com/word/出洋相/#zh
 L7-0555,出游,出遊,chūyóu,V,7-9,1-2,1-2,,False,https://forvo.com/word/出游/#zh
@@ -7195,9 +7195,9 @@ L7-1737,话筒,話筒,huàtǒng,N,7-9,4-3,4-3,,False,https://forvo.com/word/话�
 L7-1738,话语,話語,huàyǔ,N,7-9,4-3,4-3,,False,https://forvo.com/word/话语/#zh
 L7-1739,怀抱,懷抱,huáibào,V/N,7-9,2-4,2-4,,False,https://forvo.com/word/怀抱/#zh
 L7-1740,怀旧,懷舊,huáijiù,V,7-9,2-4,2-4,,False,https://forvo.com/word/怀旧/#zh
-L7-1741,怀里,懷裡,huái li,,7-9,2-3,2-3,,False,https://forvo.com/word/怀里/#zh
+L7-1741,怀里,懷裡,huái li,,7-9,2-3,2-N,neutral_tone,False,https://forvo.com/word/怀里/#zh
 L7-1742,怀孕,懷孕,huáiyùn,,7-9,2-4,2-4,,False,https://forvo.com/word/怀孕/#zh
-L7-1743,怀着,懷著,huáizhe,,7-9,2,2,,False,https://forvo.com/word/怀着/#zh
+L7-1743,怀着,懷著,huáizhe,,7-9,2-N,2-N,neutral_tone,False,https://forvo.com/word/怀着/#zh
 L7-1744,槐树,槐樹,huáishù,N,7-9,2-4,2-4,,False,https://forvo.com/word/槐树/#zh
 L7-1745,坏事,壞事,huàishì,N,7-9,4-4,4-4,,False,https://forvo.com/word/坏事/#zh
 L7-1746,欢呼,歡呼,huānhū,V,7-9,1-1,1-1,,False,https://forvo.com/word/欢呼/#zh
@@ -7832,7 +7832,7 @@ L7-2374,科幻,科幻,kēhuàn,N,7-9,1-4,1-4,,False,https://forvo.com/word/科�
 L7-2375,科目,科目,kēmù,N,7-9,1-4,1-4,,False,https://forvo.com/word/科目/#zh
 L7-2376,科普,科普,kēpǔ,N,7-9,1-3,1-3,,False,https://forvo.com/word/科普/#zh
 L7-2377,磕,磕,kē,V,7-9,1,1,,False,https://forvo.com/word/磕/#zh
-L7-2378,壳,殼,ké,N,7-9,4,4,,False,https://forvo.com/word/壳/#zh
+L7-2378,壳,殼,ké,N,7-9,2,2,,False,https://forvo.com/word/壳/#zh
 L7-2379,咳嗽,咳嗽,késou,V,7-9,2-N,2-N,neutral_tone,False,https://forvo.com/word/咳嗽/#zh
 L7-2380,可悲,可悲,kěbēi,Adj,7-9,3-1,3-1,,False,https://forvo.com/word/可悲/#zh
 L7-2381,可不是,可不是,kěbùshi,Adv,7-9,3-N-4,3-N-4,neutral_tone,False,https://forvo.com/word/可不是/#zh
@@ -8015,7 +8015,7 @@ L7-2557,冷漠,冷漠,lěngmò,Adj,7-9,3-4,3-4,,False,https://forvo.com/word/冷
 L7-2558,冷笑,冷笑,lěngxiào,V,7-9,3-4,3-4,,False,https://forvo.com/word/冷笑/#zh
 L7-2559,冷战,冷戰,lěngzhàn,N,7-9,3-4,3-4,,False,https://forvo.com/word/冷战/#zh
 L7-2560,愣,愣,lèng,V/Adj,7-9,4,4,,False,https://forvo.com/word/愣/#zh
-L7-2561,离谱儿,離譜兒,lípǔr,,7-9,2-3,2-3,,False,https://forvo.com/word/离谱儿/#zh
+L7-2561,离谱儿,離譜兒,lípǔr,,7-9,2-3-N,2-3-N,neutral_tone,False,https://forvo.com/word/离谱儿/#zh
 L7-2562,离奇,離奇,líqí,Adj,7-9,2-2,2-2,,False,https://forvo.com/word/离奇/#zh
 L7-2563,离职,離職,lízhí,,7-9,2-2,2-2,,False,https://forvo.com/word/离职/#zh
 L7-2564,黎明,黎明,límíng,N,7-9,2-2,2-2,,False,https://forvo.com/word/黎明/#zh
@@ -9727,7 +9727,7 @@ L7-4269,往返,往返,wǎngfǎn,V,7-9,3-3,2-3,third_tone_sandhi,False,https://fo
 L7-4270,往日,往日,wǎngrì,N,7-9,3-4,3-4,,False,https://forvo.com/word/往日/#zh
 L7-4271,往事,往事,wǎngshì,N,7-9,3-4,3-4,,False,https://forvo.com/word/往事/#zh
 L7-4272,妄想,妄想,wàngxiǎng,V/N,7-9,4-3,4-3,,False,https://forvo.com/word/妄想/#zh
-L7-4273,忘不了,忘不了,wàng bu liǎo,,7-9,4-4-3,4-4-3,,False,https://forvo.com/word/忘不了/#zh
+L7-4273,忘不了,忘不了,wàng bu liǎo,,7-9,4-4-3,4-N-3,neutral_tone,False,https://forvo.com/word/忘不了/#zh
 L7-4274,忘掉,忘掉,wàngdiào,,7-9,4-4,4-4,,False,https://forvo.com/word/忘掉/#zh
 L7-4275,旺,旺,wàng,Adj,7-9,4,4,,False,https://forvo.com/word/旺/#zh
 L7-4276,旺季,旺季,wàngjì,N,7-9,4-4,4-4,,False,https://forvo.com/word/旺季/#zh
@@ -9962,7 +9962,7 @@ L7-4504,陷,陷,xiàn,V,7-9,4,4,,False,https://forvo.com/word/陷/#zh
 L7-4505,陷阱,陷阱,xiànjǐng,N,7-9,4-3,4-3,,False,https://forvo.com/word/陷阱/#zh
 L7-4506,馅儿,餡兒,xiànr,N,7-9,4-N,4-N,neutral_tone,False,https://forvo.com/word/馅儿/#zh
 L7-4507,羡慕,羨慕,xiànmù,V,7-9,4-4,4-4,,False,https://forvo.com/word/羡慕/#zh
-L7-4508,献血,獻血,xiànxiě,V,7-9,4-4,4-4,,False,https://forvo.com/word/献血/#zh
+L7-4508,献血,獻血,xiànxuè,V,7-9,4-4,4-4,,False,https://forvo.com/word/献血/#zh
 L7-4509,腺,腺,xiàn,N,7-9,4,4,,False,https://forvo.com/word/腺/#zh
 L7-4510,乡亲,鄉親,xiāngqīn,N,7-9,1-1,1-1,,False,https://forvo.com/word/乡亲/#zh
 L7-4511,乡下,鄉下,xiāngxia,N,7-9,1-N,1-N,neutral_tone,False,https://forvo.com/word/乡下/#zh
@@ -10339,7 +10339,7 @@ L7-4881,一度,一度,yīdù,Adv,7-9,1-4,2-4,yi_before_t4,False,https://forvo.co
 L7-4882,一概,一概,yīgài,Adv,7-9,1-4,2-4,yi_before_t4,False,https://forvo.com/word/一概/#zh
 L7-4883,一概而论,一概而論,yīgài'érlùn,,7-9,1-4-2-4,2-4-2-4,yi_before_t4,False,https://forvo.com/word/一概而论/#zh
 L7-4884,一个劲儿,一個勁兒,yīgejìnr,Adv,7-9,1-4-4-N,2-4-4-N,neutral_tone;yi_before_t4,False,https://forvo.com/word/一个劲儿/#zh
-L7-4885,一晃,一晃,yīhuàng,V,7-9,1-3,4-3,yi_before_non_t4,False,https://forvo.com/word/一晃/#zh
+L7-4885,一晃,一晃,yīhuǎng,V,7-9,1-3,4-3,yi_before_non_t4,False,https://forvo.com/word/一晃/#zh
 L7-4886,一技之长,一技之長,yījìzhīcháng,,7-9,1-4-1-2,2-4-1-2,yi_before_t4,False,https://forvo.com/word/一技之长/#zh
 L7-4887,一面,一面,yīmiàn,N/Adv,7-9,1-4,2-4,yi_before_t4,False,https://forvo.com/word/一面/#zh
 L7-4888,一目了然,一目了然,yīmù-liǎorán,,7-9,1-4-3-2,2-4-3-2,yi_before_t4,False,https://forvo.com/word/一目了然/#zh

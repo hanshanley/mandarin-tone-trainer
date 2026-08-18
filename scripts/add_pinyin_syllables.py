@@ -7,6 +7,12 @@ from functools import lru_cache
 from pathlib import Path
 
 TONE_MARKS = str.maketrans('āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ', 'aaaaeeeeiiiioooouuuuvvvv')
+TONE_VALUES = {
+    **dict.fromkeys('āēīōūǖ',1),
+    **dict.fromkeys('áéíóúǘ',2),
+    **dict.fromkeys('ǎěǐǒǔǚ',3),
+    **dict.fromkeys('àèìòùǜ',4),
+}
 
 
 def plain(s):
@@ -39,6 +45,30 @@ def normalized_pinyin(value):
         elif char in " -'’·":
             boundaries.add(sum(len(part) for part in letters))
     return ''.join(letters),boundaries
+
+
+def syllable_tones(item):
+    syllables=item.get('pinyin_syllables') or []
+    value=item.get('pinyin','').split('/',1)[0]
+    value=re.sub(r'\([^)]*\)','',value).lower().replace('ü','v')
+    characters=[]
+    for char in value:
+        normalized=plain(char)
+        if normalized:
+            characters.append((normalized,TONE_VALUES.get(char,0)))
+    if ''.join(char for char,_ in characters)!=''.join(syllables):
+        return None
+    tones=[]; position=0
+    for syllable in syllables:
+        marks={
+            tone for _,tone in characters[position:position+len(syllable)]
+            if tone
+        }
+        if len(marks)>1:
+            return None
+        tones.append(next(iter(marks),0))
+        position+=len(syllable)
+    return tones
 
 
 def split(item, vocab):

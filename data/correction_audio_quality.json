@@ -35,6 +35,76 @@
       "reason": "Reported as distorted or incorrect.",
       "replacement": "pinyin_public"
     },
+    "gai1": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gai2": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gai3": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gai4": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gei1": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gei2": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gei3": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "gei4": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "cang2": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "zeng2": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "pao1": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "jie4": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "zhen4": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
+    "zan1": {
+      "status": "bad",
+      "reason": "Reported as incorrect or unclear.",
+      "replacement": "pinyin_public"
+    },
     "mou3": {
       "status": "bad",
       "reason": "Sounds like mao3 instead of mou3.",

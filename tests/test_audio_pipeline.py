@@ -1,4 +1,5 @@
 import importlib.util
+import csv
 import json
 import math
 import struct
@@ -52,6 +53,63 @@ class PipelineValidationTests(unittest.TestCase):
     def test_unaligned_hanzi_and_tones_require_review(self):
         _, _, aligned = build_hsk.sandhi_surface('妈妈', [1])
         self.assertFalse(aligned)
+
+    def test_known_source_tone_corrections_survive_regeneration(self):
+        self.assertEqual(build_hsk.TONE_OVERRIDES['L2-0044'], [4, 1, 4, 0])
+        self.assertEqual(build_hsk.TONE_OVERRIDES['L4-0788'], [4, 4])
+        self.assertEqual(build_hsk.TONE_OVERRIDES['L4-0853'], [3, 3])
+        self.assertEqual(build_hsk.TONE_OVERRIDES['L7-2378'], [2])
+        self.assertEqual(build_hsk.PINYIN_OVERRIDES['L3-0798'], 'xuè')
+        self.assertEqual(build_hsk.PINYIN_OVERRIDES['L7-4885'], 'yīhuǎng')
+        self.assertEqual(build_hsk.SURFACE_OVERRIDES['L4-0656'], [3, 0])
+        self.assertEqual(build_hsk.SURFACE_OVERRIDES['L7-0161'], [3, 0, 4])
+        surface, tags, aligned = build_hsk.sandhi_surface(
+            '不一会儿',
+            build_hsk.TONE_OVERRIDES['L2-0044'],
+        )
+        self.assertEqual(surface, [4, 2, 4, 0])
+        self.assertIn('yi_before_t4', tags)
+        self.assertTrue(aligned)
+
+    def test_hsk_pinyin_and_tone_arrays_are_internally_consistent(self):
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
+        for word in words:
+            syllables = word.get('pinyin_syllables') or []
+            lexical = word.get('lexical_tones') or []
+            self.assertEqual(len(syllables), len(lexical), word['id'])
+            displayed = add_pinyin.syllable_tones(word)
+            self.assertIsNotNone(displayed, word['id'])
+            if all(displayed) and all(lexical):
+                self.assertEqual(displayed, lexical, word['id'])
+
+    def test_tone_csv_matches_runtime_json(self):
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
+        with (ROOT / 'data' / 'hsk_words_tones.csv').open(
+            encoding='utf-8-sig',
+            newline='',
+        ) as stream:
+            rows = list(csv.DictReader(stream))
+        self.assertEqual(len(rows), len(words))
+        for row, word in zip(rows, words):
+            self.assertEqual(row['id'], word['id'])
+            self.assertEqual(row['pinyin'], word['pinyin'])
+            self.assertEqual(row['lexical_pattern'], word['lexical_pattern'])
+            self.assertEqual(
+                row['default_surface_pattern'],
+                word['default_surface_pattern'],
+            )
+            self.assertEqual(
+                row['sandhi_tags'],
+                ';'.join(word['sandhi_tags']),
+            )
+            self.assertEqual(
+                row['surface_label_needs_clip_review'],
+                str(word['surface_label_needs_clip_review']),
+            )
 
     def test_mp3_header_validation(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -160,7 +218,7 @@ class PipelineValidationTests(unittest.TestCase):
             'function getCorrectionContext', 1
         )[0]
         self.assertIn('CorrectionAudio.correctionSelection', correction_url)
-        self.assertIn('CorrectionAudio.normalizationGain', source)
+        self.assertIn('CorrectionAudio.normalizationParameters', source)
         self.assertIn('createDynamicsCompressor()', source)
         self.assertIn('limiter.threshold.value=-3', source)
         self.assertIn("clarity.type='highshelf'", source)
@@ -198,6 +256,56 @@ class PipelineValidationTests(unittest.TestCase):
         self.assertIn('rawPinyinBuffers.clear();', source)
         self.assertIn('correctionBuffers.clear();', source)
 
+    def test_homograph_recordings_require_a_unique_reading(self):
+        source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
+        self.assertIn('function readingKey(w)', source)
+        self.assertIn('readingsByWord.get(w.word)', source)
+        self.assertNotIn('patternsByWord.get(w.word)', source)
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
+        by_word = {}
+        for word in words:
+            by_word.setdefault(word['word'], set()).add(
+                (
+                    word.get('pinyin'),
+                    tuple(word.get('pinyin_syllables') or []),
+                    word.get('lexical_pattern'),
+                )
+            )
+        for word in ['还', '行', '卡', '系', '落', '露', '实在', '编辑']:
+            self.assertGreater(len(by_word[word]), 1, word)
+
+    def test_ambiguous_surface_groupings_require_clip_labels(self):
+        source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
+        self.assertIn(
+            'w.surface_label_needs_clip_review&&!r.surface_pattern',
+            source,
+        )
+        words = json.loads(
+            (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
+        )
+        ambiguous = {
+            word['word']
+            for word in words
+            if word.get('surface_label_needs_clip_review')
+        }
+        self.assertEqual(
+            ambiguous,
+            {'水产品', '此起彼伏', '导火索', '岂有此理'},
+        )
+
+    def test_tone_labels_and_neutral_feedback_are_explicit(self):
+        source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
+        self.assertIn("1:'1st tone'", source)
+        self.assertIn("2:'2nd tone'", source)
+        self.assertIn("3:'3rd tone'", source)
+        self.assertIn("4:'4th tone'", source)
+        self.assertIn(
+            'Neutral tone is context-dependent and has no standalone comparison clip.',
+            source,
+        )
+
     def test_public_pinyin_archive_only_indexes_toned_mp3_files(self):
         with tempfile.TemporaryDirectory() as directory:
             archive_path = Path(directory) / 'corpus.zip'
@@ -221,6 +329,20 @@ class PipelineValidationTests(unittest.TestCase):
             'ma2',
             'xian3',
             'ming4',
+            'gai1',
+            'gai2',
+            'gai3',
+            'gai4',
+            'gei1',
+            'gei2',
+            'gei3',
+            'gei4',
+            'cang2',
+            'zeng2',
+            'pao1',
+            'jie4',
+            'zhen4',
+            'zan1',
         }
         for key in public_fallbacks:
             self.assertEqual(
@@ -244,6 +366,7 @@ class PipelineValidationTests(unittest.TestCase):
             quality['pinyin_public']['xiang1']['replacement'],
             'audio_cmn',
         )
+
     def test_shared_correction_policy_handles_corpus_quirks(self):
         script = """
 const policy=require('./app/correction_audio.js');
@@ -272,6 +395,12 @@ const results={
     {audio_cmn:{test3:{status:'bad',replacement:null}}},
     {test3:{audio_path:'audio/pinyin_public/test3.mp3',source:'public'}}
   ),
+  humanBlocked:policy.correctionSelection(
+    'test3',
+    {audio_cmn:{test3:{status:'bad',replacement:null}}},
+    {test3:{audio_path:'audio/pinyin_public/test3.mp3',source:'public'}},
+    'audio_cmn'
+  ),
   isolated:policy.correctionSelection(
     'mou3',
     {audio_cmn:{mou3:{
@@ -288,12 +417,15 @@ const results={
     {ao4:{audio_path:'audio/pinyin_public/ao4.mp3',source:'public'}}
   ),
   normalization:{
-    quiet:policy.normalizationGain([Float32Array.from([.02,-.02,.02])]),
-    loud:policy.normalizationGain([Float32Array.from([.4,-.4,.4])]),
+    quiet:policy.normalizationGain([Float32Array.from([.02,-.02,.02,-.02])]),
+    loud:policy.normalizationGain([Float32Array.from([.4,-.4])]),
     peakLimited:policy.normalizationGain([
-      Float32Array.from([.8,...Array(99).fill(.011)])
+      Float32Array.from([
+        .8,-.8,...Array(49).fill(.011),...Array(49).fill(-.011)
+      ])
     ]),
     silent:policy.normalizationGain([Float32Array.from([0,0,0])]),
+    dc:policy.normalizationParameters([Float32Array.from([.08,.1,.12])]),
   },
 };
 process.stdout.write(JSON.stringify(results));
@@ -319,7 +451,11 @@ process.stdout.write(JSON.stringify(results));
             results['reported']['audio_path'],
             'audio/pinyin_public/ma2.mp3',
         )
-        self.assertIsNone(results['blocked'])
+        self.assertEqual(
+            results['blocked']['audio_path'],
+            'audio/pinyin_public/test3.mp3',
+        )
+        self.assertIsNone(results['humanBlocked'])
         self.assertEqual(
             results['isolated']['audio_path'],
             'audio/audio_cmn/某/cmn-某.mp3',
@@ -337,6 +473,11 @@ process.stdout.write(JSON.stringify(results));
             places=6,
         )
         self.assertEqual(results['normalization']['silent'], 1)
+        self.assertAlmostEqual(
+            results['normalization']['dc']['offsets'][0],
+            0.1,
+            places=6,
+        )
 
     def test_every_required_correction_uses_primary_or_explicit_fallback(self):
         script = """
@@ -473,6 +614,10 @@ process.stdout.write(JSON.stringify({selected,human}));
         for key in reported:
             self.assertEqual(
                 selected[key]['audio_path'],
+                public[key]['audio_path'],
+            )
+            self.assertEqual(
+                human[key]['audio_path'],
                 public[key]['audio_path'],
             )
         for word in words:

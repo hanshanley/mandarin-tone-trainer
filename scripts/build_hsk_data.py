@@ -11,6 +11,37 @@ TONE_MARKS = {
     'Ū':1,'Ú':2,'Ǔ':3,'Ù':4,'Ǖ':1,'Ǘ':2,'Ǚ':3,'Ǜ':4,
 }
 CJK = re.compile(r'[\u3400-\u9fff]')
+TONE_OVERRIDES = {
+    'L2-0044':[4,1,4,0],
+    'L2-0264':[4,0],
+    'L2-0722':[4,2,0],
+    'L4-0788':[4,4],
+    'L4-0853':[3,3],
+    'L4-0897':[3,4,0],
+    'L6-1079':[3,0],
+    'L7-0443':[4,0],
+    'L7-1743':[2,0],
+    'L7-2378':[2],
+    'L7-2561':[2,3,0],
+}
+PINYIN_OVERRIDES = {
+    'L3-0798':'xuè',
+    'L4-0853':'yǎnlǐ',
+    'L7-0552':'chūxuè',
+    'L7-4508':'xiànxuè',
+    'L7-4885':'yīhuǎng',
+}
+SURFACE_OVERRIDES = {
+    'L1-0170':[1,0],
+    'L1-0375':[3,0],
+    'L4-0621':[4,0,4],
+    'L4-0656':[3,0],
+    'L4-0785':[4,0,4],
+    'L5-0003':[4,0],
+    'L7-0161':[3,0,4],
+    'L7-1741':[2,0],
+    'L7-4273':[4,0,3],
+}
 
 
 def cedict_tones(cedict):
@@ -127,13 +158,17 @@ def main():
     rows=[]
     with open(args.csv_path, encoding='utf-8-sig', newline='') as f:
         for r in csv.DictReader(f):
+            row_id=r.get('ID','')
             word=(r.get('Simplified') or '').split('|')[0].strip()
             trad=(r.get('Traditional') or '').split('|')[0].strip()
-            pinyin=(r.get('Pinyin') or '').split('|')[0].strip()
-            tones=cedict_tones(r.get('CEDICT') or '') or accent_tones(pinyin)
+            pinyin=PINYIN_OVERRIDES.get(row_id,(r.get('Pinyin') or '').split('|')[0].strip())
+            tones=TONE_OVERRIDES.get(row_id,cedict_tones(r.get('CEDICT') or '') or accent_tones(pinyin))
             surf,tags,aligned=sandhi_surface(word,tones)
+            if row_id in SURFACE_OVERRIDES:
+                surf=SURFACE_OVERRIDES[row_id]
+                tags=['neutral_tone']
             rows.append({
-                'id':r.get('ID',''), 'word':word, 'traditional':trad,
+                'id':row_id, 'word':word, 'traditional':trad,
                 'pinyin':pinyin, 'pos':r.get('POS',''), 'level':r.get('Level',''),
                 'lexical_tones':tones, 'lexical_pattern':pattern(tones),
                 'default_surface_tones':surf, 'default_surface_pattern':pattern(surf),

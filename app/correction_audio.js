@@ -8,28 +8,37 @@
   function correctionKey(pinyin,tone){
     return pinyin.toLowerCase().replace(/ü/g,'v')+tone;
   }
-  function normalizationGain(channels){
+  function normalizationParameters(channels){
+    const offsets=channels.map(channel=>{
+      let total=0;
+      for(const sample of channel)total+=sample;
+      return channel.length?total/channel.length:0;
+    });
     let activeEnergy=0,activeCount=0,peak=0;
-    for(const channel of channels){
+    channels.forEach((channel,channelIndex)=>{
       for(const sample of channel){
-        const magnitude=Math.abs(sample);
+        const centered=sample-offsets[channelIndex];
+        const magnitude=Math.abs(centered);
         peak=Math.max(peak,magnitude);
         if(magnitude>=NORMALIZATION_ACTIVITY_THRESHOLD){
-          activeEnergy+=sample*sample;
+          activeEnergy+=centered*centered;
           activeCount++;
         }
       }
-    }
-    if(!activeCount||!peak)return 1;
+    });
+    if(!activeCount||!peak)return {gain:1,offsets};
     const rms=Math.sqrt(activeEnergy/activeCount);
-    return Math.min(NORMALIZATION_TARGET_RMS/rms,NORMALIZATION_MAX_PEAK/peak,NORMALIZATION_MAX_BOOST);
+    return {
+      gain:Math.min(NORMALIZATION_TARGET_RMS/rms,NORMALIZATION_MAX_PEAK/peak,NORMALIZATION_MAX_BOOST),
+      offsets,
+    };
   }
+  function normalizationGain(channels){return normalizationParameters(channels).gain}
   function correctionSelection(key,quality,recordings,preferredSource='pinyin_public'){
     const audioCmnReview=quality.audio_cmn?.[key]||quality[key];
     const publicReview=quality.pinyin_public?.[key];
     const audioCmnUnavailable=unavailableAudioCmnKeys.has(key);
     const audioCmnBad=audioCmnReview?.status==='bad';
-    if(audioCmnReview?.status==='bad'&&audioCmnReview.replacement===null)return null;
     const publicRecording=recordings[key];
     const publicAvailable=publicRecording?.audio_path&&publicReview?.status!=='bad';
     const publicSelection=()=>({
@@ -66,5 +75,5 @@
     }
     return audioCmnUnavailable?null:audioCmnSelection();
   }
-  return {correctionKey,correctionSelection,normalizationGain};
+  return {correctionKey,correctionSelection,normalizationGain,normalizationParameters};
 });

@@ -1,4 +1,4 @@
-let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), patternsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
+let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
 const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
@@ -40,12 +40,13 @@ function sourceName(source){
   return source;
 }
 function expectedPattern(w){return w.default_surface_pattern||w.lexical_pattern}
+function readingKey(w){return `${w.pinyin||''}|${(w.pinyin_syllables||[]).join('+')}|${w.lexical_pattern||''}`}
 function rebuildIndex(){
   byWord=new Map();
-  patternsByWord=new Map();
+  readingsByWord=new Map();
   for(const w of words){
-    if(!patternsByWord.has(w.word))patternsByWord.set(w.word,new Set());
-    patternsByWord.get(w.word).add(expectedPattern(w));
+    if(!readingsByWord.has(w.word))readingsByWord.set(w.word,new Set());
+    readingsByWord.get(w.word).add(readingKey(w));
   }
   const selected=recordings.filter(r=>r.source==='audio_cmn' && (r.language_code||'zh')==='zh');
   for(const r of selected){if(!byWord.has(r.word))byWord.set(r.word,[]);byWord.get(r.word).push(r)}
@@ -72,8 +73,9 @@ async function load(){
 }
 function recordingsFor(w){
   const expected=expectedPattern(w);
-  const ambiguous=(patternsByWord.get(w.word)?.size||0)>1;
+  const ambiguous=(readingsByWord.get(w.word)?.size||0)>1;
   return (byWord.get(w.word)||[]).filter(r=>{
+    if(w.surface_label_needs_clip_review&&!r.surface_pattern)return false;
     if(r.hsk_id)return r.hsk_id===w.id;
     return r.surface_pattern?r.surface_pattern===expected:!ambiguous;
   });
@@ -109,11 +111,12 @@ function choose(a){return a[Math.floor(Math.random()*a.length)]}
 function patternFor(w,r){return (r&&r.surface_pattern)||expectedPattern(w)}
 function renderToneChoices(){
   const syllables=current._correct.split('-'), tones=['1','2','3','4','N'];
+  const toneLabels={1:'1st tone',2:'2nd tone',3:'3rd tone',4:'4th tone',N:'Neutral'};
   selectedTones=Array(syllables.length).fill(null); $('answers').innerHTML=''; $('answers').className='answers tone-columns';
   syllables.forEach((_,index)=>{
     const column=document.createElement('div'); column.className='tone-column';
     const heading=document.createElement('div'); heading.className='tone-heading'; heading.textContent=`Syllable ${index+1}`; column.appendChild(heading);
-    tones.forEach(tone=>{const button=document.createElement('button'); button.className='tone-choice'; button.dataset.tone=tone; button.innerHTML=`${tone==='N'?'Neutral':`${tone}th tone`} <small>${tone}</small>`; button.onclick=()=>{
+    tones.forEach(tone=>{const button=document.createElement('button'); button.className='tone-choice'; button.dataset.tone=tone; button.innerHTML=`${toneLabels[tone]} <small>${tone}</small>`; button.onclick=()=>{
       playCorrection(index,tone);
       if(current._graded)return;
       selectedTones[index]=tone; [...column.querySelectorAll('button')].forEach(x=>x.classList.remove('selected')); button.classList.add('selected');
@@ -302,12 +305,13 @@ async function pinyinSequenceBuffer(keys){
         {length:buffer.numberOfChannels},
         (_,channel)=>buffer.getChannelData(channel),
       );
-      const gain=CorrectionAudio.normalizationGain(sourceChannels);
+      const normalization=CorrectionAudio.normalizationParameters(sourceChannels);
       for(let channel=0;channel<channels;channel++){
         const sourceChannel=Math.min(channel,buffer.numberOfChannels-1);
         const input=buffer.getChannelData(sourceChannel);
         const output=combined.getChannelData(channel);
-        for(let index=0;index<input.length;index++)output[offset+index]=input[index]*gain;
+        const dcOffset=normalization.offsets[sourceChannel];
+        for(let index=0;index<input.length;index++)output[offset+index]=(input[index]-dcOffset)*normalization.gain;
       }
       offset+=buffer.length+gap;
     }
@@ -385,9 +389,16 @@ async function playPinyinSequence(keys){
 }
 async function playCorrection(index,tone){
   const pinyin=current.pinyin_syllables?.[index];
-  if(!pinyin||tone==='N'){
+  if(tone==='N'){
     stopNative();
     stopCorrection();
+    setAudioStatus('Neutral tone is context-dependent and has no standalone comparison clip.');
+    return;
+  }
+  if(!pinyin){
+    stopNative();
+    stopCorrection();
+    setAudioStatus('No comparison recording is available for this syllable.',true);
     return;
   }
   const key=correctionKey(pinyin,tone);
