@@ -344,10 +344,17 @@ class PipelineValidationTests(unittest.TestCase):
         for source in snapshots.values():
             self.assertRegex(source['revision'], r'^[0-9a-f]{40}$')
             self.assertTrue(source['samples'])
+        toolchain = json.loads(
+            (ROOT / 'config' / 'toolchain.json').read_text(encoding='utf-8')
+        )
+        self.assertRegex(toolchain['node']['version'], r'^22\.\d+\.\d+$')
+        self.assertEqual(len(toolchain['node']['sha256']), 4)
         lockfile = (ROOT / 'package-lock.json').read_text(encoding='utf-8')
         self.assertNotIn('pkgs.visualstudio.com', lockfile)
         self.assertNotIn('ms-feed-', lockfile)
         self.assertEqual((ROOT / '.nvmrc').read_text().strip(), '22')
+        requirements = (ROOT / 'requirements.txt').read_text(encoding='utf-8')
+        self.assertIn('No third-party Python packages are required', requirements)
         bootstrap = (ROOT / 'scripts' / 'bootstrap.py').read_text(
             encoding='utf-8'
         )
@@ -355,6 +362,8 @@ class PipelineValidationTests(unittest.TestCase):
         self.assertIn("'--revision'", bootstrap)
         self.assertIn("'scripts/validate_setup.py'", bootstrap)
         self.assertIn("'npm', 'run', 'build:mobile'", bootstrap)
+        self.assertIn('def ensure_node()', bootstrap)
+        self.assertIn('failed SHA-256 verification', bootstrap)
 
     def test_bad_human_syllables_have_explicit_fallback_policy(self):
         quality = json.loads(

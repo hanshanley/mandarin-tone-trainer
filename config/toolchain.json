@@ -1,0 +1,12 @@
+{
+  "node": {
+    "version": "22.23.2",
+    "base_url": "https://nodejs.org/dist/v22.23.2",
+    "sha256": {
+      "darwin-arm64": "5eff7a9011895aae3f29d06f167b84a62b028a591370c7cafb59103559fd26e1",
+      "darwin-x64": "96dff79f4e19a78715da559ec7cac2028f4985a175ea0c3454625a269c21deb7",
+      "linux-arm64": "fff4078c5def658577f92c88db7db3bc0072924bfb93fe52c1e744a54e94abb8",
+      "linux-x64": "d60acfe00a2932254bb0ad20e01b0d74397a0875595de719654b214f4b03f307"
+    }
+  }
+}

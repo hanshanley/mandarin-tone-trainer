@@ -25,11 +25,21 @@ Prerequisites:
 
 - Git
 - Python 3.10 or newer
-- Node.js 22 or newer with npm
 - FFmpeg on `PATH`
 - About 1 GiB of free disk space
 
-If you use `nvm`, the committed `.nvmrc` selects the supported Node version:
+`requirements.txt` is intentionally empty of packages because the Python tools
+use only the standard library. It is included so automated environments can
+still run the conventional command safely:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+The Python bootstrap automatically downloads a pinned, project-local Node.js
+22 toolchain when Node is missing or too old. No administrator access is
+needed. If you prefer a system Node installation, the committed `.nvmrc`
+selects the supported version:
 
 ```bash
 nvm install
@@ -42,9 +52,9 @@ On macOS with Homebrew:
 brew install python node ffmpeg
 ```
 
-On Ubuntu/Debian, install Python and FFmpeg with `apt`, then use `nvm` for
-Node.js 22. On Windows, WSL is the simplest supported environment for the
-browser setup; use Android Studio on Windows for native Android builds.
+On Ubuntu/Debian, install Python and FFmpeg with `apt`. On Windows, WSL is the
+simplest supported environment for the browser setup; use Android Studio on
+Windows for native Android builds.
 
 From a clean clone, run the Python bootstrap. It installs Node dependencies,
 downloads the pinned audio snapshots, recreates manifests and the offline
