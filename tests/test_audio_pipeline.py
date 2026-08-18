@@ -200,6 +200,55 @@ class PipelineValidationTests(unittest.TestCase):
             )
         self.assertEqual(groups, [[plain, tagged]])
 
+    def test_selected_tones_do_not_share_audio_payloads(self):
+        script = """
+const policy=require('./app/correction_audio.js');
+const quality=require('./data/correction_audio_quality.json');
+const recordings=require('./data/pinyin_public_recordings.json');
+const words=require('./data/hsk_words.json');
+const keys=new Set();
+for(const word of words){
+  for(const pinyin of (word.pinyin_syllables||[])){
+    for(const tone of ['1','2','3','4'])keys.add(policy.correctionKey(pinyin,tone));
+  }
+}
+const result={};
+for(const mode of ['pinyin_public','audio_cmn']){
+  result[mode]={};
+  for(const key of keys){
+    const selected=policy.correctionSelection(key,quality,recordings,mode);
+    if(selected)result[mode][key]=selected.audio_path;
+  }
+}
+process.stdout.write(JSON.stringify(result));
+"""
+        selections = json.loads(
+            subprocess.check_output(
+                ['node', '-e', script],
+                cwd=ROOT,
+                text=True,
+            )
+        )
+        for mode, selected in selections.items():
+            by_syllable = {}
+            for key, relative_path in selected.items():
+                if key[-1] not in '1234':
+                    continue
+                path = ROOT / relative_path
+                if not path.is_file():
+                    continue
+                payload = check_syllables.payload_hash(path)
+                syllable = key[:-1]
+                self.assertNotIn(
+                    payload,
+                    by_syllable.setdefault(syllable, {}),
+                    (
+                        f'{mode} selects the same audio payload for '
+                        f'{by_syllable[syllable].get(payload)} and {key}'
+                    ),
+                )
+                by_syllable[syllable][payload] = key
+
     def test_correction_stops_existing_audio_before_decode(self):
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
         function = source.split('async function playPinyinSequence', 1)[1].split(
