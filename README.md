@@ -46,15 +46,17 @@ On Ubuntu/Debian, install Python and FFmpeg with `apt`, then use `nvm` for
 Node.js 22. On Windows, WSL is the simplest supported environment for the
 browser setup; use Android Studio on Windows for native Android builds.
 
-From a clean clone, one command installs dependencies, downloads the pinned
-audio snapshots, recreates manifests and the offline mobile bundle, and runs
-all validation:
+From a clean clone, run the Python bootstrap. It installs Node dependencies,
+downloads the pinned audio snapshots, recreates manifests and the offline
+mobile bundle, and runs all validation:
 
 ```bash
 git clone https://github.com/hanshanley/mandarin-tone-trainer.git
 cd mandarin-tone-trainer
-npm run setup
+python3 scripts/bootstrap.py
 ```
+
+`npm run setup` is an equivalent convenience alias.
 
 The setup is resumable. To reuse an existing `node_modules` directory:
 
