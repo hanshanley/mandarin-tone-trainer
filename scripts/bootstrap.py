@@ -5,6 +5,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 
@@ -14,6 +15,18 @@ ROOT = Path(__file__).resolve().parents[1]
 def run(command):
     print(f"\n$ {' '.join(map(str, command))}", flush=True)
     subprocess.run(command, cwd=ROOT, check=True)
+
+def run_retry(command, attempts=4):
+    for attempt in range(1,attempts+1):
+        try:
+            run(command)
+            return
+        except subprocess.CalledProcessError:
+            if attempt==attempts:
+                raise
+            delay=15*attempt
+            print(f'Download batch failed; retrying resumably in {delay} seconds.',flush=True)
+            time.sleep(delay)
 
 
 def require_command(name, guidance):
@@ -38,7 +51,7 @@ def main():
         action='store_true',
         help='reuse the current node_modules directory',
     )
-    parser.add_argument('--workers', type=int, default=8)
+    parser.add_argument('--workers', type=int, default=4)
     args = parser.parse_args()
 
     require_command('node', 'Install Node.js 22 or newer.')
@@ -61,7 +74,7 @@ def main():
     if not args.skip_npm_ci:
         run(['npm', 'ci'])
 
-    run([
+    run_retry([
         sys.executable,
         'scripts/download_audio_cmn.py',
         '--all-source',
@@ -72,7 +85,7 @@ def main():
         '--workers',
         str(args.workers),
     ])
-    run([
+    run_retry([
         sys.executable,
         'scripts/download_audio_cmn_syllables.py',
         '--revision',

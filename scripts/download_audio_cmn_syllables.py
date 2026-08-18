@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Download audio-cmn's tone-specific syllable clips."""
-import argparse, json, urllib.error, urllib.parse, urllib.request
+import argparse, json, random, time, urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -17,7 +17,7 @@ def valid_mp3(path):
         return False
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--audio-root',default='audio/audio_cmn/syllabs'); ap.add_argument('--quality',default='64k',choices=['64k','24k-abr','18k-abr']); ap.add_argument('--revision',default='master'); ap.add_argument('--workers',type=int,default=12); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument('--audio-root',default='audio/audio_cmn/syllabs'); ap.add_argument('--quality',default='64k',choices=['64k','24k-abr','18k-abr']); ap.add_argument('--revision',default='master'); ap.add_argument('--workers',type=int,default=4); ap.add_argument('--retries',type=int,default=6); args=ap.parse_args()
     req=urllib.request.Request(TREE.format(revision=urllib.parse.quote(args.revision,safe='')),headers={'User-Agent':'MandarinToneTrainer/0.1'})
     with urllib.request.urlopen(req,timeout=30) as r: tree=json.load(r)
     if tree.get('truncated'):
@@ -29,16 +29,25 @@ def main():
         out=root/name; out.parent.mkdir(parents=True,exist_ok=True)
         if valid_mp3(out):return 'existing',name
         url=RAW.format(revision=args.revision,quality=args.quality)+urllib.parse.quote(name,safe='')
-        try:
-            with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'MandarinToneTrainer/0.1'}),timeout=30) as r:data=r.read()
-            if not data.startswith(MP3_MAGIC):
-                raise ValueError('response is not an MP3')
-            temporary=out.with_suffix('.mp3.part')
-            temporary.write_bytes(data)
-            temporary.replace(out)
-            return 'downloaded',name
-        except (urllib.error.URLError,TimeoutError,ValueError,OSError) as exc:
-            return 'failed',f'{name}: {exc}'
+        for attempt in range(args.retries+1):
+            try:
+                with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'MandarinToneTrainer/0.1'}),timeout=30) as r:data=r.read()
+                if not data.startswith(MP3_MAGIC):
+                    raise ValueError('response is not an MP3')
+                temporary=out.with_suffix('.mp3.part')
+                temporary.write_bytes(data)
+                temporary.replace(out)
+                return 'downloaded',name
+            except urllib.error.HTTPError as exc:
+                if attempt==args.retries:
+                    return 'failed',f'{name}: {exc}'
+                retry_after=exc.headers.get('Retry-After')
+                delay=float(retry_after) if retry_after else min(60,2**attempt+random.random())
+                time.sleep(delay)
+            except (urllib.error.URLError,TimeoutError,ValueError,OSError) as exc:
+                if attempt==args.retries:
+                    return 'failed',f'{name}: {exc}'
+                time.sleep(min(30,2**attempt+random.random()))
     counts={'downloaded':0,'existing':0,'failed':0}; failures=[]
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         for f in as_completed([pool.submit(get,n) for n in names]):

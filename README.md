@@ -58,7 +58,8 @@ python3 scripts/bootstrap.py
 
 `npm run setup` is an equivalent convenience alias.
 
-The setup is resumable. To reuse an existing `node_modules` directory:
+The setup is resumable and automatically backs off/retries GitHub rate limits.
+To reuse an existing `node_modules` directory:
 
 ```bash
 python3 scripts/bootstrap.py --skip-npm-ci

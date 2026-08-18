@@ -120,6 +120,23 @@ class PipelineValidationTests(unittest.TestCase):
             self.assertTrue(download_syllables.valid_mp3(valid))
             self.assertFalse(download_syllables.valid_mp3(invalid))
 
+    def test_downloaders_retry_transient_failures(self):
+        word_downloader = (
+            ROOT / 'scripts' / 'download_audio_cmn.py'
+        ).read_text(encoding='utf-8')
+        syllable_downloader = (
+            ROOT / 'scripts' / 'download_audio_cmn_syllables.py'
+        ).read_text(encoding='utf-8')
+        bootstrap = (ROOT / 'scripts' / 'bootstrap.py').read_text(
+            encoding='utf-8'
+        )
+        self.assertIn('Retry-After', word_downloader)
+        self.assertIn('default=6', word_downloader)
+        self.assertIn('Retry-After', syllable_downloader)
+        self.assertIn("add_argument('--retries',type=int,default=6)", syllable_downloader)
+        self.assertIn('def run_retry(', bootstrap)
+        self.assertIn('Download batch failed; retrying resumably', bootstrap)
+
     def test_selects_matching_common_cedict_definition(self):
         item = {
             'word': '新',

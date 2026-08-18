@@ -11,6 +11,8 @@ there is intentionally no "best recording" selection step.
 """
 import argparse
 import json
+import random
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -56,9 +58,13 @@ def download_one(word, args):
                 return word, "missing", 0
             if attempt == args.retries:
                 return word, f"failed: {exc}", 0
+            retry_after = exc.headers.get("Retry-After")
+            delay = float(retry_after) if retry_after else min(60, 2 ** attempt + random.random())
+            time.sleep(delay)
         except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
             if attempt == args.retries:
                 return word, f"failed: {exc}", 0
+            time.sleep(min(30, 2 ** attempt + random.random()))
     return word, "failed: exhausted retries", 0
 
 
@@ -84,9 +90,9 @@ def main():
     parser.add_argument("--imports", default="imports")
     parser.add_argument("--quality", choices=["96k", "64k", "24k-abr", "18k-abr"], default="96k")
     parser.add_argument("--revision", default="master")
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--timeout", type=float, default=30)
-    parser.add_argument("--retries", type=int, default=2)
+    parser.add_argument("--retries", type=int, default=6)
     parser.add_argument("--limit", type=int)
     parser.add_argument("--all-source", action="store_true", help="enumerate and download every source HSK MP3, including words outside the local HSK list")
     args = parser.parse_args()
