@@ -29,11 +29,22 @@ Prerequisites:
 - FFmpeg on `PATH`
 - About 1 GiB of free disk space
 
+If you use `nvm`, the committed `.nvmrc` selects the supported Node version:
+
+```bash
+nvm install
+nvm use
+```
+
 On macOS with Homebrew:
 
 ```bash
 brew install python node ffmpeg
 ```
+
+On Ubuntu/Debian, install Python and FFmpeg with `apt`, then use `nvm` for
+Node.js 22. On Windows, WSL is the simplest supported environment for the
+browser setup; use Android Studio on Windows for native Android builds.
 
 From a clean clone, one command installs dependencies, downloads the pinned
 audio snapshots, recreates manifests and the offline mobile bundle, and runs

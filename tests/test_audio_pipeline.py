@@ -330,6 +330,7 @@ class PipelineValidationTests(unittest.TestCase):
         lockfile = (ROOT / 'package-lock.json').read_text(encoding='utf-8')
         self.assertNotIn('pkgs.visualstudio.com', lockfile)
         self.assertNotIn('ms-feed-', lockfile)
+        self.assertEqual((ROOT / '.nvmrc').read_text().strip(), '22')
         bootstrap = (ROOT / 'scripts' / 'bootstrap.py').read_text(
             encoding='utf-8'
         )

@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+MP3_MAGIC = (b'ID3', b'\xff\xfb', b'\xff\xf3', b'\xff\xf2')
 
 
 def read_json(relative_path):
@@ -25,6 +26,14 @@ def file_hash(path):
         for chunk in iter(lambda: stream.read(1024 * 1024), b''):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def valid_mp3(path):
+    try:
+        with path.open('rb') as stream:
+            return stream.read(3).startswith(MP3_MAGIC) and path.stat().st_size > 3
+    except OSError:
+        return False
 
 
 def main():
@@ -57,6 +66,12 @@ def main():
         if not (ROOT / recording['audio_path']).is_file()
     ]
     require(not missing_words, f'missing indexed word audio: {missing_words[:5]}', errors)
+    invalid_words = [
+        recording['audio_path']
+        for recording in word_recordings
+        if not valid_mp3(ROOT / recording['audio_path'])
+    ]
+    require(not invalid_words, f'invalid indexed word audio: {invalid_words[:5]}', errors)
 
     syllable_root = ROOT / 'audio' / 'audio_cmn' / 'syllabs'
     syllables = list(syllable_root.glob('cmn-*.mp3')) if syllable_root.is_dir() else []
@@ -65,6 +80,8 @@ def main():
         f"expected {snapshots['audio_cmn']['syllable_recordings']} audio-cmn syllables, found {len(syllables)}",
         errors,
     )
+    invalid_syllables = [str(path.relative_to(ROOT)) for path in syllables if not valid_mp3(path)]
+    require(not invalid_syllables, f'invalid audio-cmn syllables: {invalid_syllables[:5]}', errors)
 
     require(
         len(public) == snapshots['pinyin_public']['recordings'],
@@ -77,6 +94,12 @@ def main():
         if not (ROOT / recording['audio_path']).is_file()
     ]
     require(not missing_public, f'missing public pinyin audio: {missing_public[:5]}', errors)
+    invalid_public = [
+        recording['audio_path']
+        for recording in public.values()
+        if not valid_mp3(ROOT / recording['audio_path'])
+    ]
+    require(not invalid_public, f'invalid public pinyin audio: {invalid_public[:5]}', errors)
 
     for source in snapshots.values():
         for relative_path, expected_hash in source.get('samples', {}).items():
