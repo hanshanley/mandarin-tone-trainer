@@ -318,6 +318,26 @@ class PipelineValidationTests(unittest.TestCase):
                 members=download_public_pinyin.corpus_members(archive)
         self.assertEqual(set(members), {'ma2','tian3'})
 
+    def test_bootstrap_uses_pinned_portable_sources(self):
+        snapshots = json.loads(
+            (ROOT / 'config' / 'source_snapshots.json').read_text(
+                encoding='utf-8'
+            )
+        )
+        for source in snapshots.values():
+            self.assertRegex(source['revision'], r'^[0-9a-f]{40}$')
+            self.assertTrue(source['samples'])
+        lockfile = (ROOT / 'package-lock.json').read_text(encoding='utf-8')
+        self.assertNotIn('pkgs.visualstudio.com', lockfile)
+        self.assertNotIn('ms-feed-', lockfile)
+        bootstrap = (ROOT / 'scripts' / 'bootstrap.py').read_text(
+            encoding='utf-8'
+        )
+        self.assertIn("'config' / 'source_snapshots.json'", bootstrap)
+        self.assertIn("'--revision'", bootstrap)
+        self.assertIn("'scripts/validate_setup.py'", bootstrap)
+        self.assertIn("'npm', 'run', 'build:mobile'", bootstrap)
+
     def test_bad_human_syllables_have_explicit_fallback_policy(self):
         quality = json.loads(
             (ROOT / 'data' / 'correction_audio_quality.json').read_text(

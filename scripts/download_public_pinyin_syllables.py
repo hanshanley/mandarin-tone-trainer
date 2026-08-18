@@ -8,7 +8,7 @@ import urllib.request
 import zipfile
 from pathlib import Path, PurePosixPath
 
-ARCHIVE_URL='https://codeload.github.com/davinfifield/mp3-chinese-pinyin-sound/zip/refs/heads/master'
+ARCHIVE_URL='https://codeload.github.com/davinfifield/mp3-chinese-pinyin-sound/zip/{revision}'
 SOURCE_URL='https://github.com/davinfifield/mp3-chinese-pinyin-sound'
 KEY_RE=re.compile(r'([a-zv]+[1-4])\.mp3')
 MP3_MAGIC=(b'ID3',b'\xff\xfb',b'\xff\xf3',b'\xff\xf2')
@@ -30,9 +30,10 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--audio-root',default='audio/pinyin_public')
     parser.add_argument('--manifest',default='data/pinyin_public_recordings.json')
+    parser.add_argument('--revision',default='master')
     args=parser.parse_args()
 
-    request=urllib.request.Request(ARCHIVE_URL,headers={'User-Agent':'MandarinToneTrainer/0.1'})
+    request=urllib.request.Request(ARCHIVE_URL.format(revision=args.revision),headers={'User-Agent':'MandarinToneTrainer/0.1'})
     with urllib.request.urlopen(request,timeout=120) as response:
         payload=response.read()
     with zipfile.ZipFile(io.BytesIO(payload)) as archive:
@@ -59,7 +60,7 @@ def main():
                 'audio_path':destination.as_posix(),
                 'source':'mp3_chinese_pinyin_sound',
                 'license':'Unlicense',
-                'source_url':f'{SOURCE_URL}/blob/master/mp3/{key}.mp3',
+                'source_url':f'{SOURCE_URL}/blob/{args.revision}/mp3/{key}.mp3',
             }
 
     manifest=Path(args.manifest); manifest.parent.mkdir(parents=True,exist_ok=True)

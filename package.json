@@ -4,6 +4,8 @@
   "private": true,
   "description": "Offline Mandarin tone training app for Android and the browser",
   "scripts": {
+    "setup": "python3 scripts/bootstrap.py",
+    "verify:setup": "python3 scripts/bootstrap.py --verify-only",
     "build:mobile": "node scripts/build_mobile_assets.mjs",
     "cap:sync": "npm run build:mobile && npx cap sync android",
     "android:open": "npm run cap:sync && npx cap open android",

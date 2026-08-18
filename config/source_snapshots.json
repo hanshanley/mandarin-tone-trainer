@@ -1,0 +1,22 @@
+{
+  "audio_cmn": {
+    "repository": "https://github.com/hugolpz/audio-cmn",
+    "revision": "ff9ed3d0c631195bd2c06f39450f3264c7124040",
+    "word_quality": "96k",
+    "syllable_quality": "64k",
+    "word_recordings": 8596,
+    "syllable_recordings": 1707,
+    "samples": {
+      "audio/audio_cmn/爱/cmn-爱.mp3": "61e2fc0493618d45809e0afabd94d5e0366d55916f847dc55577df7b6e5a0e3d",
+      "audio/audio_cmn/syllabs/cmn-ma1.mp3": "6a3194446f891fceb224d2a2497c284203566a2859cc7e0ac2fe4060be69ec3f"
+    }
+  },
+  "pinyin_public": {
+    "repository": "https://github.com/davinfifield/mp3-chinese-pinyin-sound",
+    "revision": "aa25ecce7b7fb02757b2c2b8e3c01aa975812edc",
+    "recordings": 1622,
+    "samples": {
+      "audio/pinyin_public/zan1.mp3": "0fce1fdd0fa8c1ad4b1f41d77fbf35ac4ca8779547db6059df417502d9e6e3bd"
+    }
+  }
+}
