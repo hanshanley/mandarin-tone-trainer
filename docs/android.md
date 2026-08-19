@@ -6,9 +6,11 @@ Complete the repository's first-time setup before building Android:
 python3 scripts/bootstrap.py
 ```
 
-## Requirements
+The bootstrap installs and exposes the required JDK 21 commands, including
+`java` and `keytool`.
 
-- JDK 21
+## Remaining requirements
+
 - Android SDK Platform 36
 - Android Platform Tools
 - Android Build Tools 35

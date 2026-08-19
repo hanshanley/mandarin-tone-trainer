@@ -8,5 +8,21 @@
       "linux-arm64": "fff4078c5def658577f92c88db7db3bc0072924bfb93fe52c1e744a54e94abb8",
       "linux-x64": "d60acfe00a2932254bb0ad20e01b0d74397a0875595de719654b214f4b03f307"
     }
+  },
+  "jdk": {
+    "version": "21.0.12+8",
+    "base_url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12%2B8",
+    "filenames": {
+      "darwin-arm64": "OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.12_8.tar.gz",
+      "darwin-x64": "OpenJDK21U-jdk_x64_mac_hotspot_21.0.12_8.tar.gz",
+      "linux-arm64": "OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.12_8.tar.gz",
+      "linux-x64": "OpenJDK21U-jdk_x64_linux_hotspot_21.0.12_8.tar.gz"
+    },
+    "sha256": {
+      "darwin-arm64": "021d629349ebc12a409faa517b837ec80ceee8f58a5ac85c788ecad07ca6881c",
+      "darwin-x64": "6b85c260eea574a995eacd0b3ee23c8042aa93b23a08e6478edafca0a0333d7f",
+      "linux-arm64": "eba38e871b02d407897bfe017ea35352dfc1420ef6d2112425b0c67325ca509d",
+      "linux-x64": "e4446ff06a276155697597cc0f1b15da004ff083f4964a35271ecee567177370"
+    }
   }
 }

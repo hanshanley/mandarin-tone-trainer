@@ -400,12 +400,14 @@ process.stdout.write(JSON.stringify(result));
         )
         self.assertRegex(toolchain['node']['version'], r'^22\.\d+\.\d+$')
         self.assertEqual(len(toolchain['node']['sha256']), 4)
+        self.assertRegex(toolchain['jdk']['version'], r'^21\.\d+\.\d+\+\d+$')
+        self.assertEqual(len(toolchain['jdk']['sha256']), 4)
         lockfile = (ROOT / 'package-lock.json').read_text(encoding='utf-8')
         self.assertNotIn('pkgs.visualstudio.com', lockfile)
         self.assertNotIn('ms-feed-', lockfile)
         self.assertEqual((ROOT / '.nvmrc').read_text().strip(), '22')
         requirements = (ROOT / 'requirements.txt').read_text(encoding='utf-8')
-        self.assertIn('No third-party Python packages are required', requirements)
+        self.assertIn('imageio-ffmpeg==0.6.0', requirements)
         bootstrap = (ROOT / 'scripts' / 'bootstrap.py').read_text(
             encoding='utf-8'
         )
@@ -414,6 +416,8 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn("'scripts/validate_setup.py'", bootstrap)
         self.assertIn("'npm', 'run', 'build:mobile'", bootstrap)
         self.assertIn('def ensure_node()', bootstrap)
+        self.assertIn('def ensure_ffmpeg()', bootstrap)
+        self.assertIn('def ensure_jdk()', bootstrap)
         self.assertIn('failed SHA-256 verification', bootstrap)
 
     def test_bootstrap_installs_persistent_node_shims_once(self):

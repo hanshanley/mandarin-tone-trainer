@@ -1,34 +1,48 @@
-# Mandarin Tone Trainer
+<div align="center">
+  <img src="resources/logo.svg" width="120" alt="Mandarin Tone Trainer logo">
+  <h1>Mandarin Tone Trainer</h1>
+  <p><strong>Hear the word. Identify the tones. Compare your voice.</strong></p>
+  <p>An offline Mandarin listening trainer for HSK 1–9 vocabulary.</p>
+  <p>
+    <a href="#quickstart">Quickstart</a> ·
+    <a href="docs/android.md">Android guide</a> ·
+    <a href="docs/audio-maintenance.md">Audio guide</a>
+  </p>
+</div>
 
-Mandarin Tone Trainer is an offline listening app for practicing the tones of
-HSK 1–9 vocabulary. It plays a native recording while the word is hidden,
-asks you to identify the tones, and then reveals the word, pinyin, definition,
-and spoken-tone pattern.
+---
 
-It runs locally in a browser and can be packaged as a fully offline Android
-app.
+## Learn tones from real words
 
-## Features
+Mandarin Tone Trainer hides the written word and plays a native recording.
+You identify the tone of each syllable before seeing the word, pinyin,
+definition, and expected spoken-tone pattern.
 
-- 11,092 HSK vocabulary entries
-- native recordings of complete words
-- separate reference recordings for individual tones
-- lexical and spoken-tone answers with sandhi support
-- reference and human comparison voices
-- local pronunciation recording and playback
-- offline browser and Android use
+<p align="center">
+  <img src="docs/assets/trainer.png" width="900" alt="Mandarin Tone Trainer showing a completed listening question">
+</p>
 
-## Quick start
+### Listen without visual hints
 
-You need Git, Python 3.10 or newer, FFmpeg, and about 1 GiB of free disk space.
+**Native** playback uses a recording of the complete word. The answer stays
+hidden until you choose a tone for every syllable.
 
-On macOS with Homebrew:
+### Compare tones directly
 
-```bash
-brew install python ffmpeg
-```
+Every tone button plays an isolated syllable—not the original word. Switch
+**Comparison voice** to hear either a clear reference corpus or human
+`audio-cmn` recordings. Reviewed fallbacks replace clips known to be
+duplicated, mislabeled, or unclear.
 
-Clone, set up, and run the project:
+### Practice your pronunciation
+
+Use **Record me** to capture your voice locally. Play it on its own or use
+**Overlay** to compare it with the native recording. Microphone permission is
+only required for recording.
+
+## Quickstart
+
+You need Git, Python 3.10 or newer, and about 1 GiB of free disk space.
 
 ```bash
 git clone https://github.com/hanshanley/mandarin-tone-trainer.git
@@ -37,71 +51,75 @@ python3 scripts/bootstrap.py
 python3 scripts/serve.py
 ```
 
-Open <http://localhost:8000/app/>.
+Open **<http://localhost:8000/app/>**.
 
-The Python bootstrap is the correct starting point on a fresh clone. It
-installs a pinned local copy of Node.js and npm when needed, downloads the
-audio collections, builds the offline assets, and validates the finished
-setup. Downloads are resumable.
+The bootstrap is the only setup command required on a fresh clone. It installs
+pinned local versions of Node.js, npm, JDK 21, and FFmpeg; downloads the audio
+collections; builds the offline assets; and validates the finished setup.
+Downloads are resumable.
 
-After setup, a new terminal can use `node`, `npm`, and `npx` normally. To
-activate them immediately in the current zsh session:
+After setup, new terminals can use `node`, `npm`, `npx`, `java`, `keytool`, and
+`ffmpeg` normally. To activate them immediately in the current zsh session:
 
 ```bash
 source ~/.zprofile
 ```
 
-To run the app again later:
+To run the trainer again later:
 
 ```bash
 cd mandarin-tone-trainer
 python3 scripts/serve.py
 ```
 
-## How practice works
-
-1. Press **Native** to hear a complete word without seeing it.
-2. Choose one tone for each syllable.
-3. Review the word, pinyin, definition, and expected pattern.
-4. Record yourself and compare your pronunciation with the native prompt.
-
-Native playback always uses a recording of the complete word. Tone buttons use
-independent, tone-specific syllable recordings. This prevents a full-word
-recording from being reused as an inaccurate example of an isolated tone.
-
-The **Comparison voice** setting switches the tone buttons between a clear
-public-domain reference corpus and human `audio-cmn` syllables. Reviewed
-fallbacks replace recordings that are duplicated, mislabeled, or unclear.
-
-## Tone and sandhi support
+## Tone-aware grading
 
 The trainer distinguishes dictionary tones from tones heard in connected
-speech. For example, 你好 has the lexical pattern `3-3`, but its usual spoken
+speech. For example, 你好 has the lexical pattern `3-3`, while its usual spoken
 realization is approximately `2-3`.
 
-The data includes common third-tone sandhi, 不 and 一 changes, and neutral-tone
-reductions. Recording-specific labels take priority when a speaker's actual
+The data models common third-tone sandhi, 不 and 一 changes, and neutral-tone
+reductions. Recording-specific labels take priority when the speaker's actual
 pronunciation differs from the default prediction.
 
-## Android
+## Offline Android app
 
-Android builds require JDK 21, Android SDK Platform 36, Platform Tools, and
-Build Tools 35.
+The Android build packages the application, vocabulary, and every reachable
+audio file into a single offline APK.
 
-After completing the quick start:
+After the quickstart, install Android SDK Platform 36, Platform Tools, and
+Build Tools 35, then run:
 
 ```bash
 npm run android:debug
 ```
 
-The debug APK is created at:
+The APK is created at:
 
 ```text
 android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
-See the [Android guide](docs/android.md) for release signing, installation,
-and updates.
+See the [Android guide](docs/android.md) for SDK configuration, release
+signing, installation, and updates.
+
+## Audio and vocabulary
+
+The reviewed dataset contains:
+
+- **11,092** HSK vocabulary entries
+- **8,596** isolated native word recordings
+- **1,707** human tone-specific syllables
+- **1,622** public-domain reference syllables
+
+Large generated assets are intentionally excluded from Git. The bootstrap
+recreates them from pinned upstream revisions.
+
+Known audio defects and approved fallbacks live in
+[`data/correction_audio_quality.json`](data/correction_audio_quality.json).
+Audits cover file integrity, duplicate payloads, pitch contours, runtime
+selection, and bundle completeness. Ambiguous pitch results are left for
+listening review rather than rejected automatically.
 
 ## Development
 
@@ -112,27 +130,48 @@ npm run build:mobile      # rebuild the offline web bundle
 npm run android:debug     # build the Android debug APK
 ```
 
-The main project directories are:
+Application code lives in `app/`, reviewed runtime data in `data/`, tooling in
+`scripts/`, tests in `tests/`, and the Capacitor project in `android/`.
 
-- `app/` — browser interface and playback logic
-- `data/` — reviewed vocabulary, metadata, and audio-quality policy
-- `scripts/` — setup, download, import, audit, and build tools
-- `android/` — Capacitor Android project
-- `tests/` — data, playback-policy, and bundle tests
+Corpus updates, local imports, and individual audit tools are documented in
+the [audio maintenance guide](docs/audio-maintenance.md).
 
-Downloaded audio and generated assets are intentionally excluded from Git.
-`python3 scripts/bootstrap.py` recreates them from pinned sources.
+## FAQ
 
-## Audio quality and maintenance
+<details>
+<summary><strong>Why are Native and the tone buttons different recordings?</strong></summary>
 
-Known bad clips and approved fallbacks are recorded in
-[`data/correction_audio_quality.json`](data/correction_audio_quality.json).
-The audit checks file integrity, duplicate audio, pitch contours, runtime
-selection, and bundle completeness. Ambiguous pitch results are left for
-listening review instead of being rejected automatically.
+Native playback trains recognition of a complete word in natural speech. Tone
+buttons isolate one syllable and one tone for comparison. Reusing a full word
+as an isolated-tone example would make the correction misleading.
 
-See the [audio maintenance guide](docs/audio-maintenance.md) for corpus
-updates, local imports, and individual audit tools.
+</details>
+
+<details>
+<summary><strong>Why does the app sometimes switch audio sources?</strong></summary>
+
+Some upstream recordings are duplicated, mislabeled, or acoustically unclear.
+The quality policy selects a reviewed clip from the independent corpus when
+the preferred recording is quarantined.
+
+</details>
+
+<details>
+<summary><strong>What if npm, keytool, or FFmpeg is not found?</strong></summary>
+
+Rerun `python3 scripts/bootstrap.py`, then open a new terminal. In the current
+zsh session, run `source ~/.zprofile`.
+
+</details>
+
+<details>
+<summary><strong>Where are the downloaded audio files?</strong></summary>
+
+Generated audio is stored under `audio/`. The offline mobile bundle is written
+to `www/`. Both directories are ignored by Git and can be recreated by the
+bootstrap.
+
+</details>
 
 ## Sources and licenses
 

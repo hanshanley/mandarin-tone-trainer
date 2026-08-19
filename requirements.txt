@@ -1,6 +1,2 @@
-# No third-party Python packages are required.
-# Runtime scripts use only the Python 3.10+ standard library.
-#
-# System tools installed outside pip:
-# - Node.js 22+ with npm (installed locally by scripts/bootstrap.py if absent)
-# - FFmpeg
+# Pinned bootstrap dependency that provides a portable FFmpeg executable.
+imageio-ffmpeg==0.6.0

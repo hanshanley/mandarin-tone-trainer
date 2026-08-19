@@ -2,6 +2,7 @@
 """Recreate the ignored runtime assets from pinned upstream snapshots."""
 import argparse
 import hashlib
+import importlib
 import json
 import os
 import platform
@@ -47,6 +48,30 @@ def node_major():
         return 0
 
 
+def java_major():
+    try:
+        output = subprocess.check_output(
+            ['java', '-version'],
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        version = output.split('"', 2)[1]
+        return int(version.split('.', 1)[0])
+    except (OSError, subprocess.CalledProcessError, IndexError, ValueError):
+        return 0
+
+
+def platform_key():
+    system = {'darwin': 'darwin', 'linux': 'linux'}.get(sys.platform)
+    machine = platform.machine().lower()
+    architecture = (
+        'arm64' if machine in {'arm64', 'aarch64'}
+        else 'x64' if machine in {'x86_64', 'amd64'}
+        else None
+    )
+    return f'{system}-{architecture}' if system and architecture else None
+
+
 def sha256(path):
     digest=hashlib.sha256()
     with path.open('rb') as stream:
@@ -55,26 +80,10 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def install_user_node_shims(directory, home=None, shell=None):
+def configure_user_bin(home=None, shell=None):
     home = Path(home) if home else Path.home()
     user_bin = home / '.local' / 'bin'
     user_bin.mkdir(parents=True, exist_ok=True)
-    installed = []
-    for name in ('node', 'npm', 'npx'):
-        source = directory / 'bin' / name
-        destination = user_bin / name
-        if destination.is_symlink():
-            destination.unlink()
-        elif destination.exists():
-            print(
-                f'Keeping existing {destination}; the project-local {name} '
-                'remains available during setup.',
-                flush=True,
-            )
-            continue
-        destination.symlink_to(source)
-        installed.append(name)
-
     shell_name = Path(shell or os.environ.get('SHELL', '')).name
     profile_name = '.zprofile' if shell_name == 'zsh' else '.profile'
     profile = home / profile_name
@@ -88,6 +97,31 @@ def install_user_node_shims(directory, home=None, shell=None):
     current_path = os.environ.get('PATH', '').split(os.pathsep)
     if str(user_bin) not in current_path:
         os.environ['PATH'] = f'{user_bin}{os.pathsep}{os.environ.get("PATH", "")}'
+    return user_bin, profile, profile_name
+
+
+def install_user_shim(name, source, user_bin):
+    destination = user_bin / name
+    if destination.is_symlink():
+        destination.unlink()
+    elif destination.exists():
+        print(
+            f'Keeping existing {destination}; the project-local {name} '
+            'remains available during setup.',
+            flush=True,
+        )
+        return False
+    destination.symlink_to(source)
+    return True
+
+
+def install_user_node_shims(directory, home=None, shell=None):
+    user_bin, profile, profile_name = configure_user_bin(home, shell)
+    installed = [
+        name
+        for name in ('node', 'npm', 'npx')
+        if install_user_shim(name, directory / 'bin' / name, user_bin)
+    ]
     if installed:
         print(
             f'Installed user commands in {user_bin}: {", ".join(installed)}.',
@@ -100,14 +134,48 @@ def install_user_node_shims(directory, home=None, shell=None):
     )
 
 
+def ensure_ffmpeg():
+    if shutil.which('ffmpeg'):
+        return
+    package_root = ROOT / '.tools' / 'python'
+    try:
+        import imageio_ffmpeg
+    except ImportError:
+        run([
+            sys.executable,
+            '-m',
+            'pip',
+            'install',
+            '--target',
+            package_root,
+            '--requirement',
+            ROOT / 'requirements.txt',
+        ])
+        sys.path.insert(0, str(package_root))
+        importlib.invalidate_caches()
+        import imageio_ffmpeg
+    source = Path(imageio_ffmpeg.get_ffmpeg_exe())
+    if not source.is_file():
+        raise SystemExit('The local FFmpeg package did not provide an executable.')
+    user_bin, profile, profile_name = configure_user_bin()
+    install_user_shim('ffmpeg', source, user_bin)
+    if not shutil.which('ffmpeg'):
+        os.environ['PATH'] = f'{source.parent}{os.pathsep}{os.environ.get("PATH", "")}'
+    if not shutil.which('ffmpeg'):
+        raise SystemExit('The local FFmpeg installation did not initialize correctly.')
+    print(
+        f'Using local FFmpeg {imageio_ffmpeg.get_ffmpeg_version()}. '
+        f'New terminals load it through {profile}; for this terminal, '
+        f'run: source ~/{profile_name}',
+        flush=True,
+    )
+
+
 def ensure_node():
     if node_major()>=22 and shutil.which('npm'):
         return
     config=json.loads((ROOT/'config'/'toolchain.json').read_text(encoding='utf-8'))['node']
-    system={'darwin':'darwin','linux':'linux'}.get(sys.platform)
-    machine=platform.machine().lower()
-    architecture='arm64' if machine in {'arm64','aarch64'} else 'x64' if machine in {'x86_64','amd64'} else None
-    key=f'{system}-{architecture}' if system and architecture else None
+    key=platform_key()
     if key not in config['sha256']:
         raise SystemExit(
             'Node.js 22+ is missing and automatic installation is unavailable '
@@ -143,6 +211,76 @@ def ensure_node():
     print(f"Using local Node.js {subprocess.check_output(['node','--version'],text=True).strip()}.")
 
 
+def ensure_jdk():
+    if java_major() >= 21 and shutil.which('keytool'):
+        return
+    config = json.loads(
+        (ROOT / 'config' / 'toolchain.json').read_text(encoding='utf-8')
+    )['jdk']
+    key = platform_key()
+    if key not in config['sha256']:
+        raise SystemExit(
+            'JDK 21 is missing and automatic installation is unavailable '
+            f'for {sys.platform}/{platform.machine()}. Install JDK 21 and rerun.'
+        )
+    legacy_home = ROOT / '.tools' / 'jdk-21'
+    if sys.platform == 'darwin':
+        legacy_home = legacy_home / 'Contents' / 'Home'
+    directory = ROOT / '.tools' / f"jdk-{config['version'].replace('+', '_')}-{key}"
+    java_home = legacy_home if (legacy_home / 'bin' / 'java').is_file() else None
+    if java_home is None:
+        matches = list(directory.glob('**/bin/java')) if directory.exists() else []
+        java_home = matches[0].parent.parent if matches else None
+    if java_home is None:
+        tools = ROOT / '.tools'
+        tools.mkdir(exist_ok=True)
+        filename = config['filenames'][key]
+        archive = tools / filename
+        if not archive.is_file() or sha256(archive) != config['sha256'][key]:
+            print(f"Downloading local JDK {config['version']} for {key}...", flush=True)
+            request = urllib.request.Request(
+                f"{config['base_url']}/{filename}",
+                headers={'User-Agent': 'MandarinToneTrainer/1.0'},
+            )
+            temporary = archive.with_name(f'{archive.name}.part')
+            with urllib.request.urlopen(request, timeout=300) as response:
+                temporary.write_bytes(response.read())
+            if sha256(temporary) != config['sha256'][key]:
+                temporary.unlink(missing_ok=True)
+                raise SystemExit('Downloaded JDK archive failed SHA-256 verification.')
+            temporary.replace(archive)
+        directory.mkdir(parents=True, exist_ok=True)
+        with tarfile.open(archive, 'r:gz') as source:
+            source.extractall(directory)
+        matches = list(directory.glob('**/bin/java'))
+        if not matches:
+            raise SystemExit('The downloaded JDK did not contain a Java executable.')
+        java_home = matches[0].parent.parent
+
+    user_bin, profile, profile_name = configure_user_bin()
+    installed = [
+        name
+        for name in ('java', 'javac', 'jar', 'keytool')
+        if install_user_shim(name, java_home / 'bin' / name, user_bin)
+    ]
+    os.environ['PATH'] = (
+        f'{java_home / "bin"}{os.pathsep}{os.environ.get("PATH", "")}'
+    )
+    os.environ['JAVA_HOME'] = str(java_home)
+    if java_major() < 21 or not shutil.which('keytool'):
+        raise SystemExit('The local JDK installation did not initialize correctly.')
+    if installed:
+        print(
+            f'Installed JDK commands in {user_bin}: {", ".join(installed)}.',
+            flush=True,
+        )
+    print(
+        f'Using local JDK {config["version"]}. New terminals load it through '
+        f'{profile}; for this terminal, run: source ~/{profile_name}',
+        flush=True,
+    )
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -159,7 +297,8 @@ def main():
     args = parser.parse_args()
 
     ensure_node()
-    require_command('ffmpeg', 'Install FFmpeg and ensure it is on PATH.')
+    ensure_jdk()
+    ensure_ffmpeg()
 
     if args.verify_only:
         run([sys.executable, 'scripts/validate_setup.py'])
