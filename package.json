@@ -12,6 +12,7 @@
     "android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
     "android:signing": "python3 scripts/configure_android_signing.py",
     "android:release": "npm run cap:sync && cd android && ./gradlew assembleRelease",
+    "audit:tones": "python3 scripts/audit_correction_tones.py --fail-on-unquarantined",
     "test": "python3 -m unittest discover -s tests -q"
   },
   "dependencies": {

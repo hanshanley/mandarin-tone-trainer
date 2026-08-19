@@ -105,6 +105,66 @@
       "reason": "Reported as incorrect or unclear.",
       "replacement": "pinyin_public"
     },
+    "ran4": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a rising contour instead of a fourth-tone fall.",
+      "replacement": "pinyin_public"
+    },
+    "rang1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a rising contour instead of a level first tone; no verified fallback is available.",
+      "replacement": null
+    },
+    "re1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a strongly rising contour instead of a level first tone.",
+      "replacement": "pinyin_public"
+    },
+    "ren4": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a rising contour instead of a fourth-tone fall.",
+      "replacement": "pinyin_public"
+    },
+    "rong2": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a flat contour instead of a rising second tone.",
+      "replacement": "pinyin_public"
+    },
+    "rou1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a strongly rising contour instead of a level first tone.",
+      "replacement": "pinyin_public"
+    },
+    "ruan1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a strongly rising contour instead of a level first tone.",
+      "replacement": "pinyin_public"
+    },
+    "rui1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a strongly rising contour instead of a level first tone; no public clip exists.",
+      "replacement": null
+    },
+    "wa1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a strongly rising contour instead of a level first tone.",
+      "replacement": "pinyin_public"
+    },
+    "wang1": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a strongly rising contour instead of a level first tone.",
+      "replacement": "pinyin_public"
+    },
+    "zhen2": {
+      "status": "bad",
+      "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rising second tone.",
+      "replacement": "pinyin_public"
+    },
+    "nin2": {
+      "status": "bad",
+      "reason": "Whisper and Paraformer recognize ning, and cross-corpus acoustic matching favors ning over nin.",
+      "replacement": "pinyin_public"
+    },
     "pin2": {
       "status": "bad",
       "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
@@ -157,6 +217,26 @@
     "lian4": {
       "status": "bad",
       "reason": "Audio payload duplicates lian1 and has the wrong tone contour.",
+      "replacement": "audio_cmn"
+    },
+    "rang1": {
+      "status": "bad",
+      "reason": "Mandarin ASR and cross-corpus acoustic matching indicate reng rather than rang; no verified fallback is available.",
+      "replacement": null
+    },
+    "tou3": {
+      "status": "bad",
+      "reason": "Whisper and Paraformer recognize tong, and cross-corpus acoustic matching strongly favors tong over tou.",
+      "replacement": "audio_cmn"
+    },
+    "cuo3": {
+      "status": "bad",
+      "reason": "Whisper and Paraformer recognize tuo, and cross-corpus acoustic matching strongly favors tuo over cuo.",
+      "replacement": "audio_cmn"
+    },
+    "miao1": {
+      "status": "bad",
+      "reason": "Whisper and Paraformer recognize mao, and cross-corpus acoustic matching favors mao over miao.",
       "replacement": "audio_cmn"
     },
     "shen4": {

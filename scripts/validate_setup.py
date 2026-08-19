@@ -181,7 +181,14 @@ process.stdout.write(JSON.stringify(result));
         for mode, result in selections.items():
             require(not result['missing'], f'{mode} has missing selected audio: {result["missing"][:5]}', errors)
             require(
-                result['unavailable'] == ['r1', 'r2', 'r3', 'r4'],
+                set(result['unavailable']) == {
+                    'r1',
+                    'r2',
+                    'r3',
+                    'r4',
+                    'rang1',
+                    'rui1',
+                },
                 f'{mode} unexpected unavailable keys: {result["unavailable"]}',
                 errors,
             )

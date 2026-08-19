@@ -77,6 +77,47 @@ Results are appended to the ignored `.audit/native-readings.jsonl` file after
 every recording. A `review` result is a candidate for independent listening or
 Mandarin-specific ASR confirmation; it is not automatically removed.
 
+The review policy is conservative:
+
+1. Whisper screens every app-relevant native recording.
+2. Mandarin Paraformer independently checks Whisper review candidates.
+3. Same-speaker syllable matching resolves disputed initials, finals, and
+   polyphonic readings.
+4. Only confirmed mismatches receive a replacement or `quiz_eligible: false`;
+   model disagreements remain available for human review.
+
+Audit every tone-specific comparison clip with both Praat and pYIN:
+
+```bash
+npm run audit:tones
+```
+
+This command fails when an app-used clip has a strong contour contradiction
+that is not recorded in `data/correction_audio_quality.json`.
+
+Screen every tone-specific clip for a base-syllable mismatch:
+
+```bash
+python3 scripts/audit_correction_identity.py
+```
+
+The identity audit is resumable and supports the same `--completed-from`,
+`--shard-count`, and `--shard-index` options as the native-reading audit.
+Confirm its `review` candidates with Mandarin Paraformer using
+`scripts/confirm_correction_identity.py`.
+
+Prioritize single-character homographs with:
+
+```bash
+python3 scripts/audit_native_readings.py \
+  --polyphonic-single-character \
+  --output .audit/polyphonic-readings.jsonl
+```
+
+For a faster resumable audit, split the unfinished recordings into independent
+outputs using `--completed-from`, `--shard-count`, and `--shard-index`. Merge
+the JSONL files after every shard completes.
+
 Correction playback always uses tone-specific syllable recordings, never an
 unlabeled word recording. Ambiguous Hanzi readings require matching recording
 metadata before they can enter the quiz.

@@ -387,6 +387,43 @@ process.stdout.write(JSON.stringify(result));
             'audio/audio_cmn/syllabs/cmn-ke2.mp3',
         )
         self.assertEqual(replacement['surface_pattern'], '2')
+        sleep = next(
+            recording
+            for recording in recordings
+            if recording['audio_path'] == 'audio/audio_cmn/觉/cmn-觉.mp3'
+        )
+        self.assertIs(sleep['quiz_eligible'], False)
+        self.assertIn('jue2', sleep['notes'])
+        self.assertIn('jiao4', sleep['notes'])
+        sleep_replacement = next(
+            recording
+            for recording in recordings
+            if recording.get('hsk_id') == 'L6-0437'
+            and recording.get('quiz_eligible') is not False
+        )
+        self.assertEqual(
+            sleep_replacement['audio_path'],
+            'audio/audio_cmn/syllabs/cmn-jiao4.mp3',
+        )
+        self.assertEqual(sleep_replacement['surface_pattern'], '4')
+        blood = next(
+            recording
+            for recording in recordings
+            if recording['audio_path'] == 'audio/audio_cmn/血/cmn-血.mp3'
+        )
+        self.assertIs(blood['quiz_eligible'], False)
+        self.assertIn('xie3', blood['notes'])
+        self.assertIn('xue4', blood['notes'])
+        blood_replacement = next(
+            recording
+            for recording in recordings
+            if recording.get('hsk_id') == 'L3-0798'
+            and recording.get('quiz_eligible') is not False
+        )
+        self.assertEqual(
+            blood_replacement['audio_path'],
+            'audio/audio_cmn/syllabs/cmn-xue4.mp3',
+        )
 
     def test_native_reading_audit_classifies_base_mismatches(self):
         audit = load_script('audit_native_readings.py')
@@ -395,6 +432,95 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual(audit.classify(['ke3'], expected), 'base_match')
         self.assertEqual(audit.classify(['hai1'], expected), 'review')
         self.assertEqual(audit.classify([], expected), 'unrecognized')
+        self.assertEqual(
+            audit.classify(['zhuo2', 'mo5'], [['zuo2', 'mo5']], '琢磨', '琢磨'),
+            'text_match',
+        )
+        self.assertIn('hai', audit.polyphonic_bases('咳'))
+        self.assertIn('ke', audit.polyphonic_bases('咳'))
+        self.assertEqual(
+            audit.classify(['ke2'], expected, '咳', '咳'),
+            'text_match',
+        )
+
+    def test_dual_tracker_tone_contradictions_are_quarantined(self):
+        quality = json.loads(
+            (ROOT / 'data' / 'correction_audio_quality.json').read_text(
+                encoding='utf-8'
+            )
+        )
+        public_fallbacks = {
+            'ran4',
+            're1',
+            'ren4',
+            'rong2',
+            'rou1',
+            'ruan1',
+            'wa1',
+            'wang1',
+            'zhen2',
+        }
+        for key in public_fallbacks:
+            self.assertEqual(quality['audio_cmn'][key]['status'], 'bad')
+            self.assertEqual(
+                quality['audio_cmn'][key]['replacement'],
+                'pinyin_public',
+            )
+        for key in {'rang1', 'rui1'}:
+            self.assertEqual(quality['audio_cmn'][key]['status'], 'bad')
+            self.assertIsNone(quality['audio_cmn'][key]['replacement'])
+        self.assertEqual(quality['pinyin_public']['rang1']['status'], 'bad')
+        self.assertIsNone(quality['pinyin_public']['rang1']['replacement'])
+        self.assertEqual(
+            quality['audio_cmn']['nin2']['replacement'],
+            'pinyin_public',
+        )
+        for key in {'tou3', 'cuo3', 'miao1'}:
+            self.assertEqual(
+                quality['pinyin_public'][key]['replacement'],
+                'audio_cmn',
+            )
+
+    def test_correction_identity_audit_detects_wrong_bases(self):
+        identity = load_script('audit_correction_identity.py')
+        self.assertEqual(identity.classify('zhen', ['zhen']), 'match')
+        self.assertEqual(identity.classify('zhen', ['zheng']), 'review')
+        self.assertEqual(identity.classify('zhen', []), 'unrecognized')
+
+    def test_confirmed_multiword_reading_mismatches_are_excluded(self):
+        recordings = json.loads(
+            (ROOT / 'data' / 'recordings.json').read_text(encoding='utf-8')
+        )
+        by_word = {
+            recording['word']: recording
+            for recording in recordings
+            if recording.get('recording_type') == 'isolated_word'
+        }
+        expected_notes = {
+            '一技之长': ('zhang3', 'chang2'),
+            '降落': ('xiang', 'jiang4'),
+            '着手': ('zhao', 'zhuo2'),
+            '南方': ('南风', '南方'),
+            '大都': ('dou1', 'du1'),
+            '追究': ('追求', '追究'),
+            '缺陷': ('曲线', '缺陷'),
+            '一身': ('一生', '一身'),
+            '羡慕': ('谢幕', '羡慕'),
+            '凑巧': ('chou4-jiao3', 'cou4-qiao3'),
+            '师范': ('吃饭', '师范'),
+            '轿车': ('校车', '轿车'),
+            '恳求': ('kan-qiu2', 'ken3-qiu2'),
+            '本着': ('ban3-zhe', 'ben3-zhe'),
+            '凳子': ('dong4-zi', 'deng4-zi'),
+            '登记': ('冬季', '登记'),
+            '前方': ('前锋', '前方'),
+            '陈旧': ('成就', '陈旧'),
+            '工地': ('土地', '工地'),
+        }
+        for word, markers in expected_notes.items():
+            self.assertIs(by_word[word]['quiz_eligible'], False)
+            for marker in markers:
+                self.assertIn(marker, by_word[word]['notes'])
 
     def test_ambiguous_surface_groupings_require_clip_labels(self):
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
