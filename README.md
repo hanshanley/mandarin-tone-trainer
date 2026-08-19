@@ -1,64 +1,46 @@
-# Mandarin Tone Trainer — HSK 1–9, multi-speaker, sandhi-aware
+# Mandarin Tone Trainer
 
-A local browser app for practicing Mandarin tones using **many human speakers per word**. The HSK vocabulary layer contains 11,092 entries. Audio is modeled as `word × speaker × recording`, so a word such as 公司 can have every available Mandarin recording rather than one canonical voice.
+An offline Mandarin listening trainer for the browser and Android. It uses
+native word recordings, tone-specific comparison audio, HSK 1–9 vocabulary,
+and sandhi-aware answers.
 
-## Tone model
+## What it includes
 
-Every HSK item stores:
+- 11,092 HSK vocabulary entries
+- 8,596 isolated native word recordings
+- 1,707 human tone-specific syllable recordings
+- 1,622 public-domain reference syllables
+- lexical and spoken-tone patterns
+- offline Android support
+- recording and playback for pronunciation comparison
 
-- `lexical_pattern`: dictionary tones (e.g. 你好 = `3-3`)
-- `default_surface_pattern`: expected heard realization (e.g. 你好 ≈ `2-3`)
-- `sandhi_tags`: third-tone sandhi, 不, 一, neutral tone, etc.
-- `surface_label_needs_clip_review`: true for cases where word-level rules are insufficient (especially longer T3 strings / prosodic grouping)
+Native prompts and tone buttons use separate audio:
 
-Every **recording** can additionally store its own `surface_pattern`. That clip-level label wins in the listening quiz. This is important because the goal is to practice what a particular native speaker actually says, not just what a dictionary predicts.
+| Control | Audio |
+| --- | --- |
+| **Native** | A real `audio-cmn` recording of the complete word |
+| **Tone buttons** | A tone-specific reference syllable, with reviewed fallbacks |
+| **Comparison voice** | Switches all tone buttons between reference and human audio |
 
-Neutral tone is represented as `N`.
+## Quick start
 
-## Recreate a complete setup after cloning
-
-The repository commits the reviewed vocabulary, definitions, tone corrections,
-application code, Android project, and exact upstream audio revisions. Large
-generated audio and mobile assets are intentionally excluded from Git.
-
-Prerequisites:
+### Requirements
 
 - Git
 - Python 3.10 or newer
 - FFmpeg on `PATH`
-- About 1 GiB of free disk space
+- about 1 GiB of free disk space
 
-`requirements.txt` is intentionally empty of packages because the Python tools
-use only the standard library. It is included so automated environments can
-still run the conventional command safely:
-
-```bash
-python3 -m pip install -r requirements.txt
-```
-
-The Python bootstrap automatically downloads a pinned, project-local Node.js
-22 toolchain when Node is missing or too old. No administrator access is
-needed. If you prefer a system Node installation, the committed `.nvmrc`
-selects the supported version:
-
-```bash
-nvm install
-nvm use
-```
+The setup script downloads a project-local Node.js 22 installation when a
+compatible system version is unavailable. Administrator access is not needed.
 
 On macOS with Homebrew:
 
 ```bash
-brew install python node ffmpeg
+brew install python ffmpeg
 ```
 
-On Ubuntu/Debian, install Python and FFmpeg with `apt`. On Windows, WSL is the
-simplest supported environment for the browser setup; use Android Studio on
-Windows for native Android builds.
-
-From a clean clone, run the Python bootstrap. It installs Node dependencies,
-downloads the pinned audio snapshots, recreates manifests and the offline
-mobile bundle, and runs all validation:
+### Install
 
 ```bash
 git clone https://github.com/hanshanley/mandarin-tone-trainer.git
@@ -66,101 +48,104 @@ cd mandarin-tone-trainer
 python3 scripts/bootstrap.py
 ```
 
-`npm run setup` is an equivalent convenience alias.
+The bootstrap is resumable. It installs Node dependencies, downloads pinned
+audio snapshots, builds the offline bundle, and validates the complete setup.
 
-The setup is resumable and automatically backs off/retries GitHub rate limits.
-To reuse an existing `node_modules` directory:
-
-```bash
-python3 scripts/bootstrap.py --skip-npm-ci
-```
-
-To verify an existing setup without downloading:
-
-```bash
-npm run verify:setup
-```
-
-The pinned snapshots are declared in `config/source_snapshots.json`. The
-bootstrap currently restores:
-
-- 8,596 isolated audio-cmn word recordings
-- 1,707 audio-cmn tone-specific syllable recordings
-- 1,622 public-domain comparison recordings
-
-It also verifies representative SHA-256 hashes, every manifest path, both
-comparison-voice modes, the generated `www/` bundle, and the test suite.
-
-### Run the browser app
+### Run
 
 ```bash
 python3 scripts/serve.py
 ```
 
-Open `http://localhost:8000/app/`.
+Open <http://localhost:8000/app/>.
 
-Native word prompts use the audio-cmn source. Tone-choice comparisons use the
-public pinyin corpus by default and fall back to reviewed human audio when a
-public clip is missing or quarantined.
+## Using the trainer
 
-The generated `audio/` and downloaded `imports/` directories are ignored by
-Git and should not be committed. The generated `www/`,
-`data/pinyin_public_recordings.json`, and `node_modules/` are also ignored and
-recreated by the bootstrap.
+1. Listen to the hidden word with **Native**.
+2. Choose a tone for each syllable.
+3. Review the word, pinyin, definition, and expected pattern.
+4. Use **Record me** to compare your pronunciation.
+5. Change **Comparison voice** to hear either the clear reference corpus or
+   human tone recordings.
 
-The committed `data/hsk_words.json`, `data/definitions.json`,
-`data/recordings.json`, and `data/correction_audio_quality.json` are canonical
-reviewed inputs. Normal setup deliberately does **not** regenerate them from
-moving external HSK or CC-CEDICT downloads.
+The app works offline after setup. Microphone permission is only needed for
+**Record me**.
 
-### Troubleshooting setup
+## Tone handling
 
-- `Missing required command`: install the named prerequisite and rerun setup.
-- Interrupted audio download: rerun `npm run setup`; valid existing files are
-  retained.
-- `snapshot hash mismatch`: remove only the named generated audio file and
-  rerun setup.
-- Stale mobile files: run `npm run build:mobile`, then
-  `npm run verify:setup`.
-- Slow downloads: use more workers, for example
-  `python3 scripts/bootstrap.py --workers 12`.
+Each vocabulary entry contains:
 
-### Intentionally update an upstream audio snapshot
+| Field | Meaning |
+| --- | --- |
+| `lexical_pattern` | Dictionary tones, such as `3-3` for 你好 |
+| `default_surface_pattern` | Expected spoken realization, such as `2-3` |
+| `sandhi_tags` | Applied third-tone, 不, 一, and neutral-tone rules |
+| `surface_label_needs_clip_review` | Marks pronunciation that depends on prosody |
 
-Do this only as a reviewed data change:
+A recording can provide its own `surface_pattern`. That clip-level label takes
+priority because the quiz should grade what the selected speaker actually
+says. Neutral tone is represented by `N`.
 
-1. Change the 40-character revision in `config/source_snapshots.json`.
-2. Download into a clean generated `audio/` and `imports/` setup.
-3. Review corpus counts, hashes, duplicate checks, and native-speaker quality.
-4. Update the expected counts/sample hashes in the snapshot file.
-5. Run `npm run verify:setup`.
+The preprocessing rules include:
 
-## Build and install the private Android app
+- third-tone sandhi: `3 + 3 → 2 + 3`
+- 不 before tone 4: `4 → 2`
+- 一 before tone 4: `1 → 2`
+- 一 before tones 1–3: `1 → 4`
+- common neutral-tone reductions
 
-The Android app is a Capacitor wrapper around the same browser app. It bundles
-the generated data and every audio file reachable by the trainer, so practice
-and recording work without a network connection. The current release APK is
-about 154 MiB (161 MB).
+Long third-tone sequences remain available but are marked for clip-level
+review when prosodic grouping is ambiguous.
 
-Prerequisites:
+## Audio quality
 
-- Node.js 22 or newer
+Known bad or mislabeled clips are listed in
+[`data/correction_audio_quality.json`](data/correction_audio_quality.json).
+The app uses an independent source when a clip is quarantined and excludes the
+tone when no verified replacement exists.
+
+Audio checks cover:
+
+- duplicate MP3 payloads
+- missing or malformed files
+- suspicious silence and padding
+- Praat and pYIN pitch contours
+- selection and fallback behavior
+- browser and Android bundle completeness
+
+Public comparison clips receive light EQ, loudness normalization, and peak
+limiting. These effects do not change pitch or timing.
+
+## Android
+
+The Android app is a Capacitor wrapper around the same browser app. All
+reachable data and audio are bundled into the APK.
+
+### Requirements
+
 - JDK 21
-- Android SDK Platform 36, Platform Tools, and Build Tools 35
-- The data and audio generated by the setup commands above
+- Android SDK Platform 36
+- Android Platform Tools
+- Android Build Tools 35
+- a completed quick-start setup
 
-After `npm run setup`, build a debug APK:
+### Build a debug APK
 
 ```bash
 npm run android:debug
 ```
 
-The debug APK is written to
-`android/app/build/outputs/apk/debug/app-debug.apk`.
+Output:
 
-### Configure private release signing
+```text
+android/app/build/outputs/apk/debug/app-debug.apk
+```
 
-Create and securely back up a private keystore outside this repository:
+The current debug APK is approximately 185 MiB.
+
+### Build a signed release
+
+Create and back up a keystore outside the repository:
 
 ```bash
 mkdir -p ~/.local/share/mandarin-tone-trainer
@@ -172,196 +157,165 @@ keytool -genkeypair \
   -validity 10000
 ```
 
-Copy `keystore.properties.example` to the ignored
-`keystore.properties` file, then fill in the absolute keystore path, alias,
-and passwords. Build the signed APK:
+Copy `keystore.properties.example` to `keystore.properties`, then enter the
+absolute keystore path, alias, and passwords.
 
 ```bash
 npm run android:release
 ```
 
-The release artifact is
-`android/app/build/outputs/apk/release/app-release.apk`. Never commit the
-keystore, `keystore.properties`, or their passwords. Back up the keystore and
-credentials together: Android will reject an in-place update signed with a
-different key.
+Output:
 
-### Sideload on a Pixel
+```text
+android/app/build/outputs/apk/release/app-release.apk
+```
 
-For installation over USB, enable Developer options and USB debugging on the
-phone, connect it, approve the computer, and run:
+Never commit the keystore or `keystore.properties`. Android updates must use
+the same signing key.
+
+### Install on a device
+
+With USB debugging enabled:
 
 ```bash
 adb install android/app/build/outputs/apk/release/app-release.apk
 ```
 
-For later builds, increment `versionCode` in `android/app/build.gradle`, rebuild
-with the same keystore, and update in place:
+For an update, increment `versionCode` in `android/app/build.gradle`, rebuild
+with the same key, and run:
 
 ```bash
 adb install -r android/app/build/outputs/apk/release/app-release.apk
 ```
 
-Without USB debugging, transfer the release APK to the phone, open it from the
-Files app, and allow **Install unknown apps** for Files when Android prompts.
-The first use of **Record me** requests microphone permission. The rest of the
-trainer remains usable if that permission is denied.
+## Common commands
 
-If `resources/logo.svg` changes, regenerate the committed launcher and splash
-resources with Android Studio's Image Asset tools. Android build output,
-copied web assets, downloaded audio, local SDK settings, and signing material
-are all excluded from Git.
+| Command | Purpose |
+| --- | --- |
+| `npm run setup` | Run the complete resumable bootstrap |
+| `npm run verify:setup` | Validate an existing setup without downloading |
+| `npm test` | Run the test suite |
+| `npm run build:mobile` | Rebuild the offline `www/` bundle |
+| `npm run android:debug` | Build a debug APK |
+| `npm run android:release` | Build a signed release APK |
 
-Definitions are sourced from the
-[official CC-CEDICT download](https://www.mdbg.net/chinese/dictionary?page=cedict)
-maintained by MDBG. Those definition fields are distributed under
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+To reuse the current `node_modules` directory:
 
-Correction buttons prefer the public-domain
-[`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
-corpus and fall back to human audio-cmn syllables when a public clip is
-unavailable or quarantined. Known defects are recorded in
-`data/correction_audio_quality.json`; items with no good source are excluded
-rather than playing an incorrect sound. Correction playback normalizes active
-speech loudness and uses a peak limiter; public clips also receive a gentle
-presence/high-shelf EQ with headroom, without changing pitch or timing.
-The **Comparison voice** setting switches every tone button between the clear
-reference corpus and human recordings for the current practice session.
+```bash
+python3 scripts/bootstrap.py --skip-npm-ci
+```
 
-Native word prompts always use the real human audio-cmn word recording.
-To avoid grading the wrong reading, metadata-free recordings are excluded when
-the same Hanzi has multiple pronunciations, and prosodically ambiguous tone
-groups require a recording-specific surface label before entering the quiz.
+To increase download concurrency:
 
-## Add local human audio
+```bash
+python3 scripts/bootstrap.py --workers 12
+```
 
-Put audio in folders by source and exact Mandarin word:
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+| `app/` | Browser interface and playback logic |
+| `android/` | Capacitor Android project |
+| `config/` | Pinned toolchain and source snapshots |
+| `data/` | Reviewed vocabulary, definitions, recordings, and quality policy |
+| `scripts/` | Setup, download, import, audit, and build tools |
+| `tests/` | Data, audio-policy, and bundle tests |
+| `audio/` | Downloaded audio; generated and ignored by Git |
+| `www/` | Generated offline mobile bundle; ignored by Git |
+
+The canonical reviewed inputs are:
+
+- `data/hsk_words.json`
+- `data/definitions.json`
+- `data/recordings.json`
+- `data/correction_audio_quality.json`
+
+Normal setup does not regenerate these files from changing upstream
+vocabulary or dictionary downloads.
+
+## Advanced audio workflows
+
+These scripts are for reviewed data maintenance, not normal setup.
+
+### Update a pinned audio snapshot
+
+1. Change the 40-character revision in `config/source_snapshots.json`.
+2. Download into clean generated `audio/` and `imports/` directories.
+3. Review counts, hashes, duplicates, pitch contours, and speaker quality.
+4. Update the expected counts and sample hashes.
+5. Run `npm run verify:setup`.
+
+### Import local human recordings
+
+Place files under a source and exact Mandarin word:
 
 ```text
 imports/
   forvo/
     公司/
-      rhapsodia.mp3
-      zizi.mp3
-      shadow0ing.mp3
+      speaker-name.mp3
+      speaker-name.json
 ```
 
-Optional sidecar metadata:
+Optional sidecar:
 
 ```json
 {
-  "speaker": "rhapsodia",
+  "speaker": "speaker-name",
   "sex": "f",
   "country": "CHN",
   "region": "Beijing",
-  "rate": 4,
   "surface_pattern": "1-1",
-  "source_url": "https://forvo.com/word/公司/#zh"
+  "source_url": "https://example.com/source"
 }
 ```
 
-Then:
+Import them with:
 
 ```bash
 python3 scripts/import_local_audio.py
 ```
 
-The importer preserves these recordings in `data/recordings.json`, but the
-current trainer intentionally selects only verified `audio_cmn` word prompts.
-Support for choosing other indexed sources is future work.
+Imported sources are indexed, but native quiz prompts currently select only
+verified `audio_cmn` recordings.
 
-## Bootstrap direct HSK audio with audio-cmn
+### Other tools
 
-The project includes a resumable downloader for the open human Mandarin
-`audio-cmn` corpus. It matches the local HSK vocabulary, downloads every
-matching isolated-word MP3, and writes Mandarin/language/license provenance
-sidecars:
+| Script | Purpose |
+| --- | --- |
+| `download_audio_cmn.py` | Download isolated native words |
+| `download_audio_cmn_syllables.py` | Download human tone syllables |
+| `download_public_pinyin_syllables.py` | Download public comparison syllables |
+| `check_audio_cmn_syllables.py` | Check duplicate and malformed syllable audio |
+| `pad_audio_cmn_syllables.py` | Export padded syllable MP3 files |
+| `forvo_inventory.py` | Inventory Forvo pronunciations without caching audio |
+| `common_voice_index.py` | Index Mandarin Common Voice context clips |
+| `download_openai_tts_sample.py` | Create optional synthetic samples |
 
-```bash
-python3 scripts/download_audio_cmn.py --all-source
-python3 scripts/download_audio_cmn_syllables.py
-python3 scripts/import_local_audio.py
-python3 scripts/add_pinyin_syllables.py
-python3 scripts/add_definitions.py
-```
+Generated audio, imported files, Node modules, mobile assets, SDK settings,
+build output, and signing material are excluded from Git.
 
-Use `--quality 64k` for smaller files, or `--limit 20` to smoke-test first.
-Use `--all-source` to enumerate and download all 8,596 files published by
-audio-cmn, including source vocabulary not present in the local HSK 3.0 list.
-The source is CC-BY-SA and covers the older HSK 2000 vocabulary, so missing
-words in the HSK 3.0 list are expected. The importer preserves each source
-recording separately and marks it as verified Mandarin (`language_code: zh`).
-To check the downloaded syllable clips for suspicious internal gaps:
+## Troubleshooting
 
-```bash
-python3 scripts/check_audio_cmn_syllables.py
-```
+| Problem | Action |
+| --- | --- |
+| Missing command | Install the command named in the error and rerun setup |
+| Interrupted download | Rerun `npm run setup`; valid files are retained |
+| Snapshot hash mismatch | Remove only the named generated file and rerun setup |
+| Stale mobile bundle | Run `npm run build:mobile`, then `npm run verify:setup` |
+| Port 8000 is busy | Run `PORT=8001 python3 scripts/serve.py` |
+| Android SDK not found | Set `ANDROID_HOME` or `sdk.dir` in `android/local.properties` |
 
-Correction playback always uses the tone-specific `syllabs` recordings, never
-an unlabeled word recording. Words with multiple HSK readings are excluded
-unless a recording has an explicit matching `surface_pattern`, preventing one
-Hanzi spelling from being paired with the wrong reading.
+## Data sources and licenses
 
-The browser adds 120 ms of leading silence and 200 ms of trailing silence to
-the decoded correction audio in memory. It copies the decoded PCM unchanged,
-so pitch, timing, and consonant distinctions are preserved without another
-lossy encode. For exported padded MP3 copies, use:
-
-```bash
-python3 scripts/pad_audio_cmn_syllables.py
-```
-
-## Small OpenAI TTS sample
-
-OpenAI-generated voices are kept separate from human recordings. To create a
-small local sample for 公司, 你好, and 谢谢:
-
-```bash
-export OPENAI_API_KEY='...'
-python3 scripts/download_openai_tts_sample.py
-python3 scripts/import_local_audio.py
-```
-
-The default sample uses `coral`, `marin`, and `cedar` with
-`gpt-4o-mini-tts`. These files are synthetic Mandarin examples, not native
-speaker recordings. They are indexed for future source-selection support but
-are not selected by the current trainer.
-
-## Forvo: inventory every Mandarin pronunciation
-
-Forvo's official `word-pronunciations` API returns all pronunciations for a word and can be restricted to `language=zh`. The included script inventories every Mandarin speaker returned:
-
-```bash
-export FORVO_API_KEY='...'
-python3 scripts/forvo_inventory.py
-```
-
-It **does not cache/download API audio** because Forvo's current API terms say audio links expire after two hours and API pronunciations may not be cached. Locally obtained recordings can still be indexed with `import_local_audio.py`.
-
-The free/individual API plan is currently limited to 500 requests/day, so the script supports resumable chunks:
-
-```bash
-python3 scripts/forvo_inventory.py --start 0 --limit-words 500
-python3 scripts/forvo_inventory.py --start 500 --limit-words 500
-```
-
-## Other Mandarin speakers
-
-`scripts/common_voice_index.py` can index HSK words occurring inside a downloaded Mandarin Common Voice corpus. Those are marked as **context** clips rather than pretending the entire sentence is an isolated-word recording. A later forced-alignment pass can crop exact word spans.
-
-This distinction gives the trainer two useful difficulty levels:
-
-1. isolated native word recordings (Forvo / word corpora)
-2. natural contextual Mandarin from many speakers
-
-## Sandhi included, not filtered
-
-The app intentionally keeps sandhi-sensitive items. Surface mode trains the realized tones; lexical mode trains the dictionary pattern; mixed mode alternates the two. Basic rules implemented in the preprocessing layer include:
-
-- `3 + 3 → 2 + 3`
-- 不: `4 → 2` before a fourth tone
-- 一: `1 → 2` before T4, and `1 → 4` before T1/T2/T3 in ordinary connected use
-- common `A不A` / reduplicative 一 reductions to neutral tone
-- lexical neutral-tone syllables
-
-Longer third-tone sequences are retained and flagged for clip-level review because their realization depends on prosodic grouping.
+- Definitions come from
+  [CC-CEDICT](https://www.mdbg.net/chinese/dictionary?page=cedict), maintained
+  by MDBG and distributed under
+  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+- Native word and human syllable recordings come from `audio-cmn` under its
+  published CC BY-SA terms.
+- Reference syllables come from
+  [`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
+  under the Unlicense.
+- Forvo API audio is not downloaded or cached by the inventory script.
