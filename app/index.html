@@ -38,10 +38,6 @@
         <input type="checkbox" id="sandhiOnly">
         <span>Sandhi only</span>
       </label>
-      <div class="practice-navigation">
-        <button id="back" class="back-button" type="button" disabled><span aria-hidden="true">←</span> Back</button>
-        <button id="next" class="primary-button" type="button">Next word <span aria-hidden="true">→</span></button>
-      </div>
     </section>
 
     <section class="card" aria-label="Tone practice">
@@ -55,6 +51,10 @@
       <div id="audioStatus" class="audio-status" role="status" aria-live="polite"></div>
       <div id="answers" class="answers"></div>
       <div id="reveal" class="reveal hidden" aria-live="polite"></div>
+      <nav class="practice-navigation" aria-label="Word navigation">
+        <button id="back" class="back-button" type="button" disabled><span aria-hidden="true">←</span> Previous word</button>
+        <button id="next" class="primary-button" type="button">Next word <span aria-hidden="true">→</span></button>
+      </nav>
     </section>
 
     <section class="help progress-panel" aria-label="Progress controls">

@@ -211,6 +211,19 @@ function grade(p,correct){
   const definition=current.definition?`<p class="definition"><strong>Definition:</strong> ${escapeHTML(current.definition)}</p>`:'';
   $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="pinyin">${escapeHTML(current.pinyin)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
+  if(window.matchMedia('(max-width: 680px)').matches){
+    $('reveal').scrollIntoView({
+      behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
+      block:'nearest',
+    });
+  }
+}
+function scrollToPractice(){
+  if(!window.matchMedia('(max-width: 680px)').matches)return;
+  document.querySelector('.card').scrollIntoView({
+    behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
+    block:'start',
+  });
 }
 function audioURL(r){if(!r)return null;let p=r.audio_path||''; if(p.startsWith('audio/'))return '../'+p; return p}
 function stopNative(){
@@ -411,8 +424,8 @@ async function playCorrection(index,tone){
   return playPinyinKey(key);
 }
 $('play').onclick=playNative;
-$('back').onclick=()=>back(true);
-$('next').onclick=()=>next(true);
+$('back').onclick=()=>{back(true);scrollToPractice()};
+$('next').onclick=()=>{next(true);scrollToPractice()};
 $('syllables').onchange=()=>{quizHistory=[];next(true,false)};
 $('correctionSource').onchange=()=>{
   stopCorrection();

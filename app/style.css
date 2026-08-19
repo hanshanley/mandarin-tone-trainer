@@ -221,8 +221,11 @@ select {
 
 .practice-navigation {
   display: flex;
+  justify-content: flex-end;
   gap: 0.65rem;
-  margin-left: auto;
+  margin-top: 1.7rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #ebe7df;
 }
 
 .practice-navigation .primary-button {
@@ -390,6 +393,7 @@ select {
 .reveal {
   margin-top: 1.7rem;
   padding: 1.45rem;
+  scroll-margin-block: 1rem 7rem;
   border: 1px solid #cfe3da;
   border-radius: 14px;
   background: linear-gradient(135deg, #f0f8f4, #f9fbf8);
@@ -519,6 +523,7 @@ code {
   main {
     width: min(100% - 1.25rem, 960px);
     padding-top: calc(1.5rem + env(safe-area-inset-top));
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
   }
 
   header {
@@ -550,9 +555,25 @@ code {
 
   .practice-navigation {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-    margin-left: 0;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    position: fixed;
+    z-index: 20;
+    right: max(0.625rem, env(safe-area-inset-right));
+    bottom: max(0.625rem, env(safe-area-inset-bottom));
+    left: max(0.625rem, env(safe-area-inset-left));
+    width: auto;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0.75rem;
+    border: 1px solid rgba(201, 196, 186, 0.9);
+    border-radius: 14px;
+    background: rgba(255, 253, 250, 0.96);
+    box-shadow: 0 10px 30px rgba(43, 53, 47, 0.16);
+    backdrop-filter: blur(12px);
+  }
+
+  .practice-navigation button {
+    min-height: 52px;
   }
 
   .back-button {

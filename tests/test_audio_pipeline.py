@@ -30,6 +30,7 @@ add_definitions = load_script('add_definitions.py')
 check_syllables = load_script('check_audio_cmn_syllables.py')
 download_public_pinyin = load_script('download_public_pinyin_syllables.py')
 bootstrap_script = load_script('bootstrap.py')
+configure_signing = load_script('configure_android_signing.py')
 
 
 class PinyinSegmentationTests(unittest.TestCase):
@@ -302,6 +303,14 @@ process.stdout.write(JSON.stringify(result));
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
         self.assertIn('id="back"', index)
         self.assertIn('id="back" class="back-button" type="button" disabled', index)
+        card = index.split('<section class="card"', 1)[1].split('</section>', 1)[0]
+        self.assertIn('aria-label="Word navigation"', card)
+        self.assertGreater(card.index('id="next"'), card.index('id="reveal"'))
+        controls = index.split('<section class="controls"', 1)[1].split(
+            '</section>',
+            1,
+        )[0]
+        self.assertNotIn('id="next"', controls)
         self.assertIn('QUIZ_HISTORY_LIMIT=50', source)
         self.assertIn('function currentSnapshot()', source)
         self.assertIn('selectedTones:[...selectedTones]', source)
@@ -309,7 +318,17 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn('function restoreToneState(state)', source)
         self.assertIn('function back(play=false)', source)
         self.assertIn('quizHistory.pop()', source)
-        self.assertIn("$('back').onclick=()=>back(true);", source)
+        self.assertIn("function scrollToPractice()", source)
+        self.assertIn("$('reveal').scrollIntoView", source)
+        self.assertIn("document.querySelector('.card').scrollIntoView", source)
+        self.assertIn(
+            "$('back').onclick=()=>{back(true);scrollToPractice()}",
+            source,
+        )
+        self.assertIn(
+            "$('next').onclick=()=>{next(true);scrollToPractice()}",
+            source,
+        )
         self.assertIn("load().then(()=>next(true,false))", source)
         self.assertIn("quizHistory=[];next(true,false)", source)
 
@@ -517,6 +536,24 @@ process.stdout.write(JSON.stringify(result));
             cwd=ROOT,
         )
         self.assertNotEqual(example.returncode, 0)
+
+    def test_signing_configuration_is_private_and_escaped(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            properties = root / 'keystore.properties'
+            keystore = root / 'release.jks'
+            configure_signing.write_signing_properties(
+                properties,
+                keystore,
+                'mandarin-tone-trainer',
+                r'store\password',
+                r'key\password',
+            )
+            self.assertEqual(properties.stat().st_mode & 0o777, 0o600)
+            content = properties.read_text()
+            self.assertIn(f'storeFile={keystore.resolve()}', content)
+            self.assertIn(r'storePassword=store\\password', content)
+            self.assertIn(r'keyPassword=key\\password', content)
 
     def test_bad_human_syllables_have_explicit_fallback_policy(self):
         quality = json.loads(

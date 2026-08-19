@@ -10,6 +10,7 @@
     "cap:sync": "npm run build:mobile && npx cap sync android",
     "android:open": "npm run cap:sync && npx cap open android",
     "android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
+    "android:signing": "python3 scripts/configure_android_signing.py",
     "android:release": "npm run cap:sync && cd android && ./gradlew assembleRelease",
     "test": "python3 -m unittest discover -s tests -q"
   },

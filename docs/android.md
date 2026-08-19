@@ -37,20 +37,22 @@ android/app/build/outputs/apk/debug/app-debug.apk
 
 ## Release signing
 
-Create and securely back up a private keystore outside the repository:
+Configure signing with one interactive command:
 
 ```bash
-mkdir -p ~/.local/share/mandarin-tone-trainer
-"$HOME/.local/bin/keytool" -genkeypair \
-  -keystore ~/.local/share/mandarin-tone-trainer/release.jks \
-  -alias mandarin-tone-trainer \
-  -keyalg RSA \
-  -keysize 4096 \
-  -validity 10000
+npm run android:signing
 ```
 
-Copy `keystore.properties.example` to the ignored `keystore.properties` file.
-Enter the absolute keystore path, alias, and passwords.
+The command creates a private keystore when one does not exist, or validates
+the existing keystore password. It then writes the ignored
+`keystore.properties` file with owner-only permissions. The password is
+entered securely and is not printed.
+
+Back up the keystore and its password together. By default the keystore is:
+
+```text
+~/.local/share/mandarin-tone-trainer/release.jks
+```
 
 ```bash
 npm run android:release
@@ -62,8 +64,8 @@ The signed APK is written to:
 android/app/build/outputs/apk/release/app-release.apk
 ```
 
-Never commit the keystore or `keystore.properties`. Back up the keystore and
-credentials together. Android updates must be signed with the same key.
+Never commit the keystore or `keystore.properties`. Android updates must be
+signed with the same key.
 
 ## Install on a device
 
