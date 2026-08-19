@@ -26,7 +26,7 @@ def contour(path, method):
             hop_length=160,
             fill_na=np.nan,
         )
-    else:
+    elif method == 'praat':
         pitch = parselmouth.Sound(
             samples.astype(float),
             sample_rate,
@@ -38,6 +38,22 @@ def contour(path, method):
         )
         frequencies = pitch.selected_array['frequency'].astype(float)
         frequencies[frequencies <= 0] = np.nan
+    else:
+        import pyworld
+
+        frequencies, time_axis = pyworld.harvest(
+            samples.astype('float64'),
+            sample_rate,
+            f0_floor=70,
+            f0_ceil=500,
+            frame_period=10,
+        )
+        frequencies = pyworld.stonemask(
+            samples.astype('float64'),
+            frequencies,
+            time_axis,
+            sample_rate,
+        )
     frequencies = frequencies[
         np.isfinite(frequencies) & (frequencies > 85)
     ]
@@ -70,12 +86,13 @@ def contour_metrics(values):
 
 
 def contradiction(key, curves):
+    methods = ('pyin', 'praat', 'world')
     tone = key[-1:] if key[-1:] in '1234' else None
-    if tone is None or any(curves.get(method) is None for method in ('pyin', 'praat')):
+    if tone is None or any(curves.get(method) is None for method in methods):
         return None
     metrics = {
         method: contour_metrics(curves[method])
-        for method in ('pyin', 'praat')
+        for method in methods
     }
     if tone == '1' and all(
         abs(values['delta']) > 3.5 and values['range'] > 4
@@ -84,7 +101,7 @@ def contradiction(key, curves):
         return 'strongly non-level tone 1', metrics
     if tone == '2':
         if all(
-            values['rise'] < 1 and values['range'] < 2
+            values['rise'] < 1.25 and values['range'] < 2
             for values in metrics.values()
         ):
             return 'flat tone-1-like tone 2', metrics
@@ -95,7 +112,7 @@ def contradiction(key, curves):
             return 'falling tone 2', metrics
     if tone == '4':
         if all(
-            values['fall'] < 1 and values['range'] < 2
+            values['fall'] < 1.25 and values['range'] < 2
             for values in metrics.values()
         ):
             return 'flat tone-1-like tone 4', metrics
@@ -139,7 +156,7 @@ def main():
             key = path.stem.removeprefix(prefix)
             curves = {
                 method: contour(path, method)
-                for method in ('pyin', 'praat')
+                for method in ('pyin', 'praat', 'world')
             }
             result = contradiction(key, curves)
             if result is not None:

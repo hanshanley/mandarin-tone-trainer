@@ -459,6 +459,7 @@ process.stdout.write(JSON.stringify(result));
             'wa1',
             'wang1',
             'zhen2',
+            'niu2',
         }
         for key in public_fallbacks:
             self.assertEqual(quality['audio_cmn'][key]['status'], 'bad')

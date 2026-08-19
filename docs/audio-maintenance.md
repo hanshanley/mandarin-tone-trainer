@@ -94,6 +94,14 @@ npm run audit:tones
 
 This command fails when an app-used clip has a strong contour contradiction
 that is not recorded in `data/correction_audio_quality.json`.
+The audit uses three independent pitch trackers: pYIN, Praat autocorrelation,
+and WORLD/Harvest.
+
+Run the complete contour and re-encoded-duplicate checks together:
+
+```bash
+npm run audit:corrections
+```
 
 Screen every tone-specific clip for a base-syllable mismatch:
 

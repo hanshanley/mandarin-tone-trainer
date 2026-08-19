@@ -165,6 +165,11 @@
       "reason": "Whisper and Paraformer recognize ning, and cross-corpus acoustic matching favors ning over nin.",
       "replacement": "pinyin_public"
     },
+    "niu2": {
+      "status": "bad",
+      "reason": "pYIN, Praat, and WORLD find a nearly flat contour instead of a rising second tone.",
+      "replacement": "pinyin_public"
+    },
     "pin2": {
       "status": "bad",
       "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",

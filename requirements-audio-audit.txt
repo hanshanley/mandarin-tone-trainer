@@ -3,3 +3,4 @@ faster-whisper==1.2.1
 pypinyin==0.55.0
 librosa==0.11.0
 praat-parselmouth==0.4.7
+pyworld==0.3.5
