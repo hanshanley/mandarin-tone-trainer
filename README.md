@@ -88,9 +88,11 @@ The Android build packages the application, vocabulary, and every reachable
 audio file into a single offline APK.
 
 After the quickstart, install Android SDK Platform 36, Platform Tools, and
-Build Tools 35, then run:
+Build Tools 35. Rerun the bootstrap once so it can configure the SDK and expose
+`adb`, then build:
 
 ```bash
+python3 scripts/bootstrap.py --verify-only
 npm run android:debug
 ```
 

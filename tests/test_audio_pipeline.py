@@ -459,6 +459,65 @@ process.stdout.write(JSON.stringify(result));
                 1,
             )
 
+    def test_bootstrap_configures_an_existing_android_sdk(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sdk = root / 'sdk'
+            platform_tools = sdk / 'platform-tools'
+            platform_tools.mkdir(parents=True)
+            adb = platform_tools / 'adb'
+            adb.write_text('#!/bin/sh\n')
+            adb.chmod(0o755)
+            home = root / 'home'
+            home.mkdir()
+            project = root / 'project'
+            original_path = os.environ.get('PATH', '')
+            try:
+                selected = bootstrap_script.configure_android_sdk(
+                    sdk_root=sdk,
+                    home=home,
+                    shell='/bin/zsh',
+                    project_root=project,
+                )
+            finally:
+                os.environ['PATH'] = original_path
+            self.assertEqual(selected, sdk.resolve())
+            self.assertEqual(
+                (home / '.local' / 'bin' / 'adb').resolve(),
+                adb.resolve(),
+            )
+            self.assertEqual(
+                (project / 'android' / 'local.properties').read_text(),
+                f'sdk.dir={sdk.resolve()}\n',
+            )
+
+    def test_sensitive_local_files_are_ignored(self):
+        sensitive = [
+            'keystore.properties',
+            'release.jks',
+            'signing.keystore',
+            'certificate.p12',
+            'certificate.pfx',
+            'private.pem',
+            'private.key',
+            '.env',
+            '.env.local',
+            'android/local.properties',
+            'android/app/google-services.json',
+            'ios/App/GoogleService-Info.plist',
+        ]
+        for path in sensitive:
+            result = subprocess.run(
+                ['git', 'check-ignore', '--quiet', path],
+                cwd=ROOT,
+            )
+            self.assertEqual(result.returncode, 0, path)
+        example = subprocess.run(
+            ['git', 'check-ignore', '--quiet', '.env.example'],
+            cwd=ROOT,
+        )
+        self.assertNotEqual(example.returncode, 0)
+
     def test_bad_human_syllables_have_explicit_fallback_policy(self):
         quality = json.loads(
             (ROOT / 'data' / 'correction_audio_quality.json').read_text(

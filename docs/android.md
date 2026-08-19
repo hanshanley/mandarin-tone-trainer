@@ -15,6 +15,14 @@ The bootstrap installs and exposes the required JDK 21 commands, including
 - Android Platform Tools
 - Android Build Tools 35
 
+After installing the Android SDK, rerun the bootstrap once. It detects the SDK,
+configures `android/local.properties`, and exposes `adb` through
+`~/.local/bin`:
+
+```bash
+python3 scripts/bootstrap.py --verify-only
+```
+
 ## Debug build
 
 ```bash
@@ -33,7 +41,7 @@ Create and securely back up a private keystore outside the repository:
 
 ```bash
 mkdir -p ~/.local/share/mandarin-tone-trainer
-keytool -genkeypair \
+"$HOME/.local/bin/keytool" -genkeypair \
   -keystore ~/.local/share/mandarin-tone-trainer/release.jks \
   -alias mandarin-tone-trainer \
   -keyalg RSA \
@@ -62,14 +70,14 @@ credentials together. Android updates must be signed with the same key.
 Enable Developer options and USB debugging, connect the device, and run:
 
 ```bash
-adb install android/app/build/outputs/apk/release/app-release.apk
+"$HOME/.local/bin/adb" install android/app/build/outputs/apk/release/app-release.apk
 ```
 
 For later releases, increment `versionCode` in
 `android/app/build.gradle`, rebuild with the same key, and update in place:
 
 ```bash
-adb install -r android/app/build/outputs/apk/release/app-release.apk
+"$HOME/.local/bin/adb" install -r android/app/build/outputs/apk/release/app-release.apk
 ```
 
 Without USB debugging, transfer the APK to the device and open it from the

@@ -281,6 +281,61 @@ def ensure_jdk():
     )
 
 
+def configure_android_sdk(
+    sdk_root=None,
+    home=None,
+    shell=None,
+    project_root=ROOT,
+):
+    candidates = []
+    if sdk_root:
+        candidates.append(Path(sdk_root))
+    for variable in ('ANDROID_HOME', 'ANDROID_SDK_ROOT'):
+        if os.environ.get(variable):
+            candidates.append(Path(os.environ[variable]))
+    home_path = Path(home) if home else Path.home()
+    candidates.extend([
+        project_root / '.tools' / 'android-sdk',
+        home_path / 'Library' / 'Android' / 'sdk',
+        home_path / 'Android' / 'Sdk',
+    ])
+    sdk = next(
+        (
+            candidate.resolve()
+            for candidate in candidates
+            if (candidate / 'platform-tools' / 'adb').is_file()
+        ),
+        None,
+    )
+    if sdk is None:
+        return None
+
+    user_bin, profile, profile_name = configure_user_bin(home_path, shell)
+    install_user_shim('adb', sdk / 'platform-tools' / 'adb', user_bin)
+    local_properties = project_root / 'android' / 'local.properties'
+    existing = (
+        local_properties.read_text(encoding='utf-8')
+        if local_properties.exists()
+        else ''
+    )
+    lines = [
+        line
+        for line in existing.splitlines()
+        if not line.startswith('sdk.dir=')
+    ]
+    lines.append(f'sdk.dir={sdk}')
+    local_properties.parent.mkdir(parents=True, exist_ok=True)
+    local_properties.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    os.environ['ANDROID_HOME'] = str(sdk)
+    os.environ['ANDROID_SDK_ROOT'] = str(sdk)
+    print(
+        f'Configured Android SDK at {sdk}. New terminals load adb through '
+        f'{profile}; for this terminal, run: source ~/{profile_name}',
+        flush=True,
+    )
+    return sdk
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -299,6 +354,7 @@ def main():
     ensure_node()
     ensure_jdk()
     ensure_ffmpeg()
+    configure_android_sdk()
 
     if args.verify_only:
         run([sys.executable, 'scripts/validate_setup.py'])
