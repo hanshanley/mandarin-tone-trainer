@@ -107,67 +107,37 @@
     },
     "pin2": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
+      "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
       "replacement": "pinyin_public"
     },
     "pou2": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
+      "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
       "replacement": "pinyin_public"
     },
     "tie2": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
+      "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
       "replacement": "pinyin_public"
     },
     "zhuan2": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
+      "reason": "Praat and pYIN find a flat tone-1-like contour instead of a rise; the independent public clip rises normally.",
       "replacement": "pinyin_public"
     },
     "ceng4": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
-      "replacement": "pinyin_public"
-    },
-    "huan4": {
-      "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
+      "reason": "Praat and pYIN find less than one semitone of fall; the independent public clip has a clear fourth-tone contour.",
       "replacement": "pinyin_public"
     },
     "pou4": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
-      "replacement": "pinyin_public"
-    },
-    "se4": {
-      "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
+      "reason": "Praat and pYIN find less than one semitone of fall; the independent public clip has a clear fourth-tone contour.",
       "replacement": "pinyin_public"
     },
     "shu4": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
-      "replacement": "pinyin_public"
-    },
-    "xiong4": {
-      "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
-      "replacement": "pinyin_public"
-    },
-    "zhe4": {
-      "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
-      "replacement": "pinyin_public"
-    },
-    "zhi4": {
-      "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
-      "replacement": "pinyin_public"
-    },
-    "zhuang4": {
-      "status": "bad",
-      "reason": "Praat analysis finds a flat tone-1-like contour instead of a fall; the independent public clip falls normally.",
+      "reason": "Praat finds a flat contour and pYIN cannot obtain a stable track; the independent public clip has a clear fourth-tone fall.",
       "replacement": "pinyin_public"
     },
     "mou3": {
@@ -191,12 +161,12 @@
     },
     "shen4": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat contour matching shen1 instead of a fourth-tone fall; the independent human clip falls normally.",
+      "reason": "Praat and pYIN find a flat contour matching shen1 instead of a fourth-tone fall; the independent human clip falls normally.",
       "replacement": "audio_cmn"
     },
     "sheng4": {
       "status": "bad",
-      "reason": "Praat analysis finds a flat contour matching sheng1 instead of a fourth-tone fall; the independent human clip falls normally.",
+      "reason": "Praat and pYIN find a flat contour matching sheng1 instead of a fourth-tone fall; the independent human clip falls normally.",
       "replacement": "audio_cmn"
     },
     "xiang1": {
