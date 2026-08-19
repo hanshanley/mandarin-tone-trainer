@@ -54,21 +54,27 @@ def main():
         recording
         for recording in recordings
         if recording.get('source') == 'audio_cmn'
+        and recording.get('recording_type') == 'isolated_word'
     ]
     require(
         len(word_recordings) == snapshots['audio_cmn']['word_recordings'],
         f"expected {snapshots['audio_cmn']['word_recordings']} indexed audio-cmn words, found {len(word_recordings)}",
         errors,
     )
+    runtime_word_recordings = [
+        recording
+        for recording in recordings
+        if recording.get('source') == 'audio_cmn'
+    ]
     missing_words = [
         recording['audio_path']
-        for recording in word_recordings
+        for recording in runtime_word_recordings
         if not (ROOT / recording['audio_path']).is_file()
     ]
     require(not missing_words, f'missing indexed word audio: {missing_words[:5]}', errors)
     invalid_words = [
         recording['audio_path']
-        for recording in word_recordings
+        for recording in runtime_word_recordings
         if not valid_mp3(ROOT / recording['audio_path'])
     ]
     require(not invalid_words, f'invalid indexed word audio: {invalid_words[:5]}', errors)

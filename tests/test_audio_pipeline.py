@@ -306,10 +306,10 @@ process.stdout.write(JSON.stringify(result));
         card = index.split('<section class="card"', 1)[1].split('</section>', 1)[0]
         self.assertIn('aria-label="Word navigation"', card)
         self.assertGreater(card.index('id="next"'), card.index('id="reveal"'))
-        controls = index.split('<section class="controls"', 1)[1].split(
-            '</section>',
-            1,
-        )[0]
+        self.assertGreater(card.index('class="controls"'), card.index('id="prompt"'))
+        self.assertLess(card.index('class="controls"'), card.index('class="audio-row"'))
+        controls = card.split('<div class="controls"', 1)[1].split('</div>', 1)[0]
+        self.assertIn('id="syllables"', controls)
         self.assertNotIn('id="next"', controls)
         self.assertIn('QUIZ_HISTORY_LIMIT=50', source)
         self.assertIn('function currentSnapshot()', source)
@@ -347,6 +347,7 @@ process.stdout.write(JSON.stringify(result));
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
         self.assertIn('function readingKey(w)', source)
         self.assertIn('readingsByWord.get(w.word)', source)
+        self.assertIn('r.quiz_eligible===false', source)
         self.assertNotIn('patternsByWord.get(w.word)', source)
         words = json.loads(
             (ROOT / 'data' / 'hsk_words.json').read_text(encoding='utf-8')
@@ -362,6 +363,38 @@ process.stdout.write(JSON.stringify(result));
             )
         for word in ['还', '行', '卡', '系', '落', '露', '实在', '编辑']:
             self.assertGreater(len(by_word[word]), 1, word)
+
+    def test_mismatched_native_reading_is_excluded(self):
+        recordings = json.loads(
+            (ROOT / 'data' / 'recordings.json').read_text(encoding='utf-8')
+        )
+        cough = next(
+            recording
+            for recording in recordings
+            if recording['audio_path'] == 'audio/audio_cmn/咳/cmn-咳.mp3'
+        )
+        self.assertIs(cough['quiz_eligible'], False)
+        self.assertIn('hai', cough['notes'])
+        self.assertIn('ke2', cough['notes'])
+        replacement = next(
+            recording
+            for recording in recordings
+            if recording.get('hsk_id') == 'L5-0436'
+            and recording.get('quiz_eligible') is not False
+        )
+        self.assertEqual(
+            replacement['audio_path'],
+            'audio/audio_cmn/syllabs/cmn-ke2.mp3',
+        )
+        self.assertEqual(replacement['surface_pattern'], '2')
+
+    def test_native_reading_audit_classifies_base_mismatches(self):
+        audit = load_script('audit_native_readings.py')
+        expected = [['ke2']]
+        self.assertEqual(audit.classify(['ke2'], expected), 'exact')
+        self.assertEqual(audit.classify(['ke3'], expected), 'base_match')
+        self.assertEqual(audit.classify(['hai1'], expected), 'review')
+        self.assertEqual(audit.classify([], expected), 'unrecognized')
 
     def test_ambiguous_surface_groupings_require_clip_labels(self):
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')

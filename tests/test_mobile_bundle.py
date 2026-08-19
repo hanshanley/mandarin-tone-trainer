@@ -44,9 +44,17 @@ class MobileBundleTests(unittest.TestCase):
         missing = [
             recording['audio_path']
             for recording in recordings
+            if recording.get('quiz_eligible') is not False
             if not (self.bundle / recording['audio_path']).is_file()
         ]
         self.assertEqual(missing, [])
+        excluded = [
+            recording['audio_path']
+            for recording in recordings
+            if recording.get('quiz_eligible') is False
+            and (self.bundle / recording['audio_path']).exists()
+        ]
+        self.assertEqual(excluded, [])
 
     def test_copies_only_runtime_audio(self):
         recordings = json.loads(
@@ -83,7 +91,11 @@ class MobileBundleTests(unittest.TestCase):
                 and quality['audio_cmn'][key].get('replacement') is None
             )
         }
-        expected = {Path(recording['audio_path']) for recording in recordings}
+        expected = {
+            Path(recording['audio_path'])
+            for recording in recordings
+            if recording.get('quiz_eligible') is not False
+        }
         expected.update(
             path.relative_to(ROOT)
             for path in (AUDIO_ROOT / 'audio_cmn' / 'syllabs').glob('*.mp3')

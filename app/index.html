@@ -18,30 +18,29 @@
       <div id="progress" class="progress" aria-live="polite"></div>
     </header>
 
-    <section class="controls" aria-label="Practice settings">
-      <label class="select-control" for="syllables">
-        <span>Syllables</span>
-        <select id="syllables">
-          <option value="one" selected>1 syllable</option>
-          <option value="two">2 syllables</option>
-          <option value="all">Any syllable</option>
-        </select>
-      </label>
-      <label class="select-control" for="correctionSource">
-        <span>Comparison voice</span>
-        <select id="correctionSource">
-          <option value="pinyin_public" selected>Reference voice</option>
-          <option value="audio_cmn">Human voice</option>
-        </select>
-      </label>
-      <label class="checkbox-control" for="sandhiOnly">
-        <input type="checkbox" id="sandhiOnly">
-        <span>Sandhi only</span>
-      </label>
-    </section>
-
     <section class="card" aria-label="Tone practice">
       <div id="prompt" class="prompt" aria-live="polite">Listen, then choose the tone for each syllable.</div>
+      <div class="controls" aria-label="Practice settings">
+        <label class="select-control" for="syllables">
+          <span>Syllables</span>
+          <select id="syllables">
+            <option value="one" selected>1 syllable</option>
+            <option value="two">2 syllables</option>
+            <option value="all">Any syllable</option>
+          </select>
+        </label>
+        <label class="select-control" for="correctionSource">
+          <span>Comparison voice</span>
+          <select id="correctionSource">
+            <option value="pinyin_public" selected>Reference voice</option>
+            <option value="audio_cmn">Human voice</option>
+          </select>
+        </label>
+        <label class="checkbox-control" for="sandhiOnly">
+          <input type="checkbox" id="sandhiOnly">
+          <span>Sandhi only</span>
+        </label>
+      </div>
       <div class="audio-row" aria-label="Audio controls">
         <button id="play" class="audio-button native-button" type="button"><span aria-hidden="true">▶</span> Native</button>
         <button id="record" class="audio-button record-button" type="button"><span aria-hidden="true">●</span> Record me</button>

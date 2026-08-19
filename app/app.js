@@ -75,6 +75,7 @@ function recordingsFor(w){
   const expected=expectedPattern(w);
   const ambiguous=(readingsByWord.get(w.word)?.size||0)>1;
   return (byWord.get(w.word)||[]).filter(r=>{
+    if(r.quiz_eligible===false)return false;
     if(w.surface_label_needs_clip_review&&!r.surface_pattern)return false;
     if(r.hsk_id)return r.hsk_id===w.id;
     return r.surface_pattern?r.surface_pattern===expected:!ambiguous;

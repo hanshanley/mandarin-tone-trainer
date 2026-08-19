@@ -60,6 +60,22 @@ verified `audio_cmn` recordings.
 | `forvo_inventory.py` | Inventory Forvo pronunciations without caching audio |
 | `common_voice_index.py` | Index Mandarin Common Voice context clips |
 | `download_openai_tts_sample.py` | Create optional synthetic samples |
+| `audit_native_readings.py` | Resumably screen native words for pinyin mismatches |
+
+## Audit native reading identity
+
+Tone-contour analysis cannot detect a wrong base syllable such as `hai`
+substituted for `ke`. Install the optional ASR dependencies and run the
+resumable whole-corpus screen:
+
+```bash
+python3 -m pip install -r requirements-audio-audit.txt
+python3 scripts/audit_native_readings.py
+```
+
+Results are appended to the ignored `.audit/native-readings.jsonl` file after
+every recording. A `review` result is a candidate for independent listening or
+Mandarin-specific ASR confirmation; it is not automatically removed.
 
 Correction playback always uses tone-specific syllable recordings, never an
 unlabeled word recording. Ambiguous Hanzi readings require matching recording

@@ -73,6 +73,7 @@ for (const recording of recordings) {
   if (!recording.audio_path) {
     throw new Error(`Recording has no audio_path: ${JSON.stringify(recording)}`);
   }
+  if (recording.quiz_eligible === false) continue;
   referencedAudio.add(recording.audio_path);
 }
 
@@ -127,7 +128,7 @@ console.log(
   [
     'Built offline mobile assets:',
     `  ${words.length.toLocaleString()} vocabulary entries`,
-    `  ${recordings.length.toLocaleString()} word recordings`,
+    `  ${recordings.filter(recording => recording.quiz_eligible !== false).length.toLocaleString()} eligible word recordings`,
     `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,
     `  ${(totalBytes / 1024 / 1024).toFixed(1)} MiB total`,
   ].join('\n'),
