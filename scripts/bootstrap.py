@@ -55,6 +55,51 @@ def sha256(path):
     return digest.hexdigest()
 
 
+def install_user_node_shims(directory, home=None, shell=None):
+    home = Path(home) if home else Path.home()
+    user_bin = home / '.local' / 'bin'
+    user_bin.mkdir(parents=True, exist_ok=True)
+    installed = []
+    for name in ('node', 'npm', 'npx'):
+        source = directory / 'bin' / name
+        destination = user_bin / name
+        if destination.is_symlink():
+            destination.unlink()
+        elif destination.exists():
+            print(
+                f'Keeping existing {destination}; the project-local {name} '
+                'remains available during setup.',
+                flush=True,
+            )
+            continue
+        destination.symlink_to(source)
+        installed.append(name)
+
+    shell_name = Path(shell or os.environ.get('SHELL', '')).name
+    profile_name = '.zprofile' if shell_name == 'zsh' else '.profile'
+    profile = home / profile_name
+    path_line = 'export PATH="$HOME/.local/bin:$PATH"'
+    existing = profile.read_text(encoding='utf-8') if profile.exists() else ''
+    if path_line not in existing.splitlines():
+        separator = '' if not existing or existing.endswith('\n') else '\n'
+        with profile.open('a', encoding='utf-8') as output:
+            output.write(f'{separator}\n# Added by Mandarin Tone Trainer setup\n{path_line}\n')
+
+    current_path = os.environ.get('PATH', '').split(os.pathsep)
+    if str(user_bin) not in current_path:
+        os.environ['PATH'] = f'{user_bin}{os.pathsep}{os.environ.get("PATH", "")}'
+    if installed:
+        print(
+            f'Installed user commands in {user_bin}: {", ".join(installed)}.',
+            flush=True,
+        )
+    print(
+        f'New terminals will load npm from {profile}. '
+        f'For this terminal, run: source ~/{profile_name}',
+        flush=True,
+    )
+
+
 def ensure_node():
     if node_major()>=22 and shutil.which('npm'):
         return
@@ -94,6 +139,7 @@ def ensure_node():
     os.environ['PATH']=f"{directory/'bin'}{os.pathsep}{os.environ.get('PATH','')}"
     if node_major()<22 or not shutil.which('npm'):
         raise SystemExit('The local Node.js installation did not initialize correctly.')
+    install_user_node_shims(directory)
     print(f"Using local Node.js {subprocess.check_output(['node','--version'],text=True).strip()}.")
 
 

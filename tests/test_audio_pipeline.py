@@ -2,6 +2,7 @@ import importlib.util
 import csv
 import json
 import math
+import os
 import struct
 import subprocess
 import tempfile
@@ -28,6 +29,7 @@ download_syllables = load_script('download_audio_cmn_syllables.py')
 add_definitions = load_script('add_definitions.py')
 check_syllables = load_script('check_audio_cmn_syllables.py')
 download_public_pinyin = load_script('download_public_pinyin_syllables.py')
+bootstrap_script = load_script('bootstrap.py')
 
 
 class PinyinSegmentationTests(unittest.TestCase):
@@ -413,6 +415,45 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn("'npm', 'run', 'build:mobile'", bootstrap)
         self.assertIn('def ensure_node()', bootstrap)
         self.assertIn('failed SHA-256 verification', bootstrap)
+
+    def test_bootstrap_installs_persistent_node_shims_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            toolchain = root / 'toolchain'
+            toolchain_bin = toolchain / 'bin'
+            toolchain_bin.mkdir(parents=True)
+            for name in ('node', 'npm', 'npx'):
+                executable = toolchain_bin / name
+                executable.write_text(f'#!/bin/sh\necho {name}\n')
+                executable.chmod(0o755)
+            home = root / 'home'
+            home.mkdir()
+            profile = home / '.zprofile'
+            profile.write_text('export EXISTING=value\n')
+            original_path = os.environ.get('PATH', '')
+            try:
+                bootstrap_script.install_user_node_shims(
+                    toolchain,
+                    home=home,
+                    shell='/bin/zsh',
+                )
+                bootstrap_script.install_user_node_shims(
+                    toolchain,
+                    home=home,
+                    shell='/bin/zsh',
+                )
+            finally:
+                os.environ['PATH'] = original_path
+            for name in ('node', 'npm', 'npx'):
+                self.assertEqual(
+                    (home / '.local' / 'bin' / name).resolve(),
+                    (toolchain_bin / name).resolve(),
+                )
+            profile_text = profile.read_text()
+            self.assertEqual(
+                profile_text.count('export PATH="$HOME/.local/bin:$PATH"'),
+                1,
+            )
 
     def test_bad_human_syllables_have_explicit_fallback_policy(self):
         quality = json.loads(

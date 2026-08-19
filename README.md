@@ -32,7 +32,9 @@ Native prompts and tone buttons use separate audio:
 - about 1 GiB of free disk space
 
 The setup script downloads a project-local Node.js 22 installation when a
-compatible system version is unavailable. Administrator access is not needed.
+compatible system version is unavailable. It also installs user-level
+`node`, `npm`, and `npx` commands under `~/.local/bin`; administrator access
+is not needed.
 
 On macOS with Homebrew:
 
@@ -50,6 +52,11 @@ python3 scripts/bootstrap.py
 
 The bootstrap is resumable. It installs Node dependencies, downloads pinned
 audio snapshots, builds the offline bundle, and validates the complete setup.
+Open a new terminal after the first setup, or activate npm immediately with:
+
+```bash
+source ~/.zprofile
+```
 
 ### Run
 
