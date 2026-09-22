@@ -96,7 +96,10 @@ eligible, no isolated recording, unresolved native screening, or no correct-tone
 reference. Detailed exclusion reasons can overlap when one word has multiple
 candidate recordings; these counts must not be added together. Stale decision
 reports are rejected by pipeline fingerprint. Omit `--decisions` to count runtime
-coverage without attaching exclusion reasons.
+coverage without attaching exclusion reasons. The report also assigns one
+primary blocker per unavailable word, using the furthest screening stage any
+of its candidate recordings reached; these primary-blocker counts are mutually
+exclusive.
 
 The app shows eligible entries, initial-recording examples, and the count under
 the current syllable/sandhi filters. Downloaded sentence recordings are not

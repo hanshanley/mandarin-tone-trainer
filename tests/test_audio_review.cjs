@@ -530,7 +530,17 @@ test('coverage counts vocabulary entries, initial examples and missing audio sep
   assert.equal(report.initial_recording_examples,2);
   assert.equal(report.initial_audio_files,2);
   assert.equal(report.entries.length,4);
+  assert.equal(Object.values(report.primary_blocker_word_counts).reduce((sum,count)=>sum+count,0),3);
   assert.throws(()=>coverageReport(data,index(approvals),{pipeline_sha256:'stale',findings:[]}),/stale/);
+  const fingerprint='a'.repeat(64);
+  const traced=coverageReport({...data,acousticLedger:{pipeline_sha256:fingerprint}},index(approvals),{
+    pipeline_sha256:fingerprint,
+    findings:[{label_identity:Review.identity(Review.nativeDescriptor(blocked,blockedRecording)),
+      reason:'known native recording quarantine'}],
+  });
+  assert.deepEqual(traced.primary_blocker_word_counts,{
+    no_isolated_recording:1,quarantined:1,comparison_unresolved:1,
+  });
 });
 
 test('prepared recognition checks cannot hide conflicting bases or a different payload',()=>{

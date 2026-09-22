@@ -181,6 +181,22 @@ export function coverageReport(data, index, decisions = null) {
   }
   const eligible = new Set(inventory.eligibleWords);
   const findings = new Map((decisions?.findings || []).map(item => [item.label_identity, item.reason]));
+  const stages = new Map([
+    ['known native recording quarantine', 'quarantined'],
+    ['missing or stale acoustic/recognition evidence', 'missing_evidence'],
+    ['independent ASR did not confirm the expected syllables', 'identity_unresolved'],
+    ['neither raw nor prepared ASR resolved the syllable sequence', 'identity_unresolved'],
+    ['raw and prepared ASR disagree on syllable identity', 'identity_unresolved'],
+    ['polyphonic single-character identity remains ambiguous', 'identity_unresolved'],
+    ['neutral-tone reduction needs a separate prosodic confidence model', 'neutral_tone_unresolved'],
+    ['no reliable syllable alignment or speaker-register reference', 'alignment_unresolved'],
+    ['tone evidence is ambiguous or contradicts the label', 'tone_unresolved'],
+    ['no distinct screened comparison for the expected tone', 'comparison_unresolved'],
+  ]);
+  const stageOrder = [
+    'quarantined', 'missing_evidence', 'identity_unresolved', 'neutral_tone_unresolved',
+    'alignment_unresolved', 'tone_unresolved', 'comparison_unresolved',
+  ];
   const perWord = data.words.map(word => {
     const pairs = pairsByWord.get(word.id) || [];
     const reasons = new Set();
@@ -194,9 +210,15 @@ export function coverageReport(data, index, decisions = null) {
     const status = eligible.has(word.id) ? 'eligible'
       : !pairs.length ? 'no_isolated_recording'
         : assessed ? 'missing_correct_tone_reference' : 'native_screening_unresolved';
+    const candidateStages = [...reasons].map(reason => stages.get(reason)).filter(Boolean);
+    const primaryBlocker = status === 'eligible' ? null
+      : status === 'no_isolated_recording' ? 'no_isolated_recording'
+        : assessed ? 'comparison_unresolved'
+          : stageOrder.filter(stage => candidateStages.includes(stage)).at(-1) || 'screening_details_unavailable';
     return {
       word_id: word.id, word: word.word, pinyin: word.pinyin, status,
       candidate_recordings: pairs.length, assessed_recordings: assessed,
+      primary_blocker: primaryBlocker,
       exclusion_reasons: [...reasons].sort(),
     };
   });
@@ -214,8 +236,10 @@ export function coverageReport(data, index, decisions = null) {
   }
   const imported = data.recordings.filter(recording => recording.source === 'mandarin_native');
   const reasons = {};
+  const primaryBlockers = {};
   for (const row of perWord) {
     if (row.status === 'eligible') continue;
+    primaryBlockers[row.primary_blocker] = (primaryBlockers[row.primary_blocker] || 0) + 1;
     for (const reason of row.exclusion_reasons) reasons[reason] = (reasons[reason] || 0) + 1;
   }
   return {
@@ -240,6 +264,8 @@ export function coverageReport(data, index, decisions = null) {
     },
     exclusion_reason_word_counts: reasons,
     exclusion_reason_counts_overlap: true,
+    primary_blocker_word_counts: primaryBlockers,
+    primary_blocker_rule: 'furthest completed screening stage among candidate recordings; mutually exclusive',
     entries: perWord,
   };
 }
