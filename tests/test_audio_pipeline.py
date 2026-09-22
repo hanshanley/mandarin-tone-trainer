@@ -286,7 +286,7 @@ process.stdout.write(JSON.stringify(result));
         correction_url = source.split('function correctionSelection', 1)[1].split(
             'function getCorrectionContext', 1
         )[0]
-        self.assertIn('CorrectionAudio.correctionSelection', correction_url)
+        self.assertIn('AudioReview.correctionSelection(CorrectionAudio', correction_url)
         self.assertIn('CorrectionAudio.normalizationParameters', source)
         self.assertIn('createDynamicsCompressor()', source)
         self.assertIn('limiter.threshold.value=-3', source)
@@ -346,7 +346,7 @@ process.stdout.write(JSON.stringify(result));
     def test_homograph_recordings_require_a_unique_reading(self):
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
         self.assertIn('function readingKey(w)', source)
-        self.assertIn('readingsByWord.get(w.word)', source)
+        self.assertIn('AudioReview.nativeApproval(audioReviews,w,r)', source)
         self.assertIn('r.quiz_eligible===false', source)
         self.assertNotIn('patternsByWord.get(w.word)', source)
         words = json.loads(
@@ -526,7 +526,7 @@ process.stdout.write(JSON.stringify(result));
     def test_ambiguous_surface_groupings_require_clip_labels(self):
         source = (ROOT / 'app' / 'app.js').read_text(encoding='utf-8')
         self.assertIn(
-            'w.surface_label_needs_clip_review&&!r.surface_pattern',
+            'AudioReview.nativeApproval(audioReviews,w,r)',
             source,
         )
         words = json.loads(

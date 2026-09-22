@@ -19,6 +19,7 @@
     </header>
 
     <section class="card" aria-label="Tone practice">
+      <p id="reviewStatus" class="muted" role="status">Loading listening-review approvals…</p>
       <div id="prompt" class="prompt" aria-live="polite">Listen, then choose the tone for each syllable.</div>
       <div class="controls" aria-label="Practice settings">
         <label class="select-control" for="syllables">
@@ -70,11 +71,15 @@
         <a href="https://github.com/hugolpz/audio-cmn" target="_blank" rel="noreferrer">audio-cmn corpus</a>,
         definitions from CC BY-SA
         <a href="https://www.mdbg.net/chinese/dictionary?page=cedict" target="_blank" rel="noreferrer">CC-CEDICT</a>,
-        and public-domain pinyin audio for tone comparisons, with reviewed human fallbacks.
+        and public-domain pinyin audio for tone comparisons. Practice requires independent
+        listening approvals for the exact recordings and labels; automated audits are not approval.
       </p>
+      <p><a href="https://mandarin-native.com/#explore" target="_blank" rel="noreferrer noopener">Mandarin Native: external listening reference (online)</a>.
+        Its audio and labels are not automatically trusted or bundled with this app.</p>
     </details>
 
   </main>
+  <script src="audio_review.js"></script>
   <script src="correction_audio.js"></script>
   <script src="app.js"></script>
 </body>

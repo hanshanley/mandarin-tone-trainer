@@ -15,6 +15,7 @@
     "audit:tones": "python3 scripts/audit_correction_tones.py --fail-on-unquarantined",
     "audit:similarity": "python3 scripts/audit_correction_similarity.py --fail-on-unquarantined",
     "audit:corrections": "npm run audit:tones && npm run audit:similarity",
+    "audit:listening": "node scripts/review_audio.mjs",
     "test": "python3 -m unittest discover -s tests -q"
   },
   "dependencies": {

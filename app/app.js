@@ -1,5 +1,7 @@
 let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
+let audioReviews=new Map(), nativePlayId=0, overlayPlayId=0, nativeObjectURL=null, overlayObjectURL=null, questionLoadId=0, questionVerified=false;
+const reviewedAudioBytes=new Map();
 const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -68,23 +70,25 @@ async function load(){
   const qualityResponse=await fetch('../data/correction_audio_quality.json');
   if(!qualityResponse.ok)throw new Error(`Syllable quality data failed: HTTP ${qualityResponse.status}`);
   correctionQuality=await qualityResponse.json();
+  const reviewResponse=await fetch('../data/audio_reviews.json',{cache:'no-store'});
+  if(!reviewResponse.ok)throw new Error(`Listening approvals failed: HTTP ${reviewResponse.status}`);
+  audioReviews=AudioReview.createIndex(await reviewResponse.json());
+  $('reviewStatus').textContent=`Listening-reviewed practice only · ${audioReviews.size} recording/label approvals. Automated audits do not certify pronunciation.`;
   $('progress').textContent='';
   rebuildIndex();
 }
 function recordingsFor(w){
-  const expected=expectedPattern(w);
-  const ambiguous=(readingsByWord.get(w.word)?.size||0)>1;
   return (byWord.get(w.word)||[]).filter(r=>{
     if(r.quiz_eligible===false)return false;
-    if(w.surface_label_needs_clip_review&&!r.surface_pattern)return false;
-    if(r.hsk_id)return r.hsk_id===w.id;
-    return r.surface_pattern?r.surface_pattern===expected:!ambiguous;
+    return Boolean(AudioReview.nativeApproval(audioReviews,w,r));
   });
 }
 function nativePlayback(w,r){
+  const approval=AudioReview.nativeApproval(audioReviews,w,r);
   return {
-    playable:Boolean(audioURL(r)),
+    playable:Boolean(audioURL(r)&&approval),
     url:audioURL(r),
+    approval,
     source:r?.source||null,
     speaker:r?.speaker||'unknown',
     filename:r?.filename||null,
@@ -95,9 +99,8 @@ function hasAlignedCorrections(w){
   return Array.isArray(w.pinyin_syllables) && w.pinyin_syllables.length===tones.length;
 }
 function hasVerifiedCorrections(w){
-  const tones=(expectedPattern(w)||'').split('-');
-  return (w.pinyin_syllables||[]).every((pinyin,index)=>
-    tones[index]==='N'||Boolean(correctionSelection(correctionKey(pinyin,tones[index])))
+  return (w.pinyin_syllables||[]).every(pinyin=>
+    ['1','2','3','4'].every(tone=>Boolean(correctionSelection(correctionKey(pinyin,tone))))
   );
 }
 function filtered(){return words.filter(w=>{
@@ -127,7 +130,7 @@ function renderToneChoices(){
   });
 }
 function currentSnapshot(){
-  if(!current)return null;
+  if(!current||!questionVerified)return null;
   return {
     word:current,
     recording:currentRec,
@@ -152,7 +155,34 @@ function restoreToneState(state){
     if(tone!==correctTones[index])column.querySelector(`[data-tone="${correctTones[index]}"]`).classList.add('correct-answer');
   });
 }
-function back(play=false){
+async function verifyCurrentQuestion(){
+  const loadId=++questionLoadId;
+  questionVerified=false;
+  $('answers').innerHTML='';
+  $('play').disabled=true;
+  $('record').disabled=true;
+  try{
+    const approvals=[currentNative?.approval];
+    for(const pinyin of current.pinyin_syllables){
+      for(const tone of ['1','2','3','4']){
+        approvals.push(correctionSelection(correctionKey(pinyin,tone))?.approval);
+      }
+    }
+    await Promise.all(approvals.map(approvedAudioBytes));
+    if(loadId!==questionLoadId)return false;
+    questionVerified=true;
+    $('play').disabled=false;
+    $('record').disabled=!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined';
+    return true;
+  }catch(error){
+    if(loadId!==questionLoadId)return false;
+    $('prompt').textContent='Practice blocked: the reviewed audio could not be verified.';
+    setAudioStatus(error.message,true);
+    console.error('Question audio verification failed',error);
+    return false;
+  }
+}
+async function back(play=false){
   if(!quizHistory.length)return;
   stopAllAudio();
   clearPersonalRecording();
@@ -163,6 +193,8 @@ function back(play=false){
   currentNative=nativePlayback(current,currentRec);
   current._correct=state.correct;
   current._graded=state.graded;
+  $('reveal').classList.add('hidden');
+  if(!await verifyCurrentQuestion())return;
   $('prompt').innerHTML=state.promptHTML;
   renderToneChoices();
   restoreToneState(state);
@@ -171,7 +203,7 @@ function back(play=false){
   updateBackButton();
   if(currentNative?.playable&&play)playNative();
 }
-function next(play=false,remember=true){
+async function next(play=false,remember=true){
   if(remember){
     const snapshot=currentSnapshot();
     if(snapshot){
@@ -180,11 +212,14 @@ function next(play=false,remember=true){
     }
   }
   stopAllAudio();
+  questionLoadId++;
+  questionVerified=false;
   clearPersonalRecording();
   setAudioStatus();
   const pool=filtered();
   if(!pool.length){
-    current=null; currentRec=null; currentNative=null; $('prompt').innerHTML='<div class="muted">No words match the current filters.</div><p>Try another syllable-count setting or turn off Sandhi only.</p>';
+    current=null; currentRec=null; currentNative=null; $('prompt').innerHTML='<div class="muted">Practice paused: no fully reviewed items match these filters.</div><p>Each native recording, its spoken-tone answer, and all four comparison tones need independent listening approval. Unreviewed audio is withheld, not treated as correct.</p>';
+    $('play').disabled=true; $('record').disabled=true;
     $('answers').innerHTML=''; $('reveal').classList.add('hidden'); updateBackButton(); return;
   }
   current=choose(pool); const rs=recordingsFor(current); currentRec=rs.length?choose(rs):null; currentNative=nativePlayback(current,currentRec);
@@ -192,11 +227,17 @@ function next(play=false,remember=true){
   const correct=patternFor(current,currentRec);
   current._correct=correct;
   $('prompt').innerHTML=`<div class="muted">Listen first — word hidden until you answer</div>${currentNative?.playable?`<div class="muted">Speaker: ${escapeHTML(currentNative.speaker)} · ${escapeHTML(sourceName(currentNative.source||''))}</div>`:'<div class="muted">No local recording for this item.</div>'}`;
-  $('reveal').classList.add('hidden'); renderToneChoices();
+  $('reveal').classList.add('hidden');
+  if(!await verifyCurrentQuestion())return;
+  renderToneChoices();
   updateBackButton();
   if(currentNative?.playable && play)playNative();
 }
 function grade(p,correct){
+  if(!questionVerified||correct!==patternFor(current,currentRec)||!AudioReview.nativeApproval(audioReviews,current,currentRec)||!hasVerifiedCorrections(current)){
+    setAudioStatus('This item is not fully listening-reviewed and cannot be graded.',true);
+    return;
+  }
   current._graded=true;
   const correctTones=correct.split('-');
   selectedTones.forEach((tone,index)=>{
@@ -212,6 +253,12 @@ function grade(p,correct){
   const definition=current.definition?`<p class="definition"><strong>Definition:</strong> ${escapeHTML(current.definition)}</p>`:'';
   $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="pinyin">${escapeHTML(current.pinyin)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
+  const reference=document.createElement('a');
+  reference.href=`https://mandarin-native.com/#${encodeURIComponent(`word/${current.word}`)}`;
+  reference.target='_blank';
+  reference.rel='noreferrer noopener';
+  reference.textContent='Compare in Mandarin Native (online, independent reference)';
+  $('reveal').appendChild(reference);
   if(window.matchMedia('(max-width: 680px)').matches){
     $('reveal').scrollIntoView({
       behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
@@ -228,12 +275,16 @@ function scrollToPractice(){
 }
 function audioURL(r){if(!r)return null;let p=r.audio_path||''; if(p.startsWith('audio/'))return '../'+p; return p}
 function stopNative(){
+  nativePlayId++;
+  if(nativeObjectURL){URL.revokeObjectURL(nativeObjectURL);nativeObjectURL=null}
   if(!nativeAudio)return;
   nativeAudio.pause();
   nativeAudio.currentTime=0;
   nativeAudio=null;
 }
 function stopPersonalAudio(){
+  overlayPlayId++;
+  if(overlayObjectURL){URL.revokeObjectURL(overlayObjectURL);overlayObjectURL=null}
   if(mineAudio){
     mineAudio.pause();
     mineAudio.currentTime=0;
@@ -257,24 +308,50 @@ function stopAllAudio(){
   stopCorrection();
   stopPersonalAudio();
 }
-function playNative(){
-  const u=currentNative?.url;if(!u)return;
+async function approvedAudioBytes(approval){
+  if(!approval)throw new Error('No listening approval for this audio');
+  const key=`${approval.audio_path}:${approval.sha256}`;
+  const cached=cachedValue(reviewedAudioBytes,key);
+  if(cached)return cached;
+  const promise=(async()=>{
+    const response=await fetch(`../${approval.audio_path}`,{cache:'no-store'});
+    if(!response.ok)throw new Error(`Reviewed audio failed: HTTP ${response.status}`);
+    const bytes=await response.arrayBuffer();
+    await AudioReview.verifyBytes(bytes,approval);
+    return bytes;
+  })();
+  cacheValue(reviewedAudioBytes,key,promise,RAW_BUFFER_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(reviewedAudioBytes.get(key)===promise)reviewedAudioBytes.delete(key);
+    throw error;
+  }
+}
+async function playNative(){
+  if(!questionVerified||!currentNative?.playable)return;
   stopCorrection();
   stopNative();
   stopPersonalAudio();
-  const audio=new Audio(u);
-  nativeAudio=audio;
-  audio.onended=()=>{if(nativeAudio===audio)nativeAudio=null};
-  audio.play().then(()=>setAudioStatus('Playing the native recording.')).catch(error=>{
-    if(nativeAudio===audio)nativeAudio=null;
+  const playId=nativePlayId;
+  try{
+    const bytes=await approvedAudioBytes(currentNative.approval);
+    if(playId!==nativePlayId)return;
+    nativeObjectURL=URL.createObjectURL(new Blob([bytes]));
+    const audio=new Audio(nativeObjectURL);
+    nativeAudio=audio;
+    audio.onended=()=>{if(nativeAudio===audio)stopNative()};
+    await audio.play();
+    if(playId===nativePlayId)setAudioStatus('Playing the listening-reviewed native recording.');
+  }catch(error){
+    if(playId!==nativePlayId)return;
+    stopNative();
     if(isPlaybackInterruption(error))return;
-    setAudioStatus('The native recording could not be played.',true);
+    setAudioStatus(`Native playback blocked: ${error.message}`,true);
     console.error('Native audio failed',error);
-  });
+  }
 }
 function correctionKey(pinyin,tone){return CorrectionAudio.correctionKey(pinyin,tone)}
 function correctionSelection(key){
-  const selected=CorrectionAudio.correctionSelection(key,correctionQuality,correctionRecordings,$('correctionSource')?.value||'pinyin_public');
+  const selected=AudioReview.correctionSelection(CorrectionAudio,key,correctionQuality,correctionRecordings,audioReviews,$('correctionSource')?.value||'pinyin_public');
   return selected?{...selected,url:`../${selected.audio_path}`}:null;
 }
 function getCorrectionContext(){
@@ -287,10 +364,9 @@ async function rawPinyinBuffer(key){
   const promise=(async()=>{
     const selected=correctionSelection(key);
     if(!selected)throw new Error(`No verified correction recording for ${key}`);
-    const response=await fetch(selected.url);
-    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const bytes=await approvedAudioBytes(selected.approval);
     const context=getCorrectionContext();
-    return context.decodeAudioData(await response.arrayBuffer());
+    return context.decodeAudioData(bytes.slice(0));
   })();
   cacheValue(rawPinyinBuffers,key,promise,RAW_BUFFER_CACHE_LIMIT);
   try{return await promise}catch(error){
@@ -396,12 +472,13 @@ async function playPinyinSequence(keys){
     setAudioStatus('Playing the selected tone.');
   }catch(error){
     if(playId===correctionPlayId){
-      setAudioStatus('The selected tone recording could not be played.',true);
+      setAudioStatus(`Comparison playback blocked: ${error.message}`,true);
       console.error(`Pinyin audio failed for ${keys.join('+')}`,error);
     }
   }
 }
 async function playCorrection(index,tone){
+  if(!questionVerified)return;
   const pinyin=current.pinyin_syllables?.[index];
   if(tone==='N'){
     stopNative();
@@ -419,7 +496,7 @@ async function playCorrection(index,tone){
   if(!correctionSelection(key)){
     stopNative();
     stopCorrection();
-    setAudioStatus('No comparison recording is available for this tone.');
+    setAudioStatus('This comparison tone is withheld pending listening review.',true);
     return;
   }
   return playPinyinKey(key);
@@ -432,12 +509,15 @@ $('correctionSource').onchange=()=>{
   stopCorrection();
   rawPinyinBuffers.clear();
   correctionBuffers.clear();
+  quizHistory=[];
+  next(false,false);
   setAudioStatus(`Using ${$('correctionSource').value==='audio_cmn'?'human':'reference'} comparison recordings.`);
 };
 $('sandhiOnly').onchange=()=>{quizHistory=[];next(true,false)};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
 $('record').onclick=async()=>{
   if(recordingStarting)return;
+  if(!questionVerified)return;
   if(mediaRecorder?.state==='recording'){
     mediaRecorder.stop();
     setAudioStatus('Finishing your recording.');
@@ -535,21 +615,25 @@ $('playMine').onclick=()=>{
   });
 };
 $('overlay').onclick=async()=>{
-  const nativeUrl=audioURL(currentRec);
-  if(!nativeUrl||!mineUrl)return;
+  if(!questionVerified||!currentNative?.playable||!mineUrl)return;
   stopAllAudio();
-  const native=new Audio(nativeUrl),mine=new Audio(mineUrl);
-  overlayAudios=[native,mine];
-  const finished=()=>{if(overlayAudios.includes(native)&&native.ended&&mine.ended)overlayAudios=[]};
-  native.onended=finished;
-  mine.onended=finished;
+  const playId=overlayPlayId;
   try{
+    const bytes=await approvedAudioBytes(currentNative.approval);
+    if(playId!==overlayPlayId||!mineUrl)return;
+    overlayObjectURL=URL.createObjectURL(new Blob([bytes]));
+    const native=new Audio(overlayObjectURL),mine=new Audio(mineUrl);
+    overlayAudios=[native,mine];
+    const finished=()=>{if(overlayAudios.includes(native)&&native.ended&&mine.ended)stopPersonalAudio()};
+    native.onended=finished;
+    mine.onended=finished;
     await Promise.all([native.play(),mine.play()]);
-    setAudioStatus('Playing the native and recorded audio together.');
+    if(playId===overlayPlayId)setAudioStatus('Playing the native and recorded audio together.');
   }catch(error){
+    if(playId!==overlayPlayId)return;
     stopPersonalAudio();
     if(isPlaybackInterruption(error))return;
-    setAudioStatus('Overlay playback could not be started.',true);
+    setAudioStatus(`Overlay playback blocked: ${error.message}`,true);
     console.error('Overlay audio failed',error);
   }
 };
@@ -574,4 +658,7 @@ load().then(()=>next(true,false)).catch(error=>{
   console.error(error);
   $('prompt').innerHTML=`<div class="muted">The practice data could not load.</div><p>${error.message}. Start the app with <code>python3 scripts/serve.py</code> and open its localhost URL.</p>`;
   $('answers').innerHTML='';
+  $('reviewStatus').textContent='Practice blocked: listening-review data could not be loaded.';
+  setPracticeControlsDisabled(true);
+  $('record').disabled=true;
 });

@@ -132,66 +132,69 @@ def main():
             'style.css',
             'app.js',
             'correction_audio.js',
+            'audio_review.js',
             'data/hsk_words.json',
             'data/definitions.json',
             'data/recordings.json',
             'data/pinyin_public_recordings.json',
             'data/correction_audio_quality.json',
+            'data/audio_reviews.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
-            require(
-                (bundle / 'app.js').read_bytes() == (ROOT / 'app' / 'app.js').read_bytes(),
-                'www/app.js is stale; run npm run build:mobile',
-                errors,
-            )
+            for relative in ['app.js', 'audio_review.js', 'correction_audio.js']:
+                target = bundle / relative
+                if target.is_file():
+                    require(
+                        target.read_bytes() == (ROOT / 'app' / relative).read_bytes(),
+                        f'www/{relative} is stale; run npm run build:mobile',
+                        errors,
+                    )
+            for relative in ['audio_reviews.json', 'correction_audio_quality.json']:
+                target = bundle / 'data' / relative
+                if target.is_file():
+                    require(
+                        target.read_bytes() == (ROOT / 'data' / relative).read_bytes(),
+                        f'www/data/{relative} is stale; run npm run build:mobile',
+                        errors,
+                    )
 
     node_script = """
-const fs=require('node:fs');
-const policy=require('./app/correction_audio.js');
-const words=require('./data/hsk_words.json');
-const quality=require('./data/correction_audio_quality.json');
-const publicRecordings=require('./data/pinyin_public_recordings.json');
-const keys=new Set();
-for(const word of words){
-  for(const pinyin of (word.pinyin_syllables||[])){
-    for(const tone of ['1','2','3','4'])keys.add(policy.correctionKey(pinyin,tone));
-  }
-}
-const result={};
-for(const mode of ['pinyin_public','audio_cmn']){
-  const missing=[];
-  const unavailable=[];
-  for(const key of keys){
-    const selected=policy.correctionSelection(key,quality,publicRecordings,mode);
-    if(!selected){unavailable.push(key);continue;}
-    if(!fs.existsSync(selected.audio_path))missing.push(selected.audio_path);
-  }
-  result[mode]={missing,unavailable};
-}
-process.stdout.write(JSON.stringify(result));
+import {loadReviewData,validateLedger,practiceInventory} from './scripts/review_audio.mjs';
+const data=loadReviewData();
+const index=validateLedger(data);
+const inventory=practiceInventory(data,index);
+process.stdout.write(JSON.stringify({
+  approvals:index.size,eligible:inventory.eligibleWords.length,audio:[...inventory.audio],
+}));
 """
     try:
         output = subprocess.check_output(
-            ['node', '-e', node_script],
+            ['node', '--input-type=module', '-e', node_script],
             cwd=ROOT,
             text=True,
         )
         selections = json.loads(output)
-        for mode, result in selections.items():
-            require(not result['missing'], f'{mode} has missing selected audio: {result["missing"][:5]}', errors)
+        print(f"Listening approval coverage: {selections['eligible']} practice entries; {selections['approvals']} approvals (not an accuracy certificate)")
+        if not args.skip_mobile:
+            bundled_audio = {
+                path.relative_to(bundle).as_posix()
+                for path in (bundle / 'audio').rglob('*')
+                if path.is_file()
+            }
             require(
-                set(result['unavailable']) == {
-                    'r1',
-                    'r2',
-                    'r3',
-                    'r4',
-                    'rang1',
-                    'rui1',
-                },
-                f'{mode} unexpected unavailable keys: {result["unavailable"]}',
+                bundled_audio == set(selections['audio']),
+                'mobile audio does not match the listening-approved inventory',
                 errors,
             )
+            for relative in selections['audio']:
+                target = bundle / relative
+                if target.is_file():
+                    require(
+                        file_hash(target) == file_hash(ROOT / relative),
+                        f'mobile audio changed since listening review: {relative}',
+                        errors,
+                    )
     except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
         errors.append(f'could not validate correction selection with Node.js: {error}')
 

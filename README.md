@@ -14,6 +14,13 @@
 
 ## Learn tones from real words
 
+**Practice is currently paused pending listening review.** No existing recordings
+have been automatically certified. A question becomes available only after its
+exact native recording, spoken-tone answer, and all four comparison tones have
+two independent listening approvals. Audio hashes are checked before the
+question is shown. An automated audit pass is not an approval or a guarantee of
+pronunciation accuracy.
+
 Mandarin Tone Trainer hides the written word and plays a native recording.
 You identify the tone of each syllable before seeing the word, pinyin,
 definition, and expected spoken-tone pattern.
@@ -30,9 +37,8 @@ hidden until you choose a tone for every syllable.
 ### Compare tones directly
 
 Every tone button plays an isolated syllable—not the original word. Switch
-**Comparison voice** to hear either a clear reference corpus or human
-`audio-cmn` recordings. Reviewed fallbacks replace clips known to be
-duplicated, mislabeled, or unclear.
+**Comparison voice** to choose reference-corpus or human `audio-cmn` recordings.
+Only explicitly listening-approved recordings and fallbacks can play.
 
 ### Practice your pronunciation
 
@@ -84,8 +90,8 @@ pronunciation differs from the default prediction.
 
 ## Offline Android app
 
-The Android build packages the application, vocabulary, and every reachable
-audio file into a single offline APK.
+The Android build packages the application, vocabulary, approval ledger, and
+only reachable listening-approved audio into a single offline APK.
 
 After the quickstart, install Android SDK Platform 36, Platform Tools, and
 Build Tools 35. Rerun the bootstrap once so it can configure the SDK and expose
@@ -107,7 +113,7 @@ signing, installation, and updates.
 
 ## Audio and vocabulary
 
-The reviewed dataset contains:
+The source dataset awaiting recording-specific listening approval contains:
 
 - **11,092** HSK vocabulary entries
 - **8,596** isolated native word recordings
@@ -119,9 +125,10 @@ recreates them from pinned upstream revisions.
 
 Known audio defects and approved fallbacks live in
 [`data/correction_audio_quality.json`](data/correction_audio_quality.json).
-Audits cover file integrity, duplicate payloads, pitch contours, runtime
-selection, and bundle completeness. Ambiguous pitch results are left for
-listening review rather than rejected automatically.
+Audits screen file integrity, duplicate payloads, and pitch contours; they do
+not certify correctness. The separate
+[`data/audio_reviews.json`](data/audio_reviews.json) ledger controls admission
+to practice. Unreviewed or ambiguous audio is withheld.
 
 ## Development
 

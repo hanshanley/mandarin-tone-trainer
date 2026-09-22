@@ -1,17 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import CorrectionAudio from '../app/correction_audio.js';
+import { loadReviewData, validateLedger, practiceInventory } from './review_audio.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'www');
-const APP_FILES = ['index.html', 'style.css', 'correction_audio.js', 'app.js'];
+const APP_FILES = ['index.html', 'style.css', 'audio_review.js', 'correction_audio.js', 'app.js'];
 const DATA_FILES = [
   'hsk_words.json',
   'definitions.json',
   'recordings.json',
   'pinyin_public_recordings.json',
   'correction_audio_quality.json',
+  'audio_reviews.json',
 ];
 
 function readJSON(relativePath) {
@@ -41,19 +42,6 @@ function requireFile(relativePath, description) {
   return stats.size;
 }
 
-function collectAudioFiles(directory) {
-  const files = [];
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    const entryPath = path.join(directory, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...collectAudioFiles(entryPath));
-    } else if (entry.isFile() && path.extname(entry.name).toLowerCase() === '.mp3') {
-      files.push(entryPath);
-    }
-  }
-  return files;
-}
-
 for (const file of APP_FILES) {
   requireFile(path.join('app', file), 'app file');
 }
@@ -63,38 +51,10 @@ for (const file of DATA_FILES) {
 requireFile(path.join('audio', 'audio_cmn', 'syllabs', 'cmn-ma1.mp3'), 'audio corpus');
 
 const words = readJSON('data/hsk_words.json');
-const recordings = readJSON('data/recordings.json');
-const correctionRecordings = readJSON('data/pinyin_public_recordings.json');
-const correctionQuality = readJSON('data/correction_audio_quality.json');
-const referencedAudio = new Set();
-const syllableAudioRoot = path.join(ROOT, 'audio', 'audio_cmn', 'syllabs');
-
-for (const recording of recordings) {
-  if (!recording.audio_path) {
-    throw new Error(`Recording has no audio_path: ${JSON.stringify(recording)}`);
-  }
-  if (recording.quiz_eligible === false) continue;
-  referencedAudio.add(recording.audio_path);
-}
-
-for (const filePath of collectAudioFiles(syllableAudioRoot)) {
-  referencedAudio.add(path.relative(ROOT, filePath));
-}
-
-for (const word of words) {
-  if (!Array.isArray(word.pinyin_syllables)) continue;
-  for (const pinyin of word.pinyin_syllables) {
-    for (const tone of ['1', '2', '3', '4']) {
-      const key = CorrectionAudio.correctionKey(pinyin, tone);
-      const selected = CorrectionAudio.correctionSelection(
-        key,
-        correctionQuality,
-        correctionRecordings,
-      );
-      if (selected?.audio_path) referencedAudio.add(selected.audio_path);
-    }
-  }
-}
+const reviewData = loadReviewData();
+const reviewIndex = validateLedger(reviewData);
+const inventory = practiceInventory(reviewData, reviewIndex);
+const referencedAudio = inventory.audio;
 
 let referencedBytes = 0;
 for (const relativePath of referencedAudio) {
@@ -128,7 +88,7 @@ console.log(
   [
     'Built offline mobile assets:',
     `  ${words.length.toLocaleString()} vocabulary entries`,
-    `  ${recordings.filter(recording => recording.quiz_eligible !== false).length.toLocaleString()} eligible word recordings`,
+    `  ${inventory.eligibleWords.length.toLocaleString()} listening-reviewed practice entries`,
     `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,
     `  ${(totalBytes / 1024 / 1024).toFixed(1)} MiB total`,
   ].join('\n'),
