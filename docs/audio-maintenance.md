@@ -224,6 +224,23 @@ recordings. Other locally imported sources remain index-only.
 | `download_openai_tts_sample.py` | Create optional synthetic samples |
 | `audit_native_readings.py` | Resumably screen native words for pinyin mismatches |
 | `review_audio.mjs` | Export pending listening candidates and validate explicit approvals |
+| `collect_acoustic_evidence.py` | Resumably collect hash-bound pitch tracks and unprompted local Mandarin ASR timestamps |
+
+Automatic acoustic evidence can be collected without listening to every file:
+
+```bash
+python3 scripts/collect_acoustic_evidence.py \
+  --candidates .audit/listening-review.json --phase profiles
+python3 scripts/collect_acoustic_evidence.py \
+  --candidates .audit/listening-review.json --phase asr
+```
+
+Profiles remove DC bias and low-frequency contamination before running pYIN,
+Praat, and WORLD. Tracks retain their original time coordinates; missing
+portions are not silently collapsed into a different contour. ASR is run
+without the expected word as a prompt, and results are matched by file key and
+content hash rather than trusting batch order. Neither these measurements nor
+ASR transcripts are human-listening attestations.
 
 ## Audit native reading identity
 

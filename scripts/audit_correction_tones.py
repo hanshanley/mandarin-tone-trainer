@@ -15,8 +15,10 @@ def contour(path, method):
     import librosa
     import numpy as np
     import parselmouth
+    from acoustic_analysis import prepare_signal
 
     samples, sample_rate = librosa.load(path, sr=16000, mono=True)
+    samples = prepare_signal(samples, sample_rate)
     samples, _ = librosa.effects.trim(samples, top_db=32)
     if method == 'pyin':
         frequencies, _, _ = librosa.pyin(
