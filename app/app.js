@@ -38,6 +38,7 @@ function updateProgress(){
 }
 function sourceName(source){
   if(source==='audio_cmn')return 'audio-cmn';
+  if(source==='mandarin_native')return 'Mandarin Native';
   if(source==='mp3_chinese_pinyin_sound')return 'public pinyin';
   return source;
 }
@@ -50,8 +51,10 @@ function rebuildIndex(){
     if(!readingsByWord.has(w.word))readingsByWord.set(w.word,new Set());
     readingsByWord.get(w.word).add(readingKey(w));
   }
-  const selected=recordings.filter(r=>r.source==='audio_cmn' && (r.language_code||'zh')==='zh');
-  for(const r of selected){if(!byWord.has(r.word))byWord.set(r.word,[]);byWord.get(r.word).push(r)}
+  for(const {word,recording} of AudioReview.nativeCandidates(words,recordings)){
+    if(!byWord.has(word.word))byWord.set(word.word,[]);
+    if(!byWord.get(word.word).includes(recording))byWord.get(word.word).push(recording);
+  }
 }
 async function load(){
   const wordResponse=await fetch('../data/hsk_words.json');
@@ -64,6 +67,11 @@ async function load(){
   const recordingResponse=await fetch('../data/recordings.json');
   if(!recordingResponse.ok)throw new Error(`recordings failed: HTTP ${recordingResponse.status}`);
   recordings=await recordingResponse.json();
+  const importedResponse=await fetch('../data/mandarin_native_recordings.json');
+  if(!importedResponse.ok)throw new Error(`Mandarin Native index failed: HTTP ${importedResponse.status}`);
+  const imported=await importedResponse.json();
+  if(imported.version!==1||!Array.isArray(imported.recordings))throw new Error('Invalid Mandarin Native recording index');
+  recordings.push(...imported.recordings);
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
@@ -73,7 +81,7 @@ async function load(){
   const reviewResponse=await fetch('../data/audio_reviews.json',{cache:'no-store'});
   if(!reviewResponse.ok)throw new Error(`Listening approvals failed: HTTP ${reviewResponse.status}`);
   audioReviews=AudioReview.createIndex(await reviewResponse.json());
-  $('reviewStatus').textContent=`Listening-reviewed practice only · ${audioReviews.size} recording/label approvals. Automated audits do not certify pronunciation.`;
+  $('reviewStatus').textContent=`Listening-reviewed practice only · ${audioReviews.size} recording/label approvals · ${imported.recordings.length} Mandarin Native imports. Automated audits do not certify pronunciation.`;
   $('progress').textContent='';
   rebuildIndex();
 }

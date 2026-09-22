@@ -48,7 +48,23 @@ def main():
     snapshots = read_json('config/source_snapshots.json')
     recordings = read_json('data/recordings.json')
     public = read_json('data/pinyin_public_recordings.json')
+    mandarin_native = read_json('data/mandarin_native_recordings.json')
     errors = []
+    require(
+        mandarin_native.get('version') == 1 and isinstance(mandarin_native.get('recordings'), list),
+        'invalid Mandarin Native recording index',
+        errors,
+    )
+    imported_recordings = mandarin_native.get('recordings') or []
+    for recording in imported_recordings:
+        path = ROOT / recording['audio_path']
+        require(valid_mp3(path), f"missing or invalid imported audio: {recording['audio_path']}", errors)
+        if path.is_file():
+            require(
+                file_hash(path) == recording.get('sha256'),
+                f"imported audio hash mismatch: {recording['audio_path']}",
+                errors,
+            )
 
     word_recordings = [
         recording
@@ -139,6 +155,7 @@ def main():
             'data/pinyin_public_recordings.json',
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
+            'data/mandarin_native_recordings.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
@@ -150,7 +167,7 @@ def main():
                         f'www/{relative} is stale; run npm run build:mobile',
                         errors,
                     )
-            for relative in ['audio_reviews.json', 'correction_audio_quality.json']:
+            for relative in ['audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json']:
                 target = bundle / 'data' / relative
                 if target.is_file():
                     require(
@@ -209,6 +226,7 @@ process.stdout.write(JSON.stringify({
         f'{len(word_recordings)} word recordings, '
         f'{len(syllables)} human syllables, '
         f'{len(public)} public syllables'
+        f', {len(imported_recordings)} imported Mandarin Native candidates'
         + (', mobile bundle ready' if not args.skip_mobile else '')
     )
 

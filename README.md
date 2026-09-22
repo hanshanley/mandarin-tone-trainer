@@ -119,9 +119,12 @@ The source dataset awaiting recording-specific listening approval contains:
 - **8,596** isolated native word recordings
 - **1,707** human tone-specific syllables
 - **1,622** public-domain reference syllables
+- **869** Mandarin Native word clips imported for local review, not yet
+  approved for practice or redistribution
 
-Large generated assets are intentionally excluded from Git. The bootstrap
-recreates them from pinned upstream revisions.
+Large audio assets are intentionally excluded from Git. The bootstrap
+recreates the original corpora from pinned upstream revisions and restores
+Mandarin Native imports from their recorded URLs and SHA-256 hashes.
 
 Known audio defects and approved fallbacks live in
 [`data/correction_audio_quality.json`](data/correction_audio_quality.json).
@@ -193,3 +196,8 @@ Native word and human syllable recordings come from `audio-cmn` under its
 published CC BY-SA terms. Reference syllables come from
 [`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
 under the Unlicense.
+
+Mandarin Native word recordings are separate local review imports. Their URLs
+and hashes are preserved in `data/mandarin_native_recordings.json`; reuse
+permission is unverified, so they are not included in distributable audio
+bundles or admitted to practice.

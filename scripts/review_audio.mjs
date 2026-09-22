@@ -12,7 +12,10 @@ const readJSON = relative => JSON.parse(fs.readFileSync(path.join(ROOT, relative
 export function loadReviewData() {
   return {
     words: readJSON('data/hsk_words.json'),
-    recordings: readJSON('data/recordings.json'),
+    recordings: [
+      ...readJSON('data/recordings.json'),
+      ...readJSON('data/mandarin_native_recordings.json').recordings,
+    ],
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
     ledger: readJSON('data/audio_reviews.json'),
@@ -22,24 +25,29 @@ export function loadReviewData() {
 
 export function candidatesFor(data) {
   const candidates = new Map();
-  const wordsByText = new Map();
-  for (const word of data.words) {
-    if (!wordsByText.has(word.word)) wordsByText.set(word.word, []);
-    wordsByText.get(word.word).push(word);
+  const mapped = new Set();
+  for (const {word, recording} of AudioReview.nativeCandidates(data.words, data.recordings)) {
+    mapped.add(recording.audio_path);
+    const descriptor = AudioReview.nativeDescriptor(word, recording);
+    candidates.set(AudioReview.identity(descriptor), {
+      ...descriptor,
+      source_url: recording.source_url,
+      license: recording.license,
+      blocked_reason: AudioReview.nativeBlockReason(recording),
+      reference_url: `https://mandarin-native.com/#${encodeURIComponent(`word/${word.word}`)}`,
+    });
   }
   for (const recording of data.recordings) {
-    if (recording.source !== 'audio_cmn' || (recording.language_code || 'zh') !== 'zh') continue;
-    for (const word of wordsByText.get(recording.word) || []) {
-      if (recording.hsk_id && recording.hsk_id !== word.id) continue;
-      const descriptor = AudioReview.nativeDescriptor(word, recording);
-      candidates.set(AudioReview.identity(descriptor), {
-        ...descriptor,
-        source_url: recording.source_url,
-        license: recording.license,
-        blocked_reason: recording.quiz_eligible === false ? recording.notes || 'Excluded native recording' : null,
-        reference_url: `https://mandarin-native.com/#${encodeURIComponent(`word/${word.word}`)}`,
-      });
-    }
+    if (recording.source !== 'mandarin_native' || mapped.has(recording.audio_path)) continue;
+    const descriptor = {
+      kind: 'unmapped_native', audio_path: recording.audio_path, key: recording.source_audio_key,
+    };
+    candidates.set(AudioReview.identity(descriptor), {
+      ...descriptor,
+      source_url: recording.source_url,
+      license: recording.license,
+      blocked_reason: 'No vocabulary reading mapped; requires listening identification and verified reuse permission',
+    });
   }
   const keys = new Set(data.words.flatMap(word =>
     (word.pinyin_syllables || []).flatMap(base => ['1', '2', '3', '4'].map(tone =>
@@ -107,15 +115,14 @@ export function validateLedger(data, root = ROOT) {
 
 export function practiceInventory(data, index) {
   const recordingsByWord = new Map();
-  for (const recording of data.recordings) {
-    if (recording.source !== 'audio_cmn' || (recording.language_code || 'zh') !== 'zh') continue;
-    if (!recordingsByWord.has(recording.word)) recordingsByWord.set(recording.word, []);
-    recordingsByWord.get(recording.word).push(recording);
+  for (const {word, recording} of AudioReview.nativeCandidates(data.words, data.recordings)) {
+    if (!recordingsByWord.has(word.id)) recordingsByWord.set(word.id, []);
+    recordingsByWord.get(word.id).push(recording);
   }
   const audio = new Set();
   const eligibleWords = [];
   for (const word of data.words) {
-    const natives = (recordingsByWord.get(word.word) || []).filter(recording =>
+    const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
       AudioReview.nativeApproval(index, word, recording));
     if (!natives.length) continue;
     const comparisons = (word.pinyin_syllables || []).flatMap(base =>

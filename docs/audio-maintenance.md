@@ -104,9 +104,39 @@ Zero approvals is a valid, paused setup, not a successful corpus certification.
 ## Mandarin Native and additional sources
 
 The app links to Mandarin Native as an **online external reference**, including
-word-specific links after an answer. No clips are scraped, copied, or silently
-accepted as ground truth. The inspected site describes audio extracted from
-podcasts and videos; redistribution permission was not established.
+word-specific links after an answer. Its public word-audio manifest has also
+been imported for local review: **869 recordings** under `audio/mandarin_native/`,
+with provenance and hashes in `data/mandarin_native_recordings.json`.
+Redistribution permission was not established; no license or listening approval
+has been invented. No imported audio enters the offline bundle while these
+requirements remain unresolved.
+
+Restore the indexed recordings, or explicitly discover newly listed ones:
+
+```bash
+npm run download:mandarin-native
+python3 scripts/download_mandarin_native.py --refresh-index
+```
+
+Normal setup restores the pinned imports too. Downloads are resumable, validate
+MP3 payloads, and reject changes to already recorded hashes. Refreshing the
+index adds new source keys but does not silently relabel existing recordings,
+discard removed upstream keys, or approve anything.
+
+The site places tone digits after the marked vowel (`bái` becomes `ba2i`, not
+`bai2`), and has legacy Unicode names. One stale manifest filename, `dǒnɡ`,
+was resolved to the site's `do3ng.mp3`; both the original key and resolved URL
+are recorded. Vocabulary associations are only proposed reading matches in
+`candidate_hsk_ids`, never confirmation of the recorded word or spoken tones.
+Unmatched clips remain in the review export as `unmapped_native`; identify and
+map their reading before creating a native approval.
+
+For admission, document verified reuse permission, set `rights_status` to
+`cleared` with the actual `license`, resolve the proposed reading, and remove
+the explicit `quiz_eligible: false` quarantine only after its issue is resolved.
+The exact recording/reading still needs the two independent ledger approvals.
+Native playback and bundle selection support the imported source, but never
+use these whole-word clips as automatic isolated-tone comparisons.
 
 Before importing any additional source, establish permission for the exact
 recordings and preserve provenance and license metadata. Contextual clips must
@@ -156,8 +186,9 @@ Import the files:
 python3 scripts/import_local_audio.py
 ```
 
-Imported sources are indexed, but native quiz prompts currently select only
-explicitly listening-approved `audio_cmn` recordings.
+Native quiz prompts currently support explicitly listening-approved `audio_cmn`
+recordings and rights-cleared, independently approved `mandarin_native`
+recordings. Other locally imported sources remain index-only.
 
 ## Corpus tools
 
@@ -166,6 +197,7 @@ explicitly listening-approved `audio_cmn` recordings.
 | `download_audio_cmn.py` | Download isolated native words |
 | `download_audio_cmn_syllables.py` | Download human tone syllables |
 | `download_public_pinyin_syllables.py` | Download public comparison syllables |
+| `download_mandarin_native.py` | Restore hash-pinned local word-audio imports, without granting approval |
 | `check_audio_cmn_syllables.py` | Check duplicate and malformed syllable audio |
 | `pad_audio_cmn_syllables.py` | Export padded syllable MP3 files |
 | `forvo_inventory.py` | Inventory Forvo pronunciations without caching audio |

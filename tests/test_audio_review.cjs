@@ -114,7 +114,7 @@ function element(){
     scrollIntoView(){},
   };
 }
-async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recording=native}={}){
+async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[]}={}){
   const elements=new Map();
   const get=id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id)};
   get('syllables').value='all';
@@ -124,8 +124,9 @@ async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recordin
   ]));
   const data={
     '../data/hsk_words.json':[structuredClone(word)],'../data/definitions.json':{},
-    '../data/recordings.json':[recording],'../data/pinyin_public_recordings.json':publicRecordings,
+    '../data/recordings.json':recording?[recording]:[],'../data/pinyin_public_recordings.json':publicRecordings,
     '../data/correction_audio_quality.json':{},'../data/audio_reviews.json':{version:1,approvals},
+    '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
   };
   const requests=[],played=[],errors=[];
   const context=vm.createContext({
@@ -321,4 +322,39 @@ test('quarantines cannot disappear when their explanatory notes are empty',async
   const candidates=[...candidatesFor(data).values()];
   assert.ok(candidates.find(item=>item.kind==='comparison'&&item.audio_path===native.audio_path).blocked_reason);
   assert.ok(candidates.find(item=>item.audio_path==='audio/pinyin_public/ma1.mp3').blocked_reason);
+});
+
+test('imported recordings need both cleared reuse rights and exact listening approvals',async()=>{
+  const imported={
+    ...native,source:'mandarin_native',word:null,candidate_hsk_ids:[word.id],
+    audio_path:'audio/mandarin_native/ma1.mp3',quiz_eligible:false,rights_status:'unverified',license:null,
+  };
+  const approvals=[
+    approve(Review.nativeDescriptor(word,imported)),
+    ...['1','2','3','4'].map(t=>comparison(`ma${t}`)),
+  ];
+  for(const changed of [
+    imported,
+    {...imported,quiz_eligible:true},
+    {...imported,quiz_eligible:true,rights_status:'cleared'},
+    {...imported,rights_status:'cleared',license:'test-only'},
+  ]){
+    const app=await appHarness({approvals,recording:null,importedRecordings:[changed]});
+    assert.equal(app.run('questionVerified'),false);
+    assert.equal(app.played.length,0);
+  }
+  const cleared={...imported,quiz_eligible:true,rights_status:'cleared',license:'test-only'};
+  const approved=await appHarness({approvals,recording:null,importedRecordings:[cleared]});
+  assert.equal(approved.run('questionVerified'),true);
+  assert.equal(approved.run('currentRec.source'),'mandarin_native');
+  const {practiceInventory,candidatesFor}=await import('../scripts/review_audio.mjs');
+  const data={words:[word],recordings:[cleared],publicRecordings:{},quality:{},
+    snapshots:{audio_cmn:{repository:'https://example.com',revision:'a'.repeat(40),syllable_quality:'64k'}}};
+  for(const tone of ['1','2','3','4'])data.publicRecordings[`ma${tone}`]={audio_path:`audio/pinyin_public/ma${tone}.mp3`};
+  assert.equal(practiceInventory(data,index(approvals)).eligibleWords.length,1);
+  assert.equal(practiceInventory({...data,recordings:[imported]},index(approvals)).audio.size,0);
+  const unmapped={...imported,candidate_hsk_ids:[],source_audio_key:'ma1'};
+  const queue=[...candidatesFor({...data,recordings:[unmapped]}).values()];
+  assert.equal(queue.filter(item=>item.kind==='unmapped_native').length,1);
+  assert.throws(()=>index([approve(queue.find(item=>item.kind==='unmapped_native'))]),/kind/);
 });

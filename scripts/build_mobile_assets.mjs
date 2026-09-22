@@ -13,6 +13,7 @@ const DATA_FILES = [
   'pinyin_public_recordings.json',
   'correction_audio_quality.json',
   'audio_reviews.json',
+  'mandarin_native_recordings.json',
 ];
 
 function readJSON(relativePath) {

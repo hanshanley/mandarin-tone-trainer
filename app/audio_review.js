@@ -4,6 +4,31 @@
   else root.AudioReview=api;
 })(typeof globalThis!=='undefined'?globalThis:this,()=>{
   const nonempty=value=>typeof value==='string'&&value.trim().length>0;
+  function nativeCandidates(words,recordings){
+    const byId=new Map(words.map(word=>[word.id,word]));
+    const byText=new Map();
+    for(const word of words){
+      if(!byText.has(word.word))byText.set(word.word,[]);
+      byText.get(word.word).push(word);
+    }
+    const candidates=[];
+    for(const recording of recordings){
+      if(!['audio_cmn','mandarin_native'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
+      const targets=Array.isArray(recording.candidate_hsk_ids)
+        ?[...new Set(recording.candidate_hsk_ids)].map(id=>byId.get(id)).filter(Boolean)
+        :byText.get(recording.word)||[];
+      for(const word of targets){
+        if(!recording.hsk_id||recording.hsk_id===word.id)candidates.push({word,recording});
+      }
+    }
+    return candidates;
+  }
+  function nativeBlockReason(recording){
+    if(recording.source==='mandarin_native'&&(recording.rights_status!=='cleared'||!nonempty(recording.license))){
+      return 'Mandarin Native recording has no verified reuse permission or license';
+    }
+    return recording.quiz_eligible===false?recording.notes||'Excluded native recording':null;
+  }
   function nativeDescriptor(word,recording){
     return {
       kind:'native',
@@ -76,8 +101,9 @@
     return index;
   }
   function nativeApproval(index,word,recording){
-    if(!recording||recording.quiz_eligible===false)return null;
+    if(!recording||nativeBlockReason(recording))return null;
     if(recording.hsk_id&&recording.hsk_id!==word.id)return null;
+    if(Array.isArray(recording.candidate_hsk_ids)&&!recording.candidate_hsk_ids.includes(word.id))return null;
     return index.get(identity(nativeDescriptor(word,recording)))||null;
   }
   function comparisonApproval(index,key,recording){
@@ -102,7 +128,7 @@
     if(actual!==approval.sha256)throw new Error(`Audio changed since listening review: ${approval.audio_path}`);
   }
   return {
-    nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
+    nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
     nativeApproval,comparisonApproval,correctionSelection,verifyBytes,
   };
 });
