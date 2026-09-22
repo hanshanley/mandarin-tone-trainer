@@ -14,12 +14,12 @@
 
 ## Learn tones from real words
 
-**Practice is currently paused pending listening review.** No existing recordings
-have been automatically certified. A question becomes available only after its
-exact native recording, spoken-tone answer, and all four comparison tones have
-two independent listening approvals. Audio hashes are checked before the
-question is shown. An automated audit pass is not an approval or a guarantee of
-pronunciation accuracy.
+**Practice uses automatic acoustic screening, not a mandatory listening queue.**
+An item needs matching syllable recognition, agreeing pitch-contour evidence,
+and screened correct-tone references. Unresolved comparison clips are withheld;
+missing alternative examples do not disable an otherwise checked question.
+Audio hashes are checked before the question is shown. These checks reduce
+errors; they are not a guarantee of 100% pronunciation accuracy.
 
 Mandarin Tone Trainer hides the written word and plays a native recording.
 You identify the tone of each syllable before seeing the word, pinyin,
@@ -36,9 +36,11 @@ hidden until you choose a tone for every syllable.
 
 ### Compare tones directly
 
-Every tone button plays an isolated syllable—not the original word. Switch
+Tone buttons use screened isolated-syllable examples when available. Switch
 **Comparison voice** to choose reference-corpus or human `audio-cmn` recordings.
-Only explicitly listening-approved recordings and fallbacks can play.
+Only recordings with qualifying acoustic evidence or explicit listening
+approval can play. Clear single-syllable word recordings can supply a fallback;
+unavailable alternatives remain selectable answers without playing unsafe audio.
 
 ### Practice your pronunciation
 
@@ -90,8 +92,9 @@ pronunciation differs from the default prediction.
 
 ## Offline Android app
 
-The Android build packages the application, vocabulary, approval ledger, and
-only reachable listening-approved audio into a single offline APK.
+The Android build packages the application, vocabulary, assessment ledgers, and
+only reachable screened audio with established reuse metadata into an offline
+APK. Local-only Mandarin Native imports are excluded from distributable builds.
 
 After the quickstart, install Android SDK Platform 36, Platform Tools, and
 Build Tools 35. Rerun the bootstrap once so it can configure the SDK and expose
@@ -113,7 +116,7 @@ signing, installation, and updates.
 
 ## Audio and vocabulary
 
-The source dataset awaiting recording-specific listening approval contains:
+The source dataset contains:
 
 - **11,092** HSK vocabulary entries
 - **8,596** isolated native word recordings
@@ -131,9 +134,10 @@ Mandarin Native imports from their recorded URLs and SHA-256 hashes.
 Known audio defects and candidate fallback mappings live in
 [`data/correction_audio_quality.json`](data/correction_audio_quality.json).
 Audits screen file integrity, duplicate payloads, and pitch contours; they do
-not certify correctness. The separate
-[`data/audio_reviews.json`](data/audio_reviews.json) ledger controls admission
-to practice. Unreviewed or ambiguous audio is withheld.
+not certify correctness. Machine decisions live in
+[`data/acoustic_reviews.json`](data/acoustic_reviews.json); optional human
+attestations remain separate in [`data/audio_reviews.json`](data/audio_reviews.json).
+Ambiguous or contradictory audio is withheld rather than assigned guessed labels.
 
 ## Development
 
@@ -156,8 +160,8 @@ the [audio maintenance guide](docs/audio-maintenance.md).
 <summary><strong>Why are Native and the tone buttons different recordings?</strong></summary>
 
 Native playback trains recognition of a complete word in natural speech. Tone
-buttons isolate one syllable and one tone for comparison. Reusing a full word
-as an isolated-tone example would make the correction misleading.
+buttons use one syllable in one tone. A screened single-syllable word can serve
+as a reference, but a multi-syllable word or sentence cannot.
 
 </details>
 
@@ -166,8 +170,8 @@ as an isolated-tone example would make the correction misleading.
 
 Some upstream recordings are duplicated, mislabeled, or acoustically unclear.
 The quality policy proposes a clip from the independent corpus when
-the preferred recording is quarantined. It can play only after receiving the
-required listening approvals.
+the preferred recording is quarantined. It can play only with matching
+acoustic evidence or listening approval.
 
 </details>
 
@@ -203,5 +207,6 @@ under the Unlicense.
 Mandarin Native recordings are separate local review imports. Their URLs
 and hashes are preserved in `data/mandarin_native_recordings.json`; reuse
 permission is unverified, so they are not included in distributable audio
-bundles or admitted to practice. Contextual sentence clips are never substituted
-for isolated-word or isolated-tone examples.
+bundles. Acoustically screened standalone clips can be used for local browser
+practice. Contextual sentence clips are never substituted for isolated-word or
+isolated-tone examples.

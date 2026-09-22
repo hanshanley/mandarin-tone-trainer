@@ -26,7 +26,7 @@ class MobileBundleTests(unittest.TestCase):
                 ['node', '--input-type=module', '-e', """
 import {loadReviewData,validateLedger,practiceInventory} from './scripts/review_audio.mjs';
 const data=loadReviewData();
-process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(data)).audio]));
+process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false})).audio]));
 """],
                 cwd=ROOT,
                 text=True,
@@ -46,6 +46,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/pinyin_public_recordings.json',
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
+            'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
         ]:
             path = self.bundle / relative_path
@@ -67,7 +68,8 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         }
         self.assertEqual(bundled, self.expected_audio)
         ledger = json.loads((ROOT / 'data/audio_reviews.json').read_text())
-        if not ledger['approvals']:
+        acoustic = json.loads((ROOT / 'data/acoustic_reviews.json').read_text())
+        if not ledger['approvals'] and not acoustic['approvals']:
             self.assertEqual(bundled, set())
 
 

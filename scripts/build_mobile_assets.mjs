@@ -13,6 +13,7 @@ const DATA_FILES = [
   'pinyin_public_recordings.json',
   'correction_audio_quality.json',
   'audio_reviews.json',
+  'acoustic_reviews.json',
   'mandarin_native_recordings.json',
 ];
 
@@ -53,7 +54,7 @@ requireFile(path.join('audio', 'audio_cmn', 'syllabs', 'cmn-ma1.mp3'), 'audio co
 
 const words = readJSON('data/hsk_words.json');
 const reviewData = loadReviewData();
-const reviewIndex = validateLedger(reviewData);
+const reviewIndex = validateLedger(reviewData, ROOT, { allowLocalOnly: false });
 const inventory = practiceInventory(reviewData, reviewIndex);
 const referencedAudio = inventory.audio;
 
@@ -68,7 +69,15 @@ for (const file of APP_FILES) {
   fs.copyFileSync(path.join(ROOT, 'app', file), path.join(OUTPUT, file));
 }
 for (const file of DATA_FILES) {
-  fs.copyFileSync(path.join(ROOT, 'data', file), path.join(OUTPUT, 'data', file));
+  if (file === 'acoustic_reviews.json') {
+    const distributable = {
+      ...reviewData.acousticLedger,
+      approvals: reviewData.acousticLedger.approvals.filter(entry => entry.distribution_scope !== 'local_only'),
+    };
+    fs.writeFileSync(path.join(OUTPUT, 'data', file), JSON.stringify(distributable, null, 2) + '\n');
+  } else {
+    fs.copyFileSync(path.join(ROOT, 'data', file), path.join(OUTPUT, 'data', file));
+  }
 }
 for (const relativePath of referencedAudio) {
   const targetPath = path.join(OUTPUT, relativePath);
@@ -89,7 +98,7 @@ console.log(
   [
     'Built offline mobile assets:',
     `  ${words.length.toLocaleString()} vocabulary entries`,
-    `  ${inventory.eligibleWords.length.toLocaleString()} listening-reviewed practice entries`,
+    `  ${inventory.eligibleWords.length.toLocaleString()} screened practice entries`,
     `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,
     `  ${(totalBytes / 1024 / 1024).toFixed(1)} MiB total`,
   ].join('\n'),

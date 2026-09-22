@@ -19,6 +19,7 @@ export function loadReviewData() {
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
     ledger: readJSON('data/audio_reviews.json'),
+    acousticLedger: readJSON('data/acoustic_reviews.json'),
     snapshots: readJSON('config/source_snapshots.json'),
   };
 }
@@ -36,6 +37,18 @@ export function candidatesFor(data) {
       blocked_reason: AudioReview.nativeBlockReason(recording),
       reference_url: `https://mandarin-native.com/#${encodeURIComponent(`word/${word.word}`)}`,
     });
+    if (recording.source === 'audio_cmn' && word.pinyin_syllables?.length === 1
+        && /^[1-4]$/.test(descriptor.surface_pattern)) {
+      const comparison = AudioReview.comparisonDescriptor(
+        CorrectionAudio.correctionKey(word.pinyin_syllables[0], descriptor.surface_pattern), recording,
+      );
+      candidates.set(AudioReview.identity(comparison), {
+        ...comparison,
+        source_url: recording.source_url,
+        license: recording.license,
+        blocked_reason: AudioReview.nativeBlockReason(recording),
+      });
+    }
   }
   for (const recording of data.recordings) {
     if (recording.source !== 'mandarin_native' || mapped.has(recording.audio_path)) continue;
@@ -103,13 +116,17 @@ export function audioHash(relativePath, root = ROOT) {
   return createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 }
 
-export function validateLedger(data, root = ROOT) {
-  const index = AudioReview.createIndex(data.ledger);
+export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}) {
+  const index = AudioReview.createIndex(data.ledger, data.acousticLedger || null, { allowLocalOnly, sourceRecordings: data.recordings });
   const candidates = candidatesFor(data);
+  const recordingsByPath = new Map(data.recordings.map(recording => [recording.audio_path, recording]));
   for (const approval of index.values()) {
     const candidate = candidates.get(AudioReview.identity(approval));
     if (!candidate) throw new Error(`Approval labels do not match the current corpus: ${approval.audio_path}`);
-    if (candidate.blocked_reason) throw new Error(`Quarantined audio cannot be approved: ${approval.audio_path}`);
+    const blocked = approval.kind === 'native'
+      ? AudioReview.nativeBlockReason(recordingsByPath.get(approval.audio_path), approval)
+      : candidate.blocked_reason;
+    if (blocked) throw new Error(`Quarantined audio cannot be approved: ${approval.audio_path}`);
     if (approval.source_url !== candidate.source_url || approval.license !== candidate.license) {
       throw new Error(`Approval provenance differs from the corpus: ${approval.audio_path}`);
     }
@@ -130,15 +147,20 @@ export function practiceInventory(data, index) {
   const eligibleWords = [];
   for (const word of data.words) {
     const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
-      AudioReview.nativeApproval(index, word, recording));
+      AudioReview.nativeApproval(index, word, recording)
+      && word.pinyin_syllables.every((base, position) => {
+        const tone = (recording.surface_pattern || word.default_surface_pattern || word.lexical_pattern).split('-')[position];
+        return tone === 'N' || ['pinyin_public', 'audio_cmn'].every(mode =>
+          AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
+            data.quality, data.publicRecordings, index, mode));
+      }));
     if (!natives.length) continue;
     const comparisons = (word.pinyin_syllables || []).flatMap(base =>
       ['1', '2', '3', '4'].flatMap(tone => ['pinyin_public', 'audio_cmn'].map(mode =>
         AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
           data.quality, data.publicRecordings, index, mode))));
-    if (!comparisons.length || comparisons.some(item => !item)) continue;
     eligibleWords.push(word.id);
-    for (const recording of [...natives, ...comparisons]) audio.add(recording.audio_path);
+    for (const recording of [...natives, ...comparisons.filter(Boolean)]) audio.add(recording.audio_path);
   }
   return { eligibleWords, audio };
 }
@@ -213,11 +235,11 @@ function main() {
     fs.writeFileSync(output, JSON.stringify({
       version: 1, screening_scope: screeningScope, candidates,
     }, null, 2) + '\n', { flag: 'wx' });
-    console.log(`Exported ${candidates.length} pending recording/label candidates to ${output}. No approvals created.`);
+    console.log(`Exported ${candidates.length} recording/label candidates to ${output}. This is analysis input, not a mandatory human-listening queue.`);
   }
   const inventory = practiceInventory(data, index);
-  console.log(`Listening review: ${index.size} approvals; ${inventory.eligibleWords.length}/${data.words.length} practice entries eligible; ${inventory.audio.size} reachable audio files.`);
-  if (!inventory.eligibleWords.length) console.log('Practice is paused pending independent listening review. This is not a pronunciation accuracy certificate.');
+  console.log(`Audio assessment: ${index.size} qualifying checks; ${inventory.eligibleWords.length}/${data.words.length} practice entries eligible; ${inventory.audio.size} reachable audio files.`);
+  if (!inventory.eligibleWords.length) console.log('No sufficiently screened practice items are available. Automated screening is not an accuracy certificate.');
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

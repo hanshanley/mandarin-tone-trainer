@@ -10,6 +10,8 @@ AVAILABLE = all(importlib.util.find_spec(name) for name in ('numpy', 'librosa', 
 if AVAILABLE:
     with patch.object(sys, 'path', [str(ROOT / 'scripts'), *sys.path]):
         import acoustic_analysis as acoustic
+        from build_acoustic_reviews import syllable_intervals
+        from collect_acoustic_evidence import identity_encoding, unique_segmentation
     import numpy as np
 
 
@@ -38,14 +40,56 @@ class AcousticAnalysisTests(unittest.TestCase):
         self.assertEqual(acoustic.classify_curve([310] * 17, 320), '1')
         self.assertEqual(acoustic.classify_curve([160] * 17, 320, connected=True), '3')
 
+    def test_a_low_falling_third_is_not_automatically_called_fourth(self):
+        low_fall = np.geomspace(210, 135, 17)
+        high_fall = np.geomspace(340, 160, 17)
+        self.assertIsNone(acoustic.classify_curve(low_fall, 340))
+        self.assertEqual(acoustic.classify_curve(low_fall, 340, connected=True), '3')
+        self.assertEqual(acoustic.classify_curve(high_fall, 340), '4')
+        self.assertIsNone(acoustic.classify_curve(high_fall))
+
     def test_conflicting_trackers_do_not_vote_a_recording_into_practice(self):
         rising = np.geomspace(210, 330, 17).tolist()
         falling = rising[::-1]
         measured = {'status': 'measured', 'curves': {'pyin': rising, 'praat': rising, 'world': falling}}
         self.assertEqual(acoustic.decide(measured, '2', 340)['status'], 'review')
 
+    def test_shallow_early_dips_are_not_called_third_tone(self):
+        early_dip = np.concatenate([np.geomspace(240, 200, 5), np.geomspace(205, 310, 12)])
+        self.assertIn(acoustic.classify_curve(early_dip, 340), (None, '2'))
+
     def test_one_available_pitch_tracker_is_insufficient(self):
         profile = {'duration': .5, 'tracks': {
             'pyin': [200] * 51, 'praat': [None] * 51, 'world': [None] * 51,
         }}
         self.assertEqual(acoustic.segment(profile)['status'], 'review')
+
+    def test_octave_disagreement_is_not_disguised_as_an_abstaining_vote(self):
+        profile = {'duration': .5, 'tracks': {
+            'pyin': [150] * 51, 'praat': [300] * 51, 'world': [300] * 51,
+        }}
+        result = acoustic.segment(profile)
+        self.assertEqual(result['status'], 'review')
+        self.assertIn('disagree', result['reason'])
+
+    def test_literal_pinyin_is_exact_not_an_approximate_spelling_guess(self):
+        self.assertEqual(identity_encoding({'text': 'ZHAI', 'recognized_pinyin': []}, ['zhai']), 'literal_pinyin')
+        self.assertEqual(identity_encoding({'text': 'ZHONGXING', 'recognized_pinyin': []}, ['zhong', 'xing']), 'literal_pinyin')
+        self.assertEqual(identity_encoding({'text': '宅', 'recognized_pinyin': ['zhai2']}, ['zhai']), 'hanzi_pinyin')
+        for text, expected in [('jai', 'zhai'), ('lee', 'li'), ('QI', 'ji'), ('how', 'hou')]:
+            self.assertIsNone(identity_encoding({'text': text, 'recognized_pinyin': []}, [expected]))
+        self.assertIsNone(identity_encoding({'text': 'ZHAI', 'recognized_pinyin': ['zai2']}, ['zhai']))
+        self.assertIsNone(unique_segmentation('xian', {'xi', 'an', 'xian'}))
+        self.assertIsNone(identity_encoding({'text': 'XIAN', 'recognized_pinyin': []}, ['xi', 'an']))
+        self.assertEqual(identity_encoding({'text': "XI AN", 'recognized_pinyin': []}, ['xi', 'an']), 'literal_pinyin')
+
+    def test_multi_syllable_alignment_must_be_complete_ordered_and_in_bounds(self):
+        intervals = syllable_intervals({'timestamps_ms': [[410, 650], [710, 950]]}, 2, 1.3)
+        self.assertEqual(len(intervals), 2)
+        self.assertEqual(intervals[0][0], 0)
+        self.assertAlmostEqual(intervals[0][1], .68)
+        self.assertEqual(intervals[0][1], intervals[1][0])
+        self.assertEqual(intervals[1][1], 1.3)
+        for timestamps in [[], [[200, 900]], [[400, 700], [300, 900]], [[100, 500], [600, 1800]]]:
+            self.assertIsNone(syllable_intervals({'timestamps_ms': timestamps}, 2, 1.3))
+        self.assertEqual(syllable_intervals({}, 1, 1.3), [(0, 1.3)])

@@ -9,6 +9,8 @@ const Policy=require('../app/correction_audio.js');
 const ROOT=path.resolve(__dirname,'..');
 const bytes=Uint8Array.from([1,2,3,4]);
 const hash=createHash('sha256').update(bytes).digest('hex');
+const nativeBytes=Uint8Array.from([5,6,7,8]);
+const nativeHash=createHash('sha256').update(nativeBytes).digest('hex');
 const word={
   id:'test-1',word:'test',pinyin:'ma',pinyin_syllables:['ma'],
   lexical_tones:[1],lexical_pattern:'1',default_surface_pattern:'1',sandhi_tags:[],
@@ -90,7 +92,7 @@ test('content hashes reject changed audio instead of playing a newly replaced fi
   const approval=comparison('ma1');
   await Review.verifyBytes(bytes,approval);
   await assert.rejects(Review.verifyBytes(Uint8Array.from([9,9]),approval),/changed since listening review/);
-  await assert.rejects(Review.verifyBytes(bytes,null),/no listening approval/);
+  await assert.rejects(Review.verifyBytes(bytes,null),/no qualifying assessment/);
 });
 
 function element(){
@@ -114,7 +116,7 @@ function element(){
     scrollIntoView(){},
   };
 }
-async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[]}={}){
+async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[]}={}){
   const elements=new Map();
   const get=id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id)};
   get('syllables').value='all';
@@ -127,6 +129,10 @@ async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recordin
     '../data/recordings.json':recording?[recording]:[],'../data/pinyin_public_recordings.json':publicRecordings,
     '../data/correction_audio_quality.json':{},'../data/audio_reviews.json':{version:1,approvals},
     '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
+    '../data/acoustic_reviews.json':{
+      version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
+      certifies_accuracy:false,approvals:acousticApprovals,
+    },
   };
   const requests=[],played=[],errors=[];
   const context=vm.createContext({
@@ -144,7 +150,9 @@ async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recordin
       requests.push(url);
       if(url==='../data/audio_reviews.json'&&ledgerFailure)return {ok:false,status:404};
       if(url in data)return {ok:true,json:async()=>data[url]};
-      return {ok:true,arrayBuffer:async()=>Uint8Array.from(url===tamper?[9,9]:bytes).buffer};
+      const assessment=acousticApprovals.find(entry=>url===`../${entry.audio_path}`);
+      const payload=assessment?.sha256===nativeHash?nativeBytes:bytes;
+      return {ok:true,arrayBuffer:async()=>Uint8Array.from(url===tamper?[9,9]:payload).buffer};
     },
   });
   const source=fs.readFileSync(path.join(ROOT,'app/app.js'),'utf8')
@@ -157,6 +165,93 @@ async function appHarness({approvals=[],tamper=null,ledgerFailure=false,recordin
 function allApprovals(){
   return [approve(Review.nativeDescriptor(word,native)),...['1','2','3','4'].map(t=>comparison(`ma${t}`))];
 }
+
+function acousticApproval(descriptor,scope='redistributable'){
+  const nativeEntry=descriptor.kind==='native';
+  const digest=nativeEntry?nativeHash:hash;
+  const syllables=nativeEntry?descriptor.pinyin_syllables.map(base=>base.replace(/ü/g,'v')):[descriptor.key.slice(0,-1)];
+  const tones=nativeEntry?descriptor.surface_pattern.split('-'):[descriptor.key.slice(-1)];
+  return {
+    ...descriptor,assessment:'automated',status:'screened',sha256:digest,
+    source_url:'https://example.com/audio',license:scope==='local_only'?null:'test-only',
+    distribution_scope:scope,
+    evidence:{
+      method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
+      audio_sha256:digest,label_identity:Review.identity(descriptor),
+      identity_method:'unprompted_paraformer',recognized_bases:syllables,register_hz:310,
+      tones:tones.map(tone=>({
+        status:'screened',expected:tone,votes:{pyin:tone,praat:tone,world:tone},
+        start:0,end:.5,voiced_seconds:.5,
+      })),
+      comparison_support:nativeEntry?syllables.map((base,i)=>({
+        key:base+tones[i],audio_path:`audio/pinyin_public/${base}${tones[i]}.mp3`,sha256:hash,
+      })):[],
+    },
+  };
+}
+function acousticLedger(approvals){
+  return {version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),certifies_accuracy:false,approvals};
+}
+function automaticComparisons(){
+  return ['1','2','3','4'].map(tone=>acousticApproval(Review.comparisonDescriptor(`ma${tone}`,{
+    audio_path:`audio/pinyin_public/ma${tone}.mp3`,
+  })));
+}
+
+test('automatic evidence enables actual practice without human attestations',async()=>{
+  const automatic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,native))];
+  const app=await appHarness({acousticApprovals:automatic});
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.get('answers').children.length,1);
+  assert.equal(app.played.length,1);
+  assert.match(app.get('reviewStatus').textContent,/5 acoustic checks/);
+  assert.match(app.get('reviewStatus').textContent,/0 listening approvals/);
+  assert.throws(()=>index(automatic),/acoustic ledger/);
+});
+
+test('automatic evidence must agree on labels, identity, hashes and references',()=>{
+  const valid=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,native))];
+  for(const edit of [
+    a=>a.evidence.tones[0].votes.world='2',
+    a=>a.evidence.tones[0].votes={pyin:'1'},
+    a=>a.evidence.recognized_bases=['na'],
+    a=>a.evidence.audio_sha256='0'.repeat(64),
+    a=>a.evidence.label_identity='wrong',
+    a=>a.evidence.comparison_support[0].sha256='0'.repeat(64),
+    a=>a.evidence.pipeline_sha256='0'.repeat(64),
+  ]){
+    const entries=structuredClone(valid);
+    edit(entries.at(-1));
+    assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger(entries)));
+  }
+});
+
+test('local-only screened imports work locally but are never selected for distribution',async()=>{
+  const imported={
+    ...native,source:'mandarin_native',recording_type:'word_candidate',
+    word:null,candidate_hsk_ids:[word.id],audio_path:'audio/mandarin_native/ma1.mp3',
+    quiz_eligible:true,review_status:'acoustic_screened',rights_status:'unverified',license:null,
+  };
+  const automatic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,imported),'local_only')];
+  const app=await appHarness({recording:null,importedRecordings:[imported],acousticApprovals:automatic});
+  assert.equal(app.run('questionVerified'),true);
+  const packaged=Review.createIndex({version:1,approvals:[]},acousticLedger(automatic),{allowLocalOnly:false});
+  assert.equal(Review.nativeApproval(packaged,word,imported),null);
+  assert.equal(packaged.size,4);
+  const local=Review.createIndex({version:1,approvals:[]},acousticLedger(automatic));
+  assert.equal(Review.nativeApproval(local,word,{...imported,review_status:'rejected'}),null);
+});
+
+test('a screened isolated-word reference can replace unclear comparison-corpus clips',()=>{
+  const reference=approve(Review.comparisonDescriptor('ma3',{audio_path:'audio/audio_cmn/test/test.mp3'}));
+  const selected=Review.correctionSelection(Policy,'ma3',{}, {},index([reference]));
+  assert.equal(selected.audio_path,reference.audio_path);
+  assert.equal(selected.approval,reference);
+  const quarantined=Review.createIndex({version:1,approvals:[reference]},null,{
+    sourceRecordings:[{...native,quiz_eligible:false}],
+  });
+  assert.equal(Review.correctionSelection(Policy,'ma3',{}, {},quarantined),null);
+});
 
 test('actual app starts paused with an empty ledger and requests no audio',async()=>{
   const app=await appHarness();
@@ -175,10 +270,22 @@ test('actual app rejects a missing ledger instead of trusting the old corpus',as
   assert.equal(app.get('next').disabled,true);
 });
 
-test('every comparison must be reviewed, not only the correct answer',async()=>{
+test('missing alternative examples never play but do not disable a checked question',async()=>{
   const app=await appHarness({approvals:allApprovals().filter(a=>a.key!=='ma3')});
-  assert.match(app.get('prompt').innerHTML,/Practice paused/);
-  assert.equal(app.played.length,0);
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.get('answers').children.length,1);
+  app.run("mineUrl='blob:personal-recording'");
+  await app.get('overlay').onclick();
+  assert.equal(app.run('overlayAudios.length'),2);
+  app.get('answers').children[0].querySelector('[data-tone="3"]').onclick();
+  assert.match(app.get('audioStatus').textContent,/No screened example/);
+  assert.equal(app.run('results.length'),1);
+  assert.equal(app.run('results[0].correct'),false);
+  assert.equal(app.requests.includes('../audio/pinyin_public/ma3.mp3'),false);
+  assert.equal(app.run('overlayAudios.length'),0);
+  const missingCorrect=await appHarness({approvals:allApprovals().filter(a=>a.key!=='ma1')});
+  assert.match(missingCorrect.get('prompt').innerHTML,/Practice paused/);
+  assert.equal(missingCorrect.played.length,0);
 });
 
 test('complete approvals verify all five files before rendering and playing',async()=>{
@@ -222,6 +329,13 @@ test('reviewed questions can be graded and link out without fetching external au
   assert.equal(app.run('results[0].correct'),true);
   assert.match(app.get('reveal').children[0].href,/^https:\/\/mandarin-native\.com\/#/);
   assert.equal(app.requests.some(url=>url.startsWith('https:')),false);
+  const before=app.run('current.id');
+  app.get('correctionSource').value='audio_cmn';
+  await app.get('correctionSource').onchange();
+  assert.equal(app.run('current.id'),before);
+  assert.equal(app.run('current._graded'),true);
+  assert.equal(app.run('selectedTones[0]'),'1');
+  assert.equal(app.run('results.length'),1);
 });
 
 test('overlay and alternate-voice fallback use only verified bytes',async()=>{
@@ -248,7 +362,8 @@ test('bundle inventory uses the same review policy and never includes unreviewed
   const inventory=practiceInventory(data,index(allApprovals()));
   assert.deepEqual(inventory.eligibleWords,[word.id]);
   assert.equal(inventory.audio.size,5);
-  assert.equal(practiceInventory(data,index(allApprovals().filter(a=>a.key!=='ma3'))).audio.size,0);
+  assert.equal(practiceInventory(data,index(allApprovals().filter(a=>a.key!=='ma3'))).audio.size,4);
+  assert.equal(practiceInventory(data,index(allApprovals().filter(a=>a.key!=='ma1'))).audio.size,0);
 });
 
 test('build-time validation rejects stale labels, quarantines, provenance and changed bytes',async()=>{

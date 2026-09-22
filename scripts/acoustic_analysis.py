@@ -134,8 +134,8 @@ def segment(profile, start=0, end=None):
     for index, left in enumerate(ordered):
         for right in ordered[index + 1:]:
             deviations.append(float(np.sqrt(np.mean((12 * np.log2(np.array(left) / right)) ** 2))))
-    if min(deviations) > 2:
-        return {'status': 'review', 'reason': 'pitch trackers disagree', 'deviation': round(min(deviations), 3)}
+    if max(deviations) > 2:
+        return {'status': 'review', 'reason': 'pitch trackers disagree', 'deviation': round(max(deviations), 3)}
     return {
         'status': 'measured',
         'start': round(float(times[first]), 4),
@@ -180,12 +180,14 @@ def classify_curve(values, high_reference=None, connected=False):
         return None
     if feature['delta'] >= 2.2 and feature['dip'] <= 2 and feature['trough'] <= .4:
         return '2'
-    if feature['dip'] >= 3 and feature['rebound'] >= 2.5 and .25 <= feature['trough'] <= .8:
+    if feature['dip'] >= 4 and feature['rebound'] >= 2.5 and .35 <= feature['trough'] <= .8:
         return '3'
     if feature['delta'] <= -3.2 and feature['rebound'] <= 1.8 and feature['trough'] >= .6:
-        if connected and start_relative is not None and start_relative < .78:
+        if start_relative is not None and start_relative >= .85:
+            return '4'
+        if connected and start_relative is not None and start_relative <= .72:
             return '3'
-        return '4'
+        return None
     if connected and relative is not None and relative < .65 and feature['delta'] <= 0:
         return '3'
     return None

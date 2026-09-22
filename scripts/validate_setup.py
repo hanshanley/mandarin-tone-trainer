@@ -160,6 +160,7 @@ def main():
             'data/pinyin_public_recordings.json',
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
+            'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
@@ -180,14 +181,28 @@ def main():
                         f'www/data/{relative} is stale; run npm run build:mobile',
                         errors,
                     )
+            acoustic_path = bundle / 'data/acoustic_reviews.json'
+            if acoustic_path.is_file():
+                expected = read_json('data/acoustic_reviews.json')
+                expected['approvals'] = [
+                    entry for entry in expected['approvals']
+                    if entry['distribution_scope'] != 'local_only'
+                ]
+                require(
+                    json.loads(acoustic_path.read_text(encoding='utf-8')) == expected,
+                    'www/data/acoustic_reviews.json is stale or includes local-only audio',
+                    errors,
+                )
 
     node_script = """
 import {loadReviewData,validateLedger,practiceInventory} from './scripts/review_audio.mjs';
 const data=loadReviewData();
 const index=validateLedger(data);
 const inventory=practiceInventory(data,index);
+const packaged=practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false}));
 process.stdout.write(JSON.stringify({
   approvals:index.size,eligible:inventory.eligibleWords.length,audio:[...inventory.audio],
+  packagedEligible:packaged.eligibleWords.length,packagedAudio:[...packaged.audio],
 }));
 """
     try:
@@ -197,7 +212,7 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         selections = json.loads(output)
-        print(f"Listening approval coverage: {selections['eligible']} practice entries; {selections['approvals']} approvals (not an accuracy certificate)")
+        print(f"Audio assessment coverage: {selections['eligible']} local / {selections['packagedEligible']} packaged practice entries; {selections['approvals']} checks (not an accuracy certificate)")
         if not args.skip_mobile:
             bundled_audio = {
                 path.relative_to(bundle).as_posix()
@@ -205,11 +220,11 @@ process.stdout.write(JSON.stringify({
                 if path.is_file()
             }
             require(
-                bundled_audio == set(selections['audio']),
-                'mobile audio does not match the listening-approved inventory',
+                bundled_audio == set(selections['packagedAudio']),
+                'mobile audio does not match the distributable screened inventory',
                 errors,
             )
-            for relative in selections['audio']:
+            for relative in selections['packagedAudio']:
                 target = bundle / relative
                 if target.is_file():
                     require(

@@ -1,38 +1,83 @@
 # Audio and data maintenance
 
-These workflows maintain the source corpus and its listening approvals.
-Setup downloads files; it does not approve them for practice.
+These workflows maintain the source corpus, automated acoustic decisions, and
+optional listening approvals. Setup restores the committed decisions and exact
+audio snapshots; it does not fabricate new assessments.
 
 ## Admission to practice: fail closed
 
-`data/audio_reviews.json` is the sole listening-approval ledger. It starts
-empty because prior ASR, pitch, and duplicate screens are not listening
-reviews. No existing source or fallback is grandfathered in.
+`data/acoustic_reviews.json` contains explicit **machine-screened** decisions.
+`data/audio_reviews.json` is reserved for optional human listening attestations.
+The application accepts either route; listening to every file is not required.
+No source is accepted just because its filename contains a tone number.
 
 Every eligible question requires:
 
-1. Two independent, proficient Mandarin listeners approving the exact native
-   recording's syllables, lexical reading, **actual spoken-tone pattern**,
-   and clarity for graded practice.
-2. The same independent approval for **all four comparison tones** of every
-   syllable, not only the correct answer. Neutral-tone judgments are reviewed
-   in the complete native word; no standalone neutral comparison is invented.
-3. An exact match between the reviewed labels and current vocabulary/recording
+1. Syllable-identity evidence and at least two usable pitch trackers agreeing
+   on F0 and each expected **spoken tone**, with no conflicting usable tracker.
+   Independent ASR may return Hanzi or exact literal pinyin. Approximate
+   spellings such as `jai` -> `zhai` or `lee` -> `li` are not guessed.
+   Concatenated pinyin must have a unique syllable segmentation; ambiguous
+   `XIAN` is not forced into either `xian` or `xi-an`.
+2. A screened reference for each **correct spoken tone**. Alternative answers
+   remain selectable, but play an example only when it is also screened. A
+   missing alternative reference is reported explicitly after selection, not
+   played unverified or used to give away the answer by disabling its button.
+   Clear licensed single-syllable word clips can replace unclear corpus clips;
+   a whole multi-syllable word cannot be used as a comparison.
+3. An exact match between assessed labels and current vocabulary/recording
    metadata, plus a SHA-256 match for every recording.
 
 The browser verifies all required files before revealing answer buttons or
 playing a question. Native playback, comparison playback, and overlay use
-those verified bytes. A missing approval, unavailable hash API, changed file,
-or failed download blocks the item. The mobile build includes only approved
-audio reachable from fully reviewed questions.
+those verified bytes. Missing evidence, an unavailable hash API, a changed file,
+or a failed download blocks the item. The mobile build includes only qualifying
+audio with redistribution metadata; local-only decisions are removed from its
+ledger and their audio is not packaged.
 
-This enforces a review requirement, **not a mathematical guarantee of 100%
-pronunciation accuracy**. Listening judgments can still be wrong. Do not
-fabricate reviewer attestations or turn automated results into approvals.
+This is **not a mathematical guarantee of 100% pronunciation accuracy**.
+F0, recognition, and alignment can all fail. Ambiguous contours, recognition
+conflicts, neutral-tone reductions without a dedicated prosodic model, and
+single-character polyphonic readings without an explicit matching phonetic ASR
+spelling are withheld. Do not label
+machine screening as human review.
 Reviewer IDs record attestations, not authenticated digital signatures;
 maintainers must verify that the independent listening actually occurred.
 
-## Export and complete the full listening-review queue
+## Rebuild automatic acoustic decisions
+
+Install the optional dependencies in `requirements-audio-audit.txt`, then:
+
+```bash
+node scripts/review_audio.mjs --export .audit/acoustic-candidates.json
+python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase profiles
+python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase asr
+python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase alignment
+python3 scripts/build_acoustic_reviews.py --candidates .audit/acoustic-candidates.json --activate-imported
+npm run audit:listening
+```
+
+The collectors resume by audio hash and evidence version. DC bias and
+low-frequency contamination are removed before tracking pitch with pYIN,
+Praat, and WORLD; the audio played to the learner is not pitch-shifted.
+Register estimates, time-aligned contours, and unprompted ASR are kept as
+separate evidence. Forced alignment is conditioned on the expected text only
+**after** independent recognition matches the syllable sequence; it is not
+itself used as proof of identity. Single syllables use their complete clips.
+
+The compiler refuses stale/missing pitch or recognition evidence and does not
+guess missing syllable boundaries. It records the pipeline fingerprint,
+per-syllable votes, transcript, hashes, and supporting comparison clips.
+Detailed exclusion reasons are written to `.audit/acoustic-decisions.json`.
+`--allow-partial` is diagnostic-only and cannot write the runtime ledger or
+activate imported recordings.
+
+Known bad recordings remain quarantined. `--activate-imported` changes only
+pending or previously machine-screened standalone imports; explicit rejections
+and contextual sentence recordings are not promoted. Human-only overrides
+remain available for genuinely unresolved exceptions.
+
+## Optional listening review and exception resolution
 
 ```bash
 node scripts/review_audio.mjs --export .audit/listening-review.json
@@ -43,7 +88,8 @@ comparison source, including quarantined candidates, complete metadata,
 SHA-256 hashes, and review targets. It is not a metadata-only inventory of
 approved clips. Audio remains locally available at each `audio_path`; use
 `python3 scripts/serve.py` and open that path on the localhost server to listen.
-Existing export files are not overwritten.
+Existing export files are not overwritten. This is also the input to automatic
+screening, not a list of files that someone must individually listen to.
 
 To attach automated evidence and put quarantined or flagged comparisons first,
 without dropping any candidate or creating approvals:
@@ -57,7 +103,8 @@ node scripts/review_audio.mjs --export .audit/prioritized-listening-review.json 
 The export preserves the screen's scope (`whole_comparison_corpus` versus
 `selected_keys`). Findings must match the candidate's exact file hash and tone
 key; stale findings abort the export. Unscreened clips stay explicit, and every
-candidate remains `pending` even if it has no automated flags. Whole-comparison
+candidate remains `pending` for human attestation even if it is machine-screened.
+That export status does not prevent admission via the acoustic ledger. Whole-comparison
 screening does not claim to screen native word recordings.
 
 Reviewers should independently identify the word/syllable and tones before
@@ -99,7 +146,8 @@ npm run build:mobile
 ```
 
 The coverage report explicitly states how many practice entries are eligible.
-Zero approvals is a valid, paused setup, not a successful corpus certification.
+Zero qualifying assessments results in a paused setup, not a successful corpus
+certification. An empty human ledger does not pause automatically screened items.
 
 ## Mandarin Native and additional sources
 
@@ -150,17 +198,18 @@ later. They may be used for contextual listening review, but must not be
 reused or cropped into tone examples without separate boundary and spoken-tone
 review. Contextual corpus membership is not an approval of an isolated word.
 
-For admission, document verified reuse permission, set `rights_status` to
-`cleared` with the actual `license`, resolve the proposed reading, and remove
-the explicit `quiz_eligible: false` quarantine only after its issue is resolved.
-The exact recording/reading still needs the two independent ledger approvals.
-Native playback and bundle selection support the imported source, but never
-use these whole-word clips as automatic isolated-tone comparisons.
+Screened standalone imports can be activated for local browser practice with
+the compiler's `--activate-imported` option. They are explicitly marked
+`distribution_scope: local_only` while reuse permission remains unverified.
+Distribution additionally requires documented permission, `rights_status:
+cleared`, and the actual `license`; spectral analysis cannot grant those rights.
+Native playback supports qualified imported words, but never uses these
+whole-word imports as automatic isolated-tone comparisons.
 
 Before importing any additional source, establish permission for the exact
 recordings and preserve provenance and license metadata. Contextual clips must
 not be treated as isolated-tone exemplars without reviewing boundaries and
-spoken tones. New sources need the same listening approvals and runtime/bundle
+spoken tones. New sources need the same assessments and runtime/bundle
 integration; an import alone never makes a recording eligible.
 
 ## Update a pinned audio snapshot
@@ -205,9 +254,9 @@ Import the files:
 python3 scripts/import_local_audio.py
 ```
 
-Native quiz prompts currently support explicitly listening-approved `audio_cmn`
-recordings and rights-cleared, independently approved `mandarin_native`
-recordings. Other locally imported sources remain index-only.
+Native quiz prompts support qualifying `audio_cmn` recordings and screened
+standalone `mandarin_native` recordings for local use. Distribution has the
+additional rights requirement. Other locally imported sources remain index-only.
 
 ## Corpus tools
 
@@ -223,8 +272,9 @@ recordings. Other locally imported sources remain index-only.
 | `common_voice_index.py` | Index Mandarin Common Voice context clips |
 | `download_openai_tts_sample.py` | Create optional synthetic samples |
 | `audit_native_readings.py` | Resumably screen native words for pinyin mismatches |
-| `review_audio.mjs` | Export pending listening candidates and validate explicit approvals |
-| `collect_acoustic_evidence.py` | Resumably collect hash-bound pitch tracks and unprompted local Mandarin ASR timestamps |
+| `review_audio.mjs` | Export analysis candidates and validate human and acoustic ledgers |
+| `collect_acoustic_evidence.py` | Resumably collect hash-bound pitch, ASR, and alignment evidence |
+| `build_acoustic_reviews.py` | Compile explicit machine decisions and selectively activate local imports |
 
 Automatic acoustic evidence can be collected without listening to every file:
 
@@ -233,6 +283,8 @@ python3 scripts/collect_acoustic_evidence.py \
   --candidates .audit/listening-review.json --phase profiles
 python3 scripts/collect_acoustic_evidence.py \
   --candidates .audit/listening-review.json --phase asr
+python3 scripts/collect_acoustic_evidence.py \
+  --candidates .audit/listening-review.json --phase alignment
 ```
 
 Profiles remove DC bias and low-frequency contamination before running pYIN,
@@ -255,10 +307,11 @@ python3 scripts/audit_native_readings.py
 
 Results are appended to the ignored `.audit/native-readings.jsonl` file after
 every recording. A `review` result is a candidate for independent listening or
-Mandarin-specific ASR confirmation; it is not listening approval. All unapproved
-recordings remain unavailable for practice regardless of ASR status.
+Mandarin-specific ASR confirmation; it is not listening approval. An old ASR
+status alone does not admit a clip: admission uses the current content-bound
+acoustic ledger or explicit human approval.
 
-The review policy is conservative:
+For additional investigation of unresolved identity cases:
 
 1. Whisper screens every app-relevant native recording.
 2. Mandarin Paraformer independently checks Whisper review candidates.

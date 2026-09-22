@@ -205,6 +205,11 @@
       "reason": "Praat finds a flat contour and pYIN cannot obtain a stable track; the independent public clip has a clear fourth-tone fall.",
       "replacement": "pinyin_public"
     },
+    "zhai3": {
+      "status": "bad",
+      "reason": "Reported second/third-tone confusion. The human clip lacks two usable time-aligned pitch tracks; the independent public clip has a clear dipping contour.",
+      "replacement": "pinyin_public"
+    },
     "mou3": {
       "status": "bad",
       "reason": "Sounds like mao3 instead of mou3.",

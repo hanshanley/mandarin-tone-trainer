@@ -25,9 +25,9 @@ python3 scripts/bootstrap.py --verify-only
 
 ## Debug build
 
-Android uses the same fail-closed listening-approval ledger as the browser.
-With no approvals, the app installs but practice is explicitly paused and no
-unreviewed audio is packaged. Adding or revoking approvals requires rebuilding
+Android uses the same acoustic and listening checks as the browser, but excludes
+local-only recordings without established reuse metadata. With no qualifying
+assessments, practice is paused. Adding or revoking decisions requires rebuilding
 and reinstalling; rebuilding cannot revoke audio in an already installed APK.
 External Mandarin Native links require internet access and are not offline
 practice content.

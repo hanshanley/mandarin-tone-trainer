@@ -339,7 +339,7 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn('value="pinyin_public" selected', index)
         self.assertIn('value="audio_cmn"', index)
         self.assertIn("$('correctionSource')?.value||'pinyin_public'", source)
-        self.assertIn("$('correctionSource').onchange=()=>", source)
+        self.assertIn("$('correctionSource').onchange=async()=>", source)
         self.assertIn('rawPinyinBuffers.clear();', source)
         self.assertIn('correctionBuffers.clear();', source)
 
