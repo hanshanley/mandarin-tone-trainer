@@ -505,3 +505,55 @@ test('sentence recordings never become isolated prompts even with matching word 
   const fallbackQueue=[...candidatesFor({...data,quality}).values()];
   assert.ok(fallbackQueue.find(item=>item.kind==='comparison'&&item.audio_path===contextual.audio_path).blocked_reason);
 });
+
+test('coverage counts vocabulary entries, initial examples and missing audio separately',async()=>{
+  const {coverageReport}=await import('../scripts/review_audio.mjs');
+  const extraVoice={...native,audio_path:'audio/audio_cmn/test/second.mp3'};
+  const missing={...word,id:'no-clip',word:'no-clip'};
+  const blocked={...word,id:'blocked',word:'blocked'};
+  const noReference={...word,id:'no-ref',word:'no-ref',lexical_pattern:'2',default_surface_pattern:'2'};
+  const noRefRecording={...native,word:'no-ref',audio_path:'audio/audio_cmn/no-ref/no-ref.mp3'};
+  const blockedRecording={...native,word:'blocked',audio_path:'audio/audio_cmn/blocked/blocked.mp3',quiz_eligible:false};
+  const approvals=[
+    ...allApprovals().filter(entry=>entry.key!=='ma2'),
+    approve(Review.nativeDescriptor(word,extraVoice)),
+    approve(Review.nativeDescriptor(noReference,noRefRecording)),
+  ];
+  const data={
+    words:[word,missing,blocked,noReference],recordings:[native,extraVoice,blockedRecording,noRefRecording],
+    quality:{},publicRecordings:{ma1:{audio_path:'audio/pinyin_public/ma1.mp3'}},
+  };
+  const report=coverageReport(data,index(approvals));
+  assert.deepEqual(report.vocabulary,{
+    total:4,eligible:1,no_isolated_recording:1,missing_correct_tone_reference:1,native_screening_unresolved:1,
+  });
+  assert.equal(report.initial_recording_examples,2);
+  assert.equal(report.initial_audio_files,2);
+  assert.equal(report.entries.length,4);
+  assert.throws(()=>coverageReport(data,index(approvals),{pipeline_sha256:'stale',findings:[]}),/stale/);
+});
+
+test('prepared recognition checks cannot hide conflicting bases or a different payload',()=>{
+  const comparison=automaticComparisons()[0];
+  const checks=[
+    {input:'raw',audio_sha256:hash,evidence_version:'paraformer-unprompted-1',
+      transcript:'ma',decoded_bases:['ma']},
+    {input:'prepared',audio_sha256:hash,evidence_version:'paraformer-dc70-rms010-trim30-1',
+      transcript:'ma',decoded_bases:['ma'],
+      preparation:{sample_rate:16000,gain:4,trim_start_seconds:.1,trim_end_seconds:.8}},
+  ];
+  comparison.evidence.recognition_checks=checks;
+  Review.validateApproval(comparison);
+  for(const edit of [
+    a=>a.evidence.recognition_checks[1].decoded_bases=['na'],
+    a=>a.evidence.recognition_checks[1].audio_sha256='0'.repeat(64),
+    a=>a.evidence.recognition_checks[1].preparation.sample_rate=8000,
+    a=>a.evidence.recognition_checks[1].preparation.gain=-1,
+    a=>a.evidence.recognition_checks[0].input='prepared',
+  ]){
+    const changed=structuredClone(comparison);edit(changed);
+    assert.throws(()=>Review.validateApproval(changed));
+  }
+  const ledger={...acousticLedger(automaticComparisons()),recognition_policy:'raw-prepared-no-phonetic-conflict-1'};
+  assert.throws(()=>Review.createIndex({version:1,approvals:[]},ledger),/prepared recognition/);
+});

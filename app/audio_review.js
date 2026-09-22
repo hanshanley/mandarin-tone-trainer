@@ -106,6 +106,29 @@
           throw new Error(`ASR spelling does not match the syllables: ${entry.audio_path}`);
         }
       }
+      if(evidence.recognition_checks!==undefined){
+        const checks=evidence.recognition_checks;
+        if(!Array.isArray(checks)||checks.length!==2||checks[0].input!=='raw'||checks[1].input!=='prepared'
+          ||checks[0].evidence_version!=='paraformer-unprompted-1'
+          ||checks[1].evidence_version!=='paraformer-dc70-rms010-trim30-1'){
+          throw new Error(`Missing raw/prepared recognition comparison: ${entry.audio_path}`);
+        }
+        let matched=0;
+        for(const check of checks){
+          if(check.audio_sha256!==entry.sha256||typeof check.transcript!=='string'
+            ||(check.decoded_bases!==null&&JSON.stringify(check.decoded_bases)!==JSON.stringify(expectedBases))){
+            throw new Error(`Raw/prepared recognition disagrees: ${entry.audio_path}`);
+          }
+          if(check.decoded_bases!==null)matched++;
+        }
+        const preparation=checks[1].preparation;
+        if(!matched||!preparation||preparation.sample_rate!==16000
+          ||!Number.isFinite(preparation.gain)||preparation.gain<=0
+          ||!Number.isFinite(preparation.trim_start_seconds)||preparation.trim_start_seconds<0
+          ||!Number.isFinite(preparation.trim_end_seconds)||preparation.trim_end_seconds<=preparation.trim_start_seconds){
+          throw new Error(`Invalid recognition preparation evidence: ${entry.audio_path}`);
+        }
+      }
       evidence.tones.forEach((decision,index)=>{
         const votes=decision?.votes;
         const values=votes&&Object.values(votes).filter(value=>value!==null);
@@ -156,6 +179,9 @@
       for(const entry of acousticLedger.approvals){
         if(entry.assessment!=='automated')throw new Error('Acoustic ledger contains a non-automated entry');
         validateApproval(entry);
+        if(acousticLedger.recognition_policy==='raw-prepared-no-phonetic-conflict-1'&&!entry.evidence.recognition_checks){
+          throw new Error(`Missing prepared recognition evidence: ${entry.audio_path}`);
+        }
         if(entry.evidence.pipeline_sha256!==acousticLedger.pipeline_sha256)throw new Error('Acoustic pipeline fingerprint mismatch');
         const key=identity(entry);
         if(seen.has(key))throw new Error(`Duplicate acoustic decision: ${entry.audio_path}`);

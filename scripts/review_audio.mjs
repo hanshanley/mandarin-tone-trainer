@@ -10,17 +10,19 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJSON = relative => JSON.parse(fs.readFileSync(path.join(ROOT, relative), 'utf8'));
 
 export function loadReviewData() {
+  const imported = readJSON('data/mandarin_native_recordings.json');
   return {
     words: readJSON('data/hsk_words.json'),
     recordings: [
       ...readJSON('data/recordings.json'),
-      ...readJSON('data/mandarin_native_recordings.json').recordings,
+      ...imported.recordings,
     ],
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
     ledger: readJSON('data/audio_reviews.json'),
     acousticLedger: readJSON('data/acoustic_reviews.json'),
     snapshots: readJSON('config/source_snapshots.json'),
+    exploreVocabularyCount: imported.explore_vocabulary?.length || 0,
   };
 }
 
@@ -145,6 +147,7 @@ export function practiceInventory(data, index) {
   }
   const audio = new Set();
   const eligibleWords = [];
+  const recordingLabelPairs = [];
   for (const word of data.words) {
     const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
       AudioReview.nativeApproval(index, word, recording)
@@ -160,9 +163,85 @@ export function practiceInventory(data, index) {
         AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
           data.quality, data.publicRecordings, index, mode))));
     eligibleWords.push(word.id);
+    for (const recording of natives) recordingLabelPairs.push({ word_id: word.id, audio_path: recording.audio_path });
     for (const recording of [...natives, ...comparisons.filter(Boolean)]) audio.add(recording.audio_path);
   }
-  return { eligibleWords, audio };
+  return { eligibleWords, recordingLabelPairs, audio };
+}
+
+export function coverageReport(data, index, decisions = null) {
+  if (decisions && decisions.pipeline_sha256 !== data.acousticLedger?.pipeline_sha256) {
+    throw new Error('Exclusion report is stale: its pipeline does not match the acoustic ledger');
+  }
+  const inventory = practiceInventory(data, index);
+  const pairsByWord = new Map();
+  for (const pair of AudioReview.nativeCandidates(data.words, data.recordings)) {
+    if (!pairsByWord.has(pair.word.id)) pairsByWord.set(pair.word.id, []);
+    pairsByWord.get(pair.word.id).push(pair);
+  }
+  const eligible = new Set(inventory.eligibleWords);
+  const findings = new Map((decisions?.findings || []).map(item => [item.label_identity, item.reason]));
+  const perWord = data.words.map(word => {
+    const pairs = pairsByWord.get(word.id) || [];
+    const reasons = new Set();
+    let assessed = 0;
+    for (const { recording } of pairs) {
+      if (AudioReview.nativeApproval(index, word, recording)) assessed++;
+      const descriptor = AudioReview.nativeDescriptor(word, recording);
+      const reason = findings.get(AudioReview.identity(descriptor));
+      if (reason) reasons.add(reason);
+    }
+    const status = eligible.has(word.id) ? 'eligible'
+      : !pairs.length ? 'no_isolated_recording'
+        : assessed ? 'missing_correct_tone_reference' : 'native_screening_unresolved';
+    return {
+      word_id: word.id, word: word.word, pinyin: word.pinyin, status,
+      candidate_recordings: pairs.length, assessed_recordings: assessed,
+      exclusion_reasons: [...reasons].sort(),
+    };
+  });
+  const statuses = Object.fromEntries([
+    'eligible', 'no_isolated_recording', 'missing_correct_tone_reference', 'native_screening_unresolved',
+  ].map(status => [status, perWord.filter(row => row.status === status).length]));
+  if (Object.values(statuses).reduce((sum, count) => sum + count, 0) !== data.words.length) {
+    throw new Error('Coverage categories do not reconcile to vocabulary size');
+  }
+  const bySource = {};
+  for (const recording of data.recordings) {
+    const source = recording.source || 'unspecified';
+    if (!bySource[source]) bySource[source] = new Set();
+    bySource[source].add(recording.audio_path);
+  }
+  const imported = data.recordings.filter(recording => recording.source === 'mandarin_native');
+  const reasons = {};
+  for (const row of perWord) {
+    if (row.status === 'eligible') continue;
+    for (const reason of row.exclusion_reasons) reasons[reason] = (reasons[reason] || 0) + 1;
+  }
+  return {
+    version: 1,
+    pipeline_sha256: data.acousticLedger?.pipeline_sha256 || null,
+    counting_units: {
+      practice_entries: 'distinct vocabulary IDs with at least one qualifying initial recording and correct-tone references',
+      initial_recording_examples: 'qualifying vocabulary-ID/audio-path pairs; voices can create multiple examples of one entry',
+      audio_files: 'distinct local audio paths; never multiplied by words or tone choices',
+    },
+    vocabulary: { total: data.words.length, ...statuses },
+    initial_recording_examples: inventory.recordingLabelPairs.length,
+    initial_audio_files: new Set(inventory.recordingLabelPairs.map(pair => pair.audio_path)).size,
+    reachable_audio_files: inventory.audio.size,
+    imported_audio_files_used: [...inventory.audio].filter(relative => relative.startsWith('audio/mandarin_native/')).length,
+    source_recording_files: Object.fromEntries(Object.entries(bySource).map(([key, paths]) => [key, paths.size])),
+    imported_source: {
+      word_files: imported.filter(recording => recording.recording_type === 'word_candidate').length,
+      context_files: imported.filter(recording => recording.recording_type === 'context_sentence').length,
+      explore_vocabulary_entries: data.exploreVocabularyCount ?? null,
+      context_is_not_isolated_practice: true,
+    },
+    exclusion_reason_word_counts: reasons,
+    exclusion_reason_counts_overlap: true,
+    entries: perWord,
+  };
 }
 
 export function attachToneScreen(candidates, report) {
@@ -205,13 +284,25 @@ export function attachToneScreen(candidates, report) {
 
 function main() {
   const { values } = parseArgs({
-    options: { export: { type: 'string' }, 'tone-screen': { type: 'string' } },
+    options: {
+      export: { type: 'string' }, 'tone-screen': { type: 'string' },
+      coverage: { type: 'string' }, decisions: { type: 'string' },
+    },
   });
   if (values['tone-screen'] && !values.export) {
     throw new Error('--tone-screen requires --export; it never creates listening approvals');
   }
+  if (values.decisions && !values.coverage) throw new Error('--decisions requires --coverage');
   const data = loadReviewData();
   const index = validateLedger(data);
+  if (values.coverage) {
+    const decisions = values.decisions ? JSON.parse(fs.readFileSync(values.decisions, 'utf8')) : null;
+    const report = coverageReport(data, index, decisions);
+    const output = path.resolve(values.coverage);
+    fs.mkdirSync(path.dirname(output), { recursive: true });
+    fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
+    console.log(`Coverage written to ${output}: ${JSON.stringify(report.vocabulary)}; ${report.initial_recording_examples} initial-recording examples.`);
+  }
   if (values.export) {
     let candidates = [...candidatesFor(data).values()].map(candidate => {
       const sha256 = audioHash(candidate.audio_path);

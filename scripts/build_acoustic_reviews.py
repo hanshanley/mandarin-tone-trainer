@@ -11,7 +11,10 @@ import numpy as np
 
 from acoustic_analysis import VERSION, curve_features, decide, segment
 from audit_native_readings import polyphonic_bases
-from collect_acoustic_evidence import ALIGNMENT_VERSION, ASR_VERSION, PROFILE_VERSION, identity_encoding, read_jsonl
+from collect_acoustic_evidence import (
+    ALIGNMENT_VERSION, ASR_VERSION, PREPARED_ASR_VERSION, PROFILE_VERSION,
+    decoded_bases, identity_encoding, read_jsonl, resolved_recognition,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,12 +49,13 @@ def descriptor(row):
     return {key: row[key] for key in keys}
 
 
-def evidence_matches(row, profile, recognition):
+def evidence_matches(row, profile, recognition, prepared):
     return (
-        profile and recognition
+        profile and recognition and prepared
         and profile.get('evidence_version') == PROFILE_VERSION
         and recognition.get('evidence_version') == ASR_VERSION
-        and row['sha256'] == profile.get('sha256') == recognition.get('sha256')
+        and prepared.get('evidence_version') == PREPARED_ASR_VERSION
+        and row['sha256'] == profile.get('sha256') == recognition.get('sha256') == prepared.get('sha256')
     )
 
 
@@ -79,7 +83,7 @@ def syllable_intervals(recognition, count, duration):
     return list(zip(boundaries, boundaries[1:]))
 
 
-def compile_reviews(candidates, profiles, recognitions, recordings, alignments):
+def compile_reviews(candidates, profiles, recognitions, recordings, alignments, prepared_recognitions):
     measured = {path: segment(profile) for path, profile in profiles.items()}
     levels = defaultdict(list)
     family = defaultdict(list)
@@ -106,10 +110,12 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments):
             continue
         reason = None
         profile = profiles.get(path)
-        recognition = recognitions.get(path)
+        raw_recognition = recognitions.get(path)
+        prepared = prepared_recognitions.get(path)
+        recognition = None
         recording = recordings.get(path, {})
         group = source_group(path)
-        if not evidence_matches(row, profile, recognition):
+        if not evidence_matches(row, profile, raw_recognition, prepared):
             reason = 'missing or stale acoustic/recognition evidence'
         elif profile['clipped_fraction'] > .01:
             reason = 'excessive waveform clipping'
@@ -127,10 +133,18 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments):
         expected_bases = [row['key'][:-1]] if kind == 'comparison' else [
             base.replace('ü', 'v') for base in row['pinyin_syllables']
         ]
+        if not reason:
+            recognition, conflict = resolved_recognition(raw_recognition, prepared)
+            if conflict:
+                reason = conflict
         encoding = identity_encoding(recognition, expected_bases) if recognition else None
         if not reason and not encoding:
             reason = 'independent ASR did not confirm the expected syllables'
-        if not reason and encoding != 'literal_pinyin':
+        phonetic_confirmation = any(
+            identity_encoding(result, expected_bases) == 'literal_pinyin'
+            for result in (raw_recognition, prepared) if result
+        )
+        if not reason and not phonetic_confirmation:
             ambiguous_word = row['word'] if kind == 'native' else recording.get('word', '') if group == 'audio_cmn_words' else ''
             if len(ambiguous_word) == 1 and len(polyphonic_bases(ambiguous_word)) > 1:
                 reason = 'polyphonic single-character identity remains ambiguous'
@@ -190,6 +204,17 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments):
                 'identity_method': 'unprompted_paraformer',
                 'identity_encoding': encoding,
                 'asr_transcript': recognition['text'],
+                'recognition_checks': [
+                    {
+                        'input': input_kind,
+                        'audio_sha256': row['sha256'],
+                        'evidence_version': result['evidence_version'],
+                        'transcript': result['text'],
+                        'decoded_bases': decoded_bases(result),
+                        **({'preparation': result['preparation']} if input_kind == 'prepared' else {}),
+                    }
+                    for input_kind, result in [('raw', raw_recognition), ('prepared', prepared)]
+                ],
                 'recognized_bases': expected_bases,
                 'alignment_method': 'whole_clip' if len(expected_tones) == 1 else ALIGNMENT_VERSION,
                 'tones': decisions,
@@ -208,6 +233,7 @@ def main():
     parser.add_argument('--candidates', type=Path, required=True)
     parser.add_argument('--profiles', type=Path, default=ROOT / '.audit/acoustic-profiles.jsonl')
     parser.add_argument('--asr', type=Path, default=ROOT / '.audit/acoustic-asr.jsonl')
+    parser.add_argument('--prepared-asr', type=Path, default=ROOT / '.audit/acoustic-prepared-asr.jsonl')
     parser.add_argument('--alignment', type=Path, default=ROOT / '.audit/acoustic-alignment.jsonl')
     parser.add_argument('--output', type=Path, default=ROOT / 'data/acoustic_reviews.json')
     parser.add_argument('--report', type=Path, default=ROOT / '.audit/acoustic-decisions.json')
@@ -220,8 +246,12 @@ def main():
         parser.error('partial diagnostics cannot activate imported recordings')
     candidates = json.loads(args.candidates.read_text(encoding='utf-8'))['candidates']
     profiles, recognition = read_jsonl(args.profiles), read_jsonl(args.asr)
+    prepared_recognition = read_jsonl(args.prepared_asr)
     required = [row for row in candidates if row['kind'] in ('native', 'comparison')]
-    stale = [row['audio_path'] for row in required if not evidence_matches(row, profiles.get(row['audio_path']), recognition.get(row['audio_path']))]
+    stale = [row['audio_path'] for row in required if not evidence_matches(
+        row, profiles.get(row['audio_path']), recognition.get(row['audio_path']),
+        prepared_recognition.get(row['audio_path']),
+    )]
     if stale and not args.allow_partial:
         raise SystemExit(f'{len(set(stale))} clips lack current evidence; refusing an incomplete runtime ledger')
     raw_recordings = json.loads((ROOT / 'data/recordings.json').read_text(encoding='utf-8'))
@@ -230,7 +260,9 @@ def main():
     for row in required:
         if hashlib.sha256((ROOT / row['audio_path']).read_bytes()).hexdigest() != row['sha256']:
             raise SystemExit(f'Candidate changed since export: {row["audio_path"]}')
-    approvals, findings, registers = compile_reviews(required, profiles, recognition, recordings, read_jsonl(args.alignment))
+    approvals, findings, registers = compile_reviews(
+        required, profiles, recognition, recordings, read_jsonl(args.alignment), prepared_recognition,
+    )
     code_hash = hashlib.sha256(b''.join(
         (ROOT / 'scripts' / name).read_bytes()
         for name in ['build_acoustic_reviews.py', 'acoustic_analysis.py',
@@ -242,6 +274,7 @@ def main():
         'generated_at': datetime.now(timezone.utc).isoformat(),
         'pipeline_sha256': code_hash,
         'certifies_accuracy': False,
+        'recognition_policy': 'raw-prepared-no-phonetic-conflict-1',
         'coverage': {
             'scope': 'app_candidate_isolated_recordings',
             'unique_audio_files': len({row['audio_path'] for row in required}),
@@ -270,6 +303,7 @@ def main():
         temporary.replace(imported_path)
     report = {
         'method': VERSION, 'certifies_accuracy': False, 'registers_hz': registers,
+        'pipeline_sha256': code_hash,
         'screened': dict(Counter(row['kind'] for row in approvals)),
         'withheld': dict(Counter(row['reason'] for row in findings)), 'findings': findings,
     }

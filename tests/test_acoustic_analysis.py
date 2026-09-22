@@ -10,8 +10,11 @@ AVAILABLE = all(importlib.util.find_spec(name) for name in ('numpy', 'librosa', 
 if AVAILABLE:
     with patch.object(sys, 'path', [str(ROOT / 'scripts'), *sys.path]):
         import acoustic_analysis as acoustic
-        from build_acoustic_reviews import syllable_intervals
-        from collect_acoustic_evidence import identity_encoding, unique_segmentation
+        from build_acoustic_reviews import evidence_matches, syllable_intervals
+        from collect_acoustic_evidence import (
+            decoded_bases, identity_encoding, prepare_recognition, resolved_recognition, unique_segmentation,
+            ASR_VERSION, PREPARED_ASR_VERSION, PROFILE_VERSION,
+        )
     import numpy as np
 
 
@@ -82,6 +85,46 @@ class AcousticAnalysisTests(unittest.TestCase):
         self.assertIsNone(unique_segmentation('xian', {'xi', 'an', 'xian'}))
         self.assertIsNone(identity_encoding({'text': 'XIAN', 'recognized_pinyin': []}, ['xi', 'an']))
         self.assertEqual(identity_encoding({'text': "XI AN", 'recognized_pinyin': []}, ['xi', 'an']), 'literal_pinyin')
+
+    def test_prepared_recognition_cleans_signal_without_pitch_or_duration_rescaling(self):
+        times = np.arange(32000) / 16000
+        samples = .08 + .001 * np.sin(2 * np.pi * 240 * times)
+        prepared, details = prepare_recognition(samples, 16000)
+        self.assertAlmostEqual(float(np.sqrt(np.mean(prepared ** 2))), .1, places=4)
+        self.assertGreater(details['gain'], 1)
+        self.assertEqual(details['sample_rate'], 16000)
+        self.assertLess(np.max(np.abs(prepared)), .91)
+        peak = np.fft.rfftfreq(len(prepared), 1 / 16000)[np.argmax(np.abs(np.fft.rfft(prepared)))]
+        self.assertAlmostEqual(peak, 240, delta=1)
+
+    def test_prepared_asr_resolves_incomplete_transcripts_not_phonetic_conflicts(self):
+        raw = {'text': 'JINGI', 'recognized_pinyin': []}
+        clean = {'text': '经 济', 'recognized_pinyin': ['jing1', 'ji4']}
+        self.assertEqual(resolved_recognition(raw, clean), (clean, None))
+        same = {'text': 'ZHONGXING', 'recognized_pinyin': []}
+        hanzi = {'text': '中 型', 'recognized_pinyin': ['zhong1', 'xing2']}
+        self.assertEqual(resolved_recognition(same, hanzi), (hanzi, None))
+        opposite = {'text': '惊喜', 'recognized_pinyin': ['jing1', 'xi3']}
+        selected, reason = resolved_recognition(opposite, clean)
+        self.assertIsNone(selected)
+        self.assertIn('disagree', reason)
+        self.assertEqual(resolved_recognition(clean, raw), (clean, None))
+
+    def test_mixed_transcript_is_not_silently_reduced_to_a_matching_suffix(self):
+        mixed = {'text': 'DONG 人', 'recognized_pinyin': ['ren2']}
+        self.assertIsNone(decoded_bases(mixed))
+        self.assertIsNone(identity_encoding(mixed, ['ren']))
+
+    def test_prepared_evidence_must_match_the_same_file_and_processing_version(self):
+        digest='a'*64
+        candidate={'sha256':digest}
+        profile={'sha256':digest,'evidence_version':PROFILE_VERSION}
+        raw={'sha256':digest,'evidence_version':ASR_VERSION}
+        prepared={'sha256':digest,'evidence_version':PREPARED_ASR_VERSION}
+        self.assertTrue(evidence_matches(candidate,profile,raw,prepared))
+        self.assertFalse(evidence_matches(candidate,profile,raw,None))
+        self.assertFalse(evidence_matches(candidate,profile,raw,{**prepared,'sha256':'b'*64}))
+        self.assertFalse(evidence_matches(candidate,profile,raw,{**prepared,'evidence_version':'old'}))
 
     def test_multi_syllable_alignment_must_be_complete_ordered_and_in_bounds(self):
         intervals = syllable_intervals({'timestamps_ms': [[410, 650], [710, 950]]}, 2, 1.3)

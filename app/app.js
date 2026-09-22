@@ -117,12 +117,12 @@ function hasVerifiedCorrections(w,pattern=expectedPattern(w)){
     tones[index]==='N'||Boolean(correctionSelection(correctionKey(pinyin,tones[index])))
   );
 }
-function filtered(){return words.filter(w=>{
+function practiceWords(){return words.filter(w=>recordingsFor(w).length&&hasAlignedCorrections(w))}
+function filtered(eligible=practiceWords()){return eligible.filter(w=>{
   const syllables=$('syllables').value; const count=(w.lexical_tones||[]).length;
   if(syllables==='one' && count!==1)return false;
   if(syllables==='two' && count!==2)return false;
   if($('sandhiOnly').checked && !w.sandhi_tags.length)return false;
-  if(!recordingsFor(w).length || !hasAlignedCorrections(w))return false;
   return true;
 })}
 function choose(a){return a[Math.floor(Math.random()*a.length)]}
@@ -232,7 +232,10 @@ async function next(play=false,remember=true){
   questionVerified=false;
   clearPersonalRecording();
   setAudioStatus();
-  const pool=filtered();
+  const eligible=practiceWords();
+  const pool=filtered(eligible);
+  const initialExamples=eligible.reduce((count,word)=>count+recordingsFor(word).length,0);
+  $('coverageStatus').textContent=`${eligible.length} eligible vocabulary entries · ${initialExamples} initial-recording examples · ${pool.length} entries in the current filters.`;
   if(!pool.length){
     current=null; currentRec=null; currentNative=null; $('prompt').innerHTML='<div class="muted">Practice paused: no sufficiently screened items match these filters.</div><p>The native recording and correct-tone references need matching acoustic evidence or listening approval. Ambiguous clips are withheld rather than guessed.</p>';
     $('play').disabled=true; $('record').disabled=true;

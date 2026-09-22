@@ -52,6 +52,7 @@ Install the optional dependencies in `requirements-audio-audit.txt`, then:
 node scripts/review_audio.mjs --export .audit/acoustic-candidates.json
 python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase profiles
 python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase asr
+python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase prepared-asr
 python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase alignment
 python3 scripts/build_acoustic_reviews.py --candidates .audit/acoustic-candidates.json --activate-imported
 npm run audit:listening
@@ -61,7 +62,16 @@ The collectors resume by audio hash and evidence version. DC bias and
 low-frequency contamination are removed before tracking pitch with pYIN,
 Praat, and WORLD; the audio played to the learner is not pitch-shifted.
 Register estimates, time-aligned contours, and unprompted ASR are kept as
-separate evidence. Forced alignment is conditioned on the expected text only
+separate evidence. Recognition runs on both the original file and a DC-cleaned,
+high-pass-filtered, silence-trimmed copy normalized to RMS 0.1 with peak limiting.
+Pitch and speaking rate are unchanged; original recordings are not overwritten.
+Both recognition results are interpreted without consulting the expected label.
+If they identify different syllable sequences, the clip is withheld; if one is
+uninterpretable, the other may supply identity evidence. Mixed Hanzi/Latin
+transcripts cannot be silently reduced to a matching suffix. The ledger retains
+both transcripts, decoded sequences, file hashes, and preparation parameters.
+
+Forced alignment is conditioned on the expected text only
 **after** independent recognition matches the syllable sequence; it is not
 itself used as proof of identity. Single syllables use their complete clips.
 
@@ -71,6 +81,26 @@ per-syllable votes, transcript, hashes, and supporting comparison clips.
 Detailed exclusion reasons are written to `.audit/acoustic-decisions.json`.
 `--allow-partial` is diagnostic-only and cannot write the runtime ledger or
 activate imported recordings.
+
+### Reconcile coverage instead of counting different units together
+
+```bash
+node scripts/review_audio.mjs --coverage .audit/practice-coverage.json \
+  --decisions .audit/acoustic-decisions.json
+```
+
+The report distinguishes vocabulary entries, vocabulary/initial-recording
+pairs, unique audio files, standalone imports, and contextual Explore vocabulary.
+Its mutually exclusive vocabulary categories sum to the entire HSK vocabulary:
+eligible, no isolated recording, unresolved native screening, or no correct-tone
+reference. Detailed exclusion reasons can overlap when one word has multiple
+candidate recordings; these counts must not be added together. Stale decision
+reports are rejected by pipeline fingerprint. Omit `--decisions` to count runtime
+coverage without attaching exclusion reasons.
+
+The app shows eligible entries, initial-recording examples, and the count under
+the current syllable/sandhi filters. Downloaded sentence recordings are not
+counted as isolated-word practice examples.
 
 Known bad recordings remain quarantined. `--activate-imported` changes only
 pending or previously machine-screened standalone imports; explicit rejections
@@ -283,6 +313,8 @@ python3 scripts/collect_acoustic_evidence.py \
   --candidates .audit/listening-review.json --phase profiles
 python3 scripts/collect_acoustic_evidence.py \
   --candidates .audit/listening-review.json --phase asr
+python3 scripts/collect_acoustic_evidence.py \
+  --candidates .audit/listening-review.json --phase prepared-asr
 python3 scripts/collect_acoustic_evidence.py \
   --candidates .audit/listening-review.json --phase alignment
 ```
