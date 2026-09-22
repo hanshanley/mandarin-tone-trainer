@@ -71,6 +71,7 @@ async function load(){
   if(!importedResponse.ok)throw new Error(`Mandarin Native index failed: HTTP ${importedResponse.status}`);
   const imported=await importedResponse.json();
   if(imported.version!==1||!Array.isArray(imported.recordings))throw new Error('Invalid Mandarin Native recording index');
+  if(imported.explore_vocabulary!==undefined&&!Array.isArray(imported.explore_vocabulary))throw new Error('Invalid Mandarin Native vocabulary index');
   recordings.push(...imported.recordings);
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
@@ -81,7 +82,8 @@ async function load(){
   const reviewResponse=await fetch('../data/audio_reviews.json',{cache:'no-store'});
   if(!reviewResponse.ok)throw new Error(`Listening approvals failed: HTTP ${reviewResponse.status}`);
   audioReviews=AudioReview.createIndex(await reviewResponse.json());
-  $('reviewStatus').textContent=`Listening-reviewed practice only · ${audioReviews.size} recording/label approvals · ${imported.recordings.length} Mandarin Native imports. Automated audits do not certify pronunciation.`;
+  const sourceVocabulary=imported.explore_vocabulary?` covering ${imported.explore_vocabulary.length} Explore vocabulary entries`:'';
+  $('reviewStatus').textContent=`Listening-reviewed practice only · ${audioReviews.size} recording/label approvals · ${imported.recordings.length} Mandarin Native audio files${sourceVocabulary}. Automated audits do not certify pronunciation.`;
   $('progress').textContent='';
   rebuildIndex();
 }

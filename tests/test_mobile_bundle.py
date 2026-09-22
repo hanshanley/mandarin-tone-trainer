@@ -62,7 +62,8 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
     def test_copies_only_runtime_audio(self):
         bundled = {
             path.relative_to(self.bundle)
-            for path in (self.bundle / 'audio').rglob('*.mp3')
+            for path in (self.bundle / 'audio').rglob('*')
+            if path.is_file()
         }
         self.assertEqual(bundled, self.expected_audio)
         ledger = json.loads((ROOT / 'data/audio_reviews.json').read_text())

@@ -89,12 +89,86 @@ class MandarinNativeTests(unittest.TestCase):
                     downloader.download_recording(record, Path(directory))
             self.assertEqual(fetch.call_count, 1)
 
+    def test_explore_vocabulary_uses_the_same_filter_as_the_site(self):
+        rows = [
+            {'id': 'first', 'audio': 'audios/你好.mp3', 'tokens': [
+                {'hanzi': '你', 'pinyin': 'nǐ'}, {'hanzi': '好', 'pinyin': 'hǎo'},
+                {'hanzi': '！', 'pinyin': ''}, {'hanzi': '你', 'pinyin': 'nǐ'},
+            ]},
+            {'id': 'second', 'audio': 'audios/你好.mp3', 'tokens': [
+                {'hanzi': '好', 'pinyin': 'hào'},
+            ]},
+            {'id': 'third', 'audio': 'audios/我是.m4a', 'tokens': [
+                {'hanzi': '我', 'pinyin': 'wǒ'}, {'hanzi': '是', 'pinyin': 'shì'},
+            ]},
+        ]
+        recordings, vocabulary = downloader.explore_inventory(rows)
+        self.assertEqual(len(recordings), 2)
+        self.assertEqual(len(vocabulary), 4)
+        self.assertEqual(recordings[0]['source_entry_ids'], ['first', 'second'])
+        self.assertEqual(recordings[0]['candidate_hsk_ids'], [])
+        self.assertEqual(recordings[0]['recording_type'], 'context_sentence')
+        self.assertEqual(recordings[0]['context_words'], ['你', '好'])
+        self.assertFalse(recordings[0]['quiz_eligible'])
+        hao = next(entry for entry in vocabulary if entry['word'] == '好')
+        self.assertEqual(set(hao['source_pinyin_labels']), {'hǎo', 'hào'})
+        self.assertEqual(len(hao['context_recording_ids']), 1)
+        self.assertTrue(recordings[1]['audio_path'].endswith('.m4a'))
+
+    def test_context_paths_are_bounded_and_preserve_the_audio_container(self):
+        paths = downloader.context_paths('audios/一个句子.m4a')
+        self.assertTrue(paths['source_url'].endswith('.m4a'))
+        self.assertRegex(paths['audio_path'], r'^audio/mandarin_native/context/[a-f0-9]{64}\.m4a$')
+        for bad in ['https://example.com/file.mp3', 'audios/../secret.mp3', 'audios/folder/file.mp3', 'audios/file.wav', 'audios/file.mp3?query=1']:
+            with self.subTest(reference=bad), self.assertRaises(ValueError):
+                downloader.context_paths(bad)
+
+    def test_m4a_download_is_not_mislabeled_as_mp3(self):
+        recordings, _ = downloader.explore_inventory([{
+            'id': 'one', 'audio': 'audios/一句话.m4a', 'tokens': [{'hanzi': '话', 'pinyin': 'huà'}],
+        }])
+        payload = b'\x00\x00\x00\x1cftypisom' + b'\0' * 200
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(downloader, 'fetch_bytes', return_value=payload):
+                saved, downloaded = downloader.download_recording(recordings[0], Path(directory))
+            self.assertTrue(downloaded)
+            self.assertTrue(saved['audio_path'].endswith('.m4a'))
+            self.assertEqual((Path(directory) / saved['audio_path']).read_bytes(), payload)
+            self.assertFalse(saved['quiz_eligible'])
+        self.assertFalse(downloader.valid_audio_payload(payload, '.mp3'))
+        self.assertFalse(downloader.valid_audio_payload(b'ID3' + b'\0' * 200, '.m4a'))
+
+    def test_malformed_explore_entries_are_not_silently_dropped(self):
+        valid = {'id': 'one', 'audio': 'audios/one.mp3', 'tokens': [{'hanzi': '一', 'pinyin': 'yī'}]}
+        for rows in [[], [valid, valid], [{**valid, 'tokens': None}], [{**valid, 'audio': ''}], [{**valid, 'tokens': [{'hanzi': '一', 'pinyin': 123}]}]]:
+            with self.subTest(rows=rows), self.assertRaises(ValueError):
+                downloader.explore_inventory(rows)
+
     def test_index_preserves_every_listed_clip_and_records_content_hashes(self):
         index = json.loads((ROOT / 'data/mandarin_native_recordings.json').read_text())
-        keys = [record['source_audio_key'] for record in index['recordings']]
-        self.assertTrue(keys)
-        self.assertEqual(len(keys), len(set(keys)))
+        identifiers = [record['source_recording_id'] for record in index['recordings']]
+        keys = [record['source_audio_key'] for record in index['recordings'] if record['recording_type'] == 'word_candidate']
+        self.assertTrue(identifiers)
+        self.assertEqual(len(identifiers), len(set(identifiers)))
         self.assertLessEqual(set(index['upstream_manifest_keys']), set(keys))
+        contexts = [record for record in index['recordings'] if record['recording_type'] == 'context_sentence']
+        self.assertLessEqual(set(index['upstream_context_references']), {record['source_audio_reference'] for record in contexts})
+        context_ids = {record['source_recording_id'] for record in contexts}
+        self.assertGreater(len(index['explore_vocabulary']), 4000)
+        expected_links = {}
+        for record in contexts:
+            if record['source_audio_reference'] not in index['upstream_context_references']:
+                continue
+            for word in record['context_words']:
+                expected_links.setdefault(word, set()).add(record['source_recording_id'])
+        vocabulary_words = [entry['word'] for entry in index['explore_vocabulary']]
+        self.assertEqual(len(vocabulary_words), len(set(vocabulary_words)))
+        self.assertEqual(set(vocabulary_words), set(expected_links))
+        for word in index['explore_vocabulary']:
+            self.assertTrue(word['source_pinyin_labels'])
+            self.assertTrue(word['context_recording_ids'])
+            self.assertLessEqual(set(word['context_recording_ids']), context_ids)
+            self.assertEqual(set(word['context_recording_ids']), expected_links[word['word']])
         for record in index['recordings']:
             self.assertEqual(record['source'], 'mandarin_native')
             self.assertRegex(record['sha256'], r'^[a-f0-9]{64}$')

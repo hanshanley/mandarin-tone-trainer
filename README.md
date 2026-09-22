@@ -119,8 +119,10 @@ The source dataset awaiting recording-specific listening approval contains:
 - **8,596** isolated native word recordings
 - **1,707** human tone-specific syllables
 - **1,622** public-domain reference syllables
-- **869** Mandarin Native word clips imported for local review, not yet
-  approved for practice or redistribution
+- **2,944** Mandarin Native recordings imported for local review: **869**
+  standalone word clips and **2,075** contextual sentence clips
+- **4,396** Explore vocabulary entries linked to their sentence recordings;
+  these are vocabulary entries, not 4,396 separate isolated-word recordings
 
 Large audio assets are intentionally excluded from Git. The bootstrap
 recreates the original corpora from pinned upstream revisions and restores
@@ -198,7 +200,8 @@ published CC BY-SA terms. Reference syllables come from
 [`mp3-chinese-pinyin-sound`](https://github.com/davinfifield/mp3-chinese-pinyin-sound)
 under the Unlicense.
 
-Mandarin Native word recordings are separate local review imports. Their URLs
+Mandarin Native recordings are separate local review imports. Their URLs
 and hashes are preserved in `data/mandarin_native_recordings.json`; reuse
 permission is unverified, so they are not included in distributable audio
-bundles or admitted to practice.
+bundles or admitted to practice. Contextual sentence clips are never substituted
+for isolated-word or isolated-tone examples.

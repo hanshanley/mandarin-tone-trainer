@@ -14,6 +14,7 @@
     const candidates=[];
     for(const recording of recordings){
       if(!['audio_cmn','mandarin_native'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
+      if(recording.source==='mandarin_native'&&recording.recording_type!=='word_candidate')continue;
       const targets=Array.isArray(recording.candidate_hsk_ids)
         ?[...new Set(recording.candidate_hsk_ids)].map(id=>byId.get(id)).filter(Boolean)
         :byText.get(recording.word)||[];
@@ -24,6 +25,9 @@
     return candidates;
   }
   function nativeBlockReason(recording){
+    if(recording.source==='mandarin_native'&&recording.recording_type!=='word_candidate'){
+      return 'Contextual or unidentified imported audio is not an isolated-word quiz prompt';
+    }
     if(recording.source==='mandarin_native'&&(recording.rights_status!=='cleared'||!nonempty(recording.license))){
       return 'Mandarin Native recording has no verified reuse permission or license';
     }
@@ -114,6 +118,7 @@
     for(const source of [preferredSource,alternate]){
       const selected=policy.correctionSelection(key,quality,recordings,source);
       if(!selected)continue;
+      if(selected.source==='mandarin_native'||selected.audio_path.startsWith('audio/mandarin_native/'))continue;
       const approval=comparisonApproval(index,key,selected);
       if(approval)return {...selected,approval};
     }

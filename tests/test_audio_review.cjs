@@ -327,6 +327,7 @@ test('quarantines cannot disappear when their explanatory notes are empty',async
 test('imported recordings need both cleared reuse rights and exact listening approvals',async()=>{
   const imported={
     ...native,source:'mandarin_native',word:null,candidate_hsk_ids:[word.id],
+    recording_type:'word_candidate',
     audio_path:'audio/mandarin_native/ma1.mp3',quiz_eligible:false,rights_status:'unverified',license:null,
   };
   const approvals=[
@@ -357,4 +358,35 @@ test('imported recordings need both cleared reuse rights and exact listening app
   const queue=[...candidatesFor({...data,recordings:[unmapped]}).values()];
   assert.equal(queue.filter(item=>item.kind==='unmapped_native').length,1);
   assert.throws(()=>index([approve(queue.find(item=>item.kind==='unmapped_native'))]),/kind/);
+});
+
+test('sentence recordings never become isolated prompts even with matching word IDs and approvals',async()=>{
+  const contextual={
+    ...native,source:'mandarin_native',recording_type:'context_sentence',
+    source_audio_key:'sentence.m4a',word:null,candidate_hsk_ids:[word.id],
+    audio_path:'audio/mandarin_native/context/example.m4a',
+    quiz_eligible:true,rights_status:'cleared',license:'test-only',context_words:[word.word],
+  };
+  const approvals=[
+    approve(Review.nativeDescriptor(word,contextual)),
+    ...['1','2','3','4'].map(t=>comparison(`ma${t}`)),
+  ];
+  const app=await appHarness({approvals,recording:null,importedRecordings:[contextual]});
+  assert.equal(app.run('questionVerified'),false);
+  assert.equal(app.played.length,0);
+  assert.deepEqual(Review.nativeCandidates([word],[contextual]),[]);
+  assert.equal(Review.nativeApproval(index(approvals),word,contextual),null);
+  const {candidatesFor,practiceInventory}=await import('../scripts/review_audio.mjs');
+  const data={words:[word],recordings:[contextual],quality:{},publicRecordings:{},
+    snapshots:{audio_cmn:{repository:'https://example.com',revision:'a'.repeat(40),syllable_quality:'64k'}}};
+  assert.equal(practiceInventory(data,index(approvals)).audio.size,0);
+  const queue=[...candidatesFor(data).values()];
+  assert.equal(queue.filter(item=>item.kind==='context_native').length,1);
+  const quality={audio_cmn:{ma1:{
+    status:'bad',replacement_audio_path:contextual.audio_path,replacement_source:'audio_cmn',
+  }}};
+  const comparisonApproval=approve(Review.comparisonDescriptor('ma1',contextual));
+  assert.equal(Review.correctionSelection(Policy,'ma1',quality,{},index([comparisonApproval])),null);
+  const fallbackQueue=[...candidatesFor({...data,quality}).values()];
+  assert.ok(fallbackQueue.find(item=>item.kind==='comparison'&&item.audio_path===contextual.audio_path).blocked_reason);
 });

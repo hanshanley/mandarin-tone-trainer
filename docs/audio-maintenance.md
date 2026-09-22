@@ -104,9 +104,18 @@ Zero approvals is a valid, paused setup, not a successful corpus certification.
 ## Mandarin Native and additional sources
 
 The app links to Mandarin Native as an **online external reference**, including
-word-specific links after an answer. Its public word-audio manifest has also
-been imported for local review: **869 recordings** under `audio/mandarin_native/`,
-with provenance and hashes in `data/mandarin_native_recordings.json`.
+word-specific links after an answer. Both public audio collections have been
+imported for local review: **869 standalone word clips** from
+`audio_manifest.json` and **2,075 sentence clips** from Explore's `data.json`.
+The latter contains **4,396 vocabulary entries**, using the site's nonempty
+pinyin filter. Several words share each sentence recording, so the combined
+inventory is **2,944 audio files**, not one file per Explore word.
+
+The word clips live under `audio/mandarin_native/`, and sentence clips under
+`audio/mandarin_native/context/`. Provenance, hashes, collection references, and
+the complete `explore_vocabulary` word-to-recording index are preserved in
+`data/mandarin_native_recordings.json`. MP3 and M4A containers are retained
+without transcoding; sentence filenames use source-reference hashes.
 Redistribution permission was not established; no license or listening approval
 has been invented. No imported audio enters the offline bundle while these
 requirements remain unresolved.
@@ -118,10 +127,13 @@ npm run download:mandarin-native
 python3 scripts/download_mandarin_native.py --refresh-index
 ```
 
-Normal setup restores the pinned imports too. Downloads are resumable, validate
-MP3 payloads, and reject changes to already recorded hashes. Refreshing the
-index adds new source keys but does not silently relabel existing recordings,
-discard removed upstream keys, or approve anything.
+Normal setup restores both pinned collections. Downloads are resumable,
+validate container-specific MP3/M4A headers, and reject changes to already
+recorded hashes. Discovery requests both datasets with the live site's cache
+version and records their hashes. Refreshing the index adds new source
+recordings and refreshes unverified contextual vocabulary links, but does not
+change reviewed readings, discard removed upstream recordings, or approve
+anything. Vocabulary entries and unique audio files are counted separately.
 
 The site places tone digits after the marked vowel (`bái` becomes `ba2i`, not
 `bai2`), and has legacy Unicode names. One stale manifest filename, `dǒnɡ`,
@@ -130,6 +142,13 @@ are recorded. Vocabulary associations are only proposed reading matches in
 `candidate_hsk_ids`, never confirmation of the recorded word or spoken tones.
 Unmatched clips remain in the review export as `unmapped_native`; identify and
 map their reading before creating a native approval.
+
+Sentence recordings appear separately as `context_native`, with their source
+entry IDs and contained vocabulary. They have no isolated-word candidates and
+are rejected by the word-quiz admission policy even if a word ID is assigned
+later. They may be used for contextual listening review, but must not be
+reused or cropped into tone examples without separate boundary and spoken-tone
+review. Contextual corpus membership is not an approval of an isolated word.
 
 For admission, document verified reuse permission, set `rights_status` to
 `cleared` with the actual `license`, resolve the proposed reading, and remove
@@ -197,7 +216,7 @@ recordings. Other locally imported sources remain index-only.
 | `download_audio_cmn.py` | Download isolated native words |
 | `download_audio_cmn_syllables.py` | Download human tone syllables |
 | `download_public_pinyin_syllables.py` | Download public comparison syllables |
-| `download_mandarin_native.py` | Restore hash-pinned local word-audio imports, without granting approval |
+| `download_mandarin_native.py` | Restore both audio collections and the complete Explore vocabulary index, without granting approval |
 | `check_audio_cmn_syllables.py` | Check duplicate and malformed syllable audio |
 | `pad_audio_cmn_syllables.py` | Export padded syllable MP3 files |
 | `forvo_inventory.py` | Inventory Forvo pronunciations without caching audio |

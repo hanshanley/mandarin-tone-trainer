@@ -5,6 +5,7 @@ import hashlib
 import json
 import subprocess
 from pathlib import Path
+from download_mandarin_native import valid_audio_payload
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,7 +59,11 @@ def main():
     imported_recordings = mandarin_native.get('recordings') or []
     for recording in imported_recordings:
         path = ROOT / recording['audio_path']
-        require(valid_mp3(path), f"missing or invalid imported audio: {recording['audio_path']}", errors)
+        valid_import = False
+        if path.is_file():
+            with path.open('rb') as stream:
+                valid_import = valid_audio_payload(stream.read(129), path.suffix)
+        require(valid_import, f"missing or invalid imported audio: {recording['audio_path']}", errors)
         if path.is_file():
             require(
                 file_hash(path) == recording.get('sha256'),

@@ -39,14 +39,19 @@ export function candidatesFor(data) {
   }
   for (const recording of data.recordings) {
     if (recording.source !== 'mandarin_native' || mapped.has(recording.audio_path)) continue;
+    const contextual = recording.recording_type === 'context_sentence';
     const descriptor = {
-      kind: 'unmapped_native', audio_path: recording.audio_path, key: recording.source_audio_key,
+      kind: contextual ? 'context_native' : 'unmapped_native',
+      audio_path: recording.audio_path, key: recording.source_audio_key,
     };
     candidates.set(AudioReview.identity(descriptor), {
       ...descriptor,
       source_url: recording.source_url,
       license: recording.license,
-      blocked_reason: 'No vocabulary reading mapped; requires listening identification and verified reuse permission',
+      blocked_reason: contextual
+        ? 'Complete contextual sentence, not an isolated word; requires separate alignment, listening review, and verified reuse permission'
+        : 'No vocabulary reading mapped; requires listening identification and verified reuse permission',
+      ...(contextual ? { context_words: recording.context_words, source_entry_ids: recording.source_entry_ids } : {}),
     });
   }
   const keys = new Set(data.words.flatMap(word =>
@@ -80,7 +85,9 @@ export function candidatesFor(data) {
           ...descriptor,
           source_url: replacement.source_url,
           license: replacement.license,
-          blocked_reason: replacement.quiz_eligible === false ? replacement.notes || 'Excluded replacement recording' : null,
+          blocked_reason: replacement.source === 'mandarin_native'
+            ? 'Imported word and sentence recordings are not isolated-tone comparison sources'
+            : AudioReview.nativeBlockReason(replacement),
         });
       }
     }
