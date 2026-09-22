@@ -45,6 +45,21 @@ approved clips. Audio remains locally available at each `audio_path`; use
 `python3 scripts/serve.py` and open that path on the localhost server to listen.
 Existing export files are not overwritten.
 
+To attach automated evidence and put quarantined or flagged comparisons first,
+without dropping any candidate or creating approvals:
+
+```bash
+python3 scripts/audit_correction_tones.py --output .audit/full-tone-screen.json
+node scripts/review_audio.mjs --export .audit/prioritized-listening-review.json \
+  --tone-screen .audit/full-tone-screen.json
+```
+
+The export preserves the screen's scope (`whole_comparison_corpus` versus
+`selected_keys`). Findings must match the candidate's exact file hash and tone
+key; stale findings abort the export. Unscreened clips stay explicit, and every
+candidate remains `pending` even if it has no automated flags. Whole-comparison
+screening does not claim to screen native word recordings.
+
 Reviewers should independently identify the word/syllable and tones before
 checking the proposed labels, then compare the complete tone family. Resolve
 disagreements rather than approving by majority or guessing a label swap.

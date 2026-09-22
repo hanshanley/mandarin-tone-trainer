@@ -277,3 +277,48 @@ test('build-time validation rejects stale labels, quarantines, provenance and ch
     fs.rmSync(root,{recursive:true,force:true});
   }
 });
+
+test('tone-screen evidence prioritizes review without approving or dropping candidates',async()=>{
+  const {attachToneScreen}=await import('../scripts/review_audio.mjs');
+  const pending=key=>({
+    ...Review.comparisonDescriptor(key,{audio_path:`audio/pinyin_public/${key}.mp3`}),
+    sha256:hash,status:'pending',reviews:[],
+  });
+
+  const candidates=[pending('ma1'),pending('ma2'),pending('ma3')];
+  const report={
+    certifies_accuracy:false,scope:'selected_keys',
+    sources:{pinyin_public:[{
+      ...candidates[1],status:'review',reason:'Missing pitch track',
+    }]},
+  };
+  const queue=attachToneScreen(candidates,report);
+  assert.equal(queue.length,3);
+  assert.equal(queue[0].key,'ma2');
+  assert.equal(queue[0].tone_screen.status,'review');
+  assert.ok(queue.every(item=>item.status==='pending'&&item.reviews.length===0));
+  assert.equal(queue.find(item=>item.key==='ma1').tone_screen.status,'not_screened');
+  assert.throws(()=>attachToneScreen(candidates,{
+    ...report,sources:{pinyin_public:[{...report.sources.pinyin_public[0],sha256:'0'.repeat(64)}]},
+  }),/stale/);
+  assert.throws(()=>attachToneScreen(candidates,{...report,certifies_accuracy:true}),/must not certify/);
+  assert.throws(()=>attachToneScreen(candidates,{
+    ...report,sources:{pinyin_public:[...report.sources.pinyin_public,...report.sources.pinyin_public]},
+  }),/Duplicate/);
+});
+
+test('quarantines cannot disappear when their explanatory notes are empty',async()=>{
+  const {candidatesFor}=await import('../scripts/review_audio.mjs');
+  const data={
+    words:[word],recordings:[{...native,quiz_eligible:false,notes:''}],
+    publicRecordings:{ma1:{audio_path:'audio/pinyin_public/ma1.mp3'}},
+    quality:{
+      pinyin_public:{ma1:{status:'bad'}},
+      audio_cmn:{ma1:{status:'bad',replacement_audio_path:native.audio_path}},
+    },
+    snapshots:{audio_cmn:{repository:'https://example.com',revision:'a'.repeat(40),syllable_quality:'64k'}},
+  };
+  const candidates=[...candidatesFor(data).values()];
+  assert.ok(candidates.find(item=>item.kind==='comparison'&&item.audio_path===native.audio_path).blocked_reason);
+  assert.ok(candidates.find(item=>item.audio_path==='audio/pinyin_public/ma1.mp3').blocked_reason);
+});

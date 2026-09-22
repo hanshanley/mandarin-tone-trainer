@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
 import AudioReview from '../app/audio_review.js';
 import CorrectionAudio from '../app/correction_audio.js';
 
@@ -60,7 +61,7 @@ export function candidatesFor(data) {
           ...descriptor,
           source_url: recording.source_url,
           license: recording.license,
-          blocked_reason: review?.status === 'bad' ? review.reason : null,
+          blocked_reason: review?.status === 'bad' ? review.reason || 'Quarantined comparison recording' : null,
         });
       }
       if (review?.replacement_audio_path) {
@@ -71,7 +72,7 @@ export function candidatesFor(data) {
           ...descriptor,
           source_url: replacement.source_url,
           license: replacement.license,
-          blocked_reason: replacement.quiz_eligible === false ? replacement.notes : null,
+          blocked_reason: replacement.quiz_eligible === false ? replacement.notes || 'Excluded replacement recording' : null,
         });
       }
     }
@@ -128,28 +129,76 @@ export function practiceInventory(data, index) {
   return { eligibleWords, audio };
 }
 
+export function attachToneScreen(candidates, report) {
+  if (report.certifies_accuracy !== false
+      || !['whole_comparison_corpus', 'selected_keys'].includes(report.scope)
+      || !report.sources || typeof report.sources !== 'object' || Array.isArray(report.sources)) {
+    throw new Error('Invalid tone-screen report; automated results must not certify accuracy');
+  }
+  const byClip = new Map();
+  for (const items of Object.values(report.sources)) {
+    if (!Array.isArray(items)) throw new Error('Invalid tone-screen source entries');
+    for (const item of items) {
+      if (!item.audio_path || !item.key || !/^[a-f0-9]{64}$/.test(item.sha256 || '')
+          || !['review', 'screened_only'].includes(item.status) || !item.reason) {
+        throw new Error('Invalid tone-screen finding');
+      }
+      const key = JSON.stringify([item.audio_path, item.key]);
+      if (byClip.has(key)) throw new Error(`Duplicate tone-screen finding: ${item.audio_path}`);
+      byClip.set(key, item);
+    }
+  }
+  const output = candidates.map(candidate => {
+    if (candidate.kind !== 'comparison') return candidate;
+    const finding = byClip.get(JSON.stringify([candidate.audio_path, candidate.key]));
+    if (!finding) return {
+      ...candidate,
+      tone_screen: { status: 'not_screened', reason: 'No matching comparison screen; listening review still required' },
+    };
+    if (finding.sha256 !== candidate.sha256) {
+      throw new Error(`Tone screen is stale for ${candidate.audio_path}; rerun screening before exporting`);
+    }
+    return {
+      ...candidate,
+      tone_screen: { status: finding.status, reason: finding.reason },
+    };
+  });
+  const priority = candidate => candidate.blocked_reason ? 0 : candidate.tone_screen?.status === 'review' ? 1 : 2;
+  return output.sort((left, right) => priority(left) - priority(right));
+}
+
 function main() {
-  const args = process.argv.slice(2);
-  if (args.length && !(args.length === 2 && args[0] === '--export')) {
-    throw new Error('Usage: node scripts/review_audio.mjs [--export .audit/listening-review.json]');
+  const { values } = parseArgs({
+    options: { export: { type: 'string' }, 'tone-screen': { type: 'string' } },
+  });
+  if (values['tone-screen'] && !values.export) {
+    throw new Error('--tone-screen requires --export; it never creates listening approvals');
   }
   const data = loadReviewData();
   const index = validateLedger(data);
-  if (args[0] === '--export') {
-    const candidates = [...candidatesFor(data).values()].map(candidate => ({
-      ...candidate,
-      sha256: audioHash(candidate.audio_path),
-      status: 'pending',
-      reviews: [],
-      review_target: {
-        label_identity: AudioReview.identity(candidate),
-        audio_sha256: audioHash(candidate.audio_path),
-      },
-    }));
-    const output = path.resolve(args[1]);
+  if (values.export) {
+    let candidates = [...candidatesFor(data).values()].map(candidate => {
+      const sha256 = audioHash(candidate.audio_path);
+      return {
+        ...candidate,
+        sha256,
+        status: 'pending',
+        reviews: [],
+        review_target: { label_identity: AudioReview.identity(candidate), audio_sha256: sha256 },
+      };
+    });
+    let screeningScope = null;
+    if (values['tone-screen']) {
+      const report = JSON.parse(fs.readFileSync(values['tone-screen'], 'utf8'));
+      candidates = attachToneScreen(candidates, report);
+      screeningScope = report.scope;
+    }
+    const output = path.resolve(values.export);
     if (output === path.join(ROOT, 'data/audio_reviews.json')) throw new Error('Cannot overwrite the approval ledger with a review queue');
     fs.mkdirSync(path.dirname(output), { recursive: true });
-    fs.writeFileSync(output, JSON.stringify({ version: 1, candidates }, null, 2) + '\n', { flag: 'wx' });
+    fs.writeFileSync(output, JSON.stringify({
+      version: 1, screening_scope: screeningScope, candidates,
+    }, null, 2) + '\n', { flag: 'wx' });
     console.log(`Exported ${candidates.length} pending recording/label candidates to ${output}. No approvals created.`);
   }
   const inventory = practiceInventory(data, index);
