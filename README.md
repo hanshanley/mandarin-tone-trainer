@@ -126,7 +126,7 @@ Large audio assets are intentionally excluded from Git. The bootstrap
 recreates the original corpora from pinned upstream revisions and restores
 Mandarin Native imports from their recorded URLs and SHA-256 hashes.
 
-Known audio defects and approved fallbacks live in
+Known audio defects and candidate fallback mappings live in
 [`data/correction_audio_quality.json`](data/correction_audio_quality.json).
 Audits screen file integrity, duplicate payloads, and pitch contours; they do
 not certify correctness. The separate
@@ -163,8 +163,9 @@ as an isolated-tone example would make the correction misleading.
 <summary><strong>Why does the app sometimes switch audio sources?</strong></summary>
 
 Some upstream recordings are duplicated, mislabeled, or acoustically unclear.
-The quality policy selects a reviewed clip from the independent corpus when
-the preferred recording is quarantined.
+The quality policy proposes a clip from the independent corpus when
+the preferred recording is quarantined. It can play only after receiving the
+required listening approvals.
 
 </details>
 
