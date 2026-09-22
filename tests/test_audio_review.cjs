@@ -210,6 +210,33 @@ test('changing native spoken-tone labels invalidates eligibility',async()=>{
   assert.equal(app.played.length,0);
 });
 
+test('reviewed questions can be graded and link out without fetching external audio',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run(`
+    selectedTones=['1'];
+    $('answers').children[0].querySelector('[data-tone="1"]').classList.add('selected');
+    grade('1','1');
+  `);
+  assert.equal(app.run('results.length'),1);
+  assert.equal(app.run('results[0].correct'),true);
+  assert.match(app.get('reveal').children[0].href,/^https:\/\/mandarin-native\.com\/#/);
+  assert.equal(app.requests.some(url=>url.startsWith('https:')),false);
+});
+
+test('overlay and alternate-voice fallback use only verified bytes',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run("mineUrl='blob:personal-recording'");
+  await app.get('overlay').onclick();
+  assert.equal(app.played.length,3);
+  assert.match(app.played[1],/^blob:verified-/);
+  assert.equal(app.played[2],'blob:personal-recording');
+  app.get('correctionSource').value='audio_cmn';
+  await app.run('next(false,false)');
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.run("correctionSelection('ma1').audio_path"),'audio/pinyin_public/ma1.mp3');
+  assert.equal(app.requests.some(url=>url.includes('/syllabs/')),false);
+});
+
 test('bundle inventory uses the same review policy and never includes unreviewed files',async()=>{
   const {practiceInventory}=await import('../scripts/review_audio.mjs');
   const publicRecordings=Object.fromEntries(['1','2','3','4'].map(t=>[
@@ -221,4 +248,32 @@ test('bundle inventory uses the same review policy and never includes unreviewed
   assert.deepEqual(inventory.eligibleWords,[word.id]);
   assert.equal(inventory.audio.size,5);
   assert.equal(practiceInventory(data,index(allApprovals().filter(a=>a.key!=='ma3'))).audio.size,0);
+});
+
+test('build-time validation rejects stale labels, quarantines, provenance and changed bytes',async()=>{
+  const {validateLedger}=await import('../scripts/review_audio.mjs');
+  const os=require('node:os');
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'tone-review-test-'));
+  const file=path.join(root,native.audio_path);
+  try{
+    fs.mkdirSync(path.dirname(file),{recursive:true});
+    fs.writeFileSync(file,bytes);
+    const approval={
+      ...approve(Review.nativeDescriptor(word,native)),
+      source_url:native.source_url,license:native.license,
+    };
+    const data={
+      words:[word],recordings:[native],publicRecordings:{},quality:{},
+      snapshots:{audio_cmn:{repository:'https://example.com',revision:'a'.repeat(40),syllable_quality:'64k'}},
+      ledger:{version:1,approvals:[approval]},
+    };
+    assert.equal(validateLedger(data,root).size,1);
+    assert.throws(()=>validateLedger({...data,words:[{...word,pinyin:'changed'}]},root),/labels do not match/);
+    assert.throws(()=>validateLedger({...data,recordings:[{...native,quiz_eligible:false}]},root),/Quarantined/);
+    assert.throws(()=>validateLedger({...data,recordings:[{...native,license:'different'}]},root),/provenance/);
+    fs.writeFileSync(file,'different bytes');
+    assert.throws(()=>validateLedger(data,root),/changed since listening review/);
+  }finally{
+    fs.rmSync(root,{recursive:true,force:true});
+  }
 });
