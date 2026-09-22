@@ -118,7 +118,13 @@ function element(){
 }
 async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[]}={}){
   const elements=new Map();
-  const get=id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id)};
+  const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
+  const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
+  const get=id=>{
+    if(!ids.has(id))return null;
+    if(!elements.has(id))elements.set(id,element());
+    return elements.get(id);
+  };
   get('syllables').value='all';
   get('correctionSource').value='pinyin_public';
   const publicRecordings=Object.fromEntries(['1','2','3','4'].map(tone=>[
@@ -204,8 +210,9 @@ test('automatic evidence enables actual practice without human attestations',asy
   assert.equal(app.run('questionVerified'),true);
   assert.equal(app.get('answers').children.length,1);
   assert.equal(app.played.length,1);
-  assert.match(app.get('reviewStatus').textContent,/5 acoustic checks/);
-  assert.match(app.get('reviewStatus').textContent,/0 listening approvals/);
+  assert.equal(app.get('reviewStatus'),null);
+  assert.equal(app.get('coverageStatus'),null);
+  assert.match(app.get('prompt').innerHTML,/Listen first/);
   assert.throws(()=>index(automatic),/acoustic ledger/);
 });
 
@@ -253,9 +260,10 @@ test('a screened isolated-word reference can replace unclear comparison-corpus c
   assert.equal(Review.correctionSelection(Policy,'ma3',{}, {},quarantined),null);
 });
 
-test('actual app starts paused with an empty ledger and requests no audio',async()=>{
+test('empty practice pool is stated simply without audit backlog or unsafe audio',async()=>{
   const app=await appHarness();
-  assert.match(app.get('prompt').innerHTML,/Practice paused/);
+  assert.match(app.get('prompt').innerHTML,/No exercises are available right now/);
+  assert.doesNotMatch(app.get('prompt').innerHTML,/screen|review|approval|withheld|quarantin/i);
   assert.equal(app.get('answers').children.length,0);
   assert.equal(app.get('play').disabled,true);
   assert.equal(app.get('record').disabled,true);
@@ -265,7 +273,7 @@ test('actual app starts paused with an empty ledger and requests no audio',async
 
 test('actual app rejects a missing ledger instead of trusting the old corpus',async()=>{
   const app=await appHarness({ledgerFailure:true});
-  assert.match(app.get('reviewStatus').textContent,/Practice blocked/);
+  assert.match(app.get('prompt').innerHTML,/practice data could not load/);
   assert.equal(app.played.length,0);
   assert.equal(app.get('next').disabled,true);
 });
@@ -278,13 +286,13 @@ test('missing alternative examples never play but do not disable a checked quest
   await app.get('overlay').onclick();
   assert.equal(app.run('overlayAudios.length'),2);
   app.get('answers').children[0].querySelector('[data-tone="3"]').onclick();
-  assert.match(app.get('audioStatus').textContent,/No screened example/);
+  assert.match(app.get('audioStatus').textContent,/No comparison recording is available/);
   assert.equal(app.run('results.length'),1);
   assert.equal(app.run('results[0].correct'),false);
   assert.equal(app.requests.includes('../audio/pinyin_public/ma3.mp3'),false);
   assert.equal(app.run('overlayAudios.length'),0);
   const missingCorrect=await appHarness({approvals:allApprovals().filter(a=>a.key!=='ma1')});
-  assert.match(missingCorrect.get('prompt').innerHTML,/Practice paused/);
+  assert.match(missingCorrect.get('prompt').innerHTML,/No exercises are available/);
   assert.equal(missingCorrect.played.length,0);
 });
 
@@ -314,7 +322,7 @@ test('tampered native or comparison audio prevents all playback and grading',asy
 
 test('changing native spoken-tone labels invalidates eligibility',async()=>{
   const app=await appHarness({approvals:allApprovals(),recording:{...native,surface_pattern:'3'}});
-  assert.match(app.get('prompt').innerHTML,/Practice paused/);
+  assert.match(app.get('prompt').innerHTML,/No exercises are available/);
   assert.equal(app.played.length,0);
 });
 
@@ -336,6 +344,28 @@ test('reviewed questions can be graded and link out without fetching external au
   assert.equal(app.run('current._graded'),true);
   assert.equal(app.run('selectedTones[0]'),'1');
   assert.equal(app.run('results.length'),1);
+});
+
+test('practice card contains exercises and controls, not corpus audit counters',()=>{
+  const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
+  const card=html.split('<section class="card"')[1].split('</section>')[0];
+  assert.doesNotMatch(card,/reviewStatus|coverageStatus|eligible vocabulary|acoustic checks|listening approvals/);
+  for(const id of ['prompt','answers','play','next','audioStatus'])assert.ok(card.includes(`id="${id}"`));
+});
+
+test('empty filters explain how to get back to the available exercises',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  const available=app.run('practiceWords().length');
+  app.get('syllables').value='two';
+  await app.run('next(false,false)');
+  assert.match(app.get('prompt').innerHTML,/No exercises match these filters/);
+  assert.match(app.get('prompt').innerHTML,/Try another syllable setting/);
+  assert.doesNotMatch(app.get('prompt').innerHTML,/screen|approval|review/i);
+  assert.equal(app.run('practiceWords().length'),available);
+  app.get('syllables').value='all';
+  await app.run('next(false,false)');
+  assert.equal(app.run('questionVerified'),true);
+  assert.match(app.get('prompt').innerHTML,/Listen first/);
 });
 
 test('overlay and alternate-voice fallback use only verified bytes',async()=>{

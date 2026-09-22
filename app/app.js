@@ -84,9 +84,6 @@ async function load(){
   const acousticResponse=await fetch('../data/acoustic_reviews.json',{cache:'no-store'});
   if(!acousticResponse.ok)throw new Error(`Acoustic screening data failed: HTTP ${acousticResponse.status}`);
   audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{sourceRecordings:recordings});
-  const automaticCount=[...audioReviews.values()].filter(entry=>entry.assessment==='automated').length;
-  const sourceVocabulary=imported.explore_vocabulary?` covering ${imported.explore_vocabulary.length} Explore vocabulary entries`:'';
-  $('reviewStatus').textContent=`Audio-screened practice · ${automaticCount} acoustic checks · ${audioReviews.size-automaticCount} listening approvals · ${imported.recordings.length} Mandarin Native audio files${sourceVocabulary}. Automatic screening is not a guarantee of accuracy.`;
   $('progress').textContent='';
   rebuildIndex();
 }
@@ -192,7 +189,7 @@ async function verifyCurrentQuestion(){
     return true;
   }catch(error){
     if(loadId!==questionLoadId)return false;
-    $('prompt').textContent='Practice blocked: the reviewed audio could not be verified.';
+    $('prompt').textContent='This recording could not be loaded. Try another word.';
     setAudioStatus(error.message,true);
     console.error('Question audio verification failed',error);
     return false;
@@ -234,10 +231,11 @@ async function next(play=false,remember=true){
   setAudioStatus();
   const eligible=practiceWords();
   const pool=filtered(eligible);
-  const initialExamples=eligible.reduce((count,word)=>count+recordingsFor(word).length,0);
-  $('coverageStatus').textContent=`${eligible.length} eligible vocabulary entries · ${initialExamples} initial-recording examples · ${pool.length} entries in the current filters.`;
   if(!pool.length){
-    current=null; currentRec=null; currentNative=null; $('prompt').innerHTML='<div class="muted">Practice paused: no sufficiently screened items match these filters.</div><p>The native recording and correct-tone references need matching acoustic evidence or listening approval. Ambiguous clips are withheld rather than guessed.</p>';
+    current=null; currentRec=null; currentNative=null;
+    $('prompt').innerHTML=eligible.length
+      ?'<div class="muted">No exercises match these filters.</div><p>Try another syllable setting or turn off Sandhi only.</p>'
+      :'<div class="muted">No exercises are available right now.</div>';
     $('play').disabled=true; $('record').disabled=true;
     $('answers').innerHTML=''; $('reveal').classList.add('hidden'); updateBackButton(); return;
   }
@@ -254,7 +252,7 @@ async function next(play=false,remember=true){
 }
 function grade(p,correct){
   if(!questionVerified||correct!==patternFor(current,currentRec)||!AudioReview.nativeApproval(audioReviews,current,currentRec)||!hasVerifiedCorrections(current,correct)){
-    setAudioStatus('This item does not have the required audio checks and cannot be graded.',true);
+    setAudioStatus('This exercise is not ready yet. Try another word.',true);
     return;
   }
   current._graded=true;
@@ -359,7 +357,7 @@ async function playNative(){
     nativeAudio=audio;
     audio.onended=()=>{if(nativeAudio===audio)stopNative()};
     await audio.play();
-    if(playId===nativePlayId)setAudioStatus('Playing the screened native recording.');
+    if(playId===nativePlayId)setAudioStatus('Playing the native recording.');
   }catch(error){
     if(playId!==nativePlayId)return;
     stopNative();
@@ -515,7 +513,7 @@ async function playCorrection(index,tone){
   const key=correctionKey(pinyin,tone);
   if(!correctionSelection(key)){
     stopAllAudio();
-    setAudioStatus('No screened example is available for this tone; you can still choose it as an answer.');
+    setAudioStatus('No comparison recording is available for this tone; your answer still counts.');
     return;
   }
   return playPinyinKey(key);
@@ -536,7 +534,7 @@ $('correctionSource').onchange=async()=>{
   }else{
     await next(false,false);
   }
-  setAudioStatus(`Comparison preference: ${$('correctionSource').value==='audio_cmn'?'human':'reference'}. Screened fallbacks may use another source.`);
+  setAudioStatus(`Comparison voice: ${$('correctionSource').value==='audio_cmn'?'human':'reference'}.`);
 };
 $('sandhiOnly').onchange=()=>{quizHistory=[];next(true,false)};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
@@ -683,7 +681,6 @@ load().then(()=>next(true,false)).catch(error=>{
   console.error(error);
   $('prompt').innerHTML=`<div class="muted">The practice data could not load.</div><p>${error.message}. Start the app with <code>python3 scripts/serve.py</code> and open its localhost URL.</p>`;
   $('answers').innerHTML='';
-  $('reviewStatus').textContent='Practice blocked: audio-assessment data could not be loaded.';
   setPracticeControlsDisabled(true);
   $('record').disabled=true;
 });

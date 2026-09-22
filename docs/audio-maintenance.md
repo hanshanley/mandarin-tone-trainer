@@ -101,9 +101,11 @@ primary blocker per unavailable word, using the furthest screening stage any
 of its candidate recordings reached; these primary-blocker counts are mutually
 exclusive.
 
-The app shows eligible entries, initial-recording examples, and the count under
-the current syllable/sandhi filters. Downloaded sentence recordings are not
-counted as isolated-word practice examples.
+Coverage counts and unresolved-item diagnostics belong in this developer report,
+not on the learner's practice screen. The app selects from available exercises
+and displays an empty-state message only when none match the chosen filters
+or no exercises are available. Downloaded sentence recordings are not counted
+as isolated-word practice examples.
 
 Known bad recordings remain quarantined. `--activate-imported` changes only
 pending or previously machine-screened standalone imports; explicit rejections
