@@ -136,3 +136,15 @@ class AcousticAnalysisTests(unittest.TestCase):
         for timestamps in [[], [[200, 900]], [[400, 700], [300, 900]], [[100, 500], [600, 1800]]]:
             self.assertIsNone(syllable_intervals({'timestamps_ms': timestamps}, 2, 1.3))
         self.assertEqual(syllable_intervals({}, 1, 1.3), [(0, 1.3)])
+
+    def test_neutral_requires_reduction_and_the_correct_preceding_tone_context(self):
+        preceding = {'status': 'measured', 'start': 0, 'end': .4, 'voiced_seconds': .4}
+        neutral = {'status': 'measured', 'start': .5, 'end': .65, 'voiced_seconds': .15,
+                   'curves': {method: [180] * 17 for method in acoustic.METHODS}}
+        rms = np.array([.1] * 45 + [.03] * 30)
+        result = acoustic.decide_neutral(neutral, preceding, '1', 300, rms)
+        self.assertEqual(result['status'], 'screened')
+        self.assertEqual(result['expected'], 'N')
+        self.assertEqual(acoustic.decide_neutral(neutral, preceding, '3', 300, rms)['status'], 'review')
+        self.assertEqual(acoustic.decide_neutral({**neutral, 'voiced_seconds': .4}, preceding, '1', 300, rms)['status'], 'review')
+        self.assertEqual(acoustic.decide_neutral(neutral, preceding, '1', 300, np.ones(75) * .1)['status'], 'review')

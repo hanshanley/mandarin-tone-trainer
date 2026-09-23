@@ -1,6 +1,7 @@
 """Time-aligned pitch evidence for automatic tone screening, not human certification."""
 import hashlib
 import io
+import subprocess
 from pathlib import Path
 
 import librosa
@@ -39,7 +40,16 @@ def on_grid(times, frequencies, size):
 def extract(path):
     path = Path(path)
     payload = path.read_bytes()
-    samples, sample_rate = librosa.load(io.BytesIO(payload), sr=SAMPLE_RATE, mono=True)
+    if path.suffix.lower() == '.m4a':
+        decoded = subprocess.run(
+            ['ffmpeg', '-v', 'error', '-i', str(path), '-f', 'f32le', '-ar', str(SAMPLE_RATE), '-ac', '1', '-'],
+            check=True, capture_output=True,
+        ).stdout
+        if path.read_bytes() != payload:
+            raise ValueError(f'Audio changed while decoding: {path}')
+        samples, sample_rate = np.frombuffer(decoded, dtype='<f4'), SAMPLE_RATE
+    else:
+        samples, sample_rate = librosa.load(io.BytesIO(payload), sr=SAMPLE_RATE, mono=True)
     signal = prepare_signal(samples, sample_rate)
     rms = librosa.feature.rms(y=signal, frame_length=512, hop_length=HOP)[0]
     size = len(rms)
@@ -80,7 +90,7 @@ def extract(path):
     }
 
 
-def segment(profile, start=0, end=None):
+def segment(profile, start=0, end=None, *, neutral=False):
     end = profile['duration'] if end is None else end
     if not 0 <= start < end <= profile['duration'] + .02:
         return {'status': 'review', 'reason': 'invalid syllable interval'}
@@ -104,11 +114,11 @@ def segment(profile, start=0, end=None):
             if difference <= 2:
                 consensus[index] = frequency
     voiced = np.flatnonzero(np.isfinite(consensus))
-    if len(voiced) < 12:
+    if len(voiced) < (8 if neutral else 12):
         return {'status': 'review', 'reason': 'insufficient jointly voiced frames'}
     first, last = voiced[0], voiced[-1]
     duration = (last - first) * HOP / SAMPLE_RATE
-    if duration < .12 or len(voiced) / (last - first + 1) < .45:
+    if duration < (.07 if neutral else .12) or len(voiced) / (last - first + 1) < .45:
         return {'status': 'review', 'reason': 'insufficient continuous pitch evidence'}
     points = np.linspace(first, last, 19)[1:-1]
     radius = max(1, (last - first) / 36)
@@ -166,6 +176,16 @@ def curve_features(values):
     }
 
 
+def speaker_high_reference(profile):
+    """Estimate register from the same source utterance, not other speakers."""
+    voiced = []
+    for frame in zip(*(profile['tracks'][method] for method in METHODS)):
+        pitches = [value for value in frame if value is not None and value > 0]
+        if len(pitches) >= 2 and 12 * np.log2(max(pitches) / min(pitches)) <= 2:
+            voiced.append(float(np.median(pitches)))
+    return float(np.quantile(voiced, .9)) if len(voiced) >= 30 else None
+
+
 def classify_curve(values, high_reference=None, connected=False):
     feature = curve_features(values)
     relative = feature['median_hz'] / high_reference if high_reference else None
@@ -213,4 +233,38 @@ def decide(measured, expected, high_reference=None, connected=False):
         'voiced_seconds': measured['voiced_seconds'],
         'start': measured['start'],
         'end': measured['end'],
+    }
+
+
+def decide_neutral(measured, preceding, preceding_tone, high_reference, rms):
+    if measured['status'] != 'measured' or preceding['status'] != 'measured':
+        return {'status': 'review', 'reason': 'neutral tone lacks reliable contextual pitch evidence'}
+    duration_ratio = measured['voiced_seconds'] / preceding['voiced_seconds']
+    def energy(part):
+        first = max(0, round(part['start'] * SAMPLE_RATE / HOP))
+        last = min(len(rms), round(part['end'] * SAMPLE_RATE / HOP) + 1)
+        return float(np.quantile(rms[first:last], .75)) if last > first else 0
+    prior_energy = energy(preceding)
+    intensity_ratio = energy(measured) / prior_energy if prior_energy else float('inf')
+    if duration_ratio > .75 or intensity_ratio > .9:
+        return {'status': 'review', 'reason': 'neutral syllable is not clearly reduced',
+                'duration_ratio': duration_ratio, 'intensity_ratio': intensity_ratio}
+    votes = {}
+    pitch_ratios = {}
+    for method, curve in measured['curves'].items():
+        ratio = float(np.median(curve)) / high_reference
+        pitch_ratios[method] = ratio
+        context_fit = .75 <= ratio <= 1.2 if preceding_tone == '3' else .35 <= ratio <= .85
+        votes[method] = 'N' if context_fit else None
+    if sum(vote == 'N' for vote in votes.values()) < 2:
+        return {'status': 'review', 'reason': 'neutral pitch is unresolved in its tonal context', 'votes': votes}
+    return {
+        'status': 'screened', 'expected': 'N', 'votes': votes,
+        'method': 'contextual-neutral-reduction-1',
+        'voiced_seconds': measured['voiced_seconds'], 'start': measured['start'], 'end': measured['end'],
+        'prosody': {
+            'preceding_tone': preceding_tone, 'duration_ratio': round(duration_ratio, 6),
+            'intensity_ratio': round(intensity_ratio, 6),
+            'pitch_ratios': {method: round(value, 6) for method, value in pitch_ratios.items()},
+        },
     }

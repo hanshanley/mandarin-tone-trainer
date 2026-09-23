@@ -9,18 +9,21 @@ from pathlib import Path
 
 import numpy as np
 
-from acoustic_analysis import VERSION, curve_features, decide, segment
+from acoustic_analysis import VERSION, curve_features, decide, decide_neutral, segment, speaker_high_reference
 from audit_native_readings import polyphonic_bases
 from collect_acoustic_evidence import (
     ALIGNMENT_VERSION, ASR_VERSION, PREPARED_ASR_VERSION, PROFILE_VERSION,
     decoded_bases, identity_encoding, read_jsonl, resolved_recognition,
 )
+from runtime_data import read_recordings
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def source_group(path):
+    if path.startswith('audio/mandarin_native/excerpts/'):
+        return 'mandarin_native_excerpts'
     if path.startswith('audio/pinyin_public/'):
         return 'pinyin_public'
     if path.startswith('audio/audio_cmn/syllabs/'):
@@ -38,6 +41,8 @@ def label_identity(row):
             row['kind'], row['audio_path'], row['word_id'], row['word'], row['pinyin'],
             row['pinyin_syllables'], row['lexical_pattern'], row['surface_pattern'],
         ]
+        if row.get('source_segment'):
+            values.append(row['source_segment'])
     return json.dumps(values, ensure_ascii=False, separators=(',', ':'))
 
 
@@ -46,6 +51,8 @@ def descriptor(row):
     keys += ['key'] if row['kind'] == 'comparison' else [
         'word_id', 'word', 'pinyin', 'pinyin_syllables', 'lexical_pattern', 'surface_pattern',
     ]
+    if row.get('source_segment'):
+        keys.append('source_segment')
     return {key: row[key] for key in keys}
 
 
@@ -125,7 +132,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             recording.get('review_status') == 'rejected'
             or (recording.get('quiz_eligible') is False and not (
                 recording.get('source') == 'mandarin_native'
-                and recording.get('recording_type') == 'word_candidate'
+                and recording.get('recording_type') in ('word_candidate', 'aligned_word')
                 and recording.get('review_status') == 'pending'
             ))
         ):
@@ -149,12 +156,23 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             if len(ambiguous_word) == 1 and len(polyphonic_bases(ambiguous_word)) > 1:
                 reason = 'polyphonic single-character identity remains ambiguous'
         expected_tones = [row['key'][-1]] if kind == 'comparison' else row['surface_pattern'].split('-')
-        if not reason and 'N' in expected_tones:
-            reason = 'neutral-tone reduction needs a separate prosodic confidence model'
+        if not reason and (expected_tones[0] == 'N' or any(
+            tone == 'N' and expected_tones[index - 1] == 'N'
+            for index, tone in enumerate(expected_tones) if index
+        )):
+            reason = 'neutral tone has no full-tone anchor in this word'
         if reason:
             findings.append({'kind': kind, 'audio_path': path, 'label_identity': label_identity(row), 'reason': reason})
             continue
         high = family_registers.get((group, expected_bases[0])) if kind == 'comparison' else registers.get(group)
+        parent = row.get('source_segment')
+        if parent:
+            parent_profile = profiles.get(parent['audio_path'])
+            if not parent_profile or parent_profile.get('sha256') != parent['sha256'] or parent_profile.get('evidence_version') != PROFILE_VERSION:
+                findings.append({'kind': kind, 'audio_path': path, 'label_identity': label_identity(row),
+                                 'reason': 'source sentence has no current pitch evidence'})
+                continue
+            high = speaker_high_reference(parent_profile)
         timing = recognition
         if len(expected_tones) > 1:
             timing = alignments.get(path, {})
@@ -165,10 +183,16 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             findings.append({'kind': kind, 'audio_path': path, 'label_identity': label_identity(row),
                              'reason': 'no reliable syllable alignment or speaker-register reference'})
             continue
-        decisions = [
-            decide(segment(profile, start, end), tone, high, connected=len(expected_tones) > 1)
-            for (start, end), tone in zip(intervals, expected_tones)
-        ]
+        measurements = [segment(profile, start, end, neutral=tone == 'N')
+                        for (start, end), tone in zip(intervals, expected_tones)]
+        decisions = []
+        for index, (measurement, tone) in enumerate(zip(measurements, expected_tones)):
+            if tone == 'N':
+                decision = decide_neutral(measurement, measurements[index - 1],
+                                          expected_tones[index - 1], high, profile['rms'])
+            else:
+                decision = decide(measurement, tone, high, connected=len(expected_tones) > 1 or bool(parent))
+            decisions.append(decision)
         if any(decision['status'] != 'screened' for decision in decisions):
             findings.append({'kind': kind, 'audio_path': path, 'label_identity': label_identity(row),
                              'reason': 'tone evidence is ambiguous or contradicts the label', 'decisions': decisions})
@@ -176,8 +200,15 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
         references = []
         if kind == 'native':
             for base, tone in zip(expected_bases, expected_tones):
+                if tone == 'N':
+                    references.append(None)
+                    continue
                 key = base + tone
-                distinct = [reference for reference in reference_by_key[key] if reference['sha256'] != row['sha256']]
+                distinct = [
+                    reference for reference in reference_by_key[key]
+                    if reference['sha256'] != row['sha256']
+                    and (group.startswith('mandarin_native') or reference['distribution_scope'] == 'redistributable')
+                ]
                 if not distinct:
                     reason = 'no distinct screened comparison for the expected tone'
                     break
@@ -196,7 +227,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             'sha256': row['sha256'],
             'source_url': row['source_url'],
             'license': row.get('license'),
-            'distribution_scope': 'local_only' if group == 'mandarin_native' and recording.get('rights_status') != 'cleared' else 'redistributable',
+            'distribution_scope': 'local_only' if group.startswith('mandarin_native') and recording.get('rights_status') != 'cleared' else 'redistributable',
             'evidence': {
                 'method': VERSION,
                 'audio_sha256': row['sha256'],
@@ -254,8 +285,7 @@ def main():
     )]
     if stale and not args.allow_partial:
         raise SystemExit(f'{len(set(stale))} clips lack current evidence; refusing an incomplete runtime ledger')
-    raw_recordings = json.loads((ROOT / 'data/recordings.json').read_text(encoding='utf-8'))
-    raw_recordings += json.loads((ROOT / 'data/mandarin_native_recordings.json').read_text(encoding='utf-8'))['recordings']
+    raw_recordings = read_recordings()
     recordings = {row['audio_path']: row for row in raw_recordings}
     for row in required:
         if hashlib.sha256((ROOT / row['audio_path']).read_bytes()).hexdigest() != row['sha256']:
@@ -290,21 +320,27 @@ def main():
     temporary.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     temporary.replace(args.output)
     if args.activate_imported:
-        imported_path = ROOT / 'data/mandarin_native_recordings.json'
-        imported = json.loads(imported_path.read_text(encoding='utf-8'))
         eligible = {entry['audio_path'] for entry in approvals if entry['kind'] == 'native'}
-        for recording in imported['recordings']:
-            if recording['recording_type'] != 'word_candidate' or recording.get('review_status') not in ('pending', 'acoustic_screened'):
-                continue
-            recording['quiz_eligible'] = recording['audio_path'] in eligible
-            recording['review_status'] = 'acoustic_screened' if recording['quiz_eligible'] else 'pending'
-        temporary = imported_path.with_suffix('.json.part')
-        temporary.write_text(json.dumps(imported, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        temporary.replace(imported_path)
+        eligible.update(entry['audio_path'] for entry in approvals if entry['kind'] == 'comparison')
+        for filename in ('mandarin_native_recordings.json', 'context_word_recordings.json'):
+            imported_path = ROOT / 'data' / filename
+            imported = json.loads(imported_path.read_text(encoding='utf-8'))
+            for recording in imported['recordings']:
+                if recording['recording_type'] not in ('word_candidate', 'aligned_word') or recording.get('review_status') not in ('pending', 'acoustic_screened'):
+                    continue
+                recording['quiz_eligible'] = recording['audio_path'] in eligible
+                recording['review_status'] = 'acoustic_screened' if recording['quiz_eligible'] else 'pending'
+            temporary = imported_path.with_suffix('.json.part')
+            temporary.write_text(json.dumps(imported, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+            temporary.replace(imported_path)
     report = {
         'method': VERSION, 'certifies_accuracy': False, 'registers_hz': registers,
         'pipeline_sha256': code_hash,
         'screened': dict(Counter(row['kind'] for row in approvals)),
+        'native_tone_coverage': dict(Counter(
+            tone for row in approvals if row['kind'] == 'native'
+            for tone in row['surface_pattern'].split('-')
+        )),
         'withheld': dict(Counter(row['reason'] for row in findings)), 'findings': findings,
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)

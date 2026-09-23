@@ -4,6 +4,13 @@
   else root.AudioReview=api;
 })(typeof globalThis!=='undefined'?globalThis:this,()=>{
   const nonempty=value=>typeof value==='string'&&value.trim().length>0;
+  function validSourceSegment(segment){
+    return segment&&/^audio\/mandarin_native\/context\/[a-f0-9]{64}\.(mp3|m4a)$/.test(segment.audio_path)
+      &&/^[a-f0-9]{64}$/.test(segment.sha256||'')
+      &&segment.sample_rate===16000
+      &&Number.isInteger(segment.start_sample)&&Number.isInteger(segment.end_sample)
+      &&segment.start_sample>=0&&segment.end_sample>segment.start_sample;
+  }
   function nativeCandidates(words,recordings){
     const byId=new Map(words.map(word=>[word.id,word]));
     const byText=new Map();
@@ -14,7 +21,7 @@
     const candidates=[];
     for(const recording of recordings){
       if(!['audio_cmn','mandarin_native'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
-      if(recording.source==='mandarin_native'&&recording.recording_type!=='word_candidate')continue;
+      if(recording.source==='mandarin_native'&&!['word_candidate','aligned_word'].includes(recording.recording_type))continue;
       const targets=Array.isArray(recording.candidate_hsk_ids)
         ?[...new Set(recording.candidate_hsk_ids)].map(id=>byId.get(id)).filter(Boolean)
         :byText.get(recording.word)||[];
@@ -27,8 +34,12 @@
   function nativeBlockReason(recording,assessment=null){
     if(recording.review_status==='rejected')return recording.notes||'Explicitly rejected recording';
     if((recording.language_code||'zh')!=='zh')return 'Recording is not indexed as Mandarin';
-    if(recording.source==='mandarin_native'&&recording.recording_type!=='word_candidate'){
+    if(recording.source==='mandarin_native'&&!['word_candidate','aligned_word'].includes(recording.recording_type)){
       return 'Contextual or unidentified imported audio is not an isolated-word quiz prompt';
+    }
+    if(recording.recording_type==='aligned_word'&&(!validSourceSegment(recording.source_segment)
+      ||recording.alignment_method!=='exact-unprompted-transcript-fa-zh-1')){
+      return 'Word excerpt lacks valid source alignment';
     }
     const localScreen=assessment?.assessment==='automated'&&assessment.distribution_scope==='local_only';
     if(recording.source==='mandarin_native'&&!localScreen&&(recording.rights_status!=='cleared'||!nonempty(recording.license))){
@@ -46,6 +57,7 @@
       pinyin_syllables:word.pinyin_syllables,
       lexical_pattern:word.lexical_pattern,
       surface_pattern:recording.surface_pattern||word.default_surface_pattern||word.lexical_pattern,
+      ...(recording.source_segment?{source_segment:recording.source_segment}:{}),
     };
   }
   function comparisonDescriptor(key,recording){
@@ -53,10 +65,12 @@
   }
   function identity(entry){
     if(entry.kind==='native'){
-      return JSON.stringify([
+      const values=[
         entry.kind,entry.audio_path,entry.word_id,entry.word,entry.pinyin,
         entry.pinyin_syllables,entry.lexical_pattern,entry.surface_pattern,
-      ]);
+      ];
+      if(entry.source_segment)values.push(entry.source_segment);
+      return JSON.stringify(values);
     }
     return JSON.stringify([entry.kind,entry.audio_path,entry.key]);
   }
@@ -76,6 +90,7 @@
       throw new Error(`Invalid comparison label: ${entry.audio_path}`);
     }
     if(entry.kind==='native'){
+      if(entry.source_segment&&!validSourceSegment(entry.source_segment))throw new Error(`Invalid word excerpt origin: ${entry.audio_path}`);
       const syllables=entry.pinyin_syllables;
       if(![entry.word_id,entry.word,entry.pinyin].every(nonempty)
         ||!Array.isArray(syllables)||!syllables.length||!syllables.every(nonempty)
@@ -90,7 +105,7 @@
       const expectedBases=entry.kind==='comparison'?[entry.key.slice(0,-1)]:entry.pinyin_syllables.map(base=>base.replace(/ü/g,'v'));
       const tones=entry.kind==='comparison'?[entry.key.slice(-1)]:entry.surface_pattern.split('-');
       if(!['local_only','redistributable'].includes(entry.distribution_scope)
-        ||tones.some(tone=>!['1','2','3','4'].includes(tone))
+        ||tones.some(tone=>!['1','2','3','4','N'].includes(tone))
         ||evidence?.method!=='spectral-consensus-1'
         ||!/^[a-f0-9]{64}$/.test(evidence.pipeline_sha256||'')
         ||evidence.audio_sha256!==entry.sha256||evidence.label_identity!==identity(entry)
@@ -137,9 +152,25 @@
           ||values.length<2||values.some(value=>value!==tones[index])
           ||!Number.isFinite(decision.start)||!Number.isFinite(decision.end)
           ||decision.start<0||decision.end<=decision.start
-          ||!Number.isFinite(decision.voiced_seconds)||decision.voiced_seconds<.12
+          ||!Number.isFinite(decision.voiced_seconds)||decision.voiced_seconds<(tones[index]==='N'?.08:.12)
           ||decision.voiced_seconds>decision.end-decision.start+.021){
           throw new Error(`Conflicting or incomplete tone evidence: ${entry.audio_path}`);
+        }
+        if(tones[index]==='N'){
+          const prosody=decision.prosody;
+          if(index===0||tones[index-1]==='N'||decision.method!=='contextual-neutral-reduction-1'
+            ||prosody?.preceding_tone!==tones[index-1]
+            ||!Number.isFinite(prosody.duration_ratio)||prosody.duration_ratio<=0||prosody.duration_ratio>.75
+            ||!Number.isFinite(prosody.intensity_ratio)||prosody.intensity_ratio<=0||prosody.intensity_ratio>.9){
+            throw new Error(`Neutral tone lacks contextual reduction evidence: ${entry.audio_path}`);
+          }
+          for(const [method,vote] of Object.entries(votes)){
+            if(vote!=='N')continue;
+            const ratio=prosody.pitch_ratios?.[method];
+            const minimum=prosody.preceding_tone==='3'?.75:.35;
+            const maximum=prosody.preceding_tone==='3'?1.2:.85;
+            if(!Number.isFinite(ratio)||ratio<minimum||ratio>maximum)throw new Error('Neutral pitch context mismatch');
+          }
         }
       });
       if(!Array.isArray(evidence.comparison_support)
@@ -192,7 +223,12 @@
       for(const entry of index.values()){
         if(entry.assessment!=='automated'||entry.kind!=='native')continue;
         entry.evidence.comparison_support.forEach((support,position)=>{
-          const expected=entry.pinyin_syllables[position].replace(/ü/g,'v')+entry.surface_pattern.split('-')[position];
+          const tone=entry.surface_pattern.split('-')[position];
+          if(tone==='N'){
+            if(support!==null)throw new Error('Neutral tone must not reference a standalone tone clip');
+            return;
+          }
+          const expected=entry.pinyin_syllables[position].replace(/ü/g,'v')+tone;
           const comparison=index.get(identity(comparisonDescriptor(support.key,support)));
           if(support.key!==expected||!comparison||comparison.sha256!==support.sha256||support.sha256===entry.sha256){
             throw new Error(`Stale or missing independent tone reference: ${entry.audio_path}`);
@@ -208,6 +244,16 @@
     }
     index.comparisonAlternatives=alternatives;
     index.sourceRecordings=new Map(sourceRecordings.map(recording=>[recording.audio_path,recording]));
+    index.neutralReferences=new Map();
+    for(const entry of index.values()){
+      if(entry.kind!=='native')continue;
+      entry.surface_pattern.split('-').forEach((tone,position)=>{
+        if(tone!=='N')return;
+        const base=entry.pinyin_syllables[position].replace(/ü/g,'v');
+        if(!index.neutralReferences.has(base))index.neutralReferences.set(base,[]);
+        index.neutralReferences.get(base).push(entry);
+      });
+    }
     return index;
   }
   function nativeApproval(index,word,recording){
@@ -221,16 +267,25 @@
   function comparisonApproval(index,key,recording){
     return index.get(identity(comparisonDescriptor(key,recording)))||null;
   }
+  function neutralSelection(index,base){
+    for(const approval of index.neutralReferences?.get(base.replace(/ü/g,'v'))||[]){
+      const recording=index.sourceRecordings.get(approval.audio_path);
+      if(recording&&!nativeBlockReason(recording,approval))return approval;
+    }
+    return null;
+  }
   function correctionSelection(policy,key,quality,recordings,index,preferredSource='pinyin_public'){
     const allowed=approval=>{
       const recording=index.sourceRecordings?.get(approval.audio_path);
+      if(approval.audio_path.startsWith('audio/mandarin_native/')){
+        return recording?.recording_type==='word_candidate'&&!nativeBlockReason(recording,approval);
+      }
       return !recording||!nativeBlockReason(recording,approval);
     };
     const alternate=preferredSource==='audio_cmn'?'pinyin_public':'audio_cmn';
     for(const source of [preferredSource,alternate]){
       const selected=policy.correctionSelection(key,quality,recordings,source);
       if(!selected)continue;
-      if(selected.source==='mandarin_native'||selected.audio_path.startsWith('audio/mandarin_native/'))continue;
       const approval=comparisonApproval(index,key,selected);
       if(approval&&allowed(approval))return {...selected,approval};
     }
@@ -239,8 +294,10 @@
       `audio/audio_cmn/syllabs/cmn-${key==='ju4'?'jv4':key}.mp3`,
     ]);
     for(const approval of index.comparisonAlternatives?.get(key)||[]){
-      if(!excluded.has(approval.audio_path)&&approval.audio_path.startsWith('audio/audio_cmn/')&&allowed(approval)){
-        return {audio_path:approval.audio_path,source:'audio_cmn',enhanced:false,approval};
+      const source=approval.audio_path.startsWith('audio/audio_cmn/')?'audio_cmn'
+        :index.sourceRecordings?.get(approval.audio_path)?.recording_type==='word_candidate'?'mandarin_native':null;
+      if(!excluded.has(approval.audio_path)&&source&&allowed(approval)){
+        return {audio_path:approval.audio_path,source,enhanced:false,approval};
       }
     }
     return null;
@@ -254,7 +311,7 @@
     if(actual!==approval.sha256)throw new Error(`Audio changed since ${approval.assessment==='automated'?'acoustic screening':'listening review'}: ${approval.audio_path}`);
   }
   return {
-    nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
-    nativeApproval,comparisonApproval,correctionSelection,verifyBytes,
+    validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
+    nativeApproval,comparisonApproval,neutralSelection,correctionSelection,verifyBytes,
   };
 });

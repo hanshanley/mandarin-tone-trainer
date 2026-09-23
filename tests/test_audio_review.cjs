@@ -116,7 +116,7 @@ function element(){
     scrollIntoView(){},
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[]}={}){
+async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[]}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -132,9 +132,11 @@ async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerF
   ]));
   const data={
     '../data/hsk_words.json':[structuredClone(word)],'../data/definitions.json':{},
+    '../data/mandarin_native_words.json':{version:1,words:importedWords},
     '../data/recordings.json':recording?[recording]:[],'../data/pinyin_public_recordings.json':publicRecordings,
     '../data/correction_audio_quality.json':{},'../data/audio_reviews.json':{version:1,approvals},
     '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
+    '../data/context_word_recordings.json':{version:1,recordings:excerpts},
     '../data/acoustic_reviews.json':{
       version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
       certifies_accuracy:false,approvals:acousticApprovals,
@@ -596,4 +598,85 @@ test('prepared recognition checks cannot hide conflicting bases or a different p
   }
   const ledger={...acousticLedger(automaticComparisons()),recognition_policy:'raw-prepared-no-phonetic-conflict-1'};
   assert.throws(()=>Review.createIndex({version:1,approvals:[]},ledger),/prepared recognition/);
+});
+
+test('new long words use checked excerpts and keep their origin bound to the assessment',async()=>{
+  const long={
+    ...word,id:'MN-long',word:'新词语',pinyin:'ma ma ma',pinyin_syllables:['ma','ma','ma'],
+    lexical_tones:[1,1,1],lexical_pattern:'1-1-1',default_surface_pattern:'1-1-1',definition:'a new word',
+  };
+  const origin={
+    audio_path:'audio/mandarin_native/context/'+'a'.repeat(64)+'.m4a',
+    sha256:'b'.repeat(64),start_sample:1600,end_sample:16000,sample_rate:16000,
+  };
+  const excerpt={
+    ...native,word:long.word,source:'mandarin_native',recording_type:'aligned_word',
+    audio_path:'audio/mandarin_native/excerpts/test.wav',candidate_hsk_ids:[long.id],
+    source_segment:origin,source_text:'这是一个新词语',alignment_method:'exact-unprompted-transcript-fa-zh-1',
+    rights_status:'unverified',quiz_eligible:true,review_status:'acoustic_screened',
+  };
+  const automatic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(long,excerpt),'local_only')];
+  const app=await appHarness({recording:null,importedWords:[long],excerpts:[excerpt],acousticApprovals:automatic});
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.run('current.id'),long.id);
+  app.get('syllables').value='longer';
+  await app.run('next(false,false)');
+  assert.equal(app.run('current.id'),long.id);
+  assert.equal(app.get('answers').children.length,3);
+  for(const column of app.get('answers').children)column.querySelector('[data-tone="1"]').onclick();
+  assert.equal(app.run('results.at(-1).correct'),true);
+  assert.ok(app.get('reveal').children.some(child=>child.textContent.includes('Heard in context')));
+  const reviewed=Review.createIndex({version:1,approvals:[]},acousticLedger(automatic));
+  assert.equal(Review.nativeApproval(reviewed,long,{...excerpt,source_segment:{...origin,start_sample:3200}}),null);
+  assert.equal(Review.nativeApproval(reviewed,long,{...excerpt,alignment_method:'guessed'}),null);
+  const bad=structuredClone(automatic.at(-1));bad.source_segment.end_sample=-1;
+  assert.throws(()=>Review.validateApproval(bad),/origin/);
+});
+
+test('checked new standalone character audio is usable as a local comparison, not a sentence crop',()=>{
+  const imported={
+    source:'mandarin_native',recording_type:'word_candidate',audio_path:'audio/mandarin_native/ma1.mp3',
+    rights_status:'unverified',license:null,review_status:'acoustic_screened',quiz_eligible:true,
+  };
+  const assessment=acousticApproval(Review.comparisonDescriptor('ma1',imported),'local_only');
+  const local=Review.createIndex({version:1,approvals:[]},acousticLedger([assessment]),{sourceRecordings:[imported]});
+  assert.equal(Review.correctionSelection(Policy,'ma1',{}, {},local).audio_path,imported.audio_path);
+  const packaged=Review.createIndex({version:1,approvals:[]},acousticLedger([assessment]),{
+    allowLocalOnly:false,sourceRecordings:[imported],
+  });
+  assert.equal(Review.correctionSelection(Policy,'ma1',{}, {},packaged),null);
+});
+
+test('neutral tone has a contextual example but cannot be forged as a fifth isolated clip',async()=>{
+  const neutralWord={
+    ...word,id:'neutral-word',word:'妈妈',pinyin:'ma ma',pinyin_syllables:['ma','ma'],
+    lexical_tones:[1,0],lexical_pattern:'1-N',default_surface_pattern:'1-N',
+  };
+  const recording={...native,word:neutralWord.word,audio_path:'audio/audio_cmn/neutral/neutral.mp3'};
+  const assessed=acousticApproval(Review.nativeDescriptor(neutralWord,recording));
+  assessed.evidence.comparison_support[1]=null;
+  assessed.evidence.tones[1]={
+    status:'screened',expected:'N',votes:{pyin:'N',praat:'N',world:'N'},
+    start:.6,end:.75,voiced_seconds:.15,method:'contextual-neutral-reduction-1',
+    prosody:{preceding_tone:'1',duration_ratio:.3,intensity_ratio:.4,
+      pitch_ratios:{pyin:.6,praat:.61,world:.6}},
+  };
+  const automatic=[...automaticComparisons(),assessed];
+  const app=await appHarness({recording,importedWords:[neutralWord],acousticApprovals:automatic});
+  assert.equal(app.run('questionVerified'),true);
+  await app.run("playCorrection(1,'N')");
+  assert.match(app.get('audioStatus').textContent,/neutral tone on syllable 2/);
+  assert.equal(app.played.length,2);
+  for(const edit of [
+    entry=>delete entry.evidence.tones[1].prosody,
+    entry=>entry.evidence.tones[1].prosody.duration_ratio=1.1,
+    entry=>entry.evidence.tones[1].prosody.intensity_ratio=1.1,
+    entry=>entry.evidence.tones[1].prosody.pitch_ratios.pyin=1.4,
+    entry=>entry.evidence.comparison_support[1]={key:'ma5',audio_path:recording.audio_path,sha256:nativeHash},
+  ]){
+    const invalid=structuredClone(assessed);edit(invalid);
+    assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger([...automaticComparisons(),invalid])));
+  }
+  const standalone=acousticApproval(Review.comparisonDescriptor('ma5',recording));
+  assert.throws(()=>Review.validateApproval(standalone),/comparison label/);
 });

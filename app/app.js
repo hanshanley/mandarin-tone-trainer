@@ -60,6 +60,12 @@ async function load(){
   const wordResponse=await fetch('../data/hsk_words.json');
   if(!wordResponse.ok)throw new Error(`HSK data failed: HTTP ${wordResponse.status}`);
   words=await wordResponse.json();
+  const importedWordResponse=await fetch('../data/mandarin_native_words.json');
+  if(!importedWordResponse.ok)throw new Error(`Imported vocabulary failed: HTTP ${importedWordResponse.status}`);
+  const importedWords=await importedWordResponse.json();
+  if(importedWords.version!==1||!Array.isArray(importedWords.words))throw new Error('Invalid imported vocabulary');
+  words.push(...importedWords.words);
+  if(new Set(words.map(word=>word.id)).size!==words.length)throw new Error('Duplicate vocabulary identifiers');
   const definitionResponse=await fetch('../data/definitions.json');
   if(!definitionResponse.ok)throw new Error(`definitions failed: HTTP ${definitionResponse.status}`);
   const definitions=await definitionResponse.json();
@@ -73,6 +79,11 @@ async function load(){
   if(imported.version!==1||!Array.isArray(imported.recordings))throw new Error('Invalid Mandarin Native recording index');
   if(imported.explore_vocabulary!==undefined&&!Array.isArray(imported.explore_vocabulary))throw new Error('Invalid Mandarin Native vocabulary index');
   recordings.push(...imported.recordings);
+  const excerptResponse=await fetch('../data/context_word_recordings.json');
+  if(!excerptResponse.ok)throw new Error(`Word excerpts failed: HTTP ${excerptResponse.status}`);
+  const excerpts=await excerptResponse.json();
+  if(excerpts.version!==1||!Array.isArray(excerpts.recordings))throw new Error('Invalid word excerpt index');
+  recordings.push(...excerpts.recordings);
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
@@ -119,6 +130,7 @@ function filtered(eligible=practiceWords()){return eligible.filter(w=>{
   const syllables=$('syllables').value; const count=(w.lexical_tones||[]).length;
   if(syllables==='one' && count!==1)return false;
   if(syllables==='two' && count!==2)return false;
+  if(syllables==='longer' && count<3)return false;
   if($('sandhiOnly').checked && !w.sandhi_tags.length)return false;
   return true;
 })}
@@ -270,6 +282,12 @@ function grade(p,correct){
   const definition=current.definition?`<p class="definition"><strong>Definition:</strong> ${escapeHTML(current.definition)}</p>`:'';
   $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="pinyin">${escapeHTML(current.pinyin)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
+  if(currentRec.source_segment){
+    const context=document.createElement('p');
+    context.className='muted';
+    context.textContent=`Heard in context: ${currentRec.source_text}. The answer reflects the tones spoken in this excerpt.`;
+    $('reveal').appendChild(context);
+  }
   const reference=document.createElement('a');
   reference.href=`https://mandarin-native.com/#${encodeURIComponent(`word/${current.word}`)}`;
   reference.target='_blank';
@@ -345,19 +363,22 @@ async function approvedAudioBytes(approval){
 }
 async function playNative(){
   if(!questionVerified||!currentNative?.playable)return;
+  return playAssessedRecording(currentNative.approval,'Playing the native recording.');
+}
+async function playAssessedRecording(approval,message){
   stopCorrection();
   stopNative();
   stopPersonalAudio();
   const playId=nativePlayId;
   try{
-    const bytes=await approvedAudioBytes(currentNative.approval);
+    const bytes=await approvedAudioBytes(approval);
     if(playId!==nativePlayId)return;
     nativeObjectURL=URL.createObjectURL(new Blob([bytes]));
     const audio=new Audio(nativeObjectURL);
     nativeAudio=audio;
     audio.onended=()=>{if(nativeAudio===audio)stopNative()};
     await audio.play();
-    if(playId===nativePlayId)setAudioStatus('Playing the native recording.');
+    if(playId===nativePlayId)setAudioStatus(message);
   }catch(error){
     if(playId!==nativePlayId)return;
     stopNative();
@@ -502,6 +523,12 @@ async function playCorrection(index,tone){
   const pinyin=current.pinyin_syllables?.[index];
   if(tone==='N'){
     stopAllAudio();
+    const reference=pinyin&&AudioReview.neutralSelection(audioReviews,pinyin);
+    if(reference){
+      const position=reference.pinyin_syllables.findIndex((base,index)=>
+        base.replace(/ü/g,'v')===pinyin.replace(/ü/g,'v')&&reference.surface_pattern.split('-')[index]==='N');
+      return playAssessedRecording(reference,`Playing a whole-word example; listen for neutral tone on syllable ${position+1}.`);
+    }
     setAudioStatus('Neutral tone is context-dependent and has no standalone comparison clip.');
     return;
   }

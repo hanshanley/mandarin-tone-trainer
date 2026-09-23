@@ -48,6 +48,8 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/audio_reviews.json',
             'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
+            'data/mandarin_native_words.json',
+            'data/context_word_recordings.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)

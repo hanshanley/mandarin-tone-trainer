@@ -197,6 +197,8 @@ def valid_audio_payload(payload, suffix):
         return payload.startswith(MP3_MAGIC)
     if suffix == '.m4a':
         return payload[4:8] == b'ftyp'
+    if suffix == '.wav':
+        return payload[:4] == b'RIFF' and payload[8:12] == b'WAVE'
     return False
 
 

@@ -56,7 +56,10 @@ def main():
         'invalid Mandarin Native recording index',
         errors,
     )
-    imported_recordings = mandarin_native.get('recordings') or []
+    imported_recordings = [
+        *(mandarin_native.get('recordings') or []),
+        *read_json('data/context_word_recordings.json')['recordings'],
+    ]
     for recording in imported_recordings:
         path = ROOT / recording['audio_path']
         valid_import = False
@@ -162,6 +165,8 @@ def main():
             'data/audio_reviews.json',
             'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
+            'data/mandarin_native_words.json',
+            'data/context_word_recordings.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
@@ -173,7 +178,8 @@ def main():
                         f'www/{relative} is stale; run npm run build:mobile',
                         errors,
                     )
-            for relative in ['audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json']:
+            for relative in ['audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json',
+                             'mandarin_native_words.json', 'context_word_recordings.json']:
                 target = bundle / 'data' / relative
                 if target.is_file():
                     require(

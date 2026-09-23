@@ -12,10 +12,11 @@ const readJSON = relative => JSON.parse(fs.readFileSync(path.join(ROOT, relative
 export function loadReviewData() {
   const imported = readJSON('data/mandarin_native_recordings.json');
   return {
-    words: readJSON('data/hsk_words.json'),
+    words: [...readJSON('data/hsk_words.json'), ...readJSON('data/mandarin_native_words.json').words],
     recordings: [
       ...readJSON('data/recordings.json'),
       ...imported.recordings,
+      ...readJSON('data/context_word_recordings.json').recordings,
     ],
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
@@ -39,7 +40,8 @@ export function candidatesFor(data) {
       blocked_reason: AudioReview.nativeBlockReason(recording),
       reference_url: `https://mandarin-native.com/#${encodeURIComponent(`word/${word.word}`)}`,
     });
-    if (recording.source === 'audio_cmn' && word.pinyin_syllables?.length === 1
+    if ((recording.source === 'audio_cmn' || recording.recording_type === 'word_candidate')
+        && word.pinyin_syllables?.length === 1
         && /^[1-4]$/.test(descriptor.surface_pattern)) {
       const comparison = AudioReview.comparisonDescriptor(
         CorrectionAudio.correctionKey(word.pinyin_syllables[0], descriptor.surface_pattern), recording,
@@ -48,7 +50,8 @@ export function candidatesFor(data) {
         ...comparison,
         source_url: recording.source_url,
         license: recording.license,
-        blocked_reason: AudioReview.nativeBlockReason(recording),
+        blocked_reason: recording.source === 'mandarin_native' && ['pending','acoustic_screened'].includes(recording.review_status)
+          ? null : AudioReview.nativeBlockReason(recording),
       });
     }
   }
@@ -132,6 +135,11 @@ export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}
     if (approval.source_url !== candidate.source_url || approval.license !== candidate.license) {
       throw new Error(`Approval provenance differs from the corpus: ${approval.audio_path}`);
     }
+    if (approval.source_segment) {
+      if (audioHash(approval.source_segment.audio_path, root) !== approval.source_segment.sha256) {
+        throw new Error(`Word excerpt source changed: ${approval.source_segment.audio_path}`);
+      }
+    }
     if (audioHash(approval.audio_path, root) !== approval.sha256) {
       throw new Error(`Audio changed since listening review: ${approval.audio_path}`);
     }
@@ -165,6 +173,10 @@ export function practiceInventory(data, index) {
     eligibleWords.push(word.id);
     for (const recording of natives) recordingLabelPairs.push({ word_id: word.id, audio_path: recording.audio_path });
     for (const recording of [...natives, ...comparisons.filter(Boolean)]) audio.add(recording.audio_path);
+    for(const base of word.pinyin_syllables||[]){
+      const neutral=AudioReview.neutralSelection(index,base);
+      if(neutral)audio.add(neutral.audio_path);
+    }
   }
   return { eligibleWords, recordingLabelPairs, audio };
 }
@@ -252,12 +264,20 @@ export function coverageReport(data, index, decisions = null) {
     },
     vocabulary: { total: data.words.length, ...statuses },
     initial_recording_examples: inventory.recordingLabelPairs.length,
+    eligible_tone_coverage: Object.fromEntries(['1','2','3','4','N'].map(tone=>[
+      tone,inventory.recordingLabelPairs.filter(pair=>{
+        const word=data.words.find(word=>word.id===pair.word_id);
+        const recording=data.recordings.find(recording=>recording.audio_path===pair.audio_path);
+        return (recording.surface_pattern||word.default_surface_pattern||word.lexical_pattern).split('-').includes(tone);
+      }).length,
+    ])),
     initial_audio_files: new Set(inventory.recordingLabelPairs.map(pair => pair.audio_path)).size,
     reachable_audio_files: inventory.audio.size,
     imported_audio_files_used: [...inventory.audio].filter(relative => relative.startsWith('audio/mandarin_native/')).length,
     source_recording_files: Object.fromEntries(Object.entries(bySource).map(([key, paths]) => [key, paths.size])),
     imported_source: {
       word_files: imported.filter(recording => recording.recording_type === 'word_candidate').length,
+      aligned_word_files: imported.filter(recording => recording.recording_type === 'aligned_word').length,
       context_files: imported.filter(recording => recording.recording_type === 'context_sentence').length,
       explore_vocabulary_entries: data.exploreVocabularyCount ?? null,
       context_is_not_isolated_practice: true,

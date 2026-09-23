@@ -15,6 +15,8 @@ const DATA_FILES = [
   'audio_reviews.json',
   'acoustic_reviews.json',
   'mandarin_native_recordings.json',
+  'mandarin_native_words.json',
+  'context_word_recordings.json',
 ];
 
 function readJSON(relativePath) {
@@ -52,8 +54,8 @@ for (const file of DATA_FILES) {
 }
 requireFile(path.join('audio', 'audio_cmn', 'syllabs', 'cmn-ma1.mp3'), 'audio corpus');
 
-const words = readJSON('data/hsk_words.json');
 const reviewData = loadReviewData();
+const words = reviewData.words;
 const reviewIndex = validateLedger(reviewData, ROOT, { allowLocalOnly: false });
 const inventory = practiceInventory(reviewData, reviewIndex);
 const referencedAudio = inventory.audio;

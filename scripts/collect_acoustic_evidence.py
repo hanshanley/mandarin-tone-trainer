@@ -8,6 +8,7 @@ import re
 import tempfile
 from functools import lru_cache
 from pathlib import Path
+from runtime_data import read_words
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +20,7 @@ PREPARED_ASR_VERSION = 'paraformer-dc70-rms010-trim30-1'
 
 @lru_cache(maxsize=1)
 def syllable_inventory():
-    words = json.loads((ROOT / 'data/hsk_words.json').read_text(encoding='utf-8'))
+    words = read_words()
     return frozenset(
         base.replace('ü', 'v') for word in words for base in word['pinyin_syllables']
     ) - {'r', 'm', 'n', 'ng', 'hm', 'hng'}
@@ -139,12 +140,16 @@ def main():
         parser.error('workers must be 1-4 and batch-size must be 1-32')
     candidates = json.loads(args.candidates.read_text(encoding='utf-8'))['candidates']
     paths = sorted({row['audio_path'] for row in candidates if row['kind'] in ('native', 'comparison')})
+    if args.phase == 'profiles':
+        paths = sorted(set(paths) | {
+            row['source_segment']['audio_path'] for row in candidates if row.get('source_segment')
+        })
     targets = {}
     if args.phase == 'alignment':
         recognition = read_jsonl(ROOT / '.audit/acoustic-asr.jsonl')
         prepared = read_jsonl(ROOT / '.audit/acoustic-prepared-asr.jsonl')
         for row in candidates:
-            if row['kind'] != 'native' or len(row['pinyin_syllables']) < 2 or 'N' in row['surface_pattern']:
+            if row['kind'] != 'native' or len(row['pinyin_syllables']) < 2:
                 continue
             text = ''.join(re.findall(r'[\u3400-\u9fff]', row['word']))
             if len(text) != len(row['pinyin_syllables']):

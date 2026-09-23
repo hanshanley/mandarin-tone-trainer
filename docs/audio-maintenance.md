@@ -186,6 +186,54 @@ certification. An empty human ledger does not pause automatically screened items
 
 ## Mandarin Native and additional sources
 
+### Word and character practice from the imported corpus
+
+`data/mandarin_native_words.json` extends, rather than overwrites, the HSK
+vocabulary with source-derived word and character readings. Exact existing
+readings reuse their HSK IDs; additional readings receive stable `MN-` IDs.
+Source pinyin is segmented against the syllable inventory, and unresolved
+segmentation or mixed-script tokens are not guessed. Definitions are matched
+by reading against a cached CC-CEDICT snapshot.
+
+```bash
+python3 scripts/build_context_words.py --phase vocabulary
+python3 scripts/build_context_words.py --phase align
+python3 scripts/build_context_words.py --phase extract
+```
+
+The align phase requires unprompted sentence recognition to match the complete
+source transcript before forced alignment. The extract phase takes both whole
+word spans and individual character spans, using the spoken-tone pattern in
+the source context. Ambiguous long third-tone runs and unresolved boundaries
+are excluded. Up to two candidate occurrences per reading are retained by
+default (`--max-examples` controls this maintenance-time limit).
+
+Excerpts are separate PCM WAV files under `audio/mandarin_native/excerpts/`,
+indexed in `data/context_word_recordings.json`. Each retains its source hash,
+exact sample interval, transcript entry, and character span. They are not
+approved just because extraction succeeded: export the expanded candidates and
+run the acoustic identity/tone workflow before activation. The compiler uses
+the parent utterance's pitch register for excerpts, not a register pooled
+across unrelated speakers. The source sentence and the cropped file are both
+hash-bound.
+
+The app merges this vocabulary and these recordings into normal one-, two-,
+and **3+ syllable** practice. After an extracted word is revealed, its source
+context is shown so contextual tone changes are not presented as a different
+dictionary reading. Screened standalone one-character imports may also supply
+local tone-button comparisons; connected-speech excerpts may not.
+
+Setup reconstructs the exact committed excerpts without ASR or model downloads:
+
+```bash
+python3 scripts/build_context_words.py --phase restore
+```
+
+The restore operation decodes the pinned parent file with FFmpeg, takes the
+recorded sample interval, and requires the resulting WAV hash to match the
+indexed clip. Unknown reuse rights still prevent inclusion in distributable
+audio bundles.
+
 The app links to Mandarin Native as an **online external reference**, including
 word-specific links after an answer. Both public audio collections have been
 imported for local review: **869 standalone word clips** from
@@ -229,17 +277,18 @@ map their reading before creating a native approval.
 Sentence recordings appear separately as `context_native`, with their source
 entry IDs and contained vocabulary. They have no isolated-word candidates and
 are rejected by the word-quiz admission policy even if a word ID is assigned
-later. They may be used for contextual listening review, but must not be
-reused or cropped into tone examples without separate boundary and spoken-tone
-review. Contextual corpus membership is not an approval of an isolated word.
+later. Only separately generated `aligned_word` clips with validated source
+intervals can enter word practice after their own screening. Contextual corpus
+membership is not an approval of an isolated word or a tone-button example.
 
 Screened standalone imports can be activated for local browser practice with
 the compiler's `--activate-imported` option. They are explicitly marked
 `distribution_scope: local_only` while reuse permission remains unverified.
 Distribution additionally requires documented permission, `rights_status:
 cleared`, and the actual `license`; spectral analysis cannot grant those rights.
-Native playback supports qualified imported words, but never uses these
-whole-word imports as automatic isolated-tone comparisons.
+Native playback supports qualified imported words. Only screened standalone
+single-character imports can supply isolated-tone comparisons; multi-syllable
+words and aligned sentence excerpts cannot.
 
 Before importing any additional source, establish permission for the exact
 recordings and preserve provenance and license metadata. Contextual clips must

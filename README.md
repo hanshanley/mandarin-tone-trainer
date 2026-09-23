@@ -119,6 +119,7 @@ signing, installation, and updates.
 The source dataset contains:
 
 - **11,092** HSK vocabulary entries
+- **2,346** additional source-derived word and character readings
 - **8,596** isolated native word recordings
 - **1,707** human tone-specific syllables
 - **1,622** public-domain reference syllables
@@ -126,6 +127,12 @@ The source dataset contains:
   standalone word clips and **2,075** contextual sentence clips
 - **4,396** Explore vocabulary entries linked to their sentence recordings;
   these are vocabulary entries, not 4,396 separate isolated-word recordings
+
+Aligned word excerpts add source-context examples to one-, two-, and **3+
+syllable** practice after independent identity and tone screening. Excerpts
+retain exact source timestamps; full sentences are never relabeled as isolated
+words. Qualifying standalone one-character imports can also supply local
+tone-button comparisons.
 
 Large audio assets are intentionally excluded from Git. The bootstrap
 recreates the original corpora from pinned upstream revisions and restores
@@ -208,5 +215,5 @@ Mandarin Native recordings are separate local review imports. Their URLs
 and hashes are preserved in `data/mandarin_native_recordings.json`; reuse
 permission is unverified, so they are not included in distributable audio
 bundles. Acoustically screened standalone clips can be used for local browser
-practice. Contextual sentence clips are never substituted for isolated-word or
-isolated-tone examples.
+practice. Source sentences are used to produce separately screened word
+excerpts, never substituted wholesale for isolated-word or tone-button examples.
