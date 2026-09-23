@@ -15,8 +15,7 @@ export function loadReviewData() {
     words: [...readJSON('data/hsk_words.json'), ...readJSON('data/mandarin_native_words.json').words],
     recordings: [
       ...readJSON('data/recordings.json'),
-      ...imported.recordings,
-      ...readJSON('data/context_word_recordings.json').recordings,
+      ...imported.recordings.filter(recording => recording.recording_type === 'word_candidate'),
     ],
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
@@ -24,6 +23,7 @@ export function loadReviewData() {
     acousticLedger: readJSON('data/acoustic_reviews.json'),
     snapshots: readJSON('config/source_snapshots.json'),
     exploreVocabularyCount: imported.explore_vocabulary?.length || 0,
+    archivedContextCount: imported.recordings.filter(recording => recording.recording_type === 'context_sentence').length,
   };
 }
 
@@ -58,15 +58,16 @@ export function candidatesFor(data) {
   for (const recording of data.recordings) {
     if (recording.source !== 'mandarin_native' || mapped.has(recording.audio_path)) continue;
     const contextual = recording.recording_type === 'context_sentence';
+    const excerpt=AudioReview.isSentenceDerived(recording)&&!contextual;
     const descriptor = {
-      kind: contextual ? 'context_native' : 'unmapped_native',
+      kind: excerpt ? 'excluded_excerpt' : contextual ? 'context_native' : 'unmapped_native',
       audio_path: recording.audio_path, key: recording.source_audio_key,
     };
     candidates.set(AudioReview.identity(descriptor), {
       ...descriptor,
       source_url: recording.source_url,
       license: recording.license,
-      blocked_reason: contextual
+      blocked_reason: excerpt ? 'Sentence-extracted audio is not used for tone practice' : contextual
         ? 'Complete contextual sentence, not an isolated word; requires separate alignment, listening review, and verified reuse permission'
         : 'No vocabulary reading mapped; requires listening identification and verified reuse permission',
       ...(contextual ? { context_words: recording.context_words, source_entry_ids: recording.source_entry_ids } : {}),
@@ -284,7 +285,7 @@ export function coverageReport(data, index, decisions = null) {
     imported_source: {
       word_files: imported.filter(recording => recording.recording_type === 'word_candidate').length,
       aligned_word_files: imported.filter(recording => recording.recording_type === 'aligned_word').length,
-      context_files: imported.filter(recording => recording.recording_type === 'context_sentence').length,
+      context_files: data.archivedContextCount ?? imported.filter(recording => recording.recording_type === 'context_sentence').length,
       explore_vocabulary_entries: data.exploreVocabularyCount ?? null,
       context_is_not_isolated_practice: true,
     },

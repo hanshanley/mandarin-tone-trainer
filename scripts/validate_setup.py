@@ -57,8 +57,8 @@ def main():
         errors,
     )
     imported_recordings = [
-        *(mandarin_native.get('recordings') or []),
-        *read_json('data/context_word_recordings.json')['recordings'],
+        recording for recording in mandarin_native.get('recordings', [])
+        if recording.get('recording_type') == 'word_candidate'
     ]
     for recording in imported_recordings:
         path = ROOT / recording['audio_path']
@@ -166,7 +166,6 @@ def main():
             'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
-            'data/context_word_recordings.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
@@ -180,7 +179,7 @@ def main():
                     )
             for relative in ['hsk_words.json', 'definitions.json', 'recordings.json', 'pinyin_public_recordings.json',
                              'audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json',
-                             'mandarin_native_words.json', 'context_word_recordings.json']:
+                             'mandarin_native_words.json']:
                 target = bundle / 'data' / relative
                 if target.is_file():
                     require(
@@ -194,6 +193,9 @@ def main():
                 expected['approvals'] = [
                     entry for entry in expected['approvals']
                     if entry['distribution_scope'] != 'local_only'
+                    and not entry.get('source_segment')
+                    and not entry['audio_path'].startswith('audio/mandarin_native/excerpts/')
+                    and not entry['audio_path'].startswith('audio/mandarin_native/context/')
                 ]
                 require(
                     json.loads(acoustic_path.read_text(encoding='utf-8')) == expected,

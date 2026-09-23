@@ -89,6 +89,28 @@ class MandarinNativeTests(unittest.TestCase):
                     downloader.download_recording(record, Path(directory))
             self.assertEqual(fetch.call_count, 1)
 
+    def test_standalone_restore_preserves_archive_metadata_without_downloading_it(self):
+        direct = downloader.pending_recording('ma1', [])
+        context = {
+            'source_recording_id': 'mandarin-native/context/archive',
+            'source_audio_key': 'sentence.mp3', 'recording_type': 'context_sentence',
+            'audio_path': 'audio/mandarin_native/context/archive.mp3',
+            'candidate_hsk_ids': [], 'sha256': 'a' * 64,
+        }
+        source = {'version': 1, 'recordings': [direct, context]}
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = Path(directory) / 'index.json'
+            manifest.write_text(json.dumps(source))
+            saved = {**direct, 'sha256': 'b' * 64, 'byte_length': 200}
+            with patch.object(downloader, 'INDEX', manifest), patch.object(
+                sys, 'argv', ['download_mandarin_native.py', '--standalone-only']
+            ), patch.object(downloader, 'download_recording', return_value=(saved, True)) as download:
+                downloader.main()
+            download.assert_called_once_with(direct)
+            result = json.loads(manifest.read_text())
+            self.assertIn(context, result['recordings'])
+            self.assertIn(saved, result['recordings'])
+
     def test_explore_vocabulary_uses_the_same_filter_as_the_site(self):
         rows = [
             {'id': 'first', 'audio': 'audios/你好.mp3', 'tokens': [

@@ -397,8 +397,7 @@ def main():
         '--revision',
         pinyin_public['revision'],
     ])
-    run_retry([sys.executable, 'scripts/download_mandarin_native.py'])
-    run([sys.executable, 'scripts/build_context_words.py', '--phase', 'restore'])
+    run_retry([sys.executable, 'scripts/download_mandarin_native.py', '--standalone-only'])
     run([sys.executable, 'scripts/import_local_audio.py'])
     run(['npm', 'run', 'build:mobile'])
     run([sys.executable, 'scripts/validate_setup.py'])

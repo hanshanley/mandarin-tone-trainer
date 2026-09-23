@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadReviewData, validateLedger, practiceInventory, requireToneCoverage } from './review_audio.mjs';
+import AudioReview from '../app/audio_review.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'www');
@@ -16,7 +17,6 @@ const DATA_FILES = [
   'acoustic_reviews.json',
   'mandarin_native_recordings.json',
   'mandarin_native_words.json',
-  'context_word_recordings.json',
 ];
 
 function readJSON(relativePath) {
@@ -75,7 +75,8 @@ for (const file of DATA_FILES) {
   if (file === 'acoustic_reviews.json') {
     const distributable = {
       ...reviewData.acousticLedger,
-      approvals: reviewData.acousticLedger.approvals.filter(entry => entry.distribution_scope !== 'local_only'),
+      approvals: reviewData.acousticLedger.approvals.filter(entry =>
+        entry.distribution_scope !== 'local_only' && !AudioReview.isSentenceDerived(entry)),
     };
     fs.writeFileSync(path.join(OUTPUT, 'data', file), JSON.stringify(distributable, null, 2) + '\n');
   } else {
@@ -83,6 +84,7 @@ for (const file of DATA_FILES) {
   }
 }
 for (const relativePath of referencedAudio) {
+  if(AudioReview.isSentenceDerived({audio_path:relativePath}))throw new Error('Sentence audio cannot be packaged for practice');
   const targetPath = path.join(OUTPUT, relativePath);
   fs.mkdirSync(path.dirname(targetPath), { recursive: true });
   fs.copyFileSync(path.join(ROOT, relativePath), targetPath);

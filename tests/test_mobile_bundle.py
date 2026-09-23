@@ -49,7 +49,6 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
-            'data/context_word_recordings.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
@@ -73,6 +72,8 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             if path.is_file()
         }
         self.assertEqual(bundled, self.expected_audio)
+        self.assertFalse((self.bundle / 'data/context_word_recordings.json').exists())
+        self.assertFalse(any('mandarin_native/excerpts/' in path.as_posix() for path in bundled))
         ledger = json.loads((ROOT / 'data/audio_reviews.json').read_text())
         acoustic = json.loads((ROOT / 'data/acoustic_reviews.json').read_text())
         if not ledger['approvals'] and not acoustic['approvals']:
@@ -91,13 +92,15 @@ const pairs=inventory.recordingLabelPairs.map(pair=>({word:words.get(pair.word_i
 process.stdout.write(JSON.stringify({
   neutral:inventory.toneCoverage.N,
   newReadings:pairs.filter(pair=>pair.word.id.startsWith('MN-')).length,
-  characterExcerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'&&pair.word.word.length===1).length,
-  longExcerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'&&pair.word.word.length>2).length,
+  characters:pairs.filter(pair=>pair.word.word.length===1).length,
+  longWords:pairs.filter(pair=>pair.word.word.length>2).length,
+  excerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'||pair.recording.source_segment).length,
 }));
 """],
             cwd=ROOT, text=True,
         )
         coverage = json.loads(output)
+        self.assertEqual(coverage.pop('excerpts'), 0)
         for name, count in coverage.items():
             self.assertGreater(count, 0, name)
 

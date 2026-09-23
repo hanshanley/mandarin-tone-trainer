@@ -125,7 +125,7 @@ function element(){
     scrollIntoView(){},
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[]}={}){
+async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -161,7 +161,13 @@ async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerF
     document:{getElementById:get,createElement:element,addEventListener(){},querySelectorAll:()=>[]},
     Audio:class{
       constructor(url){played.push(url)}
-      play(){return Promise.resolve()}
+      play(){
+        if(blockedAutoplay){
+          blockedAutoplay=false;
+          return Promise.reject(Object.assign(new Error('User gesture required'),{name:'NotAllowedError'}));
+        }
+        return Promise.resolve();
+      }
       pause(){}
     },
     fetch:async url=>{
@@ -319,6 +325,16 @@ test('complete approvals verify all five files before rendering and playing',asy
   assert.match(app.played[0],/^blob:verified-/);
   await app.run('playNative()');
   assert.equal(app.requests.filter(url=>url.endsWith('.mp3')).length,5);
+});
+
+test('browser autoplay restrictions leave a playable exercise rather than an error state',async()=>{
+  const app=await appHarness({approvals:allApprovals(),blockedAutoplay:true});
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.get('play').disabled,false);
+  assert.match(app.get('audioStatus').textContent,/Tap an audio button/);
+  assert.equal(app.get('audioStatus').classList.contains('error'),false);
+  await app.get('play').onclick();
+  assert.match(app.get('audioStatus').textContent,/Playing the native recording/);
 });
 
 test('tampered native or comparison audio prevents all playback and grading',async()=>{
@@ -611,23 +627,18 @@ test('prepared recognition checks cannot hide conflicting bases or a different p
   assert.throws(()=>Review.createIndex({version:1,approvals:[]},ledger),/prepared recognition/);
 });
 
-test('new long words use checked excerpts and keep their origin bound to the assessment',async()=>{
+test('new long words use direct whole-word recordings',async()=>{
   const long={
     ...word,id:'MN-long',word:'新词语',pinyin:'ma ma ma',pinyin_syllables:['ma','ma','ma'],
     lexical_tones:[1,1,1],lexical_pattern:'1-1-1',default_surface_pattern:'1-1-1',definition:'a new word',
   };
-  const origin={
-    audio_path:'audio/mandarin_native/context/'+'a'.repeat(64)+'.m4a',
-    sha256:'b'.repeat(64),start_sample:1600,end_sample:16000,sample_rate:16000,
-  };
-  const excerpt={
-    ...native,word:long.word,source:'mandarin_native',recording_type:'aligned_word',
-    audio_path:'audio/mandarin_native/excerpts/test.wav',candidate_hsk_ids:[long.id],
-    source_segment:origin,source_text:'这是一个新词语',alignment_method:'exact-unprompted-transcript-fa-zh-1',
+  const direct={
+    ...native,word:long.word,source:'mandarin_native',recording_type:'word_candidate',
+    audio_path:'audio/mandarin_native/direct-long.mp3',candidate_hsk_ids:[long.id],
     rights_status:'unverified',quiz_eligible:true,review_status:'acoustic_screened',
   };
-  const automatic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(long,excerpt),'local_only')];
-  const app=await appHarness({recording:null,importedWords:[long],excerpts:[excerpt],acousticApprovals:automatic});
+  const automatic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(long,direct),'local_only')];
+  const app=await appHarness({recording:null,importedWords:[long],importedRecordings:[direct],acousticApprovals:automatic});
   assert.equal(app.run('questionVerified'),true);
   assert.equal(app.run('current.id'),long.id);
   app.get('syllables').value='longer';
@@ -636,12 +647,55 @@ test('new long words use checked excerpts and keep their origin bound to the ass
   assert.equal(app.get('answers').children.length,3);
   for(const column of app.get('answers').children)column.querySelector('[data-tone="1"]').onclick();
   assert.equal(app.run('results.at(-1).correct'),true);
-  assert.ok(app.get('reveal').children.some(child=>child.textContent.includes('Heard in context')));
-  const reviewed=Review.createIndex({version:1,approvals:[]},acousticLedger(automatic));
-  assert.equal(Review.nativeApproval(reviewed,long,{...excerpt,source_segment:{...origin,start_sample:3200}}),null);
-  assert.equal(Review.nativeApproval(reviewed,long,{...excerpt,alignment_method:'guessed'}),null);
-  const bad=structuredClone(automatic.at(-1));bad.source_segment.end_sample=-1;
-  assert.throws(()=>Review.validateApproval(bad),/origin/);
+  assert.equal(app.run('currentRec.recording_type'),'word_candidate');
+  assert.equal(app.requests.includes('../data/context_word_recordings.json'),false);
+});
+
+test('sentence cuts cannot enter practice even with old acoustic or human assessments',async()=>{
+  const origin={
+    audio_path:'audio/mandarin_native/context/'+'a'.repeat(64)+'.m4a',
+    sha256:'b'.repeat(64),start_sample:1600,end_sample:16000,sample_rate:16000,
+  };
+  const excerpt={
+    ...native,source:'mandarin_native',recording_type:'aligned_word',
+    audio_path:'audio/mandarin_native/excerpts/test.wav',candidate_hsk_ids:[word.id],
+    source_segment:origin,alignment_method:'exact-unprompted-transcript-fa-zh-1',
+    rights_status:'cleared',quiz_eligible:true,review_status:'acoustic_screened',
+  };
+  const automatic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,excerpt),'local_only')];
+  const app=await appHarness({recording:null,importedRecordings:[excerpt],excerpts:[excerpt],acousticApprovals:automatic});
+  assert.equal(app.run('questionVerified'),false);
+  assert.equal(app.played.length,0);
+  assert.equal(app.requests.some(url=>url.includes('/excerpts/')),false);
+  assert.equal(app.requests.includes('../data/context_word_recordings.json'),false);
+  const human=approve(Review.nativeDescriptor(word,excerpt));
+  const humanIndex=Review.createIndex({version:1,approvals:[human]});
+  assert.equal(humanIndex.size,0);
+  assert.equal(Review.nativeApproval(humanIndex,word,excerpt),null);
+  await assert.rejects(Review.verifyBytes(bytes,human),/Sentence-extracted/);
+  const renamed={...excerpt,recording_type:'word_candidate',audio_path:'audio/mandarin_native/renamed.mp3'};
+  assert.deepEqual(Review.nativeCandidates([word],[renamed]),[]);
+  const legacy={...excerpt};delete legacy.source_segment;
+  assert.deepEqual(Review.nativeCandidates([word],[legacy]),[]);
+  const disguised={...legacy,recording_type:'word_candidate',audio_path:origin.audio_path};
+  assert.deepEqual(Review.nativeCandidates([word],[disguised]),[]);
+});
+
+test('normal inventory and candidate exports do not depend on sentence archives',async()=>{
+  const {loadReviewData,candidatesFor,validateLedger,practiceInventory}=await import('../scripts/review_audio.mjs');
+  const originalRead=fs.readFileSync;
+  fs.readFileSync=(file,...args)=>{
+    assert.doesNotMatch(String(file),/context_word_recordings\.json|\/mandarin_native\/(?:excerpts|context)\//);
+    return originalRead(file,...args);
+  };
+  try{
+    const data=loadReviewData();
+    assert.ok(data.recordings.length>0);
+    assert.equal(data.recordings.some(recording=>Review.isSentenceDerived(recording)||recording.recording_type==='context_sentence'),false);
+    const candidates=[...candidatesFor(data).values()];
+    assert.equal(candidates.some(candidate=>candidate.source_segment||candidate.audio_path.includes('/excerpts/')||candidate.audio_path.includes('/context/')),false);
+    assert.ok(practiceInventory(data,validateLedger(data)).eligibleWords.length>0);
+  }finally{fs.readFileSync=originalRead;}
 });
 
 test('checked new standalone character audio is usable as a local comparison, not a sentence crop',()=>{

@@ -78,12 +78,7 @@ async function load(){
   const imported=await importedResponse.json();
   if(imported.version!==1||!Array.isArray(imported.recordings))throw new Error('Invalid Mandarin Native recording index');
   if(imported.explore_vocabulary!==undefined&&!Array.isArray(imported.explore_vocabulary))throw new Error('Invalid Mandarin Native vocabulary index');
-  recordings.push(...imported.recordings);
-  const excerptResponse=await fetch('../data/context_word_recordings.json');
-  if(!excerptResponse.ok)throw new Error(`Word excerpts failed: HTTP ${excerptResponse.status}`);
-  const excerpts=await excerptResponse.json();
-  if(excerpts.version!==1||!Array.isArray(excerpts.recordings))throw new Error('Invalid word excerpt index');
-  recordings.push(...excerpts.recordings);
+  recordings.push(...imported.recordings.filter(recording=>recording.recording_type==='word_candidate'));
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
@@ -286,12 +281,6 @@ function grade(p,correct){
     ?`<p class="muted">Listed pinyin: ${escapeHTML(current.pinyin)}. This recording uses the spoken form shown above.</p>`:'';
   $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="muted">Heard here</div><div class="pinyin">${escapeHTML(heard)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${listed}${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
-  if(currentRec.source_segment){
-    const context=document.createElement('p');
-    context.className='muted';
-    context.textContent=`Heard in context: ${currentRec.source_text}. The answer reflects the tones spoken in this excerpt.`;
-    $('reveal').appendChild(context);
-  }
   const reference=document.createElement('a');
   reference.href=`https://mandarin-native.com/#${encodeURIComponent(`word/${current.word}`)}`;
   reference.target='_blank';
@@ -387,6 +376,10 @@ async function playAssessedRecording(approval,message){
     if(playId!==nativePlayId)return;
     stopNative();
     if(isPlaybackInterruption(error))return;
+    if(error.name==='NotAllowedError'){
+      setAudioStatus('Tap an audio button to start playback.');
+      return;
+    }
     setAudioStatus(`Native playback blocked: ${error.message}`,true);
     console.error('Native audio failed',error);
   }

@@ -123,7 +123,9 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
         recognition = None
         recording = recordings.get(path, {})
         group = source_group(path)
-        if not evidence_matches(row, profile, raw_recognition, prepared):
+        if row.get('source_segment') or recording.get('recording_type') in ('aligned_word', 'context_sentence') or '/excerpts/' in path or '/context/' in path:
+            reason = 'sentence-extracted audio is excluded from tone practice'
+        elif not evidence_matches(row, profile, raw_recognition, prepared):
             reason = 'missing or stale acoustic/recognition evidence'
         elif profile['clipped_fraction'] > .01:
             reason = 'excessive waveform clipping'
@@ -349,11 +351,11 @@ def main():
     if args.activate_imported:
         eligible = {entry['audio_path'] for entry in approvals if entry['kind'] == 'native'}
         eligible.update(entry['audio_path'] for entry in approvals if entry['kind'] == 'comparison')
-        for filename in ('mandarin_native_recordings.json', 'context_word_recordings.json'):
+        for filename in ('mandarin_native_recordings.json',):
             imported_path = ROOT / 'data' / filename
             imported = json.loads(imported_path.read_text(encoding='utf-8'))
             for recording in imported['recordings']:
-                if recording['recording_type'] not in ('word_candidate', 'aligned_word') or recording.get('review_status') not in ('pending', 'acoustic_screened'):
+                if recording['recording_type'] != 'word_candidate' or recording.get('review_status') not in ('pending', 'acoustic_screened'):
                     continue
                 recording['quiz_eligible'] = recording['audio_path'] in eligible
                 recording['review_status'] = 'acoustic_screened' if recording['quiz_eligible'] else 'pending'

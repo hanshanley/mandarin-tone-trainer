@@ -17,6 +17,6 @@ def read_words():
 
 def read_recordings():
     recordings = json.loads((ROOT / 'data/recordings.json').read_text(encoding='utf-8'))
-    for filename in ('mandarin_native_recordings.json', 'context_word_recordings.json'):
-        recordings += json.loads((ROOT / 'data' / filename).read_text(encoding='utf-8'))['recordings']
+    imported = json.loads((ROOT / 'data/mandarin_native_recordings.json').read_text(encoding='utf-8'))['recordings']
+    recordings += [recording for recording in imported if recording['recording_type'] == 'word_candidate']
     return recordings

@@ -269,6 +269,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--refresh-index', action='store_true', help='discover newly published keys without changing existing labels or approvals')
+    parser.add_argument('--standalone-only', action='store_true', help='restore only direct word recordings used by normal practice')
     args = parser.parse_args()
     if not 1 <= args.workers <= 4:
         parser.error('--workers must be between 1 and 4')
@@ -320,17 +321,19 @@ def main():
     identifiers = [recording['source_recording_id'] for recording in records]
     if len(identifiers) != len(set(identifiers)):
         raise ValueError('Duplicate recording IDs in local import index')
+    selected = [recording for recording in records if not args.standalone_only or recording['recording_type'] == 'word_candidate']
+    retained = [recording for recording in records if args.standalone_only and recording['recording_type'] != 'word_candidate']
     completed = []
     downloaded = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:
-        futures = [pool.submit(download_recording, recording) for recording in records]
+        futures = [pool.submit(download_recording, recording) for recording in selected]
         for future in concurrent.futures.as_completed(futures):
             recording, was_downloaded = future.result()
             completed.append(recording)
             downloaded += was_downloaded
             if len(completed) % 100 == 0:
-                print(f'Mandarin Native: {len(completed)}/{len(records)}', flush=True)
-    index['recordings'] = sorted(completed, key=lambda recording: recording['source_recording_id'])
+                print(f'Mandarin Native: {len(completed)}/{len(selected)}', flush=True)
+    index['recordings'] = sorted(completed + retained, key=lambda recording: recording['source_recording_id'])
     temporary = INDEX.with_suffix('.json.part')
     temporary.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     temporary.replace(INDEX)

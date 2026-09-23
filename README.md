@@ -32,8 +32,9 @@ definition, and expected spoken-tone pattern.
 ### Listen without visual hints
 
 **Native** playback uses a recording of the complete word. The answer stays
-hidden until you choose a tone for every syllable. Word excerpts retain their
-source context, shown after the answer so contextual tone changes are explicit.
+hidden until you choose a tone for every syllable. Practice uses direct word
+recordings, not fragments cut from sentences or syllables stitched together.
+If your browser blocks automatic audio, tap **Native** to start.
 
 ### Compare tones directly
 
@@ -135,15 +136,14 @@ The source dataset contains:
 - **4,396** Explore vocabulary entries linked to their sentence recordings;
   these are vocabulary entries, not 4,396 separate isolated-word recordings
 
-Aligned word excerpts add source-context examples to one-, two-, and **3+
-syllable** practice after independent identity and tone screening. Excerpts
-retain exact source timestamps; full sentences are never relabeled as isolated
-words. Qualifying standalone one-character imports can also supply local
-tone-button comparisons.
+One-, two-, and **3+ syllable** practice uses qualifying direct recordings.
+Standalone one-character imports can also supply local tone-button comparisons.
+Previously generated sentence excerpts are retained for investigation only;
+they are excluded from practice, normal setup, and the mobile bundle.
 
 Large audio assets are intentionally excluded from Git. The bootstrap
 recreates the original corpora from pinned upstream revisions and restores
-Mandarin Native imports from their recorded URLs and SHA-256 hashes.
+Mandarin Native's direct word recordings from recorded URLs and SHA-256 hashes.
 
 Known audio defects and candidate fallback mappings live in
 [`data/correction_audio_quality.json`](data/correction_audio_quality.json).
@@ -222,5 +222,5 @@ Mandarin Native recordings are separate local review imports. Their URLs
 and hashes are preserved in `data/mandarin_native_recordings.json`; reuse
 permission is unverified, so they are not included in distributable audio
 bundles. Acoustically screened standalone clips can be used for local browser
-practice. Source sentences are used to produce separately screened word
-excerpts, never substituted wholesale for isolated-word or tone-button examples.
+practice. Sentence recordings and extracted fragments are not used for initial
+playback or tone-button examples.

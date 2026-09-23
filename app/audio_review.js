@@ -4,6 +4,12 @@
   else root.AudioReview=api;
 })(typeof globalThis!=='undefined'?globalThis:this,()=>{
   const nonempty=value=>typeof value==='string'&&value.trim().length>0;
+  function isSentenceDerived(recording){
+    return Boolean(recording?.source_segment||recording?.recording_type==='aligned_word'
+      ||recording?.recording_type==='context_sentence'
+      ||recording?.audio_path?.startsWith('audio/mandarin_native/excerpts/')
+      ||recording?.audio_path?.startsWith('audio/mandarin_native/context/'));
+  }
   function validSourceSegment(segment){
     return segment&&/^audio\/mandarin_native\/context\/[a-f0-9]{64}\.(mp3|m4a)$/.test(segment.audio_path)
       &&/^[a-f0-9]{64}$/.test(segment.sha256||'')
@@ -20,6 +26,7 @@
     }
     const candidates=[];
     for(const recording of recordings){
+      if(isSentenceDerived(recording))continue;
       if(!['audio_cmn','mandarin_native'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
       if(recording.source==='mandarin_native'&&!['word_candidate','aligned_word'].includes(recording.recording_type))continue;
       const targets=Array.isArray(recording.candidate_hsk_ids)
@@ -32,6 +39,7 @@
     return candidates;
   }
   function nativeBlockReason(recording,assessment=null){
+    if(isSentenceDerived(recording)||isSentenceDerived(assessment))return 'Sentence-extracted audio is not used for tone practice';
     if(recording.review_status==='rejected')return recording.notes||'Explicitly rejected recording';
     if((recording.language_code||'zh')!=='zh')return 'Recording is not indexed as Mandarin';
     if(recording.source==='mandarin_native'&&!['word_candidate','aligned_word'].includes(recording.recording_type)){
@@ -215,6 +223,7 @@
     for(const entry of ledger.approvals){
       if(entry.assessment==='automated')throw new Error('Automated results must use the acoustic ledger, not human attestations');
       validateApproval(entry);
+      if(isSentenceDerived(entry))continue;
       const key=identity(entry);
       if(index.has(key))throw new Error(`Duplicate audio approval: ${entry.audio_path}`);
       index.set(key,entry);
@@ -228,6 +237,7 @@
       for(const entry of acousticLedger.approvals){
         if(entry.assessment!=='automated')throw new Error('Acoustic ledger contains a non-automated entry');
         validateApproval(entry);
+        if(isSentenceDerived(entry))continue;
         if(entry.kind==='native'&&entry.surface_pattern.split('-').includes('N')
           &&entry.evidence.neutral_lexicon_sha256!==acousticLedger.neutral_lexicon_sha256){
           throw new Error(`Neutral dictionary fingerprint mismatch: ${entry.audio_path}`);
@@ -329,6 +339,7 @@
   }
   async function verifyBytes(bytes,approval){
     if(!approval)throw new Error('Audio has no qualifying assessment');
+    if(isSentenceDerived(approval))throw new Error('Sentence-extracted audio is not used for tone practice');
     validateApproval(approval);
     if(!globalThis.crypto?.subtle)throw new Error('Audio verification requires a secure browser context');
     const digest=await globalThis.crypto.subtle.digest('SHA-256',bytes);
@@ -336,7 +347,7 @@
     if(actual!==approval.sha256)throw new Error(`Audio changed since ${approval.assessment==='automated'?'acoustic screening':'listening review'}: ${approval.audio_path}`);
   }
   return {
-    validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
+    isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
     nativeApproval,comparisonApproval,neutralSelection,correctionSelection,verifyBytes,
   };
 });
