@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "reference": {
+    "name": "OMPAL",
+    "repository": "phantomhsieh/OMPAL-corpus",
+    "revision": "c3aaa9e892e4b1c2a25b637401f52f6e35b53e74",
+    "license": "CC-BY-4.0",
+    "citation": "Hsieh et al. (2025), OMPAL: Bridging Speech and Learning with an Open-Source Mandarin Pronunciation Assessment Corpus for Global Learners. Interspeech 2025, 2415-2419. DOI: 10.21437/Interspeech.2025-983",
+    "expected_audio_files": 1850,
+    "expected_speakers": 49
+  },
+  "split": {
+    "method": "speaker-sha256-v1",
+    "seed": "mandarin-pronunciation-judge-2026-09-23",
+    "learner_counts": {
+      "train": 24,
+      "select": 6,
+      "calibrate": 6,
+      "threshold": 5,
+      "test": 5
+    },
+    "native_counts": {
+      "train": 1,
+      "calibrate": 1,
+      "test": 1
+    }
+  },
+  "targets": ["tone", "phoneme_consonant", "phoneme_vowel"],
+  "label_policy": "published aggregate binary human judgments; retain individual-rater votes when provided",
+  "models": [
+    {"n_estimators": 96, "max_depth": 8, "min_samples_leaf": 8},
+    {"n_estimators": 96, "max_depth": 12, "min_samples_leaf": 5}
+  ],
+  "calibration": "platt-logit-v1",
+  "decision": {
+    "maximum_error_rate": 0.05,
+    "minimum_decisions": 60,
+    "confidence": 0.95,
+    "threshold_grid": [0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.925, 0.95, 0.975, 0.99, 0.995],
+    "minimum_test_decisions": 30
+  },
+  "production_scope": "diagnostic_only_until_independent_target_corpus_validation",
+  "feature_version": "ompal-acoustic-aligned-v1"
+}

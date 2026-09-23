@@ -16,6 +16,10 @@
     "audit:similarity": "python3 scripts/audit_correction_similarity.py --fail-on-unquarantined",
     "audit:corrections": "npm run audit:tones && npm run audit:similarity",
     "audit:listening": "node scripts/review_audio.mjs",
+    "judge:reference": "python3 scripts/download_judge_reference.py",
+    "judge:prepare": "python3 scripts/calibrated_pronunciation_judge.py prepare",
+    "judge:train": "python3 scripts/calibrated_pronunciation_judge.py train",
+    "judge:score": "python3 scripts/calibrated_pronunciation_judge.py score",
     "download:mandarin-native": "python3 scripts/download_mandarin_native.py --standalone-only",
     "test": "python3 -m unittest discover -s tests -q"
   },

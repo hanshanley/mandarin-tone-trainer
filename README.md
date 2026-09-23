@@ -168,6 +168,12 @@ Application code lives in `app/`, reviewed runtime data in `data/`, tooling in
 Corpus updates, local imports, and individual audit tools are documented in
 the [audio maintenance guide](docs/audio-maintenance.md).
 
+The separate [calibrated pronunciation judge](docs/pronunciation-judge.md) trains
+on expert-scored reference audio, with disjoint speakers for model fitting,
+calibration, threshold selection, and final evaluation. It remains separate
+from practice admission until its measured accuracy and domain transfer support
+using it for that purpose.
+
 ## FAQ
 
 <details>
