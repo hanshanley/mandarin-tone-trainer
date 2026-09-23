@@ -167,9 +167,13 @@
           const reading=evidence.neutral_lexical_reading;
           if(evidence.neutral_lexicon!=='CC-CEDICT'||!/^[a-f0-9]{64}$/.test(evidence.neutral_lexicon_sha256||'')
             ||!Array.isArray(reading)||reading.length!==tones.length
-            ||reading.some((value,position)=>typeof value!=='string'||value.slice(0,-1)!==expectedBases[position]
-              ||(value.slice(-1)==='5')!==(tones[position]==='N'))){
+            ||reading.some((value,position)=>typeof value!=='string'||!/^[a-zv]+[1-5]$/.test(value)||value.slice(0,-1)!==expectedBases[position]
+              ||(value.slice(-1)==='5')!==(tones[position]==='N')
+              ||(tones[position]!=='N'&&value.slice(-1)!==entry.lexical_pattern.split('-')[position]))){
             throw new Error(`Neutral reading lacks independent lexical evidence: ${entry.audio_path}`);
+          }
+          if(Object.values(prosody.lexical_votes||{}).some(vote=>['2','3','4'].includes(vote))){
+            throw new Error('Neutral example has a conflicting full-tone contour');
           }
           for(const [method,vote] of Object.entries(votes)){
             if(vote!=='N')continue;
@@ -205,7 +209,7 @@
       throw new Error(`Two independent listening approvals required: ${entry.audio_path}`);
     }
   }
-  function createIndex(ledger,acousticLedger=null,{allowLocalOnly=true,sourceRecordings=[]}={}){
+  function createIndex(ledger,acousticLedger=null,{allowLocalOnly=true,sourceRecordings=[],sourceWords=[]}={}){
     if(ledger?.version!==1||!Array.isArray(ledger.approvals))throw new Error('Invalid audio review ledger');
     const index=new Map();
     for(const entry of ledger.approvals){
@@ -224,6 +228,10 @@
       for(const entry of acousticLedger.approvals){
         if(entry.assessment!=='automated')throw new Error('Acoustic ledger contains a non-automated entry');
         validateApproval(entry);
+        if(entry.kind==='native'&&entry.surface_pattern.split('-').includes('N')
+          &&entry.evidence.neutral_lexicon_sha256!==acousticLedger.neutral_lexicon_sha256){
+          throw new Error(`Neutral dictionary fingerprint mismatch: ${entry.audio_path}`);
+        }
         if(acousticLedger.recognition_policy==='raw-prepared-no-phonetic-conflict-1'&&!entry.evidence.recognition_checks){
           throw new Error(`Missing prepared recognition evidence: ${entry.audio_path}`);
         }
@@ -258,6 +266,8 @@
     }
     index.comparisonAlternatives=alternatives;
     index.sourceRecordings=new Map(sourceRecordings.map(recording=>[recording.audio_path,recording]));
+    index.sourceWords=new Map(sourceWords.map(word=>[word.id,word]));
+    if(index.sourceWords.size!==sourceWords.length)throw new Error('Duplicate source vocabulary identifiers');
     index.neutralReferences=new Map();
     for(const entry of index.values()){
       if(entry.kind!=='native')continue;
@@ -284,7 +294,8 @@
   function neutralSelection(index,base){
     for(const approval of index.neutralReferences?.get(base.replace(/ü/g,'v'))||[]){
       const recording=index.sourceRecordings.get(approval.audio_path);
-      if(recording&&!nativeBlockReason(recording,approval))return approval;
+      const word=index.sourceWords?.get(approval.word_id);
+      if(word&&recording&&nativeApproval(index,word,recording)===approval)return approval;
     }
     return null;
   }

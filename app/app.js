@@ -94,7 +94,7 @@ async function load(){
   if(!reviewResponse.ok)throw new Error(`Listening approvals failed: HTTP ${reviewResponse.status}`);
   const acousticResponse=await fetch('../data/acoustic_reviews.json',{cache:'no-store'});
   if(!acousticResponse.ok)throw new Error(`Acoustic screening data failed: HTTP ${acousticResponse.status}`);
-  audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{sourceRecordings:recordings});
+  audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{sourceRecordings:recordings,sourceWords:words});
   $('progress').textContent='';
   rebuildIndex();
 }
@@ -280,7 +280,11 @@ function grade(p,correct){
   saveResults();
   const tags=current.sandhi_tags.map(x=>`<span class="tag">${x}</span>`).join('');
   const definition=current.definition?`<p class="definition"><strong>Definition:</strong> ${escapeHTML(current.definition)}</p>`:'';
-  $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="pinyin">${escapeHTML(current.pinyin)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
+  const heard=CorrectionAudio.spokenPinyin(current.pinyin_syllables,correct);
+  const compact=pinyin=>pinyin.toLowerCase().normalize('NFC').replace(/[\s'’\-]/g,'');
+  const listed=compact(current.pinyin)!==compact(heard)
+    ?`<p class="muted">Listed pinyin: ${escapeHTML(current.pinyin)}. This recording uses the spoken form shown above.</p>`:'';
+  $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="muted">Heard here</div><div class="pinyin">${escapeHTML(heard)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${listed}${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
   if(currentRec.source_segment){
     const context=document.createElement('p');

@@ -150,3 +150,11 @@ class AcousticAnalysisTests(unittest.TestCase):
         self.assertEqual(acoustic.decide_neutral(neutral, preceding, '1', 300, np.ones(75) * .1)['status'], 'review')
         full_fall = {**neutral, 'curves': {method: np.geomspace(320, 130, 17).tolist() for method in acoustic.METHODS}}
         self.assertEqual(acoustic.decide_neutral(full_fall, preceding, '1', 300, rms)['status'], 'review')
+
+    def test_neutral_cannot_hide_one_trackers_full_tone_as_an_abstention(self):
+        preceding = {'status': 'measured', 'start': 0, 'end': .4, 'voiced_seconds': .4}
+        neutral = {'status': 'measured', 'start': .5, 'end': .65, 'voiced_seconds': .15,
+                   'curves': {method: [180] * 17 for method in acoustic.METHODS}}
+        rms = np.array([.1] * 45 + [.03] * 30)
+        with patch.object(acoustic, 'classify_curve', side_effect=[None, None, '2']):
+            self.assertEqual(acoustic.decide_neutral(neutral, preceding, '1', 300, rms)['status'], 'review')

@@ -262,8 +262,10 @@ def decide_neutral(measured, preceding, preceding_tone, high_reference, rms):
         lexical = classify_curve(curve, high_reference)
         lexical_votes[method] = lexical
         context_fit = minimum <= low <= high <= maximum
-        votes[method] = 'N' if context_fit and lexical not in ('2', '3', '4') else None
-    if sum(vote == 'N' for vote in votes.values()) < 2:
+        votes[method] = lexical if lexical in ('2', '3', '4') else 'N' if context_fit else None
+    if sum(vote == 'N' for vote in votes.values()) < 2 or any(
+        vote in ('2', '3', '4') for vote in votes.values()
+    ):
         return {'status': 'review', 'reason': 'neutral pitch is unresolved in its tonal context', 'votes': votes}
     return {
         'status': 'screened', 'expected': 'N', 'votes': votes,

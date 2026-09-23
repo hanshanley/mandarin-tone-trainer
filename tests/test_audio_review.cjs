@@ -95,6 +95,15 @@ test('content hashes reject changed audio instead of playing a newly replaced fi
   await assert.rejects(Review.verifyBytes(bytes,null),/no qualifying assessment/);
 });
 
+test('spoken pinyin reflects graded tones, including sandhi, neutral and vowel placement',()=>{
+  assert.equal(Policy.spokenPinyin(['ni','hao'],'2-3'),'ní hǎo');
+  assert.equal(Policy.spokenPinyin(['ma','ma'],'1-N'),'mā ma');
+  assert.equal(Policy.spokenPinyin(['liu','gui','lv','lve','ou'],'2-4-4-4-3'),'liú guì lǜ lüè ǒu');
+  assert.equal(Policy.spokenPinyin(['n'],'2'),'ń');
+  assert.throws(()=>Policy.spokenPinyin(['ma'],'1-2'),/align/);
+  assert.throws(()=>Policy.spokenPinyin(['r'],'3'),/tone mark/);
+});
+
 function element(){
   const classes=new Set();
   return {
@@ -139,6 +148,7 @@ async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerF
     '../data/context_word_recordings.json':{version:1,recordings:excerpts},
     '../data/acoustic_reviews.json':{
       version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
+      neutral_lexicon_sha256:acousticApprovals.find(entry=>entry.evidence?.neutral_lexicon_sha256)?.evidence.neutral_lexicon_sha256,
       certifies_accuracy:false,approvals:acousticApprovals,
     },
   };
@@ -198,7 +208,8 @@ function acousticApproval(descriptor,scope='redistributable'){
   };
 }
 function acousticLedger(approvals){
-  return {version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),certifies_accuracy:false,approvals};
+  return {version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),certifies_accuracy:false,approvals,
+    neutral_lexicon_sha256:approvals.find(entry=>entry.evidence?.neutral_lexicon_sha256)?.evidence.neutral_lexicon_sha256};
 }
 function automaticComparisons(){
   return ['1','2','3','4'].map(tone=>acousticApproval(Review.comparisonDescriptor(`ma${tone}`,{
@@ -675,10 +686,15 @@ test('neutral tone has a contextual example but cannot be forged as a fifth isol
   for(const edit of [
     entry=>delete entry.evidence.tones[1].prosody,
     entry=>delete entry.evidence.neutral_lexical_reading,
+    entry=>entry.evidence.neutral_lexical_reading[0]='ma2',
     entry=>entry.evidence.tones[1].prosody.duration_ratio=1.1,
     entry=>entry.evidence.tones[1].prosody.intensity_ratio=1.1,
     entry=>entry.evidence.tones[1].prosody.pitch_ratios.pyin=1.4,
     entry=>entry.evidence.tones[1].prosody.lexical_votes.pyin='4',
+    entry=>{
+      entry.evidence.tones[1].votes.pyin=null;
+      entry.evidence.tones[1].prosody.lexical_votes.pyin='4';
+    },
     entry=>entry.evidence.comparison_support[1]={key:'ma5',audio_path:recording.audio_path,sha256:nativeHash},
   ]){
     const invalid=structuredClone(assessed);edit(invalid);
@@ -686,6 +702,14 @@ test('neutral tone has a contextual example but cannot be forged as a fifth isol
   }
   const standalone=acousticApproval(Review.comparisonDescriptor('ma5',recording));
   assert.throws(()=>Review.validateApproval(standalone),/comparison label/);
+  assert.throws(()=>Review.createIndex({version:1,approvals:[]},{
+    ...acousticLedger(automatic),neutral_lexicon_sha256:'d'.repeat(64),
+  }),/dictionary fingerprint/);
+  const corrected={...recording,surface_pattern:'1-4'};
+  const staleIndex=Review.createIndex({version:1,approvals:[]},acousticLedger(automatic),{
+    sourceRecordings:[corrected],sourceWords:[neutralWord],
+  });
+  assert.equal(Review.neutralSelection(staleIndex,'ma'),null);
 });
 
 test('corpus coverage requires all four lexical tones and contextual neutral',async()=>{
@@ -695,4 +719,15 @@ test('corpus coverage requires all four lexical tones and contextual neutral',as
     const coverage={1:10,2:10,3:10,4:10,N:10};coverage[tone]=0;
     assert.throws(()=>requireToneCoverage({toneCoverage:coverage}),/lacks usable tone categories/);
   }
+});
+
+test('neutral reference cannot reuse a superseded source tone label',()=>{
+  const neutralWord={...word,id:'neutral-current',word:'妈妈',pinyin:'ma ma',
+    pinyin_syllables:['ma','ma'],lexical_pattern:'1-N',default_surface_pattern:'1-N'};
+  const recording={...native,word:neutralWord.word,surface_pattern:'1-N'};
+  const assessment=approve(Review.nativeDescriptor(neutralWord,recording));
+  const index=Review.createIndex({version:1,approvals:[assessment]},null,{
+    sourceRecordings:[{...recording,surface_pattern:'1-4'}],sourceWords:[neutralWord],
+  });
+  assert.equal(Review.neutralSelection(index,'ma'),null);
 });

@@ -122,7 +122,9 @@ export function audioHash(relativePath, root = ROOT) {
 }
 
 export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}) {
-  const index = AudioReview.createIndex(data.ledger, data.acousticLedger || null, { allowLocalOnly, sourceRecordings: data.recordings });
+  const index = AudioReview.createIndex(data.ledger, data.acousticLedger || null, {
+    allowLocalOnly, sourceRecordings: data.recordings, sourceWords: data.words,
+  });
   const candidates = candidatesFor(data);
   const recordingsByPath = new Map(data.recordings.map(recording => [recording.audio_path, recording]));
   for (const approval of index.values()) {

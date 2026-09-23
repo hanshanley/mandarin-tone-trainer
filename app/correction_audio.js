@@ -8,6 +8,31 @@
   function correctionKey(pinyin,tone){
     return pinyin.toLowerCase().replace(/ü/g,'v')+tone;
   }
+  function spokenPinyin(syllables,pattern){
+    const tones=typeof pattern==='string'?pattern.split('-'):[];
+    if(!Array.isArray(syllables)||!syllables.length||tones.length!==syllables.length){
+      throw new Error('Pinyin syllables and spoken tones must align');
+    }
+    const marks={a:'āáǎà',e:'ēéěè',i:'īíǐì',o:'ōóǒò',u:'ūúǔù','ü':'ǖǘǚǜ'};
+    return syllables.map((syllable,index)=>{
+      const base=String(syllable).toLowerCase().replace(/v/g,'ü');
+      const tone=tones[index];
+      if(!/^[a-zü]+$/.test(base)||!['1','2','3','4','N'].includes(tone))throw new Error('Invalid spoken-pinyin input');
+      if(tone==='N')return base;
+      let position=base.indexOf('a');
+      if(position<0)position=base.indexOf('e');
+      if(position<0&&base.includes('ou'))position=base.indexOf('o');
+      if(position<0){
+        for(let i=base.length-1;i>=0;i--){if(marks[base[i]]){position=i;break;}}
+      }
+      if(position>=0)return base.slice(0,position)+marks[base[position]][Number(tone)-1]+base.slice(position+1);
+      if(/^(m|n|ng|hm|hng)$/.test(base)){
+        const nasal=base.includes('n')?'n':'m';
+        return base.replace(nasal,nasal+['\u0304','\u0301','\u030c','\u0300'][Number(tone)-1]).normalize('NFC');
+      }
+      throw new Error('This syllable cannot carry a standalone tone mark');
+    }).join(' ');
+  }
   function normalizationParameters(channels){
     const offsets=channels.map(channel=>{
       let total=0;
@@ -75,5 +100,5 @@
     }
     return audioCmnUnavailable?null:audioCmnSelection();
   }
-  return {correctionKey,correctionSelection,normalizationGain,normalizationParameters};
+  return {correctionKey,spokenPinyin,correctionSelection,normalizationGain,normalizationParameters};
 });

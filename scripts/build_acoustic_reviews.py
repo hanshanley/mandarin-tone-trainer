@@ -159,11 +159,13 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
         expected_tones = [row['key'][-1]] if kind == 'comparison' else row['surface_pattern'].split('-')
         neutral_reading = None
         if not reason and 'N' in expected_tones:
+            lexical_tones = row['lexical_pattern'].split('-')
             for entry in neutral_dictionary.get(row['word'], []):
                 reading = entry['reading']
                 if len(reading) == len(expected_bases) and all(
                     value[:-1] == base and (value[-1] == '5') == (tone == 'N')
-                    for value, base, tone in zip(reading, expected_bases, expected_tones)
+                    and (tone == 'N' or value[-1] == lexical)
+                    for value, base, tone, lexical in zip(reading, expected_bases, expected_tones, lexical_tones)
                 ):
                     neutral_reading = list(reading)
                     break

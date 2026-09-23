@@ -170,7 +170,7 @@ def main():
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
-            for relative in ['app.js', 'audio_review.js', 'correction_audio.js']:
+            for relative in ['index.html', 'style.css', 'app.js', 'audio_review.js', 'correction_audio.js']:
                 target = bundle / relative
                 if target.is_file():
                     require(
@@ -178,7 +178,8 @@ def main():
                         f'www/{relative} is stale; run npm run build:mobile',
                         errors,
                     )
-            for relative in ['audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json',
+            for relative in ['hsk_words.json', 'definitions.json', 'recordings.json', 'pinyin_public_recordings.json',
+                             'audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json',
                              'mandarin_native_words.json', 'context_word_recordings.json']:
                 target = bundle / 'data' / relative
                 if target.is_file():

@@ -123,6 +123,10 @@ Neutral admission additionally requires an independently attested CC-CEDICT
 neutral reading, a screened full-tone anchor in the same word, reliable pitch
 tracks, clear duration/intensity reduction, and pitch consistent with the
 preceding tone. A lexical neutral marker alone is not sufficient. The neutral
+decision cannot hide a tracker's clear full-tone result as an abstention, and
+its lexical evidence must match the ledger's dictionary snapshot. A selected
+neutral example is rechecked against the current word and recording metadata,
+so an old assessment cannot survive a corrected source label. The neutral
 button plays a checked **whole-word contextual example** and states which
 syllable to listen for; no artificial standalone “fifth-tone” recording is
 generated.

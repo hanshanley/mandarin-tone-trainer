@@ -54,6 +54,10 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
             self.assertGreater(path.stat().st_size, 0, relative_path)
+            if relative_path == 'data/acoustic_reviews.json':
+                continue
+            source = ROOT / relative_path if relative_path.startswith('data/') else ROOT / 'app' / relative_path
+            self.assertEqual(path.read_bytes(), source.read_bytes(), f'stale bundled {relative_path}')
 
     def test_contains_every_reviewed_runtime_recording(self):
         for relative in self.expected_audio:

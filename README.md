@@ -93,6 +93,10 @@ The data models common third-tone sandhi, 不 and 一 changes, and neutral-tone
 reductions. Recording-specific labels take priority when the speaker's actual
 pronunciation differs from the default prediction.
 
+After an answer, **Heard here** shows pinyin marked with the recording's spoken
+tones. The listed form is shown separately when it differs, so sandhi and
+neutral-tone variants are not presented as contradictory answers.
+
 ## Offline Android app
 
 The Android build packages the application, vocabulary, assessment ledgers, and
