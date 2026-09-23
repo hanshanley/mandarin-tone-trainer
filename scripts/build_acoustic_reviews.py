@@ -16,6 +16,7 @@ from collect_acoustic_evidence import (
     decoded_bases, identity_encoding, read_jsonl, resolved_recognition,
 )
 from runtime_data import read_recordings
+from add_definitions import load_cedict, parse_cedict
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,7 +91,7 @@ def syllable_intervals(recognition, count, duration):
     return list(zip(boundaries, boundaries[1:]))
 
 
-def compile_reviews(candidates, profiles, recognitions, recordings, alignments, prepared_recognitions):
+def compile_reviews(candidates, profiles, recognitions, recordings, alignments, prepared_recognitions, neutral_dictionary):
     measured = {path: segment(profile) for path, profile in profiles.items()}
     levels = defaultdict(list)
     family = defaultdict(list)
@@ -156,6 +157,18 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             if len(ambiguous_word) == 1 and len(polyphonic_bases(ambiguous_word)) > 1:
                 reason = 'polyphonic single-character identity remains ambiguous'
         expected_tones = [row['key'][-1]] if kind == 'comparison' else row['surface_pattern'].split('-')
+        neutral_reading = None
+        if not reason and 'N' in expected_tones:
+            for entry in neutral_dictionary.get(row['word'], []):
+                reading = entry['reading']
+                if len(reading) == len(expected_bases) and all(
+                    value[:-1] == base and (value[-1] == '5') == (tone == 'N')
+                    for value, base, tone in zip(reading, expected_bases, expected_tones)
+                ):
+                    neutral_reading = list(reading)
+                    break
+            if neutral_reading is None:
+                reason = 'neutral reading is not independently attested in the dictionary'
         if not reason and (expected_tones[0] == 'N' or any(
             tone == 'N' and expected_tones[index - 1] == 'N'
             for index, tone in enumerate(expected_tones) if index
@@ -251,6 +264,8 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
                 'tones': decisions,
                 'register_hz': round(high, 3),
                 'comparison_support': references,
+                **({'neutral_lexical_reading': neutral_reading, 'neutral_lexicon': 'CC-CEDICT'}
+                   if neutral_reading else {}),
             },
         }
         approvals.append(approval)
@@ -290,8 +305,15 @@ def main():
     for row in required:
         if hashlib.sha256((ROOT / row['audio_path']).read_bytes()).hexdigest() != row['sha256']:
             raise SystemExit(f'Candidate changed since export: {row["audio_path"]}')
+    dictionary_path = ROOT / 'imports/mandarin_native/cedict.txt.gz'
+    vocabulary_metadata = json.loads((ROOT / 'data/mandarin_native_words.json').read_text(encoding='utf-8'))
+    dictionary_hash = hashlib.sha256(dictionary_path.read_bytes()).hexdigest()
+    if dictionary_hash != vocabulary_metadata.get('definition_source_sha256'):
+        raise SystemExit('Neutral-tone dictionary snapshot changed; refresh vocabulary deliberately')
+    neutral_dictionary = parse_cedict(load_cedict(dictionary_path))
     approvals, findings, registers = compile_reviews(
         required, profiles, recognition, recordings, read_jsonl(args.alignment), prepared_recognition,
+        neutral_dictionary,
     )
     code_hash = hashlib.sha256(b''.join(
         (ROOT / 'scripts' / name).read_bytes()
@@ -303,6 +325,7 @@ def main():
         'method': VERSION,
         'generated_at': datetime.now(timezone.utc).isoformat(),
         'pipeline_sha256': code_hash,
+        'neutral_lexicon_sha256': dictionary_hash,
         'certifies_accuracy': False,
         'recognition_policy': 'raw-prepared-no-phonetic-conflict-1',
         'coverage': {
@@ -315,6 +338,8 @@ def main():
     }
     for entry in approvals:
         entry['evidence']['pipeline_sha256'] = code_hash
+        if 'neutral_lexical_reading' in entry['evidence']:
+            entry['evidence']['neutral_lexicon_sha256'] = dictionary_hash
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary = args.output.with_suffix('.json.part')
     temporary.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

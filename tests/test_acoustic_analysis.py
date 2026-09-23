@@ -148,3 +148,5 @@ class AcousticAnalysisTests(unittest.TestCase):
         self.assertEqual(acoustic.decide_neutral(neutral, preceding, '3', 300, rms)['status'], 'review')
         self.assertEqual(acoustic.decide_neutral({**neutral, 'voiced_seconds': .4}, preceding, '1', 300, rms)['status'], 'review')
         self.assertEqual(acoustic.decide_neutral(neutral, preceding, '1', 300, np.ones(75) * .1)['status'], 'review')
+        full_fall = {**neutral, 'curves': {method: np.geomspace(320, 130, 17).tolist() for method in acoustic.METHODS}}
+        self.assertEqual(acoustic.decide_neutral(full_fall, preceding, '1', 300, rms)['status'], 'review')

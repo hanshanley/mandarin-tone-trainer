@@ -654,12 +654,17 @@ test('neutral tone has a contextual example but cannot be forged as a fifth isol
   };
   const recording={...native,word:neutralWord.word,audio_path:'audio/audio_cmn/neutral/neutral.mp3'};
   const assessed=acousticApproval(Review.nativeDescriptor(neutralWord,recording));
+  assessed.evidence.neutral_lexicon='CC-CEDICT';
+  assessed.evidence.neutral_lexicon_sha256='c'.repeat(64);
+  assessed.evidence.neutral_lexical_reading=['ma1','ma5'];
   assessed.evidence.comparison_support[1]=null;
   assessed.evidence.tones[1]={
     status:'screened',expected:'N',votes:{pyin:'N',praat:'N',world:'N'},
     start:.6,end:.75,voiced_seconds:.15,method:'contextual-neutral-reduction-1',
     prosody:{preceding_tone:'1',duration_ratio:.3,intensity_ratio:.4,
-      pitch_ratios:{pyin:.6,praat:.61,world:.6}},
+      pitch_ratios:{pyin:.6,praat:.61,world:.6},
+      pitch_ranges:{pyin:[.58,.62],praat:[.59,.63],world:[.58,.62]},
+      lexical_votes:{pyin:null,praat:null,world:null}},
   };
   const automatic=[...automaticComparisons(),assessed];
   const app=await appHarness({recording,importedWords:[neutralWord],acousticApprovals:automatic});
@@ -669,9 +674,11 @@ test('neutral tone has a contextual example but cannot be forged as a fifth isol
   assert.equal(app.played.length,2);
   for(const edit of [
     entry=>delete entry.evidence.tones[1].prosody,
+    entry=>delete entry.evidence.neutral_lexical_reading,
     entry=>entry.evidence.tones[1].prosody.duration_ratio=1.1,
     entry=>entry.evidence.tones[1].prosody.intensity_ratio=1.1,
     entry=>entry.evidence.tones[1].prosody.pitch_ratios.pyin=1.4,
+    entry=>entry.evidence.tones[1].prosody.lexical_votes.pyin='4',
     entry=>entry.evidence.comparison_support[1]={key:'ma5',audio_path:recording.audio_path,sha256:nativeHash},
   ]){
     const invalid=structuredClone(assessed);edit(invalid);
@@ -679,4 +686,13 @@ test('neutral tone has a contextual example but cannot be forged as a fifth isol
   }
   const standalone=acousticApproval(Review.comparisonDescriptor('ma5',recording));
   assert.throws(()=>Review.validateApproval(standalone),/comparison label/);
+});
+
+test('corpus coverage requires all four lexical tones and contextual neutral',async()=>{
+  const {requireToneCoverage}=await import('../scripts/review_audio.mjs');
+  requireToneCoverage({toneCoverage:{1:10,2:10,3:10,4:10,N:1}});
+  for(const tone of ['1','2','3','4','N']){
+    const coverage={1:10,2:10,3:10,4:10,N:10};coverage[tone]=0;
+    assert.throws(()=>requireToneCoverage({toneCoverage:coverage}),/lacks usable tone categories/);
+  }
 });

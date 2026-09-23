@@ -37,7 +37,7 @@ ledger and their audio is not packaged.
 
 This is **not a mathematical guarantee of 100% pronunciation accuracy**.
 F0, recognition, and alignment can all fail. Ambiguous contours, recognition
-conflicts, neutral-tone reductions without a dedicated prosodic model, and
+conflicts, unsupported neutral-tone reductions, and
 single-character polyphonic readings without an explicit matching phonetic ASR
 spelling are withheld. Do not label
 machine screening as human review.
@@ -111,6 +111,21 @@ Known bad recordings remain quarantined. `--activate-imported` changes only
 pending or previously machine-screened standalone imports; explicit rejections
 and contextual sentence recordings are not promoted. Human-only overrides
 remain available for genuinely unresolved exceptions.
+
+### All five tone categories
+
+The usable corpus and distributable build must each contain tones 1, 2, 3, 4,
+and neutral (`N`); setup/build validation fails if any category is absent.
+This is coverage **across items**, not an assertion that every syllable has all
+five natural pronunciations.
+
+Neutral admission additionally requires an independently attested CC-CEDICT
+neutral reading, a screened full-tone anchor in the same word, reliable pitch
+tracks, clear duration/intensity reduction, and pitch consistent with the
+preceding tone. A lexical neutral marker alone is not sufficient. The neutral
+button plays a checked **whole-word contextual example** and states which
+syllable to listen for; no artificial standalone “fifth-tone” recording is
+generated.
 
 ## Optional listening review and exception resolution
 

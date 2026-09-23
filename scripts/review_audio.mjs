@@ -156,6 +156,7 @@ export function practiceInventory(data, index) {
   const audio = new Set();
   const eligibleWords = [];
   const recordingLabelPairs = [];
+  const toneCoverage = Object.fromEntries(['1','2','3','4','N'].map(tone=>[tone,0]));
   for (const word of data.words) {
     const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
       AudioReview.nativeApproval(index, word, recording)
@@ -171,14 +172,23 @@ export function practiceInventory(data, index) {
         AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
           data.quality, data.publicRecordings, index, mode))));
     eligibleWords.push(word.id);
-    for (const recording of natives) recordingLabelPairs.push({ word_id: word.id, audio_path: recording.audio_path });
+    for (const recording of natives) {
+      recordingLabelPairs.push({ word_id: word.id, audio_path: recording.audio_path });
+      const pattern=recording.surface_pattern||word.default_surface_pattern||word.lexical_pattern;
+      for(const tone of new Set(pattern.split('-')))toneCoverage[tone]++;
+    }
     for (const recording of [...natives, ...comparisons.filter(Boolean)]) audio.add(recording.audio_path);
     for(const base of word.pinyin_syllables||[]){
       const neutral=AudioReview.neutralSelection(index,base);
       if(neutral)audio.add(neutral.audio_path);
     }
   }
-  return { eligibleWords, recordingLabelPairs, audio };
+  return { eligibleWords, recordingLabelPairs, audio, toneCoverage };
+}
+
+export function requireToneCoverage(inventory) {
+  const missing=['1','2','3','4','N'].filter(tone=>!(inventory.toneCoverage[tone]>0));
+  if(missing.length)throw new Error(`Practice corpus lacks usable tone categories: ${missing.join(', ')}`);
 }
 
 export function coverageReport(data, index, decisions = null) {
@@ -264,13 +274,7 @@ export function coverageReport(data, index, decisions = null) {
     },
     vocabulary: { total: data.words.length, ...statuses },
     initial_recording_examples: inventory.recordingLabelPairs.length,
-    eligible_tone_coverage: Object.fromEntries(['1','2','3','4','N'].map(tone=>[
-      tone,inventory.recordingLabelPairs.filter(pair=>{
-        const word=data.words.find(word=>word.id===pair.word_id);
-        const recording=data.recordings.find(recording=>recording.audio_path===pair.audio_path);
-        return (recording.surface_pattern||word.default_surface_pattern||word.lexical_pattern).split('-').includes(tone);
-      }).length,
-    ])),
+    eligible_tone_coverage: inventory.toneCoverage,
     initial_audio_files: new Set(inventory.recordingLabelPairs.map(pair => pair.audio_path)).size,
     reachable_audio_files: inventory.audio.size,
     imported_audio_files_used: [...inventory.audio].filter(relative => relative.startsWith('audio/mandarin_native/')).length,

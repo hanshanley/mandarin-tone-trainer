@@ -32,7 +32,8 @@ definition, and expected spoken-tone pattern.
 ### Listen without visual hints
 
 **Native** playback uses a recording of the complete word. The answer stays
-hidden until you choose a tone for every syllable.
+hidden until you choose a tone for every syllable. Word excerpts retain their
+source context, shown after the answer so contextual tone changes are explicit.
 
 ### Compare tones directly
 
@@ -41,6 +42,8 @@ Tone buttons use screened isolated-syllable examples when available. Switch
 Only recordings with qualifying acoustic evidence or explicit listening
 approval can play. Clear single-syllable word recordings can supply a fallback;
 unavailable alternatives remain selectable answers without playing unsafe audio.
+Neutral tone is demonstrated in a checked whole word, with the relevant
+syllable identified, rather than an invented isolated fifth-tone clip.
 
 ### Practice your pronunciation
 

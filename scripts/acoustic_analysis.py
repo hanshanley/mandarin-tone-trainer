@@ -251,11 +251,18 @@ def decide_neutral(measured, preceding, preceding_tone, high_reference, rms):
                 'duration_ratio': duration_ratio, 'intensity_ratio': intensity_ratio}
     votes = {}
     pitch_ratios = {}
+    pitch_ranges = {}
+    lexical_votes = {}
     for method, curve in measured['curves'].items():
         ratio = float(np.median(curve)) / high_reference
         pitch_ratios[method] = ratio
-        context_fit = .75 <= ratio <= 1.2 if preceding_tone == '3' else .35 <= ratio <= .85
-        votes[method] = 'N' if context_fit else None
+        low, high = np.quantile(curve, [.1, .9]) / high_reference
+        pitch_ranges[method] = [float(low), float(high)]
+        minimum, maximum = (.75, 1.2) if preceding_tone == '3' else (.35, .85)
+        lexical = classify_curve(curve, high_reference)
+        lexical_votes[method] = lexical
+        context_fit = minimum <= low <= high <= maximum
+        votes[method] = 'N' if context_fit and lexical not in ('2', '3', '4') else None
     if sum(vote == 'N' for vote in votes.values()) < 2:
         return {'status': 'review', 'reason': 'neutral pitch is unresolved in its tonal context', 'votes': votes}
     return {
@@ -266,5 +273,7 @@ def decide_neutral(measured, preceding, preceding_tone, high_reference, rms):
             'preceding_tone': preceding_tone, 'duration_ratio': round(duration_ratio, 6),
             'intensity_ratio': round(intensity_ratio, 6),
             'pitch_ratios': {method: round(value, 6) for method, value in pitch_ratios.items()},
+            'pitch_ranges': {method: [round(value, 6) for value in values] for method, values in pitch_ranges.items()},
+            'lexical_votes': lexical_votes,
         },
     }

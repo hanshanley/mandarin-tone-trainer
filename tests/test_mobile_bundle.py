@@ -74,6 +74,29 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         if not ledger['approvals'] and not acoustic['approvals']:
             self.assertEqual(bundled, set())
 
+    def test_real_corpus_covers_five_tones_and_new_word_lengths(self):
+        output = subprocess.check_output(
+            ['node', '--input-type=module', '-e', """
+import {loadReviewData,validateLedger,practiceInventory,requireToneCoverage} from './scripts/review_audio.mjs';
+const data=loadReviewData(), index=validateLedger(data), inventory=practiceInventory(data,index);
+requireToneCoverage(inventory);
+requireToneCoverage(practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false})));
+const words=new Map(data.words.map(word=>[word.id,word]));
+const recordings=new Map(data.recordings.map(recording=>[recording.audio_path,recording]));
+const pairs=inventory.recordingLabelPairs.map(pair=>({word:words.get(pair.word_id),recording:recordings.get(pair.audio_path)}));
+process.stdout.write(JSON.stringify({
+  neutral:inventory.toneCoverage.N,
+  newReadings:pairs.filter(pair=>pair.word.id.startsWith('MN-')).length,
+  characterExcerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'&&pair.word.word.length===1).length,
+  longExcerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'&&pair.word.word.length>2).length,
+}));
+"""],
+            cwd=ROOT, text=True,
+        )
+        coverage = json.loads(output)
+        for name, count in coverage.items():
+            self.assertGreater(count, 0, name)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadReviewData, validateLedger, practiceInventory } from './review_audio.mjs';
+import { loadReviewData, validateLedger, practiceInventory, requireToneCoverage } from './review_audio.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'www');
@@ -58,6 +58,7 @@ const reviewData = loadReviewData();
 const words = reviewData.words;
 const reviewIndex = validateLedger(reviewData, ROOT, { allowLocalOnly: false });
 const inventory = practiceInventory(reviewData, reviewIndex);
+requireToneCoverage(inventory);
 const referencedAudio = inventory.audio;
 
 let referencedBytes = 0;

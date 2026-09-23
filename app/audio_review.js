@@ -164,12 +164,26 @@
             ||!Number.isFinite(prosody.intensity_ratio)||prosody.intensity_ratio<=0||prosody.intensity_ratio>.9){
             throw new Error(`Neutral tone lacks contextual reduction evidence: ${entry.audio_path}`);
           }
+          const reading=evidence.neutral_lexical_reading;
+          if(evidence.neutral_lexicon!=='CC-CEDICT'||!/^[a-f0-9]{64}$/.test(evidence.neutral_lexicon_sha256||'')
+            ||!Array.isArray(reading)||reading.length!==tones.length
+            ||reading.some((value,position)=>typeof value!=='string'||value.slice(0,-1)!==expectedBases[position]
+              ||(value.slice(-1)==='5')!==(tones[position]==='N'))){
+            throw new Error(`Neutral reading lacks independent lexical evidence: ${entry.audio_path}`);
+          }
           for(const [method,vote] of Object.entries(votes)){
             if(vote!=='N')continue;
             const ratio=prosody.pitch_ratios?.[method];
             const minimum=prosody.preceding_tone==='3'?.75:.35;
             const maximum=prosody.preceding_tone==='3'?1.2:.85;
             if(!Number.isFinite(ratio)||ratio<minimum||ratio>maximum)throw new Error('Neutral pitch context mismatch');
+            const range=prosody.pitch_ranges?.[method];
+            if(!Array.isArray(range)||range.length!==2||range.some(value=>!Number.isFinite(value))
+              ||range[0]<minimum||range[1]>maximum||range[1]<range[0]
+              ||!Object.hasOwn(prosody.lexical_votes||{},method)
+              ||!['1',null].includes(prosody.lexical_votes[method])){
+              throw new Error('Neutral example has a conflicting full-tone contour');
+            }
           }
         }
       });

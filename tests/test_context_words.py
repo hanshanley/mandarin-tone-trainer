@@ -2,6 +2,7 @@ import importlib.util
 import io
 import json
 import sys
+import tempfile
 import unittest
 import wave
 from pathlib import Path
@@ -62,10 +63,11 @@ class ContextWordTests(unittest.TestCase):
 
     def test_sentence_identity_and_timestamp_count_are_both_required(self):
         row = {'tokens': [{'hanzi': '你好', 'pinyin': 'nǐhǎo'}, {'hanzi': '。', 'pinyin': ''}]}
-        evidence = {'source_text': '你好', 'recognized_text': '你好', 'timestamps_ms': [[10, 200], [220, 450]]}
+        evidence = {'source_text': '你好', 'recognized_text': '你好', 'transcript': '你好', 'exact_transcript': True,
+                    'timestamps_ms': [[10, 200], [220, 450]]}
         self.assertEqual(context_words.validated_timestamps(row, evidence, .5), evidence['timestamps_ms'])
         for edit in [
-            {'recognized_text': '你们'}, {'source_text': '你们'},
+            {'recognized_text': '你们'}, {'source_text': '你们'}, {'transcript': 'Hello 你好'},
             {'timestamps_ms': [[10, 200]]}, {'timestamps_ms': [[10, 300], [200, 450]]},
             {'timestamps_ms': [[10, 200], [220, 800]]},
         ]:
@@ -81,6 +83,24 @@ class ContextWordTests(unittest.TestCase):
         for first, last in [(-1, 10), (10, 5), (0, 1001)]:
             with self.assertRaises(ValueError):
                 context_words.crop_wave(pcm, first, last)
+
+    def test_decoder_resolves_a_symlinked_workspace_without_allowing_escape(self):
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            root = parent / 'real'
+            (root / 'audio').mkdir(parents=True)
+            (root / 'audio/source.mp3').write_bytes(b'ID3test')
+            linked = parent / 'linked'
+            linked.symlink_to(root, target_is_directory=True)
+            with patch.object(context_words, 'ROOT', linked), patch.object(
+                context_words.subprocess, 'run', return_value=SimpleNamespace(stdout=b'pcm')
+            ) as run:
+                self.assertEqual(context_words.decode_pcm('audio/source.mp3'), b'pcm')
+                self.assertEqual(run.call_count, 1)
+                with self.assertRaises(ValueError):
+                    context_words.decode_pcm('audio/../../outside.mp3')
 
     def test_unalignable_mixed_scripts_are_not_guessed(self):
         self.assertIsNone(context_words.parse_token({'hanzi': 'T恤', 'pinyin': 'T-xù'}, self.inventory))

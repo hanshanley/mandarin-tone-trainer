@@ -114,8 +114,9 @@ def sentence_text(row):
 
 
 def decode_pcm(relative_path):
-    file = (ROOT / relative_path).resolve()
-    if not file.is_relative_to(ROOT) or not relative_path.startswith('audio/'):
+    root = ROOT.resolve()
+    file = (root / relative_path).resolve()
+    if not file.is_relative_to(root) or not relative_path.startswith('audio/'):
         raise ValueError(f'Audio path escapes source corpus: {relative_path}')
     return subprocess.run(
         ['ffmpeg', '-v', 'error', '-i', str(file), '-f', 's16le', '-acodec', 'pcm_s16le',
@@ -138,7 +139,10 @@ def crop_wave(pcm, first, last):
 
 def validated_timestamps(row, evidence, duration):
     text = sentence_text(row)
-    if evidence.get('recognized_text') != text or evidence.get('source_text') != text:
+    transcript = evidence.get('transcript', '')
+    recognized = ''.join(re.findall(r'[\u3400-\u9fff]', transcript))
+    if (evidence.get('recognized_text') != text or evidence.get('source_text') != text
+            or recognized != text or re.search(r'[A-Za-z0-9]', transcript)):
         return None
     stamps = evidence.get('timestamps_ms', [])
     if len(stamps) != len(text):
@@ -317,6 +321,7 @@ def main():
                     'source_text': text, 'recognized_text': recognized,
                     'transcript': recognition.get('text', ''), 'timestamps_ms': stamps,
                     'duration': len(signal) / RATE,
+                    'exact_transcript': bool(recognized == text and not re.search(r'[A-Za-z0-9]', recognition.get('text', ''))),
                 }
                 output.write(json.dumps(result, ensure_ascii=False) + '\n')
                 output.flush()

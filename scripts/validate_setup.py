@@ -201,14 +201,17 @@ def main():
                 )
 
     node_script = """
-import {loadReviewData,validateLedger,practiceInventory} from './scripts/review_audio.mjs';
+import {loadReviewData,validateLedger,practiceInventory,requireToneCoverage} from './scripts/review_audio.mjs';
 const data=loadReviewData();
 const index=validateLedger(data);
 const inventory=practiceInventory(data,index);
 const packaged=practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false}));
+requireToneCoverage(inventory);
+requireToneCoverage(packaged);
 process.stdout.write(JSON.stringify({
   approvals:index.size,eligible:inventory.eligibleWords.length,audio:[...inventory.audio],
   packagedEligible:packaged.eligibleWords.length,packagedAudio:[...packaged.audio],
+  toneCoverage:inventory.toneCoverage,packagedToneCoverage:packaged.toneCoverage,
 }));
 """
     try:
