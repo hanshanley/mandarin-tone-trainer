@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 OPTIONAL = all(importlib.util.find_spec(name) for name in (
-    'numpy', 'scipy', 'sklearn', 'librosa', 'parselmouth', 'opencc', 'pypinyin',
+    'numpy', 'scipy', 'sklearn', 'librosa', 'parselmouth', 'pyworld', 'opencc', 'pypinyin',
 ))
 if OPTIONAL:
     with patch.object(sys, 'path', [str(ROOT / 'scripts'), *sys.path]):
@@ -54,6 +54,11 @@ class PronunciationJudgeTests(unittest.TestCase):
         self.assertEqual(metrics['brier'], 0)
         self.assertEqual(sum(bin['n'] for bin in metrics['reliability_bins']), 2)
         self.assertEqual(metrics['ece_10_bins'], 0)
+        self.assertEqual(metrics['auroc_correctness'], 1)
+        self.assertEqual(judge.probability_metrics([0, 1], [.5, .5])['auroc_correctness'], .5)
+        for labels, probabilities in [([0], [1, 0]), ([2], [.5]), ([1], [float('nan')]), ([0], [1.1])]:
+            with self.assertRaises(ValueError):
+                judge.probability_metrics(labels, probabilities)
 
     def test_high_confidence_threshold_requires_enough_correct_decisions(self):
         policy = judge.config()['decision']
@@ -63,6 +68,20 @@ class PronunciationJudgeTests(unittest.TestCase):
         self.assertIsNone(judge.choose_threshold(np.ones(400), np.ones(400), policy, 'reject'))
         self.assertEqual(judge.binomial_upper(0, 0), 1)
         self.assertGreater(judge.binomial_upper(0, 10), .05)
+
+    def test_accuracy_on_mostly_correct_speech_cannot_pass_the_error_detection_gate(self):
+        policy = judge.config()['decision']
+        misleading = {'accepted': 1000, 'accepted_error_upper_95': .03, 'false_accepts': 20}
+        bootstrap = {'accepted_error_upper_95': .04, 'false_accept_rate_upper_95': .99}
+        self.assertFalse(judge.acceptance_gate(misleading, bootstrap, 22, policy))
+        all_abstain = {'accepted': 0, 'accepted_error_upper_95': 1, 'false_accepts': 0}
+        self.assertFalse(judge.acceptance_gate(all_abstain, {
+            'accepted_error_upper_95': None, 'false_accept_rate_upper_95': None,
+        }, 100, policy))
+        supported = {'accepted': 1000, 'accepted_error_upper_95': .01, 'false_accepts': 0}
+        self.assertTrue(judge.acceptance_gate(supported, {
+            'accepted_error_upper_95': .01, 'false_accept_rate_upper_95': .01,
+        }, 100, policy))
 
     def test_portable_forest_is_not_executable_pickle_and_matches_sklearn(self):
         from sklearn.ensemble import ExtraTreesClassifier
@@ -79,6 +98,22 @@ class PronunciationJudgeTests(unittest.TestCase):
         self.assertTrue(np.isfinite(result).all())
         self.assertTrue(np.all(np.diff(result) > 0))
         self.assertTrue(np.all((result > 0) & (result < 1)))
+
+    def test_calibration_fit_is_finite_and_learns_miscalibrated_probabilities(self):
+        random = np.random.default_rng(41)
+        logits = random.normal(size=3000)
+        truth = judge.expit(.8 * logits + .6)
+        labels = (random.random(3000) < truth).astype(int)
+        raw = judge.expit(2 * logits - .3)
+        with np.errstate(all='raise'):
+            parameters = judge.fit_calibration(raw, labels)
+        self.assertGreater(parameters['coefficient'], 0)
+        self.assertLess(parameters['coefficient'], 1)
+        corrected = judge.calibrated(raw, parameters)
+        self.assertLess(judge.probability_metrics(labels, corrected)['brier'],
+                        judge.probability_metrics(labels, raw)['brier'])
+        with self.assertRaises(ValueError):
+            judge.fit_calibration(raw, np.ones(3000))
 
     def test_forced_alignment_is_not_allowed_to_drop_reference_units(self):
         with self.assertRaises(ValueError):
@@ -117,3 +152,50 @@ class PronunciationJudgeTests(unittest.TestCase):
             for unit in row['units']:
                 self.assertEqual(set(unit['labels']), set(judge.TARGETS))
                 self.assertLessEqual(set(unit['labels'].values()), {0, 1})
+
+    def test_high_probability_and_familiar_text_do_not_fake_domain_certification(self):
+        forest = [{'left': [-1], 'right': [-1], 'feature': [-2], 'threshold': [-2], 'probability': [.999]}]
+        artifact = {
+            'heads': {target: {'forest': forest, 'calibration': {'coefficient': 1, 'intercept': 0},
+                              'held_out_acceptance_gate_passed': True}
+                      for target in judge.TARGETS},
+            'feature_support': {'lower': [-1] * len(features.FEATURE_NAMES), 'upper': [1] * len(features.FEATURE_NAMES)},
+            'reference_sentences': ['他'], 'engine_provenance': {'checked': True},
+        }
+        evidence = {
+            'audio_sha256': 'a' * 64, 'reference_text': '他', 'recognition_text': '他',
+            'units': [{'features': [0] * len(features.FEATURE_NAMES), 'voiced_frames': 30,
+                       'character_start': 0, 'character_end': 1, 'expected_pinyin': ['ta1'],
+                       'start': 0, 'end': .5}],
+        }
+        with patch.object(judge, 'load_model', return_value=artifact), \
+                patch.object(judge, 'load_engines', return_value=(None, None)), \
+                patch.object(judge, 'engine_provenance', return_value={'checked': True}), \
+                patch.object(judge, 'analyze', return_value=evidence), \
+                patch.object(Path, 'read_bytes', return_value=b'model'):
+            output = judge.judge(Path('irrelevant.wav'), '他')
+        self.assertFalse(output['production_admission'])
+        self.assertEqual(output['domain'], 'unvalidated_target_domain')
+        self.assertTrue(output['reference_text_seen_in_corpus'])
+        for result in output['units'][0]['scores'].values():
+            self.assertEqual(result['status'], 'uncertain')
+            self.assertGreater(result['reference_calibrated_correctness_estimate'], .99)
+            self.assertFalse(result['calibration_transfer_verified'])
+
+    def test_saved_model_binds_reference_splits_and_evaluation(self):
+        if not judge.MODEL.exists():
+            self.skipTest('model training has not completed')
+        artifact = judge.load_model()
+        self.assertEqual(set(artifact['heads']), set(judge.TARGETS))
+        self.assertFalse(artifact['certifies_accuracy'])
+        self.assertEqual(artifact['scope'], 'diagnostic_only_until_independent_target_corpus_validation')
+        report = json.loads(judge.REPORT.read_text())
+        self.assertFalse(report['automatic_practice_admission_enabled'])
+        groups = {name: set(speakers) for name, speakers in report['speaker_splits'].items()}
+        self.assertEqual(sum(map(len, groups.values())), 49)
+        for name, group in groups.items():
+            self.assertTrue(all(not group & other for key, other in groups.items() if name != key))
+        for target, result in report['results'].items():
+            self.assertEqual(result['test_calibrated']['n'], report['coverage']['test']['measured_units'])
+            self.assertGreater(result['test_calibrated']['human_incorrect'], 0)
+            self.assertEqual(result['test_end_to_end_coverage']['unscorable_policy'], 'abstain, not pass')
