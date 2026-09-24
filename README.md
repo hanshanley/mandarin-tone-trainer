@@ -195,6 +195,11 @@ held-out-source results without treating source-label agreement as certified
 accuracy. It remains diagnostic until validated for native-library admission;
 it does not impose an additional blanket exclusion on normal practice.
 
+The [mixed-source playback improvement plan](docs/mixed-source-playback-plan.md)
+targets the remaining comparison gaps and unused direct imports while preserving
+the current practice pool. Initial word audio and individual tone examples may
+come from different sources; coverage is measured per syllable/tone slot.
+
 ## FAQ
 
 <details>
