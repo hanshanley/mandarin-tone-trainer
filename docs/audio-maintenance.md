@@ -103,6 +103,10 @@ npm run audio:mix -- --inventory .audit/native-tone-inventory.json
 # Optional independent recognition for a specific gap inventory.
 npm run audio:identity-gaps -- --inventory .audit/native-tone-inventory.json \
   --gap-keys .audit/comparison-coverage-gaps-for-plan.json
+
+# Check imported single-syllable alternatives even when another source fills the slot.
+npm run audio:identity-gaps -- --inventory .audit/native-tone-inventory.json \
+  --scope imported-singles
 npm run audio:mix -- --inventory .audit/native-tone-inventory.json
 
 # Compare against a saved pre-change practice inventory.
@@ -118,15 +122,24 @@ in `data/mixed_audio_coverage.json` accounts for every imported
 standalone file, actual selection under every comparison voice, original
 coverage, added roles and unresolved slots with candidate-specific reasons.
 
+The report's `imported_single_syllable_audit` counts physical imported files,
+not their multiple homophonous vocabulary mappings. It distinguishes actual
+use, missing phonetic confirmation, model confidence/signal uncertainty, model
+disagreement and neutral syllables needing word context. Its source-error
+count is deliberately unknown: none of these automated categories establishes
+that a source annotation is incorrect. The imported-singles recognition scope
+does not lower the identity, tone or signal thresholds; it fixes the earlier
+gap-only selection that skipped alternative voices for already covered keys.
+
 Measured against commit `61e4066`, the local-use expansion preserves all 1,736
-previously usable entries and 1,814 initial examples. It supplies 2,250 entries
-and 2,445 initial examples; Mandarin Native contributes 408 of those examples
-using 184 distinct files, plus 136 files selected for comparisons across the
+previously usable entries and 1,814 initial examples. It supplies 2,258 entries
+and 2,455 initial examples; Mandarin Native contributes 416 of those examples
+using 187 distinct files, plus 139 files selected for comparisons across the
 three voice preferences. These file-role counts overlap and must not be added.
 Of the original 1,192 comparison slots, 880 are playable (44 more than before);
 102 original families now have all four tones, versus 74 before. The original
 pool still has 312 unresolved slots. Including newly usable syllables, the
-expanded pool has 922 playable slots out of 1,272 and 350 unresolved slots.
+expanded pool has 923 playable slots out of 1,276 and 353 unresolved slots.
 All 869 imported standalone files are accounted for.
 
 The follow-on word recovery preserves the mixed bank and uses its references
@@ -136,6 +149,14 @@ pitch, alignment or neutral-tone checks. A word can rely on a comparison from
 either source; if its supporting comparison is local-only, that word's new
 assessment is also local-only. A redistributable reference is preferred where
 one qualifies.
+
+The focused imported-single pass checked eight previously skipped identity
+candidates and recovered direct `hao4`, `li3` and `shuo1` alternatives. Their
+corroboration also enabled original-source counterparts: eight additional
+entries and ten initial choices in total. Of 270 mapped imported single-syllable
+files, 258 have full-tone labels and 12 require neutral-tone word context;
+140 files are now used in at least one role. The other full-tone files remain
+unresolved, not independently established errors.
 
 The new models learn from uncertain source annotations. Source agreement plus
 independent-recording corroboration is **not independently certified 100%

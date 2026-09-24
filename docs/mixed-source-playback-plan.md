@@ -9,23 +9,29 @@ preserved; this document's baseline describes the pre-change state.
 
 | Measure | Before | After |
 |---|---:|---:|
-| Usable vocabulary entries | 1,736 | 2,250 |
-| Initial word/recording examples | 1,814 | 2,445 |
-| Imported initial-playback files | 119 | 184 |
-| Imported comparison files across voice preferences | 3 | 136 |
+| Usable vocabulary entries | 1,736 | 2,258 |
+| Initial word/recording examples | 1,814 | 2,455 |
+| Imported initial-playback files | 119 | 187 |
+| Imported comparison files across voice preferences | 3 | 139 |
 | Playable slots for the original 298 syllables | 836 / 1,192 | 880 / 1,192 |
 | Original syllables with all four comparison tones | 74 | 102 |
 
 No baseline entry or initial recording pair was removed. Forty-four original
 gaps were filled; the remaining 312 are explicit in the candidate report.
-Newly usable entries introduce another 20 syllables, so expanded-pool coverage
-is reported separately: 922 of 1,272 slots, with 350 unresolved.
+Newly usable entries introduce another 21 syllables, so expanded-pool coverage
+is reported separately: 923 of 1,276 slots, with 353 unresolved.
 
 Whole-word screening now consumes the same validated mixed comparison bank
 as playback and retains the supplemental assessments when rebuilt. This
 follow-on fix recovers another 84 entries and 88 initial choices beyond the
 first expansion, without lowering tone thresholds. Staged updates preserve
 every current initial choice in both local-use and redistributable builds.
+
+Independent identity checks now also cover imported single-syllable alternatives
+when an original-source clip already fills the comparison slot. This recovered
+another eight entries and ten initial choices. The report distinguishes model
+uncertainty/disagreement from established source errors rather than equating
+withheld recordings with incorrect pronunciations.
 
 The additional evidence includes family/decoded-duplicate-held-out isolated
 predictions, independent-source corroboration, targeted independent phonetic

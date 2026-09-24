@@ -15,12 +15,33 @@ AVAILABLE = all(importlib.util.find_spec(name) for name in (
 if AVAILABLE:
     with patch.object(sys, 'path', [str(ROOT / 'scripts'), *sys.path]):
         import build_mixed_audio_bank as mixed
-        from verify_comparison_identity import no_primary_contradiction, StableWhisperFeatures
+        from verify_comparison_identity import identity_candidates, no_primary_contradiction, StableWhisperFeatures
     import numpy as np
 
 
 @unittest.skipUnless(AVAILABLE, 'optional audio audit dependencies unavailable')
 class MixedAudioBankTests(unittest.TestCase):
+    def test_imported_identity_checks_do_not_require_an_unfilled_comparison_slot(self):
+        row = {'id': 'example', 'audio_path': 'audio/mandarin_native/bi3.mp3', 'sha256': 'a',
+               'quarantined': False, 'source': 'mandarin_native', 'syllables': ['bi'], 'weak_training_label': '3'}
+        result = {'reason': 'identity_unresolved', 'predicted_tone': '3', 'expected_probability': .99,
+                  'margin': .9, 'quality': {'jointly_voiced_frames': 20, 'usable_trackers': 3,
+                                          'tracker_difference': .1, 'clipped_fraction': 0}}
+        a = {'sha256': 'a', 'text': 'b', 'recognized_pinyin': [], 'evidence_version': mixed.ASR_VERSION}
+        b = {**a, 'evidence_version': mixed.PREPARED_ASR_VERSION}
+        raw, prepared = {row['audio_path']: a}, {row['audio_path']: b}
+        self.assertEqual(identity_candidates([row], {'example': result}, raw, prepared, gap_keys=set()), {})
+        self.assertEqual(identity_candidates([row], {'example': result}, raw, prepared, source='mandarin_native'),
+                         {row['audio_path']: row})
+        for changed in [{**row, 'quarantined': True}, {**row, 'source': 'audio_cmn'}]:
+            self.assertEqual(identity_candidates([changed], {'example': result}, raw, prepared, source='mandarin_native'), {})
+        for changed in [{**result, 'predicted_tone': '2'}, {**result, 'expected_probability': .8},
+                        {**result, 'quality': {**result['quality'], 'usable_trackers': 1}}]:
+            self.assertEqual(identity_candidates([row], {'example': changed}, raw, prepared), {})
+        for changed in [{**b, 'sha256': 'stale'}, {**b, 'evidence_version': 'stale'},
+                        {**b, 'text': 'pi', 'recognized_pinyin': []}]:
+            self.assertEqual(identity_candidates([row], {'example': result}, raw, {row['audio_path']: changed}), {})
+
     def test_whole_word_admission_requires_stable_non_neutral_unseen_audio(self):
         row = {'kind': 'word', 'source': 'mandarin_native', 'syllables': ['ma', 'ma'],
                'quarantined': False, 'weak_training_label': '1-2', 'sha256': 'a', 'label_identity': 'reading'}

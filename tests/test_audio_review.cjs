@@ -854,6 +854,27 @@ test('staged audio updates preserve every usable initial recording, not just tot
   assert.throws(()=>validateAudioUpdate({ledger:restricted,imported},data),/redistributable audio update removed/);
 });
 
+test('imported single-syllable reporting counts files rather than homophones and does not invent errors',async()=>{
+  const {importedSingleAudit}=await import('../scripts/report_mixed_audio_coverage.mjs');
+  const row={source:'mandarin_native',syllables:['ma'],weak_training_label:'2',quarantined:false,audio_path:'audio/mandarin_native/ma2.mp3'};
+  const records=[{...row,id:'one'},{...row,id:'homophone'},
+    {...row,id:'neutral',weak_training_label:'N',audio_path:'audio/mandarin_native/ma.mp3'},
+    {...row,id:'used',audio_path:'audio/mandarin_native/other.mp3'}];
+  const outcome={status:'unresolved',reason:'source_label_and_blind_tone_disagree',
+    predicted_tone:'3',expected_probability:.3,margin:.1,identity_supported:true};
+  const imports=[...new Set(records.map(record=>record.audio_path))].map(audio_path=>({
+    audio_path,used_for_initial:audio_path.endsWith('/other.mp3'),used_for_comparison:false,available_comparison_keys:[],
+  }));
+  const audit=importedSingleAudit({records},{one:outcome,homophone:outcome,used:outcome},imports);
+  assert.equal(audit.total_files,3);
+  assert.equal(audit.full_tone_files,2);
+  assert.equal(audit.used_in_either_role,1);
+  assert.equal(audit.files[0].checks.length,1);
+  assert.equal(audit.confirmed_source_error_count,null);
+  assert.deepEqual(audit.status_counts,{source_label_and_blind_tone_disagree:1,neutral_requires_word_context:1,in_use:1});
+  assert.throws(()=>importedSingleAudit({records},{},[]),/lacks imported-file metadata/);
+});
+
 function mixedComparison(){
   const selfPath='audio/mandarin_native/ma3.mp3',peerPath='audio/pinyin_public/ma3.mp3';
   function prediction(audio_path,sha256,source,decoded_sha256){

@@ -9,7 +9,7 @@ import librosa
 import numpy as np
 
 from audit_native_readings import recognized_pinyin
-from collect_acoustic_evidence import decoded_bases, prepare_recognition, read_jsonl
+from collect_acoustic_evidence import ASR_VERSION, PREPARED_ASR_VERSION, decoded_bases, prepare_recognition, read_jsonl
 from native_tone_labels import safe_audio, verify_inventory
 from runtime_data import ROOT
 
@@ -51,6 +51,30 @@ def no_primary_contradiction(raw, prepared, expected):
                for bases in (decoded_bases(raw), decoded_bases(prepared)))
 
 
+def identity_candidates(rows, outcomes, raw, prepared, *, gap_keys=None, source=None):
+    candidates = {}
+    for row in rows:
+        if row['quarantined'] or len(row['syllables']) != 1 or (source and row['source'] != source):
+            continue
+        key = row['syllables'][0] + row['weak_training_label']
+        result = outcomes.get(row['id'], {})
+        if (gap_keys is not None and key not in gap_keys) or result.get('reason') != 'identity_unresolved':
+            continue
+        quality = result.get('quality', {})
+        if (result.get('predicted_tone') != row['weak_training_label']
+                or result.get('expected_probability', 0) < .95 or result.get('margin', 0) < .25
+                or quality.get('jointly_voiced_frames', 0) < 12 or quality.get('usable_trackers', 0) < 2
+                or quality.get('tracker_difference', float('inf')) > 2 or quality.get('clipped_fraction', 1) > .01):
+            continue
+        a, b = raw.get(row['audio_path']), prepared.get(row['audio_path'])
+        if (not a or not b or a.get('sha256') != b.get('sha256') or a.get('sha256') != row['sha256']
+                or a.get('evidence_version') != ASR_VERSION or b.get('evidence_version') != PREPARED_ASR_VERSION):
+            continue
+        if no_primary_contradiction(a, b, row['syllables'][0]):
+            candidates[row['audio_path']] = row
+    return candidates
+
+
 def main():
     from faster_whisper import WhisperModel
     from faster_whisper.utils import download_model
@@ -59,28 +83,18 @@ def main():
     parser.add_argument('--inventory', type=Path, required=True)
     parser.add_argument('--outcomes', type=Path, default=ROOT / '.audit/mixed-audio-cross-fit.json')
     parser.add_argument('--gap-keys', type=Path, default=ROOT / '.audit/comparison-coverage-gaps-for-plan.json')
+    parser.add_argument('--scope', choices=('comparison-gaps', 'imported-singles'), default='comparison-gaps',
+                        help='also check imported single syllables whose tone slot is already covered by another source')
     args = parser.parse_args()
     inventory = verify_inventory(json.loads(args.inventory.read_text()))
-    outcomes = json.loads(args.outcomes.read_text())['outcomes']
-    keys = {row['key'] for row in json.loads(args.gap_keys.read_text())}
+    outcome_data = json.loads(args.outcomes.read_text())
+    if outcome_data['inventory_sha256'] != inventory['inventory_sha256']:
+        raise ValueError('Independent recognition outcomes do not match the current inventory')
+    keys = {row['key'] for row in json.loads(args.gap_keys.read_text())} if args.scope == 'comparison-gaps' else None
     raw = read_jsonl(ROOT / '.audit/acoustic-asr.jsonl')
     prepared = read_jsonl(ROOT / '.audit/acoustic-prepared-asr.jsonl')
-    candidates = {}
-    for row in inventory['records']:
-        if row['quarantined'] or len(row['syllables']) != 1:
-            continue
-        key = row['syllables'][0] + row['weak_training_label']
-        result = outcomes.get(row['id'], {})
-        if key not in keys or result.get('reason') != 'identity_unresolved':
-            continue
-        if (result.get('predicted_tone') != row['weak_training_label']
-                or result.get('expected_probability', 0) < .95 or result.get('margin', 0) < .25):
-            continue
-        a, b = raw.get(row['audio_path']), prepared.get(row['audio_path'])
-        if not a or not b or a.get('sha256') != b.get('sha256') or a.get('sha256') != row['sha256']:
-            continue
-        if no_primary_contradiction(a, b, row['syllables'][0]):
-            candidates[row['audio_path']] = row
+    candidates = identity_candidates(inventory['records'], outcome_data['outcomes'], raw, prepared,
+                                     gap_keys=keys, source='mandarin_native' if args.scope == 'imported-singles' else None)
     model_dir = Path(download_model('small', local_files_only=True))
     model_hash = hashlib.sha256((model_dir / 'model.bin').read_bytes()).hexdigest()
     done = read_jsonl(OUTPUT)

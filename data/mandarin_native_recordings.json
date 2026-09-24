@@ -6770,8 +6770,8 @@
       "surface_pattern": null,
       "license": null,
       "rights_status": "unverified",
-      "review_status": "pending",
-      "quiz_eligible": false,
+      "review_status": "source_corroborated",
+      "quiz_eligible": true,
       "notes": "Downloaded for local review. Filename matches are candidates, not verified readings. Listening accuracy and redistribution permission are unverified.",
       "sha256": "524d99da7086a3e2f94a39ebe79ddf79342792d9b2bebb80615ab3472fa07351",
       "byte_length": 5243
@@ -9830,8 +9830,8 @@
       "surface_pattern": null,
       "license": null,
       "rights_status": "unverified",
-      "review_status": "pending",
-      "quiz_eligible": false,
+      "review_status": "source_corroborated",
+      "quiz_eligible": true,
       "notes": "Downloaded for local review. Filename matches are candidates, not verified readings. Listening accuracy and redistribution permission are unverified.",
       "sha256": "93e0af2565e93e55d08fe2745513c8a5407bb0ec45bc1a977d32ecdc4feb0342",
       "byte_length": 13627
@@ -14560,8 +14560,8 @@
       "surface_pattern": null,
       "license": null,
       "rights_status": "unverified",
-      "review_status": "pending",
-      "quiz_eligible": false,
+      "review_status": "source_corroborated",
+      "quiz_eligible": true,
       "notes": "Downloaded for local review. Filename matches are candidates, not verified readings. Listening accuracy and redistribution permission are unverified.",
       "sha256": "c1a4bdc09b051100ab9e64ef6238ed9f108a0449c868a32220e41b732b34ada2",
       "byte_length": 19479

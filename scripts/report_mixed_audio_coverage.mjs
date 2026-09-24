@@ -32,6 +32,48 @@ export function comparisonCoverage(data,index,bases){
   };
 }
 
+export function importedSingleAudit(inventory,outcomes,imports){
+  const files=new Map(),usage=new Map(imports.map(recording=>[recording.audio_path,recording]));
+  for(const row of inventory.records){
+    if(row.source!=='mandarin_native'||row.syllables.length!==1)continue;
+    if(!usage.has(row.audio_path))throw new Error('Single-syllable inventory lacks imported-file metadata');
+    if(!files.has(row.audio_path))files.set(row.audio_path,new Map());
+    const outcome=outcomes[row.id];
+    files.get(row.audio_path).set(row.syllables[0]+row.weak_training_label,{
+      key:row.syllables[0]+row.weak_training_label,source_tone:row.weak_training_label,
+      known_quarantine:row.quarantined,diagnostic_status:outcome?.status||'not_analyzed',
+      reason:outcome?.reason||null,predicted_tone:outcome?.predicted_tone||null,
+      source_tone_probability:outcome?.expected_probability??null,
+      margin:outcome?.margin??null,identity_supported:outcome?.identity_supported??null,
+      quality:outcome?.quality||null,
+    });
+  }
+  const entries=[...files].map(([audio_path,results])=>{
+    const recording=usage.get(audio_path),checks=[...results.values()];
+    const used=recording.used_for_initial||recording.used_for_comparison;
+    const reasons=[...new Set(checks.map(check=>check.reason||'missing_analysis'))];
+    const status=used?'in_use':checks.some(check=>check.known_quarantine)?'known_quarantine':
+      checks.every(check=>check.source_tone==='N')?'neutral_requires_word_context':
+      recording.available_comparison_keys.length?'eligible_not_selected':
+      checks.some(check=>check.diagnostic_status==='candidate_supported')?'awaiting_distinct_source_corroboration':
+      reasons.length===1?reasons[0]:'multiple_unresolved_checks';
+    return {audio_path,used_for_initial:recording.used_for_initial,used_for_comparison:recording.used_for_comparison,
+      status,checks};
+  });
+  const status_counts={};
+  for(const entry of entries)status_counts[entry.status]=(status_counts[entry.status]||0)+1;
+  return {
+    total_files:entries.length,
+    full_tone_files:entries.filter(entry=>entry.checks.some(check=>check.source_tone!=='N')).length,
+    used_for_initial:entries.filter(entry=>entry.used_for_initial).length,
+    used_for_comparison:entries.filter(entry=>entry.used_for_comparison).length,
+    used_in_either_role:entries.filter(entry=>entry.used_for_initial||entry.used_for_comparison).length,
+    status_counts,confirmed_source_error_count:null,
+    interpretation:'Automated uncertainty or disagreement is not proof that the source recording is wrong. No independent source-error rate is established.',
+    files:entries,
+  };
+}
+
 function main(){
   const {values}=parseArgs({options:{
     inventory:{type:'string'},outcomes:{type:'string',default:'.audit/mixed-audio-cross-fit.json'},
@@ -121,6 +163,7 @@ function main(){
       comparison_imported_files:imports.filter(row=>row.used_for_comparison).length,
       reachable_audio:practice.audio.size,tone_coverage:practice.toneCoverage},
     comparison_coverage:covered,unresolved_keys:covered.families.flatMap(family=>family.slots.filter(slot=>!slot.available).map(slot=>slot.key)),
+    imported_single_syllable_audit:importedSingleAudit(inventory,outcomes.outcomes,imports),
     imported_standalone_files:imports,independent_accuracy_verified:false,
   };
   fs.mkdirSync(path.dirname(path.resolve(values.output)),{recursive:true});
