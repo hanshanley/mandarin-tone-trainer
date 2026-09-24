@@ -172,7 +172,6 @@ def main():
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
             'data/acoustic_reviews.json',
-            'data/practice_selection.json',
             'data/build_scope.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
@@ -212,13 +211,11 @@ def main():
                     'www/data/acoustic_reviews.json is stale or includes local-only audio',
                     errors,
                 )
-            selection_path=bundle/'data/practice_selection.json'
-            if selection_path.is_file():
-                expected=read_json('data/practice_selection.json')
-                expected['entries']=[entry for entry in expected['entries']
-                                     if local_bundle or entry['distribution_scope']!='local_only']
-                require(json.loads(selection_path.read_text(encoding='utf-8'))==expected,
-                        'www/data/practice_selection.json is stale or has the wrong distribution scope',errors)
+            require(
+                not (bundle / 'data/practice_selection.json').exists(),
+                'experimental agreement selection must not be packaged as a runtime gate',
+                errors,
+            )
 
     node_script = """
 import {loadReviewData,validateLedger,practiceInventory,requireToneCoverage} from './scripts/review_audio.mjs';
@@ -241,7 +238,7 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         selections = json.loads(output)
-        print(f"Agreement practice: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; {selections['approvals']} selected audio assessments")
+        print(f"Screened direct practice: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; {selections['approvals']} audio assessments")
         if not args.skip_mobile:
             expected_audio=selections['audio'] if local_bundle else selections['packagedAudio']
             bundled_audio = {
@@ -251,7 +248,7 @@ process.stdout.write(JSON.stringify({
             }
             require(
                 bundled_audio == set(expected_audio),
-                'mobile audio does not match the selected agreement inventory and build scope',
+                'mobile audio does not match the screened direct inventory and build scope',
                 errors,
             )
             for relative in expected_audio:

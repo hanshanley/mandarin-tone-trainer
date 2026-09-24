@@ -14,11 +14,12 @@
 
 ## Learn tones from real words
 
-**Practice uses a selected agreement set, not every downloaded item.**
-Each item needs its supplied spoken-tone label to agree with a label-blind
-prediction, matching syllable identity and the existing acoustic checks.
-Correct-tone comparison references must qualify too. Unresolved comparison clips
-are withheld; missing alternative examples do not disable a checked question.
+**Practice uses the acoustically checked direct-recording library.**
+Items require matching syllable identity, usable spoken-tone evidence, and
+qualifying correct-tone references. The experimental native-agreement model is
+diagnostic: its uncertainty does not silently remove otherwise eligible items.
+Unresolved comparison clips are withheld; missing alternative examples do not
+disable a checked question.
 Audio hashes are checked before the question is shown. These checks reduce
 errors; they are not a guarantee of 100% pronunciation accuracy.
 
@@ -141,9 +142,9 @@ One-, two-, and **3+ syllable** practice uses qualifying direct recordings.
 Standalone one-character imports can also supply local tone-button comparisons.
 Previously generated sentence excerpts are retained for investigation only;
 they are excluded from practice, normal setup, and the mobile bundle.
-Only lengths represented in the current agreement-selected set appear in the
-syllable selector. The current selection supports one- and two-syllable items;
-longer words are not enabled without matching model evidence.
+Only lengths represented in the usable pool appear in the syllable selector.
+One-, two-, and longer-word exercises are available when their direct recordings
+meet the acoustic checks.
 
 Large audio assets are intentionally excluded from Git. The bootstrap
 recreates the original corpora from pinned upstream revisions and restores
@@ -157,10 +158,10 @@ not certify correctness. Machine decisions live in
 attestations remain separate in [`data/audio_reviews.json`](data/audio_reviews.json).
 Ambiguous or contradictory audio is withheld rather than assigned guessed labels.
 
-`data/practice_selection.json` is the final practice allowlist. It requires both
-the acoustic assessment and supplied-label/model agreement; an older acoustic
-pass alone cannot enter the quiz. Normal setup restores this committed selection
-without retraining models.
+`data/practice_selection.json` is a historical diagnostic preview, not a runtime
+allowlist. The app and mobile bundle do not load it. Normal setup restores the
+acoustically checked library without retraining or imposing experimental
+agreement-model exclusions.
 
 ## Development
 
@@ -187,8 +188,8 @@ The [native tone-label validator](docs/native-tone-validator.md) is the separate
 label-aware workflow for the direct-recording library. It makes label-blind
 audio predictions, keeps original labels as uncertain hypotheses, and reports
 held-out-source results without treating source-label agreement as certified
-accuracy. A conservative intersection of agreement and acoustic checks is used
-for practice; independent gold certification remains a separate, unfulfilled claim.
+accuracy. It remains diagnostic until validated for native-library admission;
+it does not impose an additional blanket exclusion on normal practice.
 
 ## FAQ
 

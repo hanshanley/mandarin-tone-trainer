@@ -47,14 +47,13 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
             'data/acoustic_reviews.json',
-            'data/practice_selection.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
             self.assertGreater(path.stat().st_size, 0, relative_path)
-            if relative_path in ('data/acoustic_reviews.json','data/practice_selection.json'):
+            if relative_path == 'data/acoustic_reviews.json':
                 continue
             source = ROOT / relative_path if relative_path.startswith('data/') else ROOT / 'app' / relative_path
             self.assertEqual(path.read_bytes(), source.read_bytes(), f'stale bundled {relative_path}')
@@ -74,6 +73,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         }
         self.assertEqual(bundled, self.expected_audio)
         self.assertFalse((self.bundle / 'data/context_word_recordings.json').exists())
+        self.assertFalse((self.bundle / 'data/practice_selection.json').exists())
         self.assertFalse(any('mandarin_native/excerpts/' in path.as_posix() for path in bundled))
         ledger = json.loads((ROOT / 'data/audio_reviews.json').read_text())
         acoustic = json.loads((ROOT / 'data/acoustic_reviews.json').read_text())
@@ -92,9 +92,13 @@ const recordings=new Map(data.recordings.map(recording=>[recording.audio_path,re
 const pairs=inventory.recordingLabelPairs.map(pair=>({word:words.get(pair.word_id),recording:recordings.get(pair.audio_path)}));
 process.stdout.write(JSON.stringify({
   neutral:inventory.toneCoverage.N,
+  localEntries:inventory.eligibleWords.length,
+  packagedEntries:practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false})).eligibleWords.length,
+  importedFiles:[...inventory.audio].filter(path=>path.startsWith('audio/mandarin_native/')).length,
   newReadings:pairs.filter(pair=>pair.word.id.startsWith('MN-')).length,
   characters:pairs.filter(pair=>pair.word.word.length===1).length,
   twoCharacterWords:pairs.filter(pair=>pair.word.word.length===2).length,
+  longWords:pairs.filter(pair=>pair.word.pinyin_syllables.length>=3).length,
   excerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'||pair.recording.source_segment).length,
 }));
 """],
@@ -102,16 +106,21 @@ process.stdout.write(JSON.stringify({
         )
         coverage = json.loads(output)
         self.assertEqual(coverage.pop('excerpts'), 0)
+        self.assertGreaterEqual(coverage.pop('localEntries'), 1500,
+                                'Unexpected practice collapse; investigate before narrowing the pool')
+        self.assertGreaterEqual(coverage.pop('packagedEntries'), 1400)
+        self.assertGreaterEqual(coverage.pop('importedFiles'), 100)
         for name, count in coverage.items():
             self.assertGreater(count, 0, name)
 
-    def test_distributable_bundle_filters_personal_imports_and_preserves_selection(self):
+    def test_distributable_bundle_filters_personal_imports_without_experimental_gate(self):
         scope=json.loads((self.bundle/'data/build_scope.json').read_text())
         self.assertEqual(scope['scope'],'redistributable')
-        selection=json.loads((self.bundle/'data/practice_selection.json').read_text())
-        self.assertTrue(selection['entries'])
-        self.assertTrue(all(entry['distribution_scope']!='local_only' for entry in selection['entries']))
-        self.assertFalse(selection['accuracy_certified'])
+        acoustic=json.loads((self.bundle/'data/acoustic_reviews.json').read_text())
+        self.assertTrue(acoustic['approvals'])
+        self.assertTrue(all(entry['distribution_scope']!='local_only' for entry in acoustic['approvals']))
+        self.assertFalse(acoustic['certifies_accuracy'])
+        self.assertFalse((self.bundle/'data/practice_selection.json').exists())
 
 
 if __name__ == '__main__':

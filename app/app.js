@@ -89,12 +89,8 @@ async function load(){
   if(!reviewResponse.ok)throw new Error(`Listening approvals failed: HTTP ${reviewResponse.status}`);
   const acousticResponse=await fetch('../data/acoustic_reviews.json',{cache:'no-store'});
   if(!acousticResponse.ok)throw new Error(`Acoustic screening data failed: HTTP ${acousticResponse.status}`);
-  const selectionResponse=await fetch('../data/practice_selection.json',{cache:'no-store'});
-  if(!selectionResponse.ok)throw new Error(`Practice selection failed: HTTP ${selectionResponse.status}`);
-  const practiceSelection=await selectionResponse.json();
-  if(!practiceSelection)throw new Error('Practice selection is missing');
   audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{
-    sourceRecordings:recordings,sourceWords:words,practiceSelection,
+    sourceRecordings:recordings,sourceWords:words,
   });
   $('progress').textContent='';
   rebuildIndex();

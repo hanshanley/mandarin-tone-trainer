@@ -81,7 +81,7 @@ export function selectAgreements(acoustic,inventory,predictions,options){
 
 function main(){
   const {values}=parseArgs({options:{
-    inventory:{type:'string'},predictions:{type:'string'},output:{type:'string',default:'data/practice_selection.json'},
+    inventory:{type:'string'},predictions:{type:'string'},output:{type:'string',default:'.audit/agreement-selection-preview.json'},
   }});
   if(!values.inventory||!values.predictions)throw new Error('--inventory and --predictions are required');
   const inventory=JSON.parse(fs.readFileSync(values.inventory,'utf8'));
@@ -126,7 +126,7 @@ function main(){
   fs.mkdirSync(path.dirname(output),{recursive:true});
   fs.writeFileSync(output+'.part',JSON.stringify(selection,null,2)+'\n');
   fs.renameSync(output+'.part',output);
-  console.log(`Agreement selection: ${native.length} native recording/readings; ${selected.length-native.length} comparisons; both sources; all five tones.`);
+  console.log(`Diagnostic agreement preview: ${native.length} native recording/readings; ${selected.length-native.length} comparisons. This does not change runtime practice.`);
 }
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){

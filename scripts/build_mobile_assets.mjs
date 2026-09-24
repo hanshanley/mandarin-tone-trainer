@@ -18,7 +18,6 @@ const DATA_FILES = [
   'correction_audio_quality.json',
   'audio_reviews.json',
   'acoustic_reviews.json',
-  'practice_selection.json',
   'mandarin_native_recordings.json',
   'mandarin_native_words.json',
 ];
@@ -76,12 +75,6 @@ for (const file of APP_FILES) {
   fs.copyFileSync(path.join(ROOT, 'app', file), path.join(OUTPUT, file));
 }
 for (const file of DATA_FILES) {
-  if(file==='practice_selection.json'){
-    const selection={...reviewData.practiceSelection,
-      entries:reviewData.practiceSelection.entries.filter(entry=>localUse||entry.distribution_scope!=='local_only')};
-    fs.writeFileSync(path.join(OUTPUT,'data',file),JSON.stringify(selection,null,2)+'\n');
-    continue;
-  }
   if (file === 'acoustic_reviews.json') {
     const distributable = {
       ...reviewData.acousticLedger,
@@ -92,11 +85,11 @@ for (const file of DATA_FILES) {
   } else {
     fs.copyFileSync(path.join(ROOT, 'data', file), path.join(OUTPUT, 'data', file));
   }
-  fs.writeFileSync(path.join(OUTPUT,'data/build_scope.json'),JSON.stringify({
-    version:1,scope:localUse?'local_use_only':'redistributable',
-    includes_unverified_reuse_rights:localUse,
-  },null,2)+'\n');
 }
+fs.writeFileSync(path.join(OUTPUT,'data/build_scope.json'),JSON.stringify({
+  version:1,scope:localUse?'local_use_only':'redistributable',
+  includes_unverified_reuse_rights:localUse,
+},null,2)+'\n');
 for (const relativePath of referencedAudio) {
   if(AudioReview.isSentenceDerived({audio_path:relativePath}))throw new Error('Sentence audio cannot be packaged for practice');
   const targetPath = path.join(OUTPUT, relativePath);

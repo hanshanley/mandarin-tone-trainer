@@ -268,18 +268,24 @@ test('automatic evidence must agree on labels, identity, hashes and references',
   }
 });
 
-test('practice requires both acoustic checks and supplied-label/model agreement',async()=>{
+test('experimental agreement previews cannot remove screened practice items',async()=>{
   const acoustic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,native))];
   const valid=selectedPractice(acoustic);
   const app=await appHarness({acousticApprovals:acoustic,practiceSelection:valid});
   assert.equal(app.run('questionVerified'),true);
   const noAgreement=selectedPractice(automaticComparisons());
-  const excluded=await appHarness({acousticApprovals:acoustic,practiceSelection:noAgreement});
-  assert.equal(excluded.run('questionVerified'),false);
-  assert.equal(excluded.played.length,0);
+  const retained=await appHarness({acousticApprovals:acoustic,practiceSelection:noAgreement});
+  assert.equal(retained.run('questionVerified'),true);
+  assert.equal(retained.played.length,1);
   const missing=await appHarness({acousticApprovals:acoustic,practiceSelection:null});
-  assert.equal(missing.played.length,0);
-  assert.match(missing.get('prompt').innerHTML,/could not load/);
+  assert.equal(missing.run('questionVerified'),true);
+  assert.equal(missing.requests.includes('../data/practice_selection.json'),false);
+  assert.equal(retained.requests.includes('../data/practice_selection.json'),false);
+});
+
+test('explicit diagnostic agreement previews still reject invalid evidence',()=>{
+  const acoustic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,native))];
+  const valid=selectedPractice(acoustic);
   for(const modify of [
     item=>item.agreement.blind_pattern='4',
     item=>item.agreement.supplied_pattern='2',
@@ -745,7 +751,7 @@ test('normal inventory and candidate exports do not depend on sentence archives'
   const {loadReviewData,candidatesFor,validateLedger,practiceInventory}=await import('../scripts/review_audio.mjs');
   const originalRead=fs.readFileSync;
   fs.readFileSync=(file,...args)=>{
-    assert.doesNotMatch(String(file),/context_word_recordings\.json|\/mandarin_native\/(?:excerpts|context)\//);
+    assert.doesNotMatch(String(file),/practice_selection\.json|context_word_recordings\.json|\/mandarin_native\/(?:excerpts|context)\//);
     return originalRead(file,...args);
   };
   try{
@@ -756,6 +762,17 @@ test('normal inventory and candidate exports do not depend on sentence archives'
     assert.equal(candidates.some(candidate=>candidate.source_segment||candidate.audio_path.includes('/excerpts/')||candidate.audio_path.includes('/context/')),false);
     assert.ok(practiceInventory(data,validateLedger(data)).eligibleWords.length>0);
   }finally{fs.readFileSync=originalRead;}
+});
+
+test('normal ledger validation ignores diagnostic selection fields',async()=>{
+  const {loadReviewData,validateLedger,practiceInventory}=await import('../scripts/review_audio.mjs');
+  const data=loadReviewData();
+  const before=practiceInventory(data,validateLedger(data));
+  const after=practiceInventory({...data,practiceSelection:{version:1,entries:[]}},
+    validateLedger({...data,practiceSelection:{version:1,entries:[]}}));
+  assert.deepEqual(after.eligibleWords,before.eligibleWords);
+  assert.deepEqual(after.recordingLabelPairs,before.recordingLabelPairs);
+  assert.deepEqual([...after.audio].sort(),[...before.audio].sort());
 });
 
 test('checked new standalone character audio is usable as a local comparison, not a sentence crop',()=>{

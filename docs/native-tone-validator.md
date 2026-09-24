@@ -12,11 +12,12 @@ priors, and a locked gold-evaluation gate.
 
 **Not established:** independently verified native-label accuracy. No human
 judgments are invented. Agreement with supplied labels is not proof that those
-labels are correct. The validator never changes practice labels, audio files, or recording eligibility
-by itself. The separately invoked `build:practice-selection` command now selects
-a conservative intersection of supplied-label agreement and the existing
-acoustic checks for the user's requested agreement-based practice policy.
-This is not a claim that the independent-gold release gate has passed.
+labels are correct. The validator never changes practice labels, audio files, or
+recording eligibility. `audit:agreement-selection` produces a diagnostic preview
+only. The app does not apply its intersection as an additional gate: doing so
+had reduced the usable library without independently establishing that the
+excluded recordings were incorrect. The independent-gold release gate has not
+passed.
 
 ## Original labels and hypotheses
 

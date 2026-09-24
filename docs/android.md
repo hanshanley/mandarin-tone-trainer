@@ -25,7 +25,7 @@ python3 scripts/bootstrap.py --verify-only
 
 ## Debug build
 
-The debug APK uses the same agreement-selected original and Mandarin Native
+The debug APK uses the same acoustically checked original and Mandarin Native
 direct word recordings as local browser practice. This is a **local-use build,
 not for redistribution**: imported audio still has unverified reuse rights.
 `data/build_scope.json` records this distinction in the bundle. No sentence cuts

@@ -8,24 +8,23 @@ audio snapshots; it does not fabricate new assessments.
 
 `data/acoustic_reviews.json` contains explicit **machine-screened** decisions.
 `data/audio_reviews.json` is reserved for optional human listening attestations.
-`data/practice_selection.json` is the final practice allowlist: the current app
-uses the intersection of acoustic checks and original-label/model agreement.
-An old assessment alone cannot admit a recording. Listening to every file is
-not required, and no source is accepted just because its filename contains a tone number.
+The current app uses these established acoustic/listening routes without adding
+the experimental native-agreement filter on top. Hashes, exact recording-specific
+labels, direct-only audio, known quarantines and correct-tone reference checks
+still apply. Listening to every file is not required, and no source is accepted
+just because its filename contains a tone number.
 
-## Build the agreement-based practice set
+## Preview experimental agreement results without reducing practice
 
 ```bash
-npm run build:practice-selection -- \
+npm run audit:agreement-selection -- \
   --inventory .audit/native-tone-inventory.json \
   --predictions .audit/native-tone-delivery-predictions.json
-npm test
-npm run android:debug
 ```
 
 Use the current matching native inventory and prediction export, not the example
 filenames if you have regenerated those artifacts. The builder verifies model/
-inventory/prediction fingerprints and audio hashes. It selects only
+inventory/prediction fingerprints and audio hashes. Its diagnostic preview selects only
 `reference_supported` cases with exact original-pattern agreement, at least 0.9
 source-agreement confidence, at least 0.15 class margin, stable perturbed
 boundaries, sufficient pitch evidence, confirmed syllable identity, no training
@@ -39,9 +38,13 @@ do not become new answers. Original labels and recordings are not rewritten.
 The builder requires examples from both original and imported sources and all
 five tone categories across the native set.
 
-Normal setup restores the committed selection. `native:score` still produces
-diagnostics and never changes practice automatically; only rebuilding the
-selection deliberately changes the quiz pool.
+The output defaults to `.audit/agreement-selection-preview.json` and does not
+change the quiz pool. The earlier `data/practice_selection.json` snapshot is
+retained only as historical evidence; it is not loaded by the app or included
+in mobile builds. Intersecting that preview with the acoustic library had
+removed most usable exercises without independently proving them wrong.
+Runtime tests now ensure experimental agreement data cannot reduce normal
+practice implicitly.
 
 ## Acoustic prerequisites
 
