@@ -31,6 +31,11 @@ not for redistribution**: imported audio still has unverified reuse rights.
 `data/build_scope.json` records this distinction in the bundle. No sentence cuts
 or stitched words are included.
 
+The **Word recordings** setting selects either source or both for initial
+whole-word playback. **Comparison voice** is independent and changes only the
+tone-button examples. Sources absent from a build are not offered as selectable
+practice options.
+
 Adding or revoking decisions requires rebuilding and reinstalling; rebuilding
 cannot change an already installed APK. External reference links still need
 internet, but selected practice recordings are bundled for offline use.

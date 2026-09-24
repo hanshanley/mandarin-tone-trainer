@@ -28,7 +28,7 @@ function resetRecordButton(){
 }
 function updateBackButton(){$('back').disabled=!quizHistory.length}
 function setPracticeControlsDisabled(disabled){
-  for(const id of ['play','back','next','syllables','correctionSource','sandhiOnly'])$(id).disabled=disabled;
+  for(const id of ['play','back','next','wordSource','syllables','correctionSource','sandhiOnly'])$(id).disabled=disabled;
   document.querySelectorAll('.tone-choice').forEach(button=>button.disabled=disabled);
   if(!disabled)updateBackButton();
 }
@@ -94,6 +94,17 @@ async function load(){
   });
   $('progress').textContent='';
   rebuildIndex();
+  updatePracticeSettings();
+}
+function updatePracticeSettings(){
+  const availableSources=new Set();
+  for(const word of words)for(const recording of qualifyingRecordingsFor(word))availableSources.add(recording.source);
+  for(const option of Array.from($('wordSource').options||[])){
+    const available=option.value==='all'||availableSources.has(option.value);
+    option.hidden=!available;
+    option.disabled=!available;
+  }
+  if($('wordSource').selectedOptions?.[0]?.disabled)$('wordSource').value='all';
   const eligible=practiceWords();
   for(const option of Array.from($('syllables').options||[])){
     const available=eligible.some(word=>{
@@ -106,11 +117,15 @@ async function load(){
   }
   if($('syllables').selectedOptions?.[0]?.disabled)$('syllables').value='all';
 }
-function recordingsFor(w){
+function qualifyingRecordingsFor(w){
   return (byWord.get(w.word)||[]).filter(r=>{
     if(r.quiz_eligible===false)return false;
     return Boolean(AudioReview.nativeApproval(audioReviews,w,r))&&hasVerifiedCorrections(w,patternFor(w,r));
   });
+}
+function recordingsFor(w){
+  const source=$('wordSource').value||'all';
+  return qualifyingRecordingsFor(w).filter(recording=>source==='all'||recording.source===source);
 }
 function nativePlayback(w,r){
   const approval=AudioReview.nativeApproval(audioReviews,w,r);
@@ -255,7 +270,9 @@ async function next(play=false,remember=true){
     current=null; currentRec=null; currentNative=null;
     $('prompt').innerHTML=eligible.length
       ?'<div class="muted">No exercises match these filters.</div><p>Try another syllable setting or turn off Sandhi only.</p>'
-      :'<div class="muted">No exercises are available right now.</div>';
+      :($('wordSource').value&&$('wordSource').value!=='all'
+        ?'<div class="muted">No exercises are available from this source with the current settings.</div><p>Choose Both sources to continue.</p>'
+        :'<div class="muted">No exercises are available right now.</div>');
     $('play').disabled=true; $('record').disabled=true;
     $('answers').innerHTML=''; $('reveal').classList.add('hidden'); updateBackButton(); return;
   }
@@ -559,6 +576,11 @@ $('play').onclick=playNative;
 $('back').onclick=()=>{back(true);scrollToPractice()};
 $('next').onclick=()=>{next(true);scrollToPractice()};
 $('syllables').onchange=()=>{quizHistory=[];next(true,false)};
+$('wordSource').onchange=async()=>{
+  quizHistory=[];
+  updatePracticeSettings();
+  await next(true,false);
+};
 $('correctionSource').onchange=async()=>{
   const state=currentSnapshot();
   stopAllAudio();
@@ -590,11 +612,16 @@ $('record').onclick=async()=>{
   stopAllAudio();
   recordingStarting=true;
   $('record').disabled=true;
+  setPracticeControlsDisabled(true);
+  const recordingQuestionId=questionLoadId;
   setAudioStatus('Waiting for microphone permission…');
   let stream=null;
   let failed=false;
   try{
     stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    if(recordingQuestionId!==questionLoadId||document.hidden){
+      throw Object.assign(new Error('The exercise changed before recording could start.'),{name:'AbortError'});
+    }
     const sessionChunks=[];
     const recorder=new MediaRecorder(stream);
     mediaStream=stream;
@@ -650,6 +677,10 @@ $('record').onclick=async()=>{
     $('record').disabled=false;
     resetRecordButton();
     setPracticeControlsDisabled(false);
+    if(error.name==='AbortError'){
+      setAudioStatus('Recording cancelled. Choose an exercise and try again.');
+      return;
+    }
     const message=error.name==='NotAllowedError'
       ?'Microphone permission was denied. Allow it in Android Settings to record yourself.'
       :error.name==='NotFoundError'

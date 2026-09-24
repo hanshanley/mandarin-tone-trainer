@@ -148,6 +148,7 @@ async function appHarness({approvals=[],acousticApprovals=[],practiceSelection,t
     if(!elements.has(id))elements.set(id,element());
     return elements.get(id);
   };
+  get('wordSource').value='all';
   get('syllables').value='all';
   get('correctionSource').value='pinyin_public';
   const publicRecordings=Object.fromEntries(['1','2','3','4'].map(tone=>[
@@ -249,6 +250,64 @@ test('automatic evidence enables actual practice without human attestations',asy
   assert.equal(app.get('coverageStatus'),null);
   assert.match(app.get('prompt').innerHTML,/Listen first/);
   assert.throws(()=>index(automatic),/acoustic ledger/);
+});
+
+test('word-source controls select original or imported recordings without changing the comparison policy',async()=>{
+  const imported={
+    ...native,source:'mandarin_native',recording_type:'word_candidate',
+    audio_path:'audio/mandarin_native/ma1.mp3',word:null,candidate_hsk_ids:[word.id],
+    rights_status:'unverified',license:null,review_status:'acoustic_screened',quiz_eligible:true,
+  };
+  const assessments=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,native)),
+    acousticApproval(Review.nativeDescriptor(word,imported),'local_only')];
+  const app=await appHarness({importedRecordings:[imported],acousticApprovals:assessments});
+  assert.equal(app.run('recordingsFor(current).length'),2);
+  const reference=app.run("correctionSelection('ma1').audio_path");
+  for(const source of ['mandarin_native','audio_cmn']){
+    app.get('wordSource').value=source;
+    await app.get('wordSource').onchange();
+    assert.equal(app.run('questionVerified'),true);
+    assert.equal(app.run('currentRec.source'),source);
+    assert.equal(app.run('recordingsFor(current).length'),1);
+    assert.equal(app.run('quizHistory.length'),0);
+    assert.equal(app.run("correctionSelection('ma1').audio_path"),reference);
+  }
+  app.get('wordSource').value='all';
+  await app.get('wordSource').onchange();
+  assert.equal(app.run('recordingsFor(current).length'),2);
+  app.run('setPracticeControlsDisabled(true)');
+  assert.equal(app.get('wordSource').disabled,true);
+});
+
+test('missing imported source never silently plays an original recording instead',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.get('wordSource').value='mandarin_native';
+  await app.run('next(false,false)');
+  assert.equal(app.run('current'),null);
+  assert.match(app.get('prompt').innerHTML,/Choose Both sources/);
+  assert.equal(app.get('play').disabled,true);
+  app.get('wordSource').value='all';
+  await app.run('next(false,false)');
+  assert.equal(app.run('questionVerified'),true);
+});
+
+test('pending microphone permission cannot attach a recording to a different question',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  let resolvePermission,stopped=0,constructed=0;
+  const permission=new Promise(resolve=>resolvePermission=resolve);
+  app.context.navigator.mediaDevices={getUserMedia:()=>permission};
+  app.context.MediaRecorder=class{constructor(){constructed++}};
+  const starting=app.get('record').onclick();
+  assert.equal(app.get('wordSource').disabled,true);
+  assert.equal(app.get('next').disabled,true);
+  await app.run('next(false,false)');
+  resolvePermission({getTracks:()=>[{stop:()=>stopped++}]});
+  await starting;
+  assert.equal(constructed,0);
+  assert.equal(stopped,1);
+  assert.equal(app.run('recordingStarting'),false);
+  assert.equal(app.get('wordSource').disabled,false);
+  assert.match(app.get('audioStatus').textContent,/Recording cancelled/);
 });
 
 test('automatic evidence must agree on labels, identity, hashes and references',()=>{

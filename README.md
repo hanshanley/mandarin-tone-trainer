@@ -38,6 +38,10 @@ hidden until you choose a tone for every syllable. Practice uses direct word
 recordings, not fragments cut from sentences or syllables stitched together.
 If your browser blocks automatic audio, tap **Native** to start.
 
+Use **Word recordings** to practice with **Both sources**, the **Original
+library**, or **Mandarin Native** specifically. This chooses the complete-word
+audio; **Comparison voice** separately controls the isolated tone examples.
+
 ### Compare tones directly
 
 Tone buttons use screened isolated-syllable examples when available. Switch

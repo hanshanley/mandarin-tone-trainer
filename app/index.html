@@ -21,6 +21,14 @@
     <section class="card" aria-label="Tone practice">
       <div id="prompt" class="prompt" aria-live="polite">Listen, then choose the tone for each syllable.</div>
       <div class="controls" aria-label="Practice settings">
+        <label class="select-control" for="wordSource">
+          <span>Word recordings</span>
+          <select id="wordSource">
+            <option value="all" selected>Both sources</option>
+            <option value="audio_cmn">Original library</option>
+            <option value="mandarin_native">Mandarin Native</option>
+          </select>
+        </label>
         <label class="select-control" for="syllables">
           <span>Syllables</span>
           <select id="syllables">
@@ -76,7 +84,8 @@
         Automatic screening is not a guarantee of accuracy.
       </p>
       <p><a href="https://mandarin-native.com/#explore" target="_blank" rel="noreferrer noopener">Mandarin Native: external listening reference (online)</a>.
-        Its audio and labels are not automatically trusted or bundled with this app.</p>
+        Checked direct word recordings are also available in the local-use app.
+        Sentence audio is not used for practice; local-use imports are excluded from redistributable builds.</p>
     </details>
 
   </main>
