@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "seed": "native-tone-validation-2026-09",
+  "held_out_source": "mandarin_native",
+  "supported_lengths": [1, 2, 3, 4],
+  "split_fractions": {"train": 0.6, "calibration": 0.2, "test": 0.2},
+  "forest": {"n_estimators": 128, "max_depth": 14, "min_samples_leaf": 4, "random_state": 7421},
+  "minimum_training_per_pattern": 5,
+  "boundary_perturbation_seconds": 0.02,
+  "reference_agreement_threshold": 0.9,
+  "acoustic_contradiction_threshold": 0.9,
+  "minimum_margin": 0.15,
+  "maximum_tracker_difference_semitones": 2.0,
+  "gold": {
+    "minimum_calibration_per_source": 30,
+    "minimum_test_per_stratum": 30,
+    "maximum_error_upper_bound": 0.01,
+    "confidence": 0.95,
+    "maximum_label_prior_weight": 0.2
+  },
+  "reference_labels": "original_source_annotations_not_independent_gold",
+  "speaker_identity": "unknown_do_not_claim_speaker_disjoint",
+  "production_admission": false,
+  "reference_access": {
+    "tone_perfect": {
+      "status": "dataset_access_request_required_not_downloaded",
+      "source": "https://tone.lib.msu.edu/cite"
+    }
+  }
+}

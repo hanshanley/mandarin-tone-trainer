@@ -1,6 +1,11 @@
 # Tone-label validation redesign
 
-**Status: researched implementation plan, not a completed accuracy claim.**
+**Status: implementation available; independent native-gold validation is pending.**
+See [the executable native validator workflow](native-tone-validator.md).
+Original-label hypotheses, label-blind single/pair models, duplicate/family/source
+holdouts, calibration and independent audit gates are implemented. Reference
+support is insufficient for validated longer-word heads, and no production
+accuracy guarantee or automatic admission has been enabled.
 The currently failed learner-pronunciation judge must not become the authority
 for the native practice library merely by relaxing its thresholds.
 

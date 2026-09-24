@@ -174,6 +174,12 @@ calibration, threshold selection, and final evaluation. It remains separate
 from practice admission until its measured accuracy and domain transfer support
 using it for that purpose.
 
+The [native tone-label validator](docs/native-tone-validator.md) is the separate
+label-aware workflow for the direct-recording library. It makes label-blind
+audio predictions, keeps original labels as uncertain hypotheses, and reports
+held-out-source results without treating source-label agreement as certified
+accuracy. Independent calibration/release gates remain separate from practice.
+
 ## FAQ
 
 <details>
