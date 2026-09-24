@@ -77,7 +77,7 @@
     "production_scope": "diagnostic_only_until_independent_target_corpus_validation",
     "feature_version": "ompal-acoustic-aligned-v1"
   },
-  "trainer_sha256": "ffc8da9d232d7f12a2fb6cf72c8d032bbb32c0647cecc5f509d07e6953816c21",
+  "trainer_sha256": "474f2160add4fd4715b7392c33b775a318d56cde367ea6c0fb2fe0b38bfc2587",
   "measurement_cache_sha256": "abe3e8aea8d4d2ef992727304f23bb9e2109cf9e4b0cd627668bbe99f58a929e",
   "split_unit": "speaker",
   "coverage": {
@@ -634,7 +634,7 @@
         "max_depth": 12,
         "min_samples_leaf": 5
       },
-      "selection_log_loss": 0.15260039920662838,
+      "selection_log_loss": 0.1526003992066284,
       "calibrator": {
         "coefficient": 0.8321137935202674,
         "intercept": 2.565897378126743
@@ -817,33 +817,28 @@
       },
       "test_selective_decisions": {
         "n": 2846,
-        "accepted": 2553,
+        "accepted": 0,
         "rejected": 0,
-        "uncertain": 293,
-        "coverage": 0.8970484891075193,
-        "false_accepts": 57,
+        "uncertain": 2846,
+        "coverage": 0.0,
+        "false_accepts": 0,
         "false_rejects": 0,
-        "false_accept_rate_among_incorrect": 0.9193548387096774,
+        "false_accept_rate_among_incorrect": 0.0,
         "false_reject_rate_among_correct": 0.0,
-        "accepted_error_rate": 0.022326674500587545,
+        "accepted_error_rate": null,
         "rejected_error_rate": null,
-        "accepted_error_upper_95": 0.02766595081468664,
+        "accepted_error_upper_95": 1.0,
         "rejected_error_upper_95": 1.0
       },
       "test_end_to_end_coverage": {
         "all_annotated_units": 2906,
         "unscorable_units": 60,
-        "decided_units": 2553,
-        "coverage": 0.8785271851342051,
+        "decided_units": 0,
+        "coverage": 0.0,
         "unscorable_policy": "abstain, not pass"
       },
       "threshold_selection": {
-        "accept": {
-          "confidence": 0.5,
-          "selected": 1962,
-          "errors": 50,
-          "simultaneous_error_upper_bound": 0.03768352878377062
-        },
+        "accept": null,
         "reject": null
       },
       "test_per_expected_tone": {
@@ -1159,8 +1154,8 @@
           0.0054682634323385835,
           0.03302452085925178
         ],
-        "accepted_error_upper_95": 0.03735632183908046,
-        "false_accept_rate_upper_95": 1.0
+        "accepted_error_upper_95": null,
+        "false_accept_rate_upper_95": null
       },
       "held_out_acceptance_gate_passed": false
     },
@@ -1332,33 +1327,28 @@
       },
       "test_selective_decisions": {
         "n": 2846,
-        "accepted": 2554,
+        "accepted": 0,
         "rejected": 0,
-        "uncertain": 292,
-        "coverage": 0.8973998594518623,
-        "false_accepts": 58,
+        "uncertain": 2846,
+        "coverage": 0.0,
+        "false_accepts": 0,
         "false_rejects": 0,
-        "false_accept_rate_among_incorrect": 0.9206349206349206,
+        "false_accept_rate_among_incorrect": 0.0,
         "false_reject_rate_among_correct": 0.0,
-        "accepted_error_rate": 0.022709475332811275,
+        "accepted_error_rate": null,
         "rejected_error_rate": null,
-        "accepted_error_upper_95": 0.028087010536368213,
+        "accepted_error_upper_95": 1.0,
         "rejected_error_upper_95": 1.0
       },
       "test_end_to_end_coverage": {
         "all_annotated_units": 2906,
         "unscorable_units": 60,
-        "decided_units": 2554,
-        "coverage": 0.8788713007570543,
+        "decided_units": 0,
+        "coverage": 0.0,
         "unscorable_policy": "abstain, not pass"
       },
       "threshold_selection": {
-        "accept": {
-          "confidence": 0.5,
-          "selected": 1969,
-          "errors": 26,
-          "simultaneous_error_upper_bound": 0.02273703299746753
-        },
+        "accept": null,
         "reject": null
       },
       "test_per_expected_tone": {
@@ -1590,8 +1580,8 @@
           0.006851556333420966,
           0.03335880499204555
         ],
-        "accepted_error_upper_95": 0.036580813736468834,
-        "false_accept_rate_upper_95": 1.0
+        "accepted_error_upper_95": null,
+        "false_accept_rate_upper_95": null
       },
       "held_out_acceptance_gate_passed": false
     }
@@ -1807,5 +1797,5 @@
   ],
   "domain_transfer_verified": false,
   "automatic_practice_admission_enabled": false,
-  "model_sha256": "0809afd982182faf4376fe28bc65ec0d3a4b35ca563eec06c80603d77d66dda6"
+  "model_sha256": "3ba27d2780985deb6418ac2ea120f23818e62e90f3e8b55297051135998e83b9"
 }

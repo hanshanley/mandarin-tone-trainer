@@ -64,10 +64,19 @@ class PronunciationJudgeTests(unittest.TestCase):
         policy = judge.config()['decision']
         self.assertIsNone(judge.choose_threshold(np.ones(10), np.ones(10), policy, 'accept'))
         self.assertIsNone(judge.choose_threshold(np.zeros(200), np.ones(200), policy, 'accept'))
-        self.assertIsNotNone(judge.choose_threshold(np.ones(400), np.ones(400), policy, 'accept'))
+        self.assertIsNone(judge.choose_threshold(np.ones(400), np.ones(400), policy, 'accept'))
+        self.assertIsNotNone(judge.choose_threshold(
+            np.array([1] * 400 + [0] * 400), np.array([.99] * 400 + [.01] * 400), policy, 'accept',
+        ))
         self.assertIsNone(judge.choose_threshold(np.ones(400), np.ones(400), policy, 'reject'))
         self.assertEqual(judge.binomial_upper(0, 0), 1)
         self.assertGreater(judge.binomial_upper(0, 10), .05)
+
+    def test_threshold_selection_cannot_hide_rare_errors_in_overall_accuracy(self):
+        policy = judge.config()['decision']
+        labels = np.array([1] * 980 + [0] * 20)
+        probabilities = np.full(1000, .99)
+        self.assertIsNone(judge.choose_threshold(labels, probabilities, policy, 'accept'))
 
     def test_accuracy_on_mostly_correct_speech_cannot_pass_the_error_detection_gate(self):
         policy = judge.config()['decision']

@@ -280,16 +280,21 @@ def choose_threshold(labels, probabilities, confidence, decision):
         raise ValueError('Threshold decision must be accept or reject')
     error_label = 0 if decision == 'accept' else 1
     alpha = 1 - confidence['confidence']
-    corrected = 1 - alpha / (2 * len(confidence['threshold_grid']))
+    corrected = 1 - alpha / (4 * len(confidence['threshold_grid']))
     options = []
     for threshold in confidence['threshold_grid']:
         selected = probabilities >= threshold if decision == 'accept' else probabilities <= 1 - threshold
         count = int(selected.sum())
         errors = int(np.sum(labels[selected] == error_label))
         upper = binomial_upper(errors, count, corrected)
-        if count >= confidence['minimum_decisions'] and upper <= confidence['maximum_error_rate']:
+        error_support = int(np.sum(labels == error_label))
+        conditional_upper = binomial_upper(errors, error_support, corrected)
+        if (count >= confidence['minimum_decisions'] and upper <= confidence['maximum_error_rate']
+                and conditional_upper <= confidence['maximum_error_rate']):
             options.append({'confidence': threshold, 'selected': count, 'errors': errors,
-                            'simultaneous_error_upper_bound': upper})
+                            'simultaneous_error_upper_bound': upper,
+                            'error_class_support': error_support,
+                            'simultaneous_error_class_rate_upper_bound': conditional_upper})
     return max(options, key=lambda option: option['selected']) if options else None
 
 

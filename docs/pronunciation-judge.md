@@ -80,6 +80,10 @@ fixed candidate configurations by log loss. A separate calibration set fits a
 monotonic sigmoid to model log-odds. A fourth set chooses thresholds, including
 minimum-support requirements and a multiple-threshold-adjusted error bound.
 Neither calibration nor threshold selection uses the final test labels.
+Threshold selection must satisfy both error rates: errors **among selected
+decisions**, and errors let through **among all incorrect reference units**
+(or correct units for rejection). It cannot propose accepting almost everything
+merely because most examples happen to be correct.
 
 The saved model is compressed **JSON**, not executable pickle. Its portable
 predictions are compared with the training implementation before publication.
@@ -131,11 +135,11 @@ accuracy. Tone calibration reduces Brier from 0.1554 before calibration to
 reliable binary pronunciation verdict.
 
 **No head meets the automatic-acceptance gate.** Tone has no threshold with
-sufficient evidence for the configured low-error criterion. The provisional
-consonant/vowel thresholds miss over 91% of incorrect test units despite
-apparently high overall correctness, and therefore fail the error-detection
-gate. Their near-zero false-reject counts must not be advertised as success:
-they largely reflect accepting rather than detecting errors.
+sufficient evidence for the configured low-error criterion. An earlier selector
+proposed consonant/vowel thresholds that missed over 91% of incorrect test
+units despite apparently high overall correctness. The selector now rejects
+such thresholds itself, rather than relying on the final gate to catch them.
+Zero errors when abstaining on everything are not evidence of a useful judge.
 
 Test support by expected tone is 596 first-tone, 561 second-tone, 509 third-tone,
 932 fourth-tone, and 248 neutral-tone units. These are reference tone categories;
