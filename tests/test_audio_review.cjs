@@ -835,6 +835,25 @@ test('normal ledger validation ignores diagnostic selection fields',async()=>{
   assert.deepEqual([...after.audio].sort(),[...before.audio].sort());
 });
 
+test('staged audio updates preserve every usable initial recording, not just total word counts',async()=>{
+  const {loadReviewData,validateAudioUpdate}=await import('../scripts/review_audio.mjs');
+  const data=loadReviewData();
+  const imported={recordings:data.recordings.filter(recording=>recording.source==='mandarin_native')};
+  const impact=validateAudioUpdate({ledger:data.acousticLedger,imported},data);
+  assert.equal(impact.before_words,impact.after_words);
+  assert.equal(impact.before_examples,impact.after_examples);
+  assert.equal(impact.before_words_redistributable,impact.after_words_redistributable);
+  assert.equal(impact.before_examples_redistributable,impact.after_examples_redistributable);
+  const removed=data.acousticLedger.approvals.find(entry=>entry.kind==='native'
+    &&entry.distribution_scope==='redistributable'&&entry.evidence.method==='cross-source-native-reference-v1');
+  assert.ok(removed);
+  const ledger={...data.acousticLedger,approvals:data.acousticLedger.approvals.filter(entry=>entry!==removed)};
+  assert.throws(()=>validateAudioUpdate({ledger,imported},data),/removed a usable initial recording/);
+  const restricted={...data.acousticLedger,approvals:data.acousticLedger.approvals.map(entry=>
+    entry===removed?{...entry,distribution_scope:'local_only'}:entry)};
+  assert.throws(()=>validateAudioUpdate({ledger:restricted,imported},data),/redistributable audio update removed/);
+});
+
 function mixedComparison(){
   const selfPath='audio/mandarin_native/ma3.mp3',peerPath='audio/pinyin_public/ma3.mp3';
   function prediction(audio_path,sha256,source,decoded_sha256){

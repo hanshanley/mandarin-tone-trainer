@@ -1,9 +1,11 @@
 {
   "version": 1,
   "method": "cross-source-native-reference-v1",
-  "pipeline_sha256": "ae2d8b7ae90065e59a733b841733044fa375b3aedcb30cbaff1f4ac2994f6045",
+  "pipeline_sha256": "f2615adeaedb3091e9491419e924f64967ff2eec2c1d380ea9d298b0b4732d03",
   "baseline_native_assessment_word_ids": [
+    "L1-0002",
     "L1-0003",
+    "L1-0004",
     "L1-0008",
     "L1-0009",
     "L1-0013",
@@ -11,12 +13,14 @@
     "L1-0017",
     "L1-0018",
     "L1-0019",
+    "L1-0020",
     "L1-0022",
     "L1-0024",
     "L1-0025",
     "L1-0034",
     "L1-0036",
     "L1-0042",
+    "L1-0045",
     "L1-0046",
     "L1-0048",
     "L1-0050",
@@ -76,6 +80,7 @@
     "L1-0184",
     "L1-0185",
     "L1-0186",
+    "L1-0190",
     "L1-0199",
     "L1-0201",
     "L1-0204",
@@ -110,6 +115,7 @@
     "L1-0296",
     "L1-0299",
     "L1-0302",
+    "L1-0303",
     "L1-0304",
     "L1-0305",
     "L1-0308",
@@ -186,6 +192,9 @@
     "L1-0491",
     "L1-0495",
     "L1-0500",
+    "L2-0002",
+    "L2-0009",
+    "L2-0014",
     "L2-0018",
     "L2-0020",
     "L2-0024",
@@ -257,6 +266,7 @@
     "L2-0200",
     "L2-0202",
     "L2-0207",
+    "L2-0208",
     "L2-0209",
     "L2-0211",
     "L2-0213",
@@ -265,6 +275,7 @@
     "L2-0223",
     "L2-0226",
     "L2-0228",
+    "L2-0231",
     "L2-0232",
     "L2-0234",
     "L2-0235",
@@ -275,6 +286,7 @@
     "L2-0250",
     "L2-0251",
     "L2-0252",
+    "L2-0254",
     "L2-0255",
     "L2-0258",
     "L2-0260",
@@ -325,6 +337,8 @@
     "L2-0383",
     "L2-0387",
     "L2-0393",
+    "L2-0399",
+    "L2-0400",
     "L2-0404",
     "L2-0408",
     "L2-0413",
@@ -346,6 +360,7 @@
     "L2-0452",
     "L2-0461",
     "L2-0465",
+    "L2-0466",
     "L2-0473",
     "L2-0475",
     "L2-0477",
@@ -437,10 +452,14 @@
     "L3-0007",
     "L3-0012",
     "L3-0014",
+    "L3-0025",
+    "L3-0026",
+    "L3-0034",
     "L3-0044",
     "L3-0058",
     "L3-0059",
     "L3-0061",
+    "L3-0062",
     "L3-0065",
     "L3-0066",
     "L3-0067",
@@ -497,6 +516,7 @@
     "L3-0242",
     "L3-0243",
     "L3-0245",
+    "L3-0247",
     "L3-0250",
     "L3-0251",
     "L3-0253",
@@ -515,8 +535,10 @@
     "L3-0288",
     "L3-0290",
     "L3-0292",
+    "L3-0296",
     "L3-0300",
     "L3-0303",
+    "L3-0304",
     "L3-0309",
     "L3-0311",
     "L3-0312",
@@ -536,12 +558,14 @@
     "L3-0386",
     "L3-0390",
     "L3-0400",
+    "L3-0406",
     "L3-0408",
     "L3-0417",
     "L3-0418",
     "L3-0420",
     "L3-0427",
     "L3-0433",
+    "L3-0434",
     "L3-0462",
     "L3-0463",
     "L3-0464",
@@ -557,6 +581,8 @@
     "L3-0495",
     "L3-0499",
     "L3-0504",
+    "L3-0506",
+    "L3-0513",
     "L3-0514",
     "L3-0522",
     "L3-0534",
@@ -572,6 +598,7 @@
     "L3-0560",
     "L3-0570",
     "L3-0571",
+    "L3-0572",
     "L3-0584",
     "L3-0588",
     "L3-0592",
@@ -590,6 +617,7 @@
     "L3-0658",
     "L3-0666",
     "L3-0670",
+    "L3-0674",
     "L3-0678",
     "L3-0682",
     "L3-0683",
@@ -624,6 +652,7 @@
     "L3-0788",
     "L3-0791",
     "L3-0794",
+    "L3-0797",
     "L3-0799",
     "L3-0800",
     "L3-0804",
@@ -780,6 +809,7 @@
     "L4-0327",
     "L4-0334",
     "L4-0336",
+    "L4-0337",
     "L4-0340",
     "L4-0341",
     "L4-0344",
@@ -842,6 +872,8 @@
     "L4-0643",
     "L4-0649",
     "L4-0653",
+    "L4-0655",
+    "L4-0657",
     "L4-0659",
     "L4-0660",
     "L4-0664",
@@ -865,6 +897,7 @@
     "L4-0737",
     "L4-0745",
     "L4-0750",
+    "L4-0752",
     "L4-0753",
     "L4-0757",
     "L4-0761",
@@ -875,6 +908,7 @@
     "L4-0774",
     "L4-0776",
     "L4-0777",
+    "L4-0779",
     "L4-0781",
     "L4-0790",
     "L4-0791",
@@ -926,9 +960,11 @@
     "L5-0001",
     "L5-0008",
     "L5-0010",
+    "L5-0015",
     "L5-0019",
     "L5-0020",
     "L5-0022",
+    "L5-0024",
     "L5-0037",
     "L5-0040",
     "L5-0042",
@@ -959,6 +995,8 @@
     "L5-0171",
     "L5-0178",
     "L5-0180",
+    "L5-0183",
+    "L5-0189",
     "L5-0206",
     "L5-0207",
     "L5-0211",
@@ -1021,6 +1059,7 @@
     "L5-0393",
     "L5-0397",
     "L5-0410",
+    "L5-0426",
     "L5-0435",
     "L5-0437",
     "L5-0439",
@@ -1028,6 +1067,7 @@
     "L5-0445",
     "L5-0450",
     "L5-0461",
+    "L5-0476",
     "L5-0478",
     "L5-0479",
     "L5-0484",
@@ -1040,6 +1080,7 @@
     "L5-0505",
     "L5-0507",
     "L5-0514",
+    "L5-0525",
     "L5-0534",
     "L5-0539",
     "L5-0541",
@@ -1124,6 +1165,7 @@
     "L5-0890",
     "L5-0896",
     "L5-0907",
+    "L5-0914",
     "L5-0933",
     "L5-0934",
     "L5-0939",
@@ -1148,14 +1190,20 @@
     "L5-1070",
     "L6-0009",
     "L6-0011",
+    "L6-0017",
+    "L6-0021",
+    "L6-0023",
+    "L6-0024",
     "L6-0026",
     "L6-0030",
+    "L6-0033",
     "L6-0044",
     "L6-0046",
     "L6-0056",
     "L6-0061",
     "L6-0066",
     "L6-0080",
+    "L6-0088",
     "L6-0089",
     "L6-0091",
     "L6-0098",
@@ -1245,6 +1293,9 @@
     "L6-0480",
     "L6-0481",
     "L6-0487",
+    "L6-0494",
+    "L6-0497",
+    "L6-0498",
     "L6-0510",
     "L6-0512",
     "L6-0519",
@@ -1288,11 +1339,15 @@
     "L6-0738",
     "L6-0742",
     "L6-0752",
+    "L6-0755",
+    "L6-0756",
     "L6-0762",
     "L6-0763",
     "L6-0770",
+    "L6-0774",
     "L6-0778",
     "L6-0784",
+    "L6-0785",
     "L6-0789",
     "L6-0796",
     "L6-0797",
@@ -1326,15 +1381,18 @@
     "L6-0916",
     "L6-0925",
     "L6-0944",
+    "L6-0945",
     "L6-0951",
     "L6-0955",
     "L6-0968",
     "L6-0987",
     "L6-0996",
+    "L6-0997",
     "L6-0999",
     "L6-1004",
     "L6-1006",
     "L6-1017",
+    "L6-1039",
     "L6-1044",
     "L6-1049",
     "L6-1055",
@@ -1342,6 +1400,7 @@
     "L6-1067",
     "L6-1069",
     "L6-1072",
+    "L6-1073",
     "L6-1074",
     "L6-1080",
     "L6-1089",
@@ -1357,10 +1416,12 @@
     "L6-1136",
     "L6-1137",
     "L6-1138",
+    "L7-0013",
     "L7-0020",
     "L7-0027",
     "L7-0028",
     "L7-0039",
+    "L7-0042",
     "L7-0045",
     "L7-0049",
     "L7-0062",
@@ -1372,10 +1433,13 @@
     "L7-0089",
     "L7-0093",
     "L7-0095",
+    "L7-0110",
+    "L7-0116",
     "L7-0128",
     "L7-0131",
     "L7-0132",
     "L7-0135",
+    "L7-0144",
     "L7-0182",
     "L7-0185",
     "L7-0187",
@@ -1383,6 +1447,7 @@
     "L7-0236",
     "L7-0264",
     "L7-0266",
+    "L7-0272",
     "L7-0280",
     "L7-0295",
     "L7-0306",
@@ -1429,6 +1494,7 @@
     "L7-0634",
     "L7-0640",
     "L7-0642",
+    "L7-0649",
     "L7-0661",
     "L7-0666",
     "L7-0667",
@@ -1447,6 +1513,7 @@
     "L7-0784",
     "L7-0804",
     "L7-0805",
+    "L7-0855",
     "L7-0856",
     "L7-0858",
     "L7-0861",
@@ -1468,6 +1535,7 @@
     "L7-0946",
     "L7-0951",
     "L7-0966",
+    "L7-0978",
     "L7-0991",
     "L7-0992",
     "L7-0995",
@@ -1540,6 +1608,7 @@
     "L7-1397",
     "L7-1403",
     "L7-1407",
+    "L7-1409",
     "L7-1422",
     "L7-1423",
     "L7-1424",
@@ -1552,6 +1621,7 @@
     "L7-1454",
     "L7-1474",
     "L7-1480",
+    "L7-1488",
     "L7-1496",
     "L7-1499",
     "L7-1500",
@@ -1582,6 +1652,7 @@
     "L7-1684",
     "L7-1691",
     "L7-1701",
+    "L7-1709",
     "L7-1725",
     "L7-1729",
     "L7-1746",
@@ -1618,6 +1689,7 @@
     "L7-1928",
     "L7-1932",
     "L7-1933",
+    "L7-1946",
     "L7-1960",
     "L7-1963",
     "L7-1976",
@@ -1660,6 +1732,7 @@
     "L7-2300",
     "L7-2316",
     "L7-2320",
+    "L7-2335",
     "L7-2350",
     "L7-2356",
     "L7-2365",
@@ -1696,6 +1769,7 @@
     "L7-2810",
     "L7-2812",
     "L7-2813",
+    "L7-2820",
     "L7-2821",
     "L7-2883",
     "L7-2893",
@@ -1738,6 +1812,7 @@
     "L7-3241",
     "L7-3248",
     "L7-3262",
+    "L7-3274",
     "L7-3280",
     "L7-3293",
     "L7-3297",
@@ -1767,6 +1842,7 @@
     "L7-3582",
     "L7-3584",
     "L7-3598",
+    "L7-3609",
     "L7-3623",
     "L7-3627",
     "L7-3628",
@@ -1789,6 +1865,7 @@
     "L7-3741",
     "L7-3756",
     "L7-3766",
+    "L7-3772",
     "L7-3808",
     "L7-3826",
     "L7-3830",
@@ -1801,6 +1878,7 @@
     "L7-3933",
     "L7-3936",
     "L7-3953",
+    "L7-3955",
     "L7-3957",
     "L7-3967",
     "L7-3981",
@@ -1838,6 +1916,8 @@
     "L7-4278",
     "L7-4282",
     "L7-4292",
+    "L7-4298",
+    "L7-4305",
     "L7-4328",
     "L7-4332",
     "L7-4335",
@@ -1870,6 +1950,7 @@
     "L7-4551",
     "L7-4552",
     "L7-4581",
+    "L7-4601",
     "L7-4627",
     "L7-4639",
     "L7-4658",
@@ -1907,6 +1988,7 @@
     "L7-4916",
     "L7-5011",
     "L7-5012",
+    "L7-5028",
     "L7-5030",
     "L7-5036",
     "L7-5041",
@@ -1915,6 +1997,7 @@
     "L7-5072",
     "L7-5102",
     "L7-5115",
+    "L7-5118",
     "L7-5119",
     "L7-5120",
     "L7-5126",
@@ -2140,6 +2223,7 @@
     "MN-e00f73fd69d3e06f",
     "MN-e142df163126a261",
     "MN-e178b285a13c1bee",
+    "MN-e1a72f0473b1f48a",
     "MN-e32af21140fc86c4",
     "MN-e49e2bac09b86a8b",
     "MN-e4a5190fba1e5fef",
@@ -2171,12 +2255,12 @@
     "MN-ff76abfb9277a83f"
   ],
   "new_comparison_assessments": 0,
-  "new_initial_recording_assessments": 0,
+  "new_initial_recording_assessments": 1,
   "runtime_impact": {
-    "before_words": 2166,
-    "after_words": 2166,
-    "before_examples": 2357,
-    "after_examples": 2357
+    "before_words": 2250,
+    "after_words": 2250,
+    "before_examples": 2444,
+    "after_examples": 2445
   },
   "total_mixed_comparison_assessments": 586,
   "new_comparison_keys": [],
@@ -2244,7 +2328,7 @@
       ],
       "native_word_ids_used": [],
       "used_for_initial": false,
-      "used_for_comparison": false,
+      "used_for_comparison": true,
       "available_comparison_keys": [
         "ai4"
       ],
@@ -2856,14 +2940,14 @@
       "candidate_word_ids": [
         "L3-0034"
       ],
-      "native_word_ids_used": [],
-      "used_for_initial": false,
+      "native_word_ids_used": [
+        "L3-0034"
+      ],
+      "used_for_initial": true,
       "used_for_comparison": false,
       "available_comparison_keys": [],
-      "original_word_evidence_reasons": [
-        "no distinct screened comparison for the expected tone"
-      ],
-      "unresolved_reason": "original_word_or_tone_evidence_unresolved"
+      "original_word_evidence_reasons": [],
+      "unresolved_reason": null
     },
     {
       "audio_path": "audio/mandarin_native/be3nshe1n.mp3",
@@ -4898,7 +4982,7 @@
       ],
       "native_word_ids_used": [],
       "used_for_initial": false,
-      "used_for_comparison": false,
+      "used_for_comparison": true,
       "available_comparison_keys": [
         "de2"
       ],
@@ -9967,7 +10051,7 @@
       ],
       "native_word_ids_used": [],
       "used_for_initial": false,
-      "used_for_comparison": false,
+      "used_for_comparison": true,
       "available_comparison_keys": [
         "mang2"
       ],
@@ -10858,7 +10942,7 @@
       ],
       "native_word_ids_used": [],
       "used_for_initial": false,
-      "used_for_comparison": false,
+      "used_for_comparison": true,
       "available_comparison_keys": [
         "nei4"
       ],
@@ -12865,14 +12949,16 @@
       "candidate_word_ids": [
         "L3-0674"
       ],
-      "native_word_ids_used": [],
-      "used_for_initial": false,
+      "native_word_ids_used": [
+        "L3-0674"
+      ],
+      "used_for_initial": true,
       "used_for_comparison": false,
       "available_comparison_keys": [],
       "original_word_evidence_reasons": [
         "tone evidence is ambiguous or contradicts the label"
       ],
-      "unresolved_reason": "original_word_or_tone_evidence_unresolved"
+      "unresolved_reason": null
     },
     {
       "audio_path": "audio/mandarin_native/sho4ucuo4.mp3",
@@ -13217,9 +13303,7 @@
       "available_comparison_keys": [
         "suan4"
       ],
-      "original_word_evidence_reasons": [
-        "no distinct screened comparison for the expected tone"
-      ],
+      "original_word_evidence_reasons": [],
       "unresolved_reason": null
     },
     {
@@ -13281,9 +13365,7 @@
       "available_comparison_keys": [
         "suo3"
       ],
-      "original_word_evidence_reasons": [
-        "no distinct screened comparison for the expected tone"
-      ],
+      "original_word_evidence_reasons": [],
       "unresolved_reason": null
     },
     {
@@ -18138,7 +18220,7 @@
   ],
   "independent_accuracy_verified": false,
   "inventory_sha256": "01bd3477a70bc43071dbffa08459739f1f4db8a63add4e25920221478ebcf7f4",
-  "acoustic_ledger_sha256": "d9a9cdbcab10207fc07cb5f8be665c9442c0ed8048b6aeba629ffc601bffca75",
+  "acoustic_ledger_sha256": "59ddd9c50d63f1d48090295875e8f2d7fe800c6488b67ed8a89874f774f6c3d8",
   "baseline": {
     "commit": "61e40664e44954f602b871d982956bf7b1195ef5",
     "entries": 1736,
@@ -18153,25 +18235,25 @@
     }
   },
   "current": {
-    "entries": 2166,
-    "initial_examples": 2357,
-    "original_examples": 1951,
-    "imported_examples": 406,
-    "initial_imported_files": 182,
-    "comparison_imported_files": 132,
-    "reachable_audio": 3424,
+    "entries": 2250,
+    "initial_examples": 2445,
+    "original_examples": 2037,
+    "imported_examples": 408,
+    "initial_imported_files": 184,
+    "comparison_imported_files": 136,
+    "reachable_audio": 3521,
     "tone_coverage": {
-      "1": 1030,
-      "2": 797,
-      "3": 346,
-      "4": 1026,
-      "N": 27
+      "1": 1064,
+      "2": 828,
+      "3": 376,
+      "4": 1083,
+      "N": 29
     }
   },
   "comparison_coverage": {
-    "bases": 314,
-    "required_slots": 1256,
-    "playable_slots": 914,
+    "bases": 318,
+    "required_slots": 1272,
+    "playable_slots": 922,
     "complete_families": 102,
     "families": [
       {
@@ -18361,6 +18443,273 @@
               }
             ],
             "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          }
+        ]
+      },
+      {
+        "base": "ai",
+        "complete": false,
+        "slots": [
+          {
+            "key": "ai1",
+            "tone": "1",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/唉/cmn-唉.mp3",
+                "sha256": "067e50b2c13faa26d1def93dc94366a1e4135061a8853d4799dfc68013abf2f7",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-唉.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "conflicting_labels_or_known_quarantine"
+              },
+              {
+                "audio_path": "audio/audio_cmn/哎/cmn-哎.mp3",
+                "sha256": "5eb09ac2a6e71bd612ba92bcefd614c5b10d34e42f15acd048d140989410f6b5",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-哎.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/audio_cmn/挨/cmn-挨.mp3",
+                "sha256": "5b6a68ab1d509a1576c25697210fa54da767e8cb2f54f355bee803928bfe27b1",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-挨.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "conflicting_labels_or_known_quarantine"
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai1.mp3",
+                "sha256": "d3953f8621ee50f8fba524adff3beea1c3884dab23086c10e406414ac2ec04a6",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-ai1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/ai1.mp3",
+                "sha256": "9627951112cbfa134034da6ff8e62ccc5c0c2dfd03dfd20813b209dfc891bfc2",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/ai1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          },
+          {
+            "key": "ai2",
+            "tone": "2",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai2.mp3",
+                "source": "audio_cmn",
+                "sha256": "8a5ff6e6bb41d8c9ee3c8e05e89f4b7019816311ecbb228d42a9ad4a395d3c43"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai2.mp3",
+                "source": "audio_cmn",
+                "sha256": "8a5ff6e6bb41d8c9ee3c8e05e89f4b7019816311ecbb228d42a9ad4a395d3c43"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai2.mp3",
+                "source": "audio_cmn",
+                "sha256": "8a5ff6e6bb41d8c9ee3c8e05e89f4b7019816311ecbb228d42a9ad4a395d3c43"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/癌/cmn-癌.mp3",
+                "sha256": "0a96bfba164d54336607908e398bd8ed2ec60006580ddd788a45424740183e66",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-癌.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/audio_cmn/挨/cmn-挨.mp3",
+                "sha256": "5b6a68ab1d509a1576c25697210fa54da767e8cb2f54f355bee803928bfe27b1",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-挨.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "conflicting_labels_or_known_quarantine"
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai2.mp3",
+                "sha256": "8a5ff6e6bb41d8c9ee3c8e05e89f4b7019816311ecbb228d42a9ad4a395d3c43",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-ai2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              },
+              {
+                "audio_path": "audio/pinyin_public/ai2.mp3",
+                "sha256": "3ee3e5173edc6dc0833b2c0101ca1135e482bc492b987c3492e22e38f243252c",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/ai2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ]
+          },
+          {
+            "key": "ai3",
+            "tone": "3",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/矮/cmn-矮.mp3",
+                "sha256": "8764e4e1beeb06b083ec90b0e147df433a2fbf14f8b9e8ac3eaf773297a3503d",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-矮.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": "no_distinct_source_corroboration"
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai3.mp3",
+                "sha256": "d4b6af0015303f96ad552ef91648f325fc561e0bd077c83faf1685d128619dd4",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-ai3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": "no_distinct_source_corroboration"
+              },
+              {
+                "audio_path": "audio/pinyin_public/ai3.mp3",
+                "sha256": "68a591c269c3df2e6c49293bfbba2f2570df01f6b62a1791ce78c092c42aa796",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/ai3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          },
+          {
+            "key": "ai4",
+            "tone": "4",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/mandarin_native/a4i.mp3",
+                "source": "mandarin_native",
+                "sha256": "54261932807db47130090196d0ec7bc1a9980d188e6ef23c5069198ab5def758"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/mandarin_native/a4i.mp3",
+                "source": "mandarin_native",
+                "sha256": "54261932807db47130090196d0ec7bc1a9980d188e6ef23c5069198ab5def758"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/mandarin_native/a4i.mp3",
+                "source": "mandarin_native",
+                "sha256": "54261932807db47130090196d0ec7bc1a9980d188e6ef23c5069198ab5def758"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/唉/cmn-唉.mp3",
+                "sha256": "067e50b2c13faa26d1def93dc94366a1e4135061a8853d4799dfc68013abf2f7",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-唉.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "conflicting_labels_or_known_quarantine"
+              },
+              {
+                "audio_path": "audio/audio_cmn/爱/cmn-爱.mp3",
+                "sha256": "61e2fc0493618d45809e0afabd94d5e0366d55916f847dc55577df7b6e5a0e3d",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-爱.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/mandarin_native/a4i.mp3",
+                "sha256": "54261932807db47130090196d0ec7bc1a9980d188e6ef23c5069198ab5def758",
+                "source": "mandarin_native",
+                "source_url": "https://mandarin-native.com/audios_palavras/a4i.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "tone_confidence_or_signal_quality_unresolved"
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-ai4.mp3",
+                "sha256": "4029edc24af6ad5603e10385a5409b2751ca65a688879eb0d70eceb51cd9bfc4",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-ai4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": "no_distinct_source_corroboration"
+              },
+              {
+                "audio_path": "audio/pinyin_public/ai4.mp3",
+                "sha256": "5c9661479aefcc2d945d564423f06877d72c97323a0c6b4109cb2bfc02b0c729",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/ai4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ]
           }
         ]
       },
@@ -29905,6 +30254,207 @@
         ]
       },
       {
+        "base": "de",
+        "complete": false,
+        "slots": [
+          {
+            "key": "de1",
+            "tone": "1",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/pinyin_public/de1.mp3",
+                "source": "mp3_chinese_pinyin_sound",
+                "sha256": "abae2f5208b6a53e0ae56dd2ea09dbb08042a3950643c5c196c4afa6e973a9da"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-de1.mp3",
+                "source": "audio_cmn",
+                "sha256": "9d9aa6878d5e962042772318cbab699897996b565582f7aac651b7ad126f1370"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/pinyin_public/de1.mp3",
+                "source": "mp3_chinese_pinyin_sound",
+                "sha256": "abae2f5208b6a53e0ae56dd2ea09dbb08042a3950643c5c196c4afa6e973a9da"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-de1.mp3",
+                "sha256": "9d9aa6878d5e962042772318cbab699897996b565582f7aac651b7ad126f1370",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-de1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              },
+              {
+                "audio_path": "audio/pinyin_public/de1.mp3",
+                "sha256": "abae2f5208b6a53e0ae56dd2ea09dbb08042a3950643c5c196c4afa6e973a9da",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/de1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              }
+            ]
+          },
+          {
+            "key": "de2",
+            "tone": "2",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/mandarin_native/de2.mp3",
+                "source": "mandarin_native",
+                "sha256": "b6df8c7e4227b2dc612c29557ea67e54115608014cc0462619fa950837f18e72"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/mandarin_native/de2.mp3",
+                "source": "mandarin_native",
+                "sha256": "b6df8c7e4227b2dc612c29557ea67e54115608014cc0462619fa950837f18e72"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/mandarin_native/de2.mp3",
+                "source": "mandarin_native",
+                "sha256": "b6df8c7e4227b2dc612c29557ea67e54115608014cc0462619fa950837f18e72"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/得/cmn-得.mp3",
+                "sha256": "2d95c2352f1aac07015bfcff2b0c4814f492b1b8b7f699a93440218ab3eb9641",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-得.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "conflicting_labels_or_known_quarantine"
+              },
+              {
+                "audio_path": "audio/mandarin_native/de2.mp3",
+                "sha256": "b6df8c7e4227b2dc612c29557ea67e54115608014cc0462619fa950837f18e72",
+                "source": "mandarin_native",
+                "source_url": "https://mandarin-native.com/audios_palavras/de2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-de2.mp3",
+                "sha256": "46bc7f38821a5c5bfa85fcdb6376fcb6d183eeed71faf223028d12009bf404f8",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-de2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/de2.mp3",
+                "sha256": "bf486223681a7a105aabceee65be6a1552c34553d6a1439f9969f1c612236385",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/de2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ]
+          },
+          {
+            "key": "de3",
+            "tone": "3",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/pinyin_public/de3.mp3",
+                "source": "mp3_chinese_pinyin_sound",
+                "sha256": "1bf272c58505be3ed259ad768fd7d3b9ff8a3c8cc955f38a22de43eee144fcf0"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-de3.mp3",
+                "source": "audio_cmn",
+                "sha256": "2b8d832e3000f4af8730081cb633015f148c34d8104f2d7d79b9466074eb2cb0"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/pinyin_public/de3.mp3",
+                "source": "mp3_chinese_pinyin_sound",
+                "sha256": "1bf272c58505be3ed259ad768fd7d3b9ff8a3c8cc955f38a22de43eee144fcf0"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-de3.mp3",
+                "sha256": "2b8d832e3000f4af8730081cb633015f148c34d8104f2d7d79b9466074eb2cb0",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-de3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              },
+              {
+                "audio_path": "audio/pinyin_public/de3.mp3",
+                "sha256": "1bf272c58505be3ed259ad768fd7d3b9ff8a3c8cc955f38a22de43eee144fcf0",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/de3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              }
+            ]
+          },
+          {
+            "key": "de4",
+            "tone": "4",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-de4.mp3",
+                "sha256": "1e352531e84c056d1efb0733f2dddce4c2bb3f79a314b3d26ca9ae30b57b4c9d",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-de4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/de4.mp3",
+                "sha256": "4d74f16de67de0516820b6f230555d75726ca896f9fbc3c67e9166beb56533c4",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/de4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          }
+        ]
+      },
+      {
         "base": "deng",
         "complete": false,
         "slots": [
@@ -30641,14 +31191,14 @@
             "available": true,
             "chosen": {
               "pinyin_public": {
-                "audio_path": "audio/audio_cmn/电/cmn-电.mp3",
+                "audio_path": "audio/audio_cmn/垫/cmn-垫.mp3",
                 "source": "audio_cmn",
-                "sha256": "af4a640bfec1e7266bf0a3e21b697a5f9b1a2d9d91b7730112767cc638e440f6"
+                "sha256": "8bb9b9d6bffa99ba9ac1c104bd78422b4691dfbb2c1fa01acd8db8f730755654"
               },
               "audio_cmn": {
-                "audio_path": "audio/audio_cmn/电/cmn-电.mp3",
+                "audio_path": "audio/audio_cmn/垫/cmn-垫.mp3",
                 "source": "audio_cmn",
-                "sha256": "af4a640bfec1e7266bf0a3e21b697a5f9b1a2d9d91b7730112767cc638e440f6"
+                "sha256": "8bb9b9d6bffa99ba9ac1c104bd78422b4691dfbb2c1fa01acd8db8f730755654"
               },
               "mandarin_native": {
                 "audio_path": "audio/mandarin_native/dia4n.mp3",
@@ -45712,14 +46262,14 @@
             "available": true,
             "chosen": {
               "pinyin_public": {
-                "audio_path": "audio/audio_cmn/进/cmn-进.mp3",
+                "audio_path": "audio/audio_cmn/浸/cmn-浸.mp3",
                 "source": "audio_cmn",
-                "sha256": "63ecda086cd4ec2640534d1beb571b14f518bbef083544abfc6d23b5d6299c68"
+                "sha256": "27190c942a89c2182bc2e211a7861ea1f3970442fe7a8d73fb9d9455b5cf2cff"
               },
               "audio_cmn": {
-                "audio_path": "audio/audio_cmn/进/cmn-进.mp3",
+                "audio_path": "audio/audio_cmn/浸/cmn-浸.mp3",
                 "source": "audio_cmn",
-                "sha256": "63ecda086cd4ec2640534d1beb571b14f518bbef083544abfc6d23b5d6299c68"
+                "sha256": "27190c942a89c2182bc2e211a7861ea1f3970442fe7a8d73fb9d9455b5cf2cff"
               },
               "mandarin_native": {
                 "audio_path": "audio/mandarin_native/ji4n.mp3",
@@ -54508,14 +55058,14 @@
             "available": true,
             "chosen": {
               "pinyin_public": {
-                "audio_path": "audio/audio_cmn/卖/cmn-卖.mp3",
+                "audio_path": "audio/audio_cmn/迈/cmn-迈.mp3",
                 "source": "audio_cmn",
-                "sha256": "8e2a0eff5f160700418c51d2bfd4cc6761e81b63ee0adb6616a1a7718de203a3"
+                "sha256": "8e40afb8cec3f0d7972a00d6fc27cb254fc0128045e59dce6ab972ae49d9f840"
               },
               "audio_cmn": {
-                "audio_path": "audio/audio_cmn/卖/cmn-卖.mp3",
+                "audio_path": "audio/audio_cmn/迈/cmn-迈.mp3",
                 "source": "audio_cmn",
-                "sha256": "8e2a0eff5f160700418c51d2bfd4cc6761e81b63ee0adb6616a1a7718de203a3"
+                "sha256": "8e40afb8cec3f0d7972a00d6fc27cb254fc0128045e59dce6ab972ae49d9f840"
               },
               "mandarin_native": {
                 "audio_path": "audio/mandarin_native/ma4i.mp3",
@@ -54803,6 +55353,185 @@
                 "unresolved_reason": null
               }
             ]
+          }
+        ]
+      },
+      {
+        "base": "mang",
+        "complete": false,
+        "slots": [
+          {
+            "key": "mang1",
+            "tone": "1",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-mang1.mp3",
+                "sha256": "fcab5f7b5cf6905e79e95e9843a83d17801bbac25f6432bf3f45880fb4afc774",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-mang1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/mang1.mp3",
+                "sha256": "4617088bc206e7f4c3ce32be96ba3b31d30f1d2eda6be8c96e77b7dca8037445",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/mang1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          },
+          {
+            "key": "mang2",
+            "tone": "2",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/mandarin_native/ma2ng.mp3",
+                "source": "mandarin_native",
+                "sha256": "cc7de3b73ea37ea6d0248249e14b125d1def621e9e76d25eb00f8b5973db9503"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/mandarin_native/ma2ng.mp3",
+                "source": "mandarin_native",
+                "sha256": "cc7de3b73ea37ea6d0248249e14b125d1def621e9e76d25eb00f8b5973db9503"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/mandarin_native/ma2ng.mp3",
+                "source": "mandarin_native",
+                "sha256": "cc7de3b73ea37ea6d0248249e14b125d1def621e9e76d25eb00f8b5973db9503"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/忙/cmn-忙.mp3",
+                "sha256": "52bae61f59b43fb2c712d7b1dd67ce817ba11c15bf3901346daaf6c5876353bb",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-忙.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/mandarin_native/ma2ng.mp3",
+                "sha256": "cc7de3b73ea37ea6d0248249e14b125d1def621e9e76d25eb00f8b5973db9503",
+                "source": "mandarin_native",
+                "source_url": "https://mandarin-native.com/audios_palavras/ma2ng.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-mang2.mp3",
+                "sha256": "725fe6174008513e347b1c46f807d45bb41dc50f7445ab16e72570dd360d8056",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-mang2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/mang2.mp3",
+                "sha256": "c36c8871ff52b55d0b2d81f1610cfbae0cd148acfbc71155b2522fb5ec6fd5e1",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/mang2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ]
+          },
+          {
+            "key": "mang3",
+            "tone": "3",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-mang3.mp3",
+                "sha256": "e186c25e159c4c6945208676c9738e1ff29cf2cdafed0dbb177690512b8bd480",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-mang3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/mang3.mp3",
+                "sha256": "a6c5091273b2a3a98acfa2c346d0cbf61f76da70d6aead2978e4415438b465ba",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/mang3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          },
+          {
+            "key": "mang4",
+            "tone": "4",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-mang4.mp3",
+                "sha256": "bbd4e92f79f5dd2e0d08623e02e12b2b75829d8970e8fac9f99bab329089e692",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-mang4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/mang4.mp3",
+                "sha256": "5bf00c91eaf41df8615ef079633a376ab00c76eed32949e39fbf71b6337a9358",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/mang4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
           }
         ]
       },
@@ -58093,6 +58822,196 @@
               }
             ],
             "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          }
+        ]
+      },
+      {
+        "base": "nei",
+        "complete": false,
+        "slots": [
+          {
+            "key": "nei1",
+            "tone": "1",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/pinyin_public/nei1.mp3",
+                "source": "mp3_chinese_pinyin_sound",
+                "sha256": "63a918d61e30444a04b0f54f1aba0836c3e780f70c8b7bdd11777a806fd6ce8c"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-nei1.mp3",
+                "source": "audio_cmn",
+                "sha256": "ef9afa3fb8f88a603b92d924cff363d466393910a9b9be02e1e9476d7030982a"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/pinyin_public/nei1.mp3",
+                "source": "mp3_chinese_pinyin_sound",
+                "sha256": "63a918d61e30444a04b0f54f1aba0836c3e780f70c8b7bdd11777a806fd6ce8c"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-nei1.mp3",
+                "sha256": "ef9afa3fb8f88a603b92d924cff363d466393910a9b9be02e1e9476d7030982a",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-nei1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              },
+              {
+                "audio_path": "audio/pinyin_public/nei1.mp3",
+                "sha256": "63a918d61e30444a04b0f54f1aba0836c3e780f70c8b7bdd11777a806fd6ce8c",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/nei1.mp3",
+                "source_label": "1",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "candidate_supported",
+                "unresolved_reason": null
+              }
+            ]
+          },
+          {
+            "key": "nei2",
+            "tone": "2",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-nei2.mp3",
+                "sha256": "498572c642500758abfdfcd4a162fec3cf40e97c1934bc1c500471bb6012ed57",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-nei2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/nei2.mp3",
+                "sha256": "2304e7e9e08f772d7777b2b1902245b024760087c0360800a9a6ee1b3006613c",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/nei2.mp3",
+                "source_label": "2",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          },
+          {
+            "key": "nei3",
+            "tone": "3",
+            "available": false,
+            "chosen": {
+              "pinyin_public": null,
+              "audio_cmn": null,
+              "mandarin_native": null
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-nei3.mp3",
+                "sha256": "73f02c9790c193336f95715fcf3fcd514fe85661202e44ea7aeac3bbd17c51f8",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-nei3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/nei3.mp3",
+                "sha256": "bc94dbd8d567c9bc9bf57c8110fedff2eb348f1c7565c04aff36343f8be7f9bf",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/nei3.mp3",
+                "source_label": "3",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ],
+            "next_action": "Confirm the unresolved phonetic/tone evidence independently, or obtain a clearer direct replacement."
+          },
+          {
+            "key": "nei4",
+            "tone": "4",
+            "available": true,
+            "chosen": {
+              "pinyin_public": {
+                "audio_path": "audio/mandarin_native/ne4i.mp3",
+                "source": "mandarin_native",
+                "sha256": "e4ae1b7605a3efb6b40b5063f08992379d0c2530a78b925994c94693b9876d62"
+              },
+              "audio_cmn": {
+                "audio_path": "audio/mandarin_native/ne4i.mp3",
+                "source": "mandarin_native",
+                "sha256": "e4ae1b7605a3efb6b40b5063f08992379d0c2530a78b925994c94693b9876d62"
+              },
+              "mandarin_native": {
+                "audio_path": "audio/mandarin_native/ne4i.mp3",
+                "source": "mandarin_native",
+                "sha256": "e4ae1b7605a3efb6b40b5063f08992379d0c2530a78b925994c94693b9876d62"
+              }
+            },
+            "candidates": [
+              {
+                "audio_path": "audio/audio_cmn/内/cmn-内.mp3",
+                "sha256": "67e61111deebfeec567e617d351d61620139c27fbfc9a59af1713728df053d2b",
+                "source": "audio_cmn",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/master/96k/hsk/cmn-内.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/mandarin_native/ne4i.mp3",
+                "sha256": "e4ae1b7605a3efb6b40b5063f08992379d0c2530a78b925994c94693b9876d62",
+                "source": "mandarin_native",
+                "source_url": "https://mandarin-native.com/audios_palavras/ne4i.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": true,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "tone_confidence_or_signal_quality_unresolved"
+              },
+              {
+                "audio_path": "audio/audio_cmn/syllabs/cmn-nei4.mp3",
+                "sha256": "85208eaf0fcc3a8801ad50a6afae6d796a5b2366337d975a585256370a4c7dd5",
+                "source": "audio_cmn_syllables",
+                "source_url": "https://github.com/hugolpz/audio-cmn/blob/ff9ed3d0c631195bd2c06f39450f3264c7124040/64k/syllabs/cmn-nei4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              },
+              {
+                "audio_path": "audio/pinyin_public/nei4.mp3",
+                "sha256": "bb930bae0f27b66bdaa7dfd13732d1a99e2c96b7c85d52874efe7ecc8c5ab4ff",
+                "source": "pinyin_public",
+                "source_url": "https://github.com/davinfifield/mp3-chinese-pinyin-sound/blob/aa25ecce7b7fb02757b2c2b8e3c01aa975812edc/mp3/nei4.mp3",
+                "source_label": "4",
+                "known_quarantine": false,
+                "assessed_for_comparison": false,
+                "diagnostic_status": "unresolved",
+                "unresolved_reason": "identity_unresolved"
+              }
+            ]
           }
         ]
       },
@@ -71142,14 +72061,14 @@
             "available": true,
             "chosen": {
               "pinyin_public": {
-                "audio_path": "audio/audio_cmn/睡/cmn-睡.mp3",
+                "audio_path": "audio/audio_cmn/税/cmn-税.mp3",
                 "source": "audio_cmn",
-                "sha256": "e812571a287b79a3232df7746af79dc37734ba31e3b61f25c8194f1aea12e925"
+                "sha256": "6a1f5164a288a576af3e4b3309358a40ca0f24e798e8c2e2ccca1b584d76e74c"
               },
               "audio_cmn": {
-                "audio_path": "audio/audio_cmn/睡/cmn-睡.mp3",
+                "audio_path": "audio/audio_cmn/税/cmn-税.mp3",
                 "source": "audio_cmn",
-                "sha256": "e812571a287b79a3232df7746af79dc37734ba31e3b61f25c8194f1aea12e925"
+                "sha256": "6a1f5164a288a576af3e4b3309358a40ca0f24e798e8c2e2ccca1b584d76e74c"
               },
               "mandarin_native": {
                 "audio_path": "audio/mandarin_native/shui4.mp3",
@@ -93492,6 +94411,8 @@
   "unresolved_keys": [
     "a3",
     "a4",
+    "ai1",
+    "ai3",
     "an3",
     "bai2",
     "bai4",
@@ -93546,6 +94467,7 @@
     "dai3",
     "dang3",
     "dang4",
+    "de4",
     "deng2",
     "di4",
     "dian1",
@@ -93652,6 +94574,9 @@
     "ma4",
     "mai1",
     "man1",
+    "mang1",
+    "mang3",
+    "mang4",
     "mei4",
     "men4",
     "mian1",
@@ -93674,6 +94599,8 @@
     "nao2",
     "nao3",
     "nao4",
+    "nei2",
+    "nei3",
     "neng1",
     "neng3",
     "neng4",

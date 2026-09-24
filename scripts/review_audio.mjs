@@ -150,6 +150,33 @@ export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}
   return index;
 }
 
+export function validateAudioUpdate({ledger,imported},before=loadReviewData(),root=ROOT){
+  const data={...before,acousticLedger:ledger,recordings:[
+    ...before.recordings.filter(row=>row.source!=='mandarin_native'),
+    ...imported.recordings.filter(row=>row.recording_type==='word_candidate'),
+  ]};
+  const impact={};
+  for(const allowLocalOnly of [true,false]){
+    const baseline=practiceInventory(before,validateLedger(before,root,{allowLocalOnly}));
+    const after=practiceInventory(data,validateLedger(data,root,{allowLocalOnly}));
+    const scope=allowLocalOnly?'local-use':'redistributable';
+    const keys=new Set(after.recordingLabelPairs.map(pair=>JSON.stringify(pair)));
+    for(const pair of baseline.recordingLabelPairs){
+      if(!keys.has(JSON.stringify(pair)))throw new Error(`${scope} audio update removed a usable initial recording`);
+    }
+    const words=new Set(after.eligibleWords);
+    for(const id of baseline.eligibleWords){
+      if(!words.has(id))throw new Error(`${scope} audio update removed a usable word`);
+    }
+    const suffix=allowLocalOnly?'':'_redistributable';
+    Object.assign(impact,{
+      [`before_words${suffix}`]:baseline.eligibleWords.length,[`after_words${suffix}`]:after.eligibleWords.length,
+      [`before_examples${suffix}`]:baseline.recordingLabelPairs.length,[`after_examples${suffix}`]:after.recordingLabelPairs.length,
+    });
+  }
+  return impact;
+}
+
 export function practiceInventory(data, index) {
   const recordingsByWord = new Map();
   for (const {word, recording} of AudioReview.nativeCandidates(data.words, data.recordings)) {

@@ -9,17 +9,23 @@ preserved; this document's baseline describes the pre-change state.
 
 | Measure | Before | After |
 |---|---:|---:|
-| Usable vocabulary entries | 1,736 | 2,166 |
-| Initial word/recording examples | 1,814 | 2,357 |
-| Imported initial-playback files | 119 | 182 |
-| Imported comparison files across voice preferences | 3 | 132 |
+| Usable vocabulary entries | 1,736 | 2,250 |
+| Initial word/recording examples | 1,814 | 2,445 |
+| Imported initial-playback files | 119 | 184 |
+| Imported comparison files across voice preferences | 3 | 136 |
 | Playable slots for the original 298 syllables | 836 / 1,192 | 880 / 1,192 |
 | Original syllables with all four comparison tones | 74 | 102 |
 
 No baseline entry or initial recording pair was removed. Forty-four original
 gaps were filled; the remaining 312 are explicit in the candidate report.
-Newly usable entries introduce another 16 syllables, so expanded-pool coverage
-is reported separately: 914 of 1,256 slots, with 342 unresolved.
+Newly usable entries introduce another 20 syllables, so expanded-pool coverage
+is reported separately: 922 of 1,272 slots, with 350 unresolved.
+
+Whole-word screening now consumes the same validated mixed comparison bank
+as playback and retains the supplemental assessments when rebuilt. This
+follow-on fix recovers another 84 entries and 88 initial choices beyond the
+first expansion, without lowering tone thresholds. Staged updates preserve
+every current initial choice in both local-use and redistributable builds.
 
 The additional evidence includes family/decoded-duplicate-held-out isolated
 predictions, independent-source corroboration, targeted independent phonetic

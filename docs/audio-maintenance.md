@@ -112,21 +112,30 @@ npm run audio:coverage -- --inventory .audit/native-tone-inventory.json \
 
 The compiler validates proposed data through the real runtime policy before
 publishing it and refuses to remove a previously usable word/initial-recording
-pair. Model files are published only after that validation succeeds. The report
+pair in either the local-use or redistributable build. Model files are published
+only after that validation succeeds. The report
 in `data/mixed_audio_coverage.json` accounts for every imported
 standalone file, actual selection under every comparison voice, original
 coverage, added roles and unresolved slots with candidate-specific reasons.
 
 Measured against commit `61e4066`, the local-use expansion preserves all 1,736
-previously usable entries and 1,814 initial examples. It supplies 2,166 entries
-and 2,357 initial examples; Mandarin Native contributes 406 of those examples
-using 182 distinct files, plus 132 files selected for comparisons across the
+previously usable entries and 1,814 initial examples. It supplies 2,250 entries
+and 2,445 initial examples; Mandarin Native contributes 408 of those examples
+using 184 distinct files, plus 136 files selected for comparisons across the
 three voice preferences. These file-role counts overlap and must not be added.
 Of the original 1,192 comparison slots, 880 are playable (44 more than before);
 102 original families now have all four tones, versus 74 before. The original
 pool still has 312 unresolved slots. Including newly usable syllables, the
-expanded pool has 914 playable slots out of 1,256 and 342 unresolved slots.
+expanded pool has 922 playable slots out of 1,272 and 350 unresolved slots.
 All 869 imported standalone files are accounted for.
+
+The follow-on word recovery preserves the mixed bank and uses its references
+when screening whole words. This recovered 84 additional entries and 88 initial
+recording choices beyond the first expansion, without relaxing phonetic,
+pitch, alignment or neutral-tone checks. A word can rely on a comparison from
+either source; if its supporting comparison is local-only, that word's new
+assessment is also local-only. A redistributable reference is preferred where
+one qualifies.
 
 The new models learn from uncertain source annotations. Source agreement plus
 independent-recording corroboration is **not independently certified 100%
@@ -185,10 +194,12 @@ npm run audio:coverage -- --inventory .audit/native-tone-inventory.json \
 npm run audit:listening
 ```
 
-The spectral compiler rebuilds its own evidence route; run the additive
-compiler and baseline comparison before publishing or packaging that result,
-so rebuilding the original route does not silently discard mixed-source
-support. If source files or labels changed, refresh the immutable native
+The spectral compiler validates and retains the existing supplemental routes,
+uses their comparison references while screening native words, and stages the
+combined result through the same no-regression gate as the mixed compiler.
+Rebuilding the original route no longer discards mixed-source support or
+withholds otherwise screened words just because their references were admitted
+through another route. If source files or labels changed, refresh the immutable native
 inventory and its diagnostic predictions first; stale inputs are rejected.
 
 The collectors resume by audio hash and evidence version. DC bias and

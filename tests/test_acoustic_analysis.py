@@ -10,6 +10,7 @@ AVAILABLE = all(importlib.util.find_spec(name) for name in ('numpy', 'librosa', 
 if AVAILABLE:
     with patch.object(sys, 'path', [str(ROOT / 'scripts'), *sys.path]):
         import acoustic_analysis as acoustic
+        import build_acoustic_reviews as compiler
         from build_acoustic_reviews import evidence_matches, syllable_intervals
         from collect_acoustic_evidence import (
             decoded_bases, identity_encoding, prepare_recognition, resolved_recognition, unique_segmentation,
@@ -20,6 +21,49 @@ if AVAILABLE:
 
 @unittest.skipUnless(AVAILABLE, 'optional acoustic analysis dependencies unavailable')
 class AcousticAnalysisTests(unittest.TestCase):
+    def test_screened_words_can_use_the_mixed_reference_bank_without_weakening_tone_checks(self):
+        digest = 'a' * 64
+        rows = [{
+            'kind': 'native', 'audio_path': f'audio/audio_cmn/test/{number}.mp3',
+            'word_id': str(number), 'word': 'test-word', 'pinyin': 'ma ma',
+            'pinyin_syllables': ['ma', 'ma'], 'lexical_pattern': '2-2', 'surface_pattern': '2-2',
+            'sha256': digest, 'source_url': 'https://example.com/test.mp3', 'license': 'test-only',
+        } for number in range(2)]
+        profiles = {row['audio_path']: {'sha256': digest, 'evidence_version': PROFILE_VERSION,
+                    'duration': 1.2, 'clipped_fraction': 0} for row in rows}
+        raw = {row['audio_path']: {'sha256': digest, 'evidence_version': ASR_VERSION,
+               'text': 'ma ma', 'recognized_pinyin': []} for row in rows}
+        prepared = {path: {**item, 'evidence_version': PREPARED_ASR_VERSION,
+                     'preparation': {'sample_rate': 16000, 'gain': 1,
+                                     'trim_start_seconds': 0, 'trim_end_seconds': 1.2}}
+                    for path, item in raw.items()}
+        alignments = {row['audio_path']: {'sha256': digest, 'evidence_version': compiler.ALIGNMENT_VERSION,
+                      'phonetic_bases': ['ma', 'ma'], 'timestamps_ms': [[100, 500], [600, 900]]} for row in rows}
+        reference = {'kind': 'comparison', 'key': 'ma2', 'audio_path': 'audio/pinyin_public/ma2.mp3',
+                     'sha256': 'b' * 64, 'distribution_scope': 'redistributable'}
+
+        def measurement(profile, start=0, end=None, **kwargs):
+            curve = [300] * 17 if end is None else np.geomspace(210, 330, 17).tolist()
+            return {'status': 'measured', 'curves': {method: curve for method in acoustic.METHODS},
+                    'start': start, 'end': end or profile['duration'], 'voiced_seconds': .2}
+
+        def compile_with(references, candidates=rows):
+            return compiler.compile_reviews(candidates, profiles, raw, {}, alignments, prepared, {}, references)
+
+        with patch.object(compiler, 'segment', side_effect=measurement):
+            self.assertEqual(compile_with([])[0], [])
+            for invalid in [{**reference, 'sha256': digest}, {**reference, 'key': 'ma3'}]:
+                self.assertEqual(compile_with([invalid])[0], [])
+            approved, findings, _ = compile_with([reference])
+            self.assertEqual(len(approved), 2)
+            self.assertFalse(findings)
+            self.assertTrue(all(item['distribution_scope'] == 'redistributable' for item in approved))
+            self.assertEqual(approved[0]['evidence']['comparison_support'][0]['sha256'], reference['sha256'])
+            local, _, _ = compile_with([{**reference, 'distribution_scope': 'local_only'}])
+            self.assertTrue(all(item['distribution_scope'] == 'local_only' for item in local))
+            wrong_tones = [{**row, 'surface_pattern': '3-3'} for row in rows]
+            self.assertEqual(compile_with([{**reference, 'key': 'ma3'}], wrong_tones)[0], [])
+
     def test_dc_and_low_frequency_contamination_are_removed_before_pitch_tracking(self):
         times = np.arange(16000) / 16000
         clean = .01 * np.sin(2 * np.pi * 240 * times)

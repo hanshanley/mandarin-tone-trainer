@@ -3,6 +3,8 @@
 import argparse
 import hashlib
 import json
+import subprocess
+import tempfile
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -91,7 +93,8 @@ def syllable_intervals(recognition, count, duration):
     return list(zip(boundaries, boundaries[1:]))
 
 
-def compile_reviews(candidates, profiles, recognitions, recordings, alignments, prepared_recognitions, neutral_dictionary):
+def compile_reviews(candidates, profiles, recognitions, recordings, alignments, prepared_recognitions,
+                    neutral_dictionary, comparison_approvals=()):
     measured = {path: segment(profile) for path, profile in profiles.items()}
     levels = defaultdict(list)
     family = defaultdict(list)
@@ -110,6 +113,10 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
     family_registers = {key: float(np.quantile(values, .85)) for key, values in family.items()}
     approvals, findings = [], []
     reference_by_key = defaultdict(list)
+    for approval in comparison_approvals:
+        if approval['kind'] != 'comparison':
+            raise ValueError('Only validated comparison assessments can seed the reference bank')
+        reference_by_key[approval['key']].append(approval)
     ordered = sorted(candidates, key=lambda row: row['kind'] != 'comparison')
     for row in ordered:
         path = row['audio_path']
@@ -215,6 +222,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
                              'reason': 'tone evidence is ambiguous or contradicts the label', 'decisions': decisions})
             continue
         references = []
+        local_reference = False
         if kind == 'native':
             for base, tone in zip(expected_bases, expected_tones):
                 if tone == 'N':
@@ -224,11 +232,12 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
                 distinct = [
                     reference for reference in reference_by_key[key]
                     if reference['sha256'] != row['sha256']
-                    and (group.startswith('mandarin_native') or reference['distribution_scope'] == 'redistributable')
                 ]
                 if not distinct:
                     reason = 'no distinct screened comparison for the expected tone'
                     break
+                distinct.sort(key=lambda reference: reference['distribution_scope'] == 'local_only')
+                local_reference |= distinct[0]['distribution_scope'] == 'local_only'
                 references.append({
                     'key': key,
                     'audio_path': distinct[0]['audio_path'],
@@ -244,7 +253,9 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             'sha256': row['sha256'],
             'source_url': row['source_url'],
             'license': row.get('license'),
-            'distribution_scope': 'local_only' if group.startswith('mandarin_native') and recording.get('rights_status') != 'cleared' else 'redistributable',
+            'distribution_scope': 'local_only' if local_reference or (
+                group.startswith('mandarin_native') and recording.get('rights_status') != 'cleared'
+            ) else 'redistributable',
             'evidence': {
                 'method': VERSION,
                 'audio_sha256': row['sha256'],
@@ -290,10 +301,18 @@ def main():
     parser.add_argument('--allow-partial', action='store_true', help='diagnostic output only; refuses to write the runtime ledger')
     parser.add_argument('--activate-imported', action='store_true', help='enable acoustically screened standalone imports for local practice only')
     args = parser.parse_args()
+    runtime_output = args.output.resolve() == (ROOT / 'data/acoustic_reviews.json').resolve()
     if args.allow_partial and args.output.resolve() == (ROOT / 'data/acoustic_reviews.json').resolve():
         parser.error('partial diagnostics must use a separate --output outside the runtime ledger')
     if args.allow_partial and args.activate_imported:
         parser.error('partial diagnostics cannot activate imported recordings')
+    previous = json.loads(args.output.read_text()) if runtime_output and args.output.is_file() else {}
+    supplemental = [entry for entry in previous.get('approvals', []) if entry['evidence']['method'] != VERSION]
+    if supplemental:
+        subprocess.run(['node', '--input-type=module', '-e', """
+import {loadReviewData,validateLedger} from './scripts/review_audio.mjs';
+validateLedger(loadReviewData());
+"""], cwd=ROOT, check=True)
     candidates = json.loads(args.candidates.read_text(encoding='utf-8'))['candidates']
     profiles, recognition = read_jsonl(args.profiles), read_jsonl(args.asr)
     prepared_recognition = read_jsonl(args.prepared_asr)
@@ -317,7 +336,7 @@ def main():
     neutral_dictionary = parse_cedict(load_cedict(dictionary_path))
     approvals, findings, registers = compile_reviews(
         required, profiles, recognition, recordings, read_jsonl(args.alignment), prepared_recognition,
-        neutral_dictionary,
+        neutral_dictionary, [entry for entry in supplemental if entry['kind'] == 'comparison'],
     )
     code_hash = hashlib.sha256(b''.join(
         (ROOT / 'scripts' / name).read_bytes()
@@ -338,33 +357,53 @@ def main():
             'recording_label_candidates': len(required),
             'missing_current_evidence': len(set(stale)),
         },
-        'approvals': approvals,
+        'supplemental_pipelines': previous.get('supplemental_pipelines', {}),
     }
     for entry in approvals:
         entry['evidence']['pipeline_sha256'] = code_hash
         if 'neutral_lexical_reading' in entry['evidence']:
             entry['evidence']['neutral_lexicon_sha256'] = dictionary_hash
+    combined = {label_identity(entry): entry for entry in supplemental}
+    combined.update((label_identity(entry), entry) for entry in approvals)
+    ledger['approvals'] = list(combined.values())
+    imported_path = ROOT / 'data/mandarin_native_recordings.json'
+    imported = json.loads(imported_path.read_text(encoding='utf-8'))
+    if args.activate_imported:
+        eligible = {entry['audio_path'] for entry in ledger['approvals']}
+        corroborated = {entry['audio_path'] for entry in ledger['approvals'] if entry['evidence']['method'] != VERSION}
+        for recording in imported['recordings']:
+            if recording['recording_type'] != 'word_candidate' or recording.get('review_status') not in (
+                'pending', 'acoustic_screened', 'source_corroborated',
+            ):
+                continue
+            recording['quiz_eligible'] = recording['audio_path'] in eligible
+            recording['review_status'] = (
+                'source_corroborated' if recording['audio_path'] in corroborated
+                else 'acoustic_screened' if recording['quiz_eligible'] else 'pending'
+            )
+    impact = None
+    if runtime_output:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', encoding='utf-8') as staged:
+            json.dump({'ledger': ledger, 'imported': imported}, staged, ensure_ascii=False)
+            staged.flush()
+            impact = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', """
+import fs from 'node:fs';
+import {validateAudioUpdate} from './scripts/review_audio.mjs';
+process.stdout.write(JSON.stringify(validateAudioUpdate(JSON.parse(fs.readFileSync(process.argv[1],'utf8')))));
+""", staged.name], cwd=ROOT, text=True))
+    if args.activate_imported:
+        temporary = imported_path.with_suffix('.json.part')
+        temporary.write_text(json.dumps(imported, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        temporary.replace(imported_path)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary = args.output.with_suffix('.json.part')
     temporary.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     temporary.replace(args.output)
-    if args.activate_imported:
-        eligible = {entry['audio_path'] for entry in approvals if entry['kind'] == 'native'}
-        eligible.update(entry['audio_path'] for entry in approvals if entry['kind'] == 'comparison')
-        for filename in ('mandarin_native_recordings.json',):
-            imported_path = ROOT / 'data' / filename
-            imported = json.loads(imported_path.read_text(encoding='utf-8'))
-            for recording in imported['recordings']:
-                if recording['recording_type'] != 'word_candidate' or recording.get('review_status') not in ('pending', 'acoustic_screened'):
-                    continue
-                recording['quiz_eligible'] = recording['audio_path'] in eligible
-                recording['review_status'] = 'acoustic_screened' if recording['quiz_eligible'] else 'pending'
-            temporary = imported_path.with_suffix('.json.part')
-            temporary.write_text(json.dumps(imported, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-            temporary.replace(imported_path)
     report = {
         'method': VERSION, 'certifies_accuracy': False, 'registers_hz': registers,
         'pipeline_sha256': code_hash,
+        'runtime_impact': impact,
+        'preserved_supplemental_assessments': sum(entry['evidence']['method'] != VERSION for entry in ledger['approvals']),
         'screened': dict(Counter(row['kind'] for row in approvals)),
         'native_tone_coverage': dict(Counter(
             tone for row in approvals if row['kind'] == 'native'

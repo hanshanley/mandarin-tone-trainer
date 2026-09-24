@@ -480,20 +480,9 @@ def build(inventory_path, predictions_output):
         staged.flush()
         script = """
 import fs from 'node:fs';
-import {loadReviewData,validateLedger,practiceInventory} from './scripts/review_audio.mjs';
-const before=loadReviewData(),baseline=practiceInventory(before,validateLedger(before));
+import {validateAudioUpdate} from './scripts/review_audio.mjs';
 const staged=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));
-const data={...before,acousticLedger:staged.ledger,recordings:[
-  ...before.recordings.filter(row=>row.source!=='mandarin_native'),
-  ...staged.imported.recordings.filter(row=>row.recording_type==='word_candidate'),
-]};
-const after=practiceInventory(data,validateLedger(data));
-const keys=new Set(after.recordingLabelPairs.map(pair=>JSON.stringify(pair)));
-for(const pair of baseline.recordingLabelPairs)if(!keys.has(JSON.stringify(pair)))throw new Error('Mixed-source change removed a usable initial recording');
-const words=new Set(after.eligibleWords);
-for(const id of baseline.eligibleWords)if(!words.has(id))throw new Error('Mixed-source change removed a usable word');
-process.stdout.write(JSON.stringify({before_words:baseline.eligibleWords.length,after_words:after.eligibleWords.length,
-before_examples:baseline.recordingLabelPairs.length,after_examples:after.recordingLabelPairs.length}));
+process.stdout.write(JSON.stringify(validateAudioUpdate(staged)));
 """
         impact = json.loads(subprocess.check_output(
             ['node', '--input-type=module', '-e', script, staged.name], cwd=ROOT, text=True,
