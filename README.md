@@ -46,6 +46,10 @@ audio; **Comparison voice** separately controls the isolated tone examples.
 
 Tone buttons use screened isolated-syllable examples when available. Switch
 **Comparison voice** to choose reference-corpus or human `audio-cmn` recordings.
+**Mandarin Native voice** is also available in local-use builds. Each button
+selects its own suitable syllable/tone recording; if that voice lacks a checked
+clip, the app uses an available recording from another source. This never
+changes the initial whole-word recording or stitches syllables together.
 Only recordings with qualifying acoustic evidence or explicit listening
 approval can play. Clear single-syllable word recordings can supply a fallback;
 unavailable alternatives remain selectable answers without playing unsafe audio.
@@ -192,13 +196,17 @@ The [native tone-label validator](docs/native-tone-validator.md) is the separate
 label-aware workflow for the direct-recording library. It makes label-blind
 audio predictions, keeps original labels as uncertain hypotheses, and reports
 held-out-source results without treating source-label agreement as certified
-accuracy. It remains diagnostic until validated for native-library admission;
-it does not impose an additional blanket exclusion on normal practice.
+accuracy. It is not a standalone native-library admission gate and does not
+impose an additional blanket exclusion on normal practice. A narrow additive
+route combines high-confidence, unseen imported whole-word predictions with
+an already screened original recording of the same reading; see the maintenance
+guide for the full corroboration requirements.
 
 The [mixed-source playback improvement plan](docs/mixed-source-playback-plan.md)
-targets the remaining comparison gaps and unused direct imports while preserving
-the current practice pool. Initial word audio and individual tone examples may
-come from different sources; coverage is measured per syllable/tone slot.
+is implemented by the additive comparison-bank workflow in the
+[audio maintenance guide](docs/audio-maintenance.md). Initial word audio and
+individual tone examples can come from different sources; coverage and
+unresolved candidates are recorded per syllable/tone slot.
 
 ## FAQ
 

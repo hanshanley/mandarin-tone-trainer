@@ -48,10 +48,97 @@ practice implicitly.
 
 ## Acoustic prerequisites
 
+### Additive mixed-source comparison bank
+
+The runtime comparison index combines all eligible direct sources per
+`base + tone`. **Word recordings** chooses intact native-word audio;
+**Comparison voice** independently prefers reference, original human, or
+Mandarin Native syllables. Missing preferred-source clips fall back across the
+same mixed bank. Rights-filtered builds omit the imported-voice option.
+
+`cross-source-native-reference-v1` is an additional evidence route in the
+existing `data/acoustic_reviews.json`, not a competing allowlist:
+
+- Five cross-fit models keep each complete base family and every identical
+  decoded recording out of its own training and temperature-calibration folds.
+- Predictions do not receive the proposed tone as an input. Both the expected
+  probability (at least 0.95) and top-class margin (at least 0.25) must qualify.
+- At least two usable pitch tracks, adequate voicing, low clipping and phonetic
+  identity evidence are required.
+- The same syllable/tone must be supported in a genuinely different source.
+  Matching decoded hashes or near-identical waveform payloads do not count as
+  independent corroboration.
+- Known quarantines are not overridden. A clear primary ASR disagreement on the
+  base syllable cannot be rescued by a fallback recognizer.
+
+For unresolved identity-only gaps, a separate unprompted Whisper-small check
+examines both the raw audio and a cleaned, silence-padded analysis copy. The
+original playback file is unchanged. Both independent checks must resolve the
+same base, and the evidence preserves the original primary-model outputs and
+model fingerprint. This is additional evidence, not a human attestation.
+
+Supported comparison recordings may also serve their exactly mapped
+single-syllable native word readings. Initial-word and comparison identities
+remain separate, and new native entries retain a different checked comparison
+recording. Existing native assessments and usable examples are preserved.
+
+For imported two-syllable whole words, `cross-source-whole-word-v1` adds a
+narrow corroborated route. It requires the label-blind native model to agree
+with the exact original spoken pattern, probability at least 0.95, margin at
+least 0.25, at least three stable boundary variants, sufficient signal quality,
+raw/prepared phonetic identity checks and no training-reference overlap.
+An already screened original-library **whole word of the same vocabulary
+reading and spoken pattern** must also exist. Encoded/decoded duplicates and
+near-identical copies cannot corroborate each other. The reference's independent
+per-tone support remains mandatory. This route does not admit new neutral
+examples or combine syllable recordings into words.
+
+```bash
+# Export immutable candidates with original labels and duplicate fingerprints.
+npm run native:inventory -- --output .audit/native-tone-inventory.json
+
+# Build additive support; the first run also records identity-only gap candidates.
+npm run audio:mix -- --inventory .audit/native-tone-inventory.json
+
+# Optional independent recognition for a specific gap inventory.
+npm run audio:identity-gaps -- --inventory .audit/native-tone-inventory.json \
+  --gap-keys .audit/comparison-coverage-gaps-for-plan.json
+npm run audio:mix -- --inventory .audit/native-tone-inventory.json
+
+# Compare against a saved pre-change practice inventory.
+npm run audio:coverage -- --inventory .audit/native-tone-inventory.json \
+  --baseline .audit/mixed-audio-original-baseline.json
+```
+
+The compiler validates proposed data through the real runtime policy before
+publishing it and refuses to remove a previously usable word/initial-recording
+pair. Model files are published only after that validation succeeds. The report
+in `data/mixed_audio_coverage.json` accounts for every imported
+standalone file, actual selection under every comparison voice, original
+coverage, added roles and unresolved slots with candidate-specific reasons.
+
+Measured against commit `61e4066`, the local-use expansion preserves all 1,736
+previously usable entries and 1,814 initial examples. It supplies 2,166 entries
+and 2,357 initial examples; Mandarin Native contributes 406 of those examples
+using 182 distinct files, plus 132 files selected for comparisons across the
+three voice preferences. These file-role counts overlap and must not be added.
+Of the original 1,192 comparison slots, 880 are playable (44 more than before);
+102 original families now have all four tones, versus 74 before. The original
+pool still has 312 unresolved slots. Including newly usable syllables, the
+expanded pool has 914 playable slots out of 1,256 and 342 unresolved slots.
+All 869 imported standalone files are accounted for.
+
+The new models learn from uncertain source annotations. Source agreement plus
+independent-recording corroboration is **not independently certified 100%
+linguistic accuracy**. Unresolved candidates stay explicit; they are not called
+wrong solely because a recognizer or model could not establish support.
+
 Every eligible question requires:
 
-1. Syllable-identity evidence and at least two usable pitch trackers agreeing
-   on F0 and each expected **spoken tone**, with no conflicting usable tracker.
+1. Syllable-identity evidence and qualifying tone evidence from the spectral
+   route or the corroborated mixed-source routes above. The spectral route
+   requires at least two usable pitch trackers agreeing on F0 and each expected
+   **spoken tone**, with no conflicting usable tracker.
    Independent ASR may return Hanzi or exact literal pinyin. Approximate
    spellings such as `jai` -> `zhai` or `lee` -> `li` are not guessed.
    Concatenated pinyin must have a unique syllable segmentation; ambiguous
@@ -92,8 +179,17 @@ python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candid
 python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase prepared-asr
 python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase alignment
 python3 scripts/build_acoustic_reviews.py --candidates .audit/acoustic-candidates.json --activate-imported
+npm run audio:mix -- --inventory .audit/native-tone-inventory.json
+npm run audio:coverage -- --inventory .audit/native-tone-inventory.json \
+  --baseline .audit/mixed-audio-original-baseline.json
 npm run audit:listening
 ```
+
+The spectral compiler rebuilds its own evidence route; run the additive
+compiler and baseline comparison before publishing or packaging that result,
+so rebuilding the original route does not silently discard mixed-source
+support. If source files or labels changed, refresh the immutable native
+inventory and its diagnostic predictions first; stale inputs are rejected.
 
 The collectors resume by audio hash and evidence version. DC bias and
 low-frequency contamination are removed before tracking pitch with pYIN,

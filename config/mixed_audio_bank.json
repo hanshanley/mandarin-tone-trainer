@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "method": "cross-source-native-reference-v1",
+  "folds": 5,
+  "seed": "mixed-source-family-held-out-2026-09-24",
+  "minimum_probability": 0.95,
+  "minimum_margin": 0.25,
+  "minimum_distinct_sources": 2,
+  "minimum_voiced_frames": 12,
+  "maximum_tracker_difference_semitones": 2.0,
+  "maximum_duplicate_similarity": 0.995,
+  "forest": {"n_estimators": 128, "max_depth": 14, "min_samples_leaf": 4, "random_state": 7324},
+  "independent_gold_accuracy_claimed": false
+}

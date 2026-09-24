@@ -1,7 +1,31 @@
 # Mixed-source tone practice: focused improvement plan
 
-Status: proposed implementation plan. No practice eligibility, audio, labels,
-or UI behavior are changed by this document.
+Status: implemented as an additive mixed-source bank. See
+`docs/audio-maintenance.md` and the generated `data/mixed_audio_coverage.json`
+for exact current results and unresolved candidates. Existing examples are
+preserved; this document's baseline describes the pre-change state.
+
+## Delivered local-use expansion
+
+| Measure | Before | After |
+|---|---:|---:|
+| Usable vocabulary entries | 1,736 | 2,166 |
+| Initial word/recording examples | 1,814 | 2,357 |
+| Imported initial-playback files | 119 | 182 |
+| Imported comparison files across voice preferences | 3 | 132 |
+| Playable slots for the original 298 syllables | 836 / 1,192 | 880 / 1,192 |
+| Original syllables with all four comparison tones | 74 | 102 |
+
+No baseline entry or initial recording pair was removed. Forty-four original
+gaps were filled; the remaining 312 are explicit in the candidate report.
+Newly usable entries introduce another 16 syllables, so expanded-pool coverage
+is reported separately: 914 of 1,256 slots, with 342 unresolved.
+
+The additional evidence includes family/decoded-duplicate-held-out isolated
+predictions, independent-source corroboration, targeted independent phonetic
+recognition and a narrow corroborated whole-word route. This is an implemented
+coverage improvement, **not a claim of 100% independently certified linguistic
+accuracy**.
 
 ## Problem to solve
 
@@ -205,6 +229,8 @@ global confidence-threshold change.
 - Reports distinguish downloaded files, actually used files, vocabulary
   readings, initial-recording examples and complete comparison families.
 
-No runtime eligibility or audio is changed by this planning pass. The next
-implementation task is the gap/candidate catalog and mixed-source resolver,
-not another broad classifier-driven reduction of the practice pool.
+The implementation expands the existing assessment ledger and comparison
+resolver. It does not change original tone labels, cut audio, or add an
+experimental blanket exclusion. Coverage gaps that lack sufficient evidence
+remain explicitly reported rather than silently relabeled or hidden by
+removing words.

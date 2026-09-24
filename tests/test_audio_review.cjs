@@ -139,7 +139,7 @@ function selectedPractice(approvals){
     }),
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
+async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -165,6 +165,7 @@ async function appHarness({approvals=[],acousticApprovals=[],practiceSelection,t
       version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
       neutral_lexicon_sha256:acousticApprovals.find(entry=>entry.evidence?.neutral_lexicon_sha256)?.evidence.neutral_lexicon_sha256,
       certifies_accuracy:false,approvals:acousticApprovals,
+      supplemental_pipelines:supplementalPipelines,
     },
   };
   data['../data/practice_selection.json']=practiceSelection===undefined
@@ -832,6 +833,159 @@ test('normal ledger validation ignores diagnostic selection fields',async()=>{
   assert.deepEqual(after.eligibleWords,before.eligibleWords);
   assert.deepEqual(after.recordingLabelPairs,before.recordingLabelPairs);
   assert.deepEqual([...after.audio].sort(),[...before.audio].sort());
+});
+
+function mixedComparison(){
+  const selfPath='audio/mandarin_native/ma3.mp3',peerPath='audio/pinyin_public/ma3.mp3';
+  function prediction(audio_path,sha256,source,decoded_sha256){
+    return {audio_path,sha256,source,decoded_sha256,key:'ma3',expected_tone:'3',predicted_tone:'3',
+      status:'candidate_supported',fold:0,family:'base:ma',model_sha256:'b'.repeat(64),
+      expected_probability:.99,margin:.95,training_overlap:false,identity_supported:true,
+      identity_method:'paraformer-raw-prepared',
+      quality:{jointly_voiced_frames:30,usable_trackers:3,tracker_difference:.1,clipped_fraction:0},
+      recognition_checks:['raw','prepared'].map(input=>({input,audio_sha256:sha256,transcript:'马',decoded_bases:['ma']}))};
+  }
+  const descriptor=Review.comparisonDescriptor('ma3',{audio_path:selfPath});
+  return {
+    ...descriptor,assessment:'automated',status:'screened',sha256:hash,
+    source_url:'https://example.com/ma3.mp3',license:null,distribution_scope:'local_only',
+    evidence:{
+      method:'cross-source-native-reference-v1',pipeline_sha256:'a'.repeat(64),model_bundle_sha256:'c'.repeat(64),
+      audio_sha256:hash,label_identity:Review.identity(descriptor),original_key:'ma3',source:'mandarin_native',
+      cross_fit:prediction(selfPath,hash,'mandarin_native','e'.repeat(64)),
+      corroboration:{
+        audio_path:peerPath,sha256:nativeHash,decoded_sha256:'f'.repeat(64),key:'ma3',source:'pinyin_public',
+        waveform_similarity:.2,cross_fit:prediction(peerPath,nativeHash,'pinyin_public','f'.repeat(64)),
+      },
+      independent_gold_accuracy_claimed:false,
+    },
+  };
+}
+function mixedPipeline(){
+  return {'cross-source-native-reference-v1':{pipeline_sha256:'a'.repeat(64),model_bundle_sha256:'c'.repeat(64),
+    minimum_probability:.95,minimum_margin:.25,minimum_distinct_sources:2,independent_gold_accuracy_claimed:false}};
+}
+
+test('mixed-source references reject self-training, source copying, wrong identity and weak evidence',()=>{
+  const assessment=mixedComparison();
+  Review.validateApproval(assessment);
+  for(const edit of [
+    a=>a.evidence.cross_fit.predicted_tone='2',
+    a=>a.evidence.cross_fit.training_overlap=true,
+    a=>a.evidence.cross_fit.expected_probability=.7,
+    a=>a.evidence.cross_fit.identity_supported=false,
+    a=>a.evidence.cross_fit.recognition_checks[0].decoded_bases=['na'],
+    a=>a.evidence.corroboration.source='mandarin_native',
+    a=>a.evidence.corroboration.decoded_sha256=a.evidence.cross_fit.decoded_sha256,
+    a=>a.evidence.corroboration.waveform_similarity=.999,
+    a=>a.evidence.corroboration.key='ma2',
+    a=>a.evidence.independent_gold_accuracy_claimed=true,
+  ]){
+    const invalid=structuredClone(assessment);edit(invalid);
+    assert.throws(()=>Review.validateApproval(invalid));
+  }
+  const goodLedger={...acousticLedger([assessment]),supplemental_pipelines:mixedPipeline()};
+  assert.equal(Review.createIndex({version:1,approvals:[]},goodLedger).size,1);
+  assert.equal(Review.createIndex({version:1,approvals:[]},goodLedger,{allowLocalOnly:false}).size,0);
+  assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger([assessment])),/Mixed-source pipeline/);
+});
+
+test('new-source comparison voice fills a tone independently of the initial word source',async()=>{
+  const comparison=mixedComparison();
+  const imported={word:null,source:'mandarin_native',recording_type:'word_candidate',
+    audio_path:comparison.audio_path,candidate_hsk_ids:[],quiz_eligible:true,
+    review_status:'source_corroborated',rights_status:'unverified',license:null};
+  const acoustic=[...automaticComparisons().filter(a=>a.key!=='ma3'),
+    acousticApproval(Review.nativeDescriptor(word,native)),comparison];
+  const app=await appHarness({acousticApprovals:acoustic,importedRecordings:[imported],supplementalPipelines:mixedPipeline()});
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.run('currentRec.source'),'audio_cmn');
+  for(const source of ['pinyin_public','audio_cmn','mandarin_native']){
+    app.get('correctionSource').value=source;
+    assert.equal(app.run("correctionSelection('ma3').audio_path"),comparison.audio_path);
+  }
+  assert.equal(app.run('currentRec.source'),'audio_cmn');
+});
+
+test('imported comparison preference falls back without bypassing rejections or changing the tone',()=>{
+  const assessment=mixedComparison(),publicComparison=comparison('ma3');
+  const recording={source:'mandarin_native',recording_type:'word_candidate',audio_path:assessment.audio_path,
+    quiz_eligible:true,review_status:'source_corroborated',rights_status:'unverified',license:null};
+  const ledger={...acousticLedger([assessment]),supplemental_pipelines:mixedPipeline()};
+  const publicRecordings={ma3:{audio_path:publicComparison.audio_path}};
+  const choose=changed=>{
+    const reviewed=Review.createIndex({version:1,approvals:[publicComparison]},ledger,{sourceRecordings:[changed]});
+    return Review.correctionSelection(Policy,'ma3',{},publicRecordings,reviewed,'mandarin_native');
+  };
+  assert.equal(choose(recording).audio_path,assessment.audio_path);
+  for(const changed of [
+    {...recording,quiz_eligible:false},
+    {...recording,review_status:'rejected'},
+    {...recording,recording_type:'context_sentence'},
+  ]){
+    const fallback=choose(changed);
+    assert.equal(fallback.audio_path,publicComparison.audio_path);
+    assert.equal(fallback.approval.key,'ma3');
+  }
+});
+
+test('whole-word corroboration binds an unseen imported pair to an assessed original reading',()=>{
+  const pair={...word,id:'pair',pinyin:'ma ma',pinyin_syllables:['ma','ma'],
+    lexical_pattern:'1-2',default_surface_pattern:'1-2'};
+  const reference=acousticApproval(Review.nativeDescriptor(pair,native));
+  const descriptor=Review.nativeDescriptor(pair,{...native,audio_path:'audio/mandarin_native/pair.mp3'});
+  const digest='d'.repeat(64);
+  const imported={
+    ...descriptor,assessment:'automated',status:'screened',sha256:digest,
+    source_url:'https://example.com/pair.mp3',license:null,distribution_scope:'local_only',
+    evidence:{
+      method:'cross-source-whole-word-v1',pipeline_sha256:'a'.repeat(64),native_model_sha256:'b'.repeat(64),
+      audio_sha256:digest,label_identity:Review.identity(descriptor),supplied_pattern:'1-2',blind_pattern:'1-2',
+      minimum_probability:.99,minimum_margin:.9,boundary_variants:3,boundary_stable:true,quality_ok:true,
+      training_overlap:false,decoded_sha256:'e'.repeat(64),independent_gold_accuracy_claimed:false,
+      recognition_checks:['raw','prepared'].map(input=>({input,audio_sha256:digest,transcript:'ma ma',decoded_bases:['ma','ma']})),
+      whole_word_reference:{identity:Review.identity(reference),audio_path:reference.audio_path,sha256:reference.sha256,
+        decoded_sha256:'f'.repeat(64),waveform_similarity:.2},
+      comparison_support:reference.evidence.comparison_support,
+    },
+  };
+  const ledger={...acousticLedger([...automaticComparisons(),reference,imported]),supplemental_pipelines:{
+    'cross-source-whole-word-v1':{pipeline_sha256:'a'.repeat(64),native_model_sha256:'b'.repeat(64),
+      minimum_probability:.95,minimum_margin:.25,independent_gold_accuracy_claimed:false},
+  }};
+  Review.validateApproval(imported);
+  assert.equal(Review.createIndex({version:1,approvals:[]},ledger).get(Review.identity(imported)),imported);
+  assert.equal(Review.createIndex({version:1,approvals:[]},ledger,{allowLocalOnly:false}).has(Review.identity(imported)),false);
+  for(const edit of [
+    a=>a.evidence.blind_pattern='1-3',
+    a=>a.evidence.minimum_probability=.9,
+    a=>a.evidence.minimum_margin=.2,
+    a=>a.evidence.boundary_variants=2,
+    a=>a.evidence.training_overlap=true,
+    a=>a.evidence.boundary_stable=false,
+    a=>a.evidence.quality_ok=false,
+    a=>a.evidence.recognition_checks[1].decoded_bases=['ma','na'],
+    a=>a.evidence.recognition_checks[0].audio_sha256=hash,
+    a=>a.evidence.recognition_checks.forEach(check=>check.decoded_bases=null),
+    a=>a.evidence.whole_word_reference.decoded_sha256=a.evidence.decoded_sha256,
+    a=>a.evidence.whole_word_reference.waveform_similarity=.999,
+    a=>a.evidence.whole_word_reference.audio_path='audio/mandarin_native/copy.mp3',
+    a=>a.evidence.independent_gold_accuracy_claimed=true,
+    a=>a.distribution_scope='redistributable',
+    a=>a.surface_pattern='1-N',
+  ]){
+    const changed=structuredClone(imported);edit(changed);
+    assert.throws(()=>Review.validateApproval(changed));
+  }
+  for(const edit of [
+    l=>l.approvals.splice(l.approvals.indexOf(l.approvals.find(a=>a.audio_path===reference.audio_path)),1),
+    l=>l.approvals.at(-1).evidence.whole_word_reference.sha256='9'.repeat(64),
+    l=>l.approvals.at(-1).evidence.comparison_support[0].key='ma4',
+    l=>l.supplemental_pipelines['cross-source-whole-word-v1'].native_model_sha256='9'.repeat(64),
+  ]){
+    const changed=structuredClone(ledger);edit(changed);
+    assert.throws(()=>Review.createIndex({version:1,approvals:[]},changed));
+  }
 });
 
 test('checked new standalone character audio is usable as a local comparison, not a sentence crop',()=>{

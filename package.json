@@ -31,6 +31,9 @@
     "native:audit-plan": "python3 scripts/native_tone_validator.py audit-plan",
     "native:calibrate-gold": "python3 scripts/native_tone_validator.py calibrate-gold",
     "native:evaluate-gold": "python3 scripts/native_tone_validator.py evaluate-gold",
+    "audio:mix": "python3 scripts/build_mixed_audio_bank.py",
+    "audio:identity-gaps": "python3 scripts/verify_comparison_identity.py",
+    "audio:coverage": "node scripts/report_mixed_audio_coverage.mjs",
     "audit:agreement-selection": "node scripts/build_agreement_practice.mjs",
     "download:mandarin-native": "python3 scripts/download_mandarin_native.py --standalone-only",
     "test": "python3 -m unittest discover -s tests -q"

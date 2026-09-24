@@ -50,7 +50,7 @@ export function candidatesFor(data) {
         ...comparison,
         source_url: recording.source_url,
         license: recording.license,
-        blocked_reason: recording.source === 'mandarin_native' && ['pending','acoustic_screened'].includes(recording.review_status)
+        blocked_reason: recording.source === 'mandarin_native' && ['pending','acoustic_screened','source_corroborated'].includes(recording.review_status)
           ? null : AudioReview.nativeBlockReason(recording),
       });
     }
@@ -165,13 +165,13 @@ export function practiceInventory(data, index) {
       AudioReview.nativeApproval(index, word, recording)
       && word.pinyin_syllables.every((base, position) => {
         const tone = (recording.surface_pattern || word.default_surface_pattern || word.lexical_pattern).split('-')[position];
-        return tone === 'N' || ['pinyin_public', 'audio_cmn'].every(mode =>
+        return tone === 'N' || ['pinyin_public', 'audio_cmn', 'mandarin_native'].every(mode =>
           AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
             data.quality, data.publicRecordings, index, mode));
       }));
     if (!natives.length) continue;
     const comparisons = (word.pinyin_syllables || []).flatMap(base =>
-      ['1', '2', '3', '4'].flatMap(tone => ['pinyin_public', 'audio_cmn'].map(mode =>
+      ['1', '2', '3', '4'].flatMap(tone => ['pinyin_public', 'audio_cmn', 'mandarin_native'].map(mode =>
         AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
           data.quality, data.publicRecordings, index, mode))));
     eligibleWords.push(word.id);

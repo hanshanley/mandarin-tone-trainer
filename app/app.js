@@ -105,6 +105,13 @@ function updatePracticeSettings(){
     option.disabled=!available;
   }
   if($('wordSource').selectedOptions?.[0]?.disabled)$('wordSource').value='all';
+  const importedComparisons=Array.from(audioReviews.comparisonAlternatives.values()).some(entries=>
+    entries.some(entry=>entry.audio_path.startsWith('audio/mandarin_native/')));
+  for(const option of Array.from($('correctionSource').options||[])){
+    if(option.value!=='mandarin_native')continue;
+    option.hidden=!importedComparisons;option.disabled=!importedComparisons;
+  }
+  if($('correctionSource').selectedOptions?.[0]?.disabled)$('correctionSource').value='pinyin_public';
   const eligible=practiceWords();
   for(const option of Array.from($('syllables').options||[])){
     const available=eligible.some(word=>{
@@ -593,7 +600,8 @@ $('correctionSource').onchange=async()=>{
   }else{
     await next(false,false);
   }
-  setAudioStatus(`Comparison voice: ${$('correctionSource').value==='audio_cmn'?'human':'reference'}.`);
+  const voice={audio_cmn:'human',pinyin_public:'reference',mandarin_native:'Mandarin Native'}[$('correctionSource').value];
+  setAudioStatus(`Comparison voice preference: ${voice}. Individual tones may use another available voice.`);
 };
 $('sandhiOnly').onchange=()=>{quizHistory=[];next(true,false)};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};

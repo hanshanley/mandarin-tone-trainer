@@ -71,6 +71,101 @@
   function comparisonDescriptor(key,recording){
     return {kind:'comparison',audio_path:recording.audio_path,key};
   }
+  function sourceForPath(path){
+    if(path.startsWith('audio/audio_cmn/'))return 'audio_cmn';
+    if(path.startsWith('audio/pinyin_public/'))return 'pinyin_public';
+    if(path.startsWith('audio/mandarin_native/')&&!isSentenceDerived({audio_path:path}))return 'mandarin_native';
+    return null;
+  }
+  function validateCrossSourceWord(entry){
+    const evidence=entry.evidence,reference=evidence.whole_word_reference;
+    const bases=entry.pinyin_syllables?.map(base=>base.replace(/ü/g,'v'));
+    if(entry.kind!=='native'||bases?.length!==2||entry.surface_pattern.includes('N')
+      ||isSentenceDerived(entry)||sourceForPath(entry.audio_path)!=='mandarin_native'||entry.distribution_scope!=='local_only'
+      ||evidence.audio_sha256!==entry.sha256||evidence.label_identity!==identity(entry)
+      ||evidence.supplied_pattern!==entry.surface_pattern||evidence.blind_pattern!==entry.surface_pattern
+      ||!Number.isFinite(evidence.minimum_probability)||evidence.minimum_probability<.95||evidence.minimum_probability>1
+      ||!Number.isFinite(evidence.minimum_margin)||evidence.minimum_margin<.25||evidence.minimum_margin>1
+      ||evidence.training_overlap!==false||evidence.boundary_stable!==true||evidence.quality_ok!==true
+      ||!Number.isInteger(evidence.boundary_variants)||evidence.boundary_variants<3
+      ||evidence.independent_gold_accuracy_claimed!==false
+      ||!/^[a-f0-9]{64}$/.test(evidence.pipeline_sha256||'')
+      ||!/^[a-f0-9]{64}$/.test(evidence.native_model_sha256||'')
+      ||!/^[a-f0-9]{64}$/.test(evidence.decoded_sha256||'')
+      ||!reference||!nonempty(reference.identity)||sourceForPath(reference.audio_path||'')!=='audio_cmn'
+      ||reference.sha256===entry.sha256||reference.decoded_sha256===evidence.decoded_sha256
+      ||!/^[a-f0-9]{64}$/.test(reference.sha256||'')||!/^[a-f0-9]{64}$/.test(reference.decoded_sha256||'')
+      ||!Number.isFinite(reference.waveform_similarity)||reference.waveform_similarity<0||reference.waveform_similarity>=.995
+      ||!Array.isArray(evidence.recognition_checks)||evidence.recognition_checks.length!==2
+      ||evidence.recognition_checks[0]?.input!=='raw'||evidence.recognition_checks[1]?.input!=='prepared'
+      ||evidence.recognition_checks.some(check=>check.audio_sha256!==entry.sha256||typeof check.transcript!=='string'
+        ||(check.decoded_bases!==null&&JSON.stringify(check.decoded_bases)!==JSON.stringify(bases)))
+      ||!evidence.recognition_checks.some(check=>JSON.stringify(check.decoded_bases)===JSON.stringify(bases))
+      ||!Array.isArray(evidence.comparison_support)||evidence.comparison_support.length!==2){
+      throw new Error(`Invalid corroborated whole-word evidence: ${entry.audio_path}`);
+    }
+  }
+  function validateCrossSourceReference(entry){
+    if(entry.kind!=='comparison'&&!(entry.kind==='native'&&entry.pinyin_syllables?.length===1&&/^[1-4]$/.test(entry.surface_pattern))){
+      throw new Error('Mixed-source reference requires an isolated full-tone syllable');
+    }
+    const evidence=entry.evidence,check=evidence.cross_fit,peer=evidence.corroboration;
+    const key=entry.kind==='comparison'?entry.key:entry.pinyin_syllables[0].replace(/ü/g,'v')+entry.surface_pattern;
+    const pattern=key.slice(-1),base=key.slice(0,-1);
+    if(isSentenceDerived(entry)
+      ||evidence.audio_sha256!==entry.sha256||evidence.label_identity!==identity(entry)
+      ||evidence.original_key!==key||evidence.source!==sourceForPath(entry.audio_path)
+      ||evidence.independent_gold_accuracy_claimed!==false
+      ||!/^[a-f0-9]{64}$/.test(evidence.pipeline_sha256||'')
+      ||!/^[a-f0-9]{64}$/.test(evidence.model_bundle_sha256||'')){
+      throw new Error(`Invalid mixed-source comparison evidence: ${entry.audio_path}`);
+    }
+    const validPrediction=(value,path,sha,source)=>{
+      const quality=value?.quality;
+      if(value?.identity_method==='whisper-small-dual-unprompted-v1'){
+        if(!/^[a-f0-9]{64}$/.test(value.identity_model_sha256||'')
+          ||!Array.isArray(value.primary_recognition_checks)||value.primary_recognition_checks.length!==2
+          ||value.primary_recognition_checks.some(check=>check.audio_sha256!==sha
+            ||(Array.isArray(check.decoded_bases)&&check.decoded_bases.length===1&&check.decoded_bases[0]!==base))
+          ||value.recognition_checks?.some(check=>!Number.isFinite(check.minimum_log_probability)||check.minimum_log_probability< -1)){
+          return false;
+        }
+      }else if(value?.identity_method&&value.identity_method!=='paraformer-raw-prepared'){
+        return false;
+      }
+      return value?.status==='candidate_supported'&&value.audio_path===path&&value.sha256===sha
+        &&value.key===key&&value.expected_tone===pattern&&value.predicted_tone===pattern
+        &&value.source===source&&value.source===sourceForPath(path)&&value.training_overlap===false
+        &&value.identity_supported===true&&Number.isInteger(value.fold)&&value.fold>=0&&value.fold<5
+        &&nonempty(value.family)&&/^[a-f0-9]{64}$/.test(value.model_sha256||'')
+        &&/^[a-f0-9]{64}$/.test(value.decoded_sha256||'')
+        &&Number.isFinite(value.expected_probability)&&value.expected_probability>=.95&&value.expected_probability<=1
+        &&Number.isFinite(value.margin)&&value.margin>=.25&&value.margin<=1
+        &&Number.isInteger(quality?.jointly_voiced_frames)&&quality.jointly_voiced_frames>=12
+        &&Number.isInteger(quality.usable_trackers)&&quality.usable_trackers>=2&&quality.usable_trackers<=3
+        &&Number.isFinite(quality.tracker_difference)&&quality.tracker_difference>=0&&quality.tracker_difference<=2
+        &&Number.isFinite(quality.clipped_fraction)&&quality.clipped_fraction>=0&&quality.clipped_fraction<=.01
+        &&Array.isArray(value.recognition_checks)&&value.recognition_checks.length===2
+        &&value.recognition_checks[0].input==='raw'&&value.recognition_checks[1].input==='prepared'
+        &&value.recognition_checks.every(item=>item.audio_sha256===sha&&typeof item.transcript==='string'
+          &&(item.decoded_bases===null||JSON.stringify(item.decoded_bases)===JSON.stringify([base])))
+        &&value.recognition_checks.some(item=>JSON.stringify(item.decoded_bases)===JSON.stringify([base]));
+    };
+    if(!validPrediction(check,entry.audio_path,entry.sha256,evidence.source)
+      ||!peer||peer.key!==key||peer.source===evidence.source||peer.audio_path===entry.audio_path
+      ||peer.sha256===entry.sha256||peer.decoded_sha256===check.decoded_sha256
+      ||peer.decoded_sha256!==peer.cross_fit?.decoded_sha256
+      ||!Number.isFinite(peer.waveform_similarity)||peer.waveform_similarity<0||peer.waveform_similarity>=.995
+      ||!validPrediction(peer.cross_fit,peer.audio_path,peer.sha256,peer.source)){
+      throw new Error(`Uncorroborated mixed-source comparison: ${entry.audio_path}`);
+    }
+    if(entry.kind==='native'&&(!Array.isArray(evidence.comparison_support)
+      ||evidence.comparison_support.length!==1
+      ||evidence.comparison_support[0]?.audio_path!==peer.audio_path
+      ||evidence.comparison_support[0]?.key!==key||evidence.comparison_support[0]?.sha256!==peer.sha256)){
+      throw new Error('Mixed-source native example lacks its checked independent comparison');
+    }
+  }
   function identity(entry){
     if(entry.kind==='native'){
       const values=[
@@ -110,6 +205,15 @@
     }
     if(automated){
       const evidence=entry.evidence;
+      if(evidence?.method==='cross-source-whole-word-v1'){
+        validateCrossSourceWord(entry);
+        return;
+      }
+      if(evidence?.method==='cross-source-native-reference-v1'){
+        if(!['local_only','redistributable'].includes(entry.distribution_scope))throw new Error('Invalid mixed-source rights scope');
+        validateCrossSourceReference(entry);
+        return;
+      }
       const expectedBases=entry.kind==='comparison'?[entry.key.slice(0,-1)]:entry.pinyin_syllables.map(base=>base.replace(/ü/g,'v'));
       const tones=entry.kind==='comparison'?[entry.key.slice(-1)]:entry.surface_pattern.split('-');
       if(!['local_only','redistributable'].includes(entry.distribution_scope)
@@ -270,10 +374,23 @@
           &&entry.evidence.neutral_lexicon_sha256!==acousticLedger.neutral_lexicon_sha256){
           throw new Error(`Neutral dictionary fingerprint mismatch: ${entry.audio_path}`);
         }
-        if(acousticLedger.recognition_policy==='raw-prepared-no-phonetic-conflict-1'&&!entry.evidence.recognition_checks){
+        if(entry.evidence.method==='spectral-consensus-1'&&acousticLedger.recognition_policy==='raw-prepared-no-phonetic-conflict-1'&&!entry.evidence.recognition_checks){
           throw new Error(`Missing prepared recognition evidence: ${entry.audio_path}`);
         }
-        if(entry.evidence.pipeline_sha256!==acousticLedger.pipeline_sha256)throw new Error('Acoustic pipeline fingerprint mismatch');
+        const supplemental=acousticLedger.supplemental_pipelines?.[entry.evidence.method];
+        if(entry.evidence.method==='cross-source-whole-word-v1'){
+          if(!supplemental||supplemental.pipeline_sha256!==entry.evidence.pipeline_sha256
+            ||supplemental.native_model_sha256!==entry.evidence.native_model_sha256
+            ||supplemental.minimum_probability!==.95||supplemental.minimum_margin!==.25
+            ||supplemental.independent_gold_accuracy_claimed!==false)throw new Error('Whole-word pipeline fingerprint mismatch');
+        }else if(entry.evidence.method==='cross-source-native-reference-v1'){
+          if(!supplemental||supplemental.pipeline_sha256!==entry.evidence.pipeline_sha256
+            ||supplemental.model_bundle_sha256!==entry.evidence.model_bundle_sha256
+            ||supplemental.minimum_probability!==.95||supplemental.minimum_margin!==.25
+            ||supplemental.minimum_distinct_sources!==2||supplemental.independent_gold_accuracy_claimed!==false){
+            throw new Error('Mixed-source pipeline fingerprint mismatch');
+          }
+        }else if(entry.evidence.pipeline_sha256!==acousticLedger.pipeline_sha256)throw new Error('Acoustic pipeline fingerprint mismatch');
         const key=identity(entry);
         if(seen.has(key))throw new Error(`Duplicate acoustic decision: ${entry.audio_path}`);
         seen.add(key);
@@ -282,6 +399,16 @@
       }
       for(const entry of index.values()){
         if(entry.assessment!=='automated'||entry.kind!=='native')continue;
+        if(entry.evidence.method==='cross-source-whole-word-v1'){
+          const link=entry.evidence.whole_word_reference,reference=index.get(link.identity);
+          if(!reference||reference.kind!=='native'||reference.audio_path!==link.audio_path||reference.sha256!==link.sha256
+            ||reference.word_id!==entry.word_id||reference.word!==entry.word||reference.surface_pattern!==entry.surface_pattern
+            ||reference.lexical_pattern!==entry.lexical_pattern
+            ||JSON.stringify(reference.pinyin_syllables)!==JSON.stringify(entry.pinyin_syllables)
+            ||reference.evidence?.method!=='spectral-consensus-1'){
+            throw new Error(`Whole-word reference is stale or unrelated: ${entry.audio_path}`);
+          }
+        }
         entry.evidence.comparison_support.forEach((support,position)=>{
           const tone=entry.surface_pattern.split('-')[position];
           if(tone==='N'){
@@ -346,6 +473,14 @@
       }
       return !recording||!nativeBlockReason(recording,approval);
     };
+    if(preferredSource==='mandarin_native'){
+      for(const approval of index.comparisonAlternatives?.get(key)||[]){
+        if(approval.audio_path.startsWith('audio/mandarin_native/')&&allowed(approval)){
+          return {audio_path:approval.audio_path,source:'mandarin_native',enhanced:false,approval};
+        }
+      }
+      preferredSource='pinyin_public';
+    }
     const alternate=preferredSource==='audio_cmn'?'pinyin_public':'audio_cmn';
     for(const source of [preferredSource,alternate]){
       const selected=policy.correctionSelection(key,quality,recordings,source);
