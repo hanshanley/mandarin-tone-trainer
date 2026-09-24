@@ -3,6 +3,7 @@
 /imports/
 /data/pinyin_public_recordings.json
 /www/
+/.audit/
 
 # Local Python and macOS artifacts
 __pycache__/
@@ -22,3 +23,16 @@ __pycache__/
 /keystore.properties
 *.jks
 *.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.mobileprovision
+*.provisionprofile
+
+# Local credentials and service configuration
+/.env
+/.env.*
+!/.env.example
+**/google-services.json
+**/GoogleService-Info.plist
