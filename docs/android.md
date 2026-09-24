@@ -25,12 +25,15 @@ python3 scripts/bootstrap.py --verify-only
 
 ## Debug build
 
-Android uses the same acoustic and listening checks as the browser, but excludes
-local-only recordings without established reuse metadata. With no qualifying
-assessments, practice is paused. Adding or revoking decisions requires rebuilding
-and reinstalling; rebuilding cannot revoke audio in an already installed APK.
-External Mandarin Native links require internet access and are not offline
-practice content.
+The debug APK uses the same agreement-selected original and Mandarin Native
+direct word recordings as local browser practice. This is a **local-use build,
+not for redistribution**: imported audio still has unverified reuse rights.
+`data/build_scope.json` records this distinction in the bundle. No sentence cuts
+or stitched words are included.
+
+Adding or revoking decisions requires rebuilding and reinstalling; rebuilding
+cannot change an already installed APK. External reference links still need
+internet, but selected practice recordings are bundled for offline use.
 
 ```bash
 npm run android:debug
@@ -42,7 +45,21 @@ The APK is written to:
 android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
+For USB installation of this local build:
+
+```bash
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+If Android reports a signing-key conflict with an existing release installation,
+do not erase user data automatically; update using the matching signing key instead.
+
 ## Release signing
+
+`npm run android:release` rebuilds the **redistributable-source** bundle and
+excludes local-only recordings even if a local debug bundle was built previously.
+`npm run build:mobile` / `npm run cap:sync` also default to that safer scope;
+their `:local` counterparts include the selected personal-use imports.
 
 Configure signing with one interactive command:
 

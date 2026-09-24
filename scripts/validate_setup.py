@@ -151,6 +151,14 @@ def main():
 
     if not args.skip_mobile:
         bundle = ROOT / 'www'
+        scope_path=bundle/'data/build_scope.json'
+        build_scope=json.loads(scope_path.read_text(encoding='utf-8')) if scope_path.is_file() else {}
+        local_bundle=build_scope.get('scope')=='local_use_only'
+        require(
+            build_scope.get('version')==1 and build_scope.get('scope') in ('local_use_only','redistributable')
+            and build_scope.get('includes_unverified_reuse_rights') is local_bundle,
+            'missing or invalid mobile build scope', errors,
+        )
         for relative_path in [
             'index.html',
             'style.css',
@@ -164,6 +172,8 @@ def main():
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
             'data/acoustic_reviews.json',
+            'data/practice_selection.json',
+            'data/build_scope.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
         ]:
@@ -192,7 +202,7 @@ def main():
                 expected = read_json('data/acoustic_reviews.json')
                 expected['approvals'] = [
                     entry for entry in expected['approvals']
-                    if entry['distribution_scope'] != 'local_only'
+                    if (local_bundle or entry['distribution_scope'] != 'local_only')
                     and not entry.get('source_segment')
                     and not entry['audio_path'].startswith('audio/mandarin_native/excerpts/')
                     and not entry['audio_path'].startswith('audio/mandarin_native/context/')
@@ -202,6 +212,13 @@ def main():
                     'www/data/acoustic_reviews.json is stale or includes local-only audio',
                     errors,
                 )
+            selection_path=bundle/'data/practice_selection.json'
+            if selection_path.is_file():
+                expected=read_json('data/practice_selection.json')
+                expected['entries']=[entry for entry in expected['entries']
+                                     if local_bundle or entry['distribution_scope']!='local_only']
+                require(json.loads(selection_path.read_text(encoding='utf-8'))==expected,
+                        'www/data/practice_selection.json is stale or has the wrong distribution scope',errors)
 
     node_script = """
 import {loadReviewData,validateLedger,practiceInventory,requireToneCoverage} from './scripts/review_audio.mjs';
@@ -224,19 +241,20 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         selections = json.loads(output)
-        print(f"Audio assessment coverage: {selections['eligible']} local / {selections['packagedEligible']} packaged practice entries; {selections['approvals']} checks (not an accuracy certificate)")
+        print(f"Agreement practice: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; {selections['approvals']} selected audio assessments")
         if not args.skip_mobile:
+            expected_audio=selections['audio'] if local_bundle else selections['packagedAudio']
             bundled_audio = {
                 path.relative_to(bundle).as_posix()
                 for path in (bundle / 'audio').rglob('*')
                 if path.is_file()
             }
             require(
-                bundled_audio == set(selections['packagedAudio']),
-                'mobile audio does not match the distributable screened inventory',
+                bundled_audio == set(expected_audio),
+                'mobile audio does not match the selected agreement inventory and build scope',
                 errors,
             )
-            for relative in selections['packagedAudio']:
+            for relative in expected_audio:
                 target = bundle / relative
                 if target.is_file():
                     require(

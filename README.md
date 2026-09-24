@@ -14,10 +14,11 @@
 
 ## Learn tones from real words
 
-**Practice uses automatic acoustic screening, not a mandatory listening queue.**
-An item needs matching syllable recognition, agreeing pitch-contour evidence,
-and screened correct-tone references. Unresolved comparison clips are withheld;
-missing alternative examples do not disable an otherwise checked question.
+**Practice uses a selected agreement set, not every downloaded item.**
+Each item needs its supplied spoken-tone label to agree with a label-blind
+prediction, matching syllable identity and the existing acoustic checks.
+Correct-tone comparison references must qualify too. Unresolved comparison clips
+are withheld; missing alternative examples do not disable a checked question.
 Audio hashes are checked before the question is shown. These checks reduce
 errors; they are not a guarantee of 100% pronunciation accuracy.
 
@@ -100,9 +101,9 @@ neutral-tone variants are not presented as contradictory answers.
 
 ## Offline Android app
 
-The Android build packages the application, vocabulary, assessment ledgers, and
-only reachable screened audio with established reuse metadata into an offline
-APK. Local-only Mandarin Native imports are excluded from distributable builds.
+The local Android debug build packages the same selected original and imported
+word recordings used in browser practice. It is for local use, not redistribution.
+The release build includes only recordings with established reuse metadata.
 
 After the quickstart, install Android SDK Platform 36, Platform Tools, and
 Build Tools 35. Rerun the bootstrap once so it can configure the SDK and expose
@@ -140,6 +141,9 @@ One-, two-, and **3+ syllable** practice uses qualifying direct recordings.
 Standalone one-character imports can also supply local tone-button comparisons.
 Previously generated sentence excerpts are retained for investigation only;
 they are excluded from practice, normal setup, and the mobile bundle.
+Only lengths represented in the current agreement-selected set appear in the
+syllable selector. The current selection supports one- and two-syllable items;
+longer words are not enabled without matching model evidence.
 
 Large audio assets are intentionally excluded from Git. The bootstrap
 recreates the original corpora from pinned upstream revisions and restores
@@ -152,6 +156,11 @@ not certify correctness. Machine decisions live in
 [`data/acoustic_reviews.json`](data/acoustic_reviews.json); optional human
 attestations remain separate in [`data/audio_reviews.json`](data/audio_reviews.json).
 Ambiguous or contradictory audio is withheld rather than assigned guessed labels.
+
+`data/practice_selection.json` is the final practice allowlist. It requires both
+the acoustic assessment and supplied-label/model agreement; an older acoustic
+pass alone cannot enter the quiz. Normal setup restores this committed selection
+without retraining models.
 
 ## Development
 
@@ -178,7 +187,8 @@ The [native tone-label validator](docs/native-tone-validator.md) is the separate
 label-aware workflow for the direct-recording library. It makes label-blind
 audio predictions, keeps original labels as uncertain hypotheses, and reports
 held-out-source results without treating source-label agreement as certified
-accuracy. Independent calibration/release gates remain separate from practice.
+accuracy. A conservative intersection of agreement and acoustic checks is used
+for practice; independent gold certification remains a separate, unfulfilled claim.
 
 ## FAQ
 

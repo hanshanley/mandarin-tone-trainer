@@ -89,9 +89,26 @@ async function load(){
   if(!reviewResponse.ok)throw new Error(`Listening approvals failed: HTTP ${reviewResponse.status}`);
   const acousticResponse=await fetch('../data/acoustic_reviews.json',{cache:'no-store'});
   if(!acousticResponse.ok)throw new Error(`Acoustic screening data failed: HTTP ${acousticResponse.status}`);
-  audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{sourceRecordings:recordings,sourceWords:words});
+  const selectionResponse=await fetch('../data/practice_selection.json',{cache:'no-store'});
+  if(!selectionResponse.ok)throw new Error(`Practice selection failed: HTTP ${selectionResponse.status}`);
+  const practiceSelection=await selectionResponse.json();
+  if(!practiceSelection)throw new Error('Practice selection is missing');
+  audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{
+    sourceRecordings:recordings,sourceWords:words,practiceSelection,
+  });
   $('progress').textContent='';
   rebuildIndex();
+  const eligible=practiceWords();
+  for(const option of Array.from($('syllables').options||[])){
+    const available=eligible.some(word=>{
+      const count=word.pinyin_syllables.length;
+      return option.value==='all'||option.value==='one'&&count===1
+        ||option.value==='two'&&count===2||option.value==='longer'&&count>=3;
+    });
+    option.hidden=!available;
+    option.disabled=!available;
+  }
+  if($('syllables').selectedOptions?.[0]?.disabled)$('syllables').value='all';
 }
 function recordingsFor(w){
   return (byWord.get(w.word)||[]).filter(r=>{

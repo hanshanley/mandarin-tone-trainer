@@ -8,8 +8,42 @@ audio snapshots; it does not fabricate new assessments.
 
 `data/acoustic_reviews.json` contains explicit **machine-screened** decisions.
 `data/audio_reviews.json` is reserved for optional human listening attestations.
-The application accepts either route; listening to every file is not required.
-No source is accepted just because its filename contains a tone number.
+`data/practice_selection.json` is the final practice allowlist: the current app
+uses the intersection of acoustic checks and original-label/model agreement.
+An old assessment alone cannot admit a recording. Listening to every file is
+not required, and no source is accepted just because its filename contains a tone number.
+
+## Build the agreement-based practice set
+
+```bash
+npm run build:practice-selection -- \
+  --inventory .audit/native-tone-inventory.json \
+  --predictions .audit/native-tone-delivery-predictions.json
+npm test
+npm run android:debug
+```
+
+Use the current matching native inventory and prediction export, not the example
+filenames if you have regenerated those artifacts. The builder verifies model/
+inventory/prediction fingerprints and audio hashes. It selects only
+`reference_supported` cases with exact original-pattern agreement, at least 0.9
+source-agreement confidence, at least 0.15 class margin, stable perturbed
+boundaries, sufficient pitch evidence, confirmed syllable identity, no training
+reference overlap, and a separately qualifying acoustic assessment. Native word
+examples also need distinct selected correct-tone references.
+
+These thresholds describe model/source agreement, not gold-validated accuracy.
+The selection remains explicitly `accuracy_certified: false`. Likely mismatches,
+possible alternate pronunciations, low-confidence items and missing evidence
+do not become new answers. Original labels and recordings are not rewritten.
+The builder requires examples from both original and imported sources and all
+five tone categories across the native set.
+
+Normal setup restores the committed selection. `native:score` still produces
+diagnostics and never changes practice automatically; only rebuilding the
+selection deliberately changes the quiz pool.
+
+## Acoustic prerequisites
 
 Every eligible question requires:
 
@@ -31,9 +65,9 @@ Every eligible question requires:
 The browser verifies all required files before revealing answer buttons or
 playing a question. Native playback, comparison playback, and overlay use
 those verified bytes. Missing evidence, an unavailable hash API, a changed file,
-or a failed download blocks the item. The mobile build includes only qualifying
-audio with redistribution metadata; local-only decisions are removed from its
-ledger and their audio is not packaged.
+or a failed download blocks the item. The local-use Android build includes
+qualifying imported audio for personal practice. The redistributable build
+removes local-only decisions and files, and every bundle records its scope.
 
 This is **not a mathematical guarantee of 100% pronunciation accuracy**.
 F0, recognition, and alignment can all fail. Ambiguous contours, recognition

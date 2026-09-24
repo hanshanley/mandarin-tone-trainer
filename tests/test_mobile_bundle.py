@@ -47,13 +47,14 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/correction_audio_quality.json',
             'data/audio_reviews.json',
             'data/acoustic_reviews.json',
+            'data/practice_selection.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
             self.assertGreater(path.stat().st_size, 0, relative_path)
-            if relative_path == 'data/acoustic_reviews.json':
+            if relative_path in ('data/acoustic_reviews.json','data/practice_selection.json'):
                 continue
             source = ROOT / relative_path if relative_path.startswith('data/') else ROOT / 'app' / relative_path
             self.assertEqual(path.read_bytes(), source.read_bytes(), f'stale bundled {relative_path}')
@@ -93,7 +94,7 @@ process.stdout.write(JSON.stringify({
   neutral:inventory.toneCoverage.N,
   newReadings:pairs.filter(pair=>pair.word.id.startsWith('MN-')).length,
   characters:pairs.filter(pair=>pair.word.word.length===1).length,
-  longWords:pairs.filter(pair=>pair.word.word.length>2).length,
+  twoCharacterWords:pairs.filter(pair=>pair.word.word.length===2).length,
   excerpts:pairs.filter(pair=>pair.recording.recording_type==='aligned_word'||pair.recording.source_segment).length,
 }));
 """],
@@ -103,6 +104,14 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(coverage.pop('excerpts'), 0)
         for name, count in coverage.items():
             self.assertGreater(count, 0, name)
+
+    def test_distributable_bundle_filters_personal_imports_and_preserves_selection(self):
+        scope=json.loads((self.bundle/'data/build_scope.json').read_text())
+        self.assertEqual(scope['scope'],'redistributable')
+        selection=json.loads((self.bundle/'data/practice_selection.json').read_text())
+        self.assertTrue(selection['entries'])
+        self.assertTrue(all(entry['distribution_scope']!='local_only' for entry in selection['entries']))
+        self.assertFalse(selection['accuracy_certified'])
 
 
 if __name__ == '__main__':

@@ -1,11 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {parseArgs} from 'node:util';
 import { loadReviewData, validateLedger, practiceInventory, requireToneCoverage } from './review_audio.mjs';
 import AudioReview from '../app/audio_review.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'www');
+const {values}=parseArgs({options:{'local-use':{type:'boolean',default:false}}});
+const localUse=values['local-use'];
 const APP_FILES = ['index.html', 'style.css', 'audio_review.js', 'correction_audio.js', 'app.js'];
 const DATA_FILES = [
   'hsk_words.json',
@@ -15,6 +18,7 @@ const DATA_FILES = [
   'correction_audio_quality.json',
   'audio_reviews.json',
   'acoustic_reviews.json',
+  'practice_selection.json',
   'mandarin_native_recordings.json',
   'mandarin_native_words.json',
 ];
@@ -56,7 +60,7 @@ requireFile(path.join('audio', 'audio_cmn', 'syllabs', 'cmn-ma1.mp3'), 'audio co
 
 const reviewData = loadReviewData();
 const words = reviewData.words;
-const reviewIndex = validateLedger(reviewData, ROOT, { allowLocalOnly: false });
+const reviewIndex = validateLedger(reviewData, ROOT, { allowLocalOnly: localUse });
 const inventory = practiceInventory(reviewData, reviewIndex);
 requireToneCoverage(inventory);
 const referencedAudio = inventory.audio;
@@ -72,16 +76,26 @@ for (const file of APP_FILES) {
   fs.copyFileSync(path.join(ROOT, 'app', file), path.join(OUTPUT, file));
 }
 for (const file of DATA_FILES) {
+  if(file==='practice_selection.json'){
+    const selection={...reviewData.practiceSelection,
+      entries:reviewData.practiceSelection.entries.filter(entry=>localUse||entry.distribution_scope!=='local_only')};
+    fs.writeFileSync(path.join(OUTPUT,'data',file),JSON.stringify(selection,null,2)+'\n');
+    continue;
+  }
   if (file === 'acoustic_reviews.json') {
     const distributable = {
       ...reviewData.acousticLedger,
       approvals: reviewData.acousticLedger.approvals.filter(entry =>
-        entry.distribution_scope !== 'local_only' && !AudioReview.isSentenceDerived(entry)),
+        (localUse||entry.distribution_scope !== 'local_only') && !AudioReview.isSentenceDerived(entry)),
     };
     fs.writeFileSync(path.join(OUTPUT, 'data', file), JSON.stringify(distributable, null, 2) + '\n');
   } else {
     fs.copyFileSync(path.join(ROOT, 'data', file), path.join(OUTPUT, 'data', file));
   }
+  fs.writeFileSync(path.join(OUTPUT,'data/build_scope.json'),JSON.stringify({
+    version:1,scope:localUse?'local_use_only':'redistributable',
+    includes_unverified_reuse_rights:localUse,
+  },null,2)+'\n');
 }
 for (const relativePath of referencedAudio) {
   if(AudioReview.isSentenceDerived({audio_path:relativePath}))throw new Error('Sentence audio cannot be packaged for practice');
@@ -91,8 +105,8 @@ for (const relativePath of referencedAudio) {
 }
 
 const dataBytes = DATA_FILES.reduce(
-  (total, file) => total + fs.statSync(path.join(ROOT, 'data', file)).size,
-  0,
+  (total, file) => total + fs.statSync(path.join(OUTPUT, 'data', file)).size,
+  fs.statSync(path.join(OUTPUT,'data/build_scope.json')).size,
 );
 const totalBytes = APP_FILES.reduce(
   (total, file) => total + fs.statSync(path.join(ROOT, 'app', file)).size,
@@ -102,6 +116,7 @@ const totalBytes = APP_FILES.reduce(
 console.log(
   [
     'Built offline mobile assets:',
+    `  ${localUse?'Local-use build: not for redistribution':'Redistributable-source build'}`,
     `  ${words.length.toLocaleString()} vocabulary entries`,
     `  ${inventory.eligibleWords.length.toLocaleString()} screened practice entries`,
     `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,

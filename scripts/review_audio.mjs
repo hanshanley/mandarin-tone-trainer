@@ -21,6 +21,7 @@ export function loadReviewData() {
     quality: readJSON('data/correction_audio_quality.json'),
     ledger: readJSON('data/audio_reviews.json'),
     acousticLedger: readJSON('data/acoustic_reviews.json'),
+    practiceSelection: readJSON('data/practice_selection.json'),
     snapshots: readJSON('config/source_snapshots.json'),
     exploreVocabularyCount: imported.explore_vocabulary?.length || 0,
     archivedContextCount: imported.recordings.filter(recording => recording.recording_type === 'context_sentence').length,
@@ -124,7 +125,7 @@ export function audioHash(relativePath, root = ROOT) {
 
 export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}) {
   const index = AudioReview.createIndex(data.ledger, data.acousticLedger || null, {
-    allowLocalOnly, sourceRecordings: data.recordings, sourceWords: data.words,
+    allowLocalOnly, sourceRecordings: data.recordings, sourceWords: data.words,practiceSelection:data.practiceSelection||null,
   });
   const candidates = candidatesFor(data);
   const recordingsByPath = new Map(data.recordings.map(recording => [recording.audio_path, recording]));

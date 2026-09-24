@@ -125,7 +125,21 @@ function element(){
     scrollIntoView(){},
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
+function selectedPractice(approvals){
+  return {
+    version:1,policy:'original-label-acoustic-model-agreement-v1',accuracy_certified:false,
+    acoustic_pipeline_sha256:'a'.repeat(64),minimum_probability:.9,minimum_margin:.15,
+    native_model_sha256:'b'.repeat(64),native_inventory_sha256:'c'.repeat(64),native_predictions_sha256:'d'.repeat(64),
+    entries:approvals.filter(entry=>!Review.isSentenceDerived(entry)).map(entry=>{
+      const pattern=entry.kind==='native'?entry.surface_pattern:entry.key.slice(-1);
+      return {identity:Review.identity(entry),kind:entry.kind,audio_path:entry.audio_path,sha256:entry.sha256,
+        pattern,distribution_scope:entry.distribution_scope,
+        agreement:{supplied_pattern:pattern,blind_pattern:pattern,probability:.99,margin:.9,
+          quality_ok:true,boundary_stable:true,identity_supported:true,training_overlap:false}};
+    }),
+  };
+}
+async function appHarness({approvals=[],acousticApprovals=[],practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -152,6 +166,8 @@ async function appHarness({approvals=[],acousticApprovals=[],tamper=null,ledgerF
       certifies_accuracy:false,approvals:acousticApprovals,
     },
   };
+  data['../data/practice_selection.json']=practiceSelection===undefined
+    ?selectedPractice([...approvals,...acousticApprovals]):practiceSelection;
   const requests=[],played=[],errors=[];
   const context=vm.createContext({
     AudioReview:Review,CorrectionAudio:Policy,crypto:webcrypto,Blob,
@@ -250,6 +266,50 @@ test('automatic evidence must agree on labels, identity, hashes and references',
     edit(entries.at(-1));
     assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger(entries)));
   }
+});
+
+test('practice requires both acoustic checks and supplied-label/model agreement',async()=>{
+  const acoustic=[...automaticComparisons(),acousticApproval(Review.nativeDescriptor(word,native))];
+  const valid=selectedPractice(acoustic);
+  const app=await appHarness({acousticApprovals:acoustic,practiceSelection:valid});
+  assert.equal(app.run('questionVerified'),true);
+  const noAgreement=selectedPractice(automaticComparisons());
+  const excluded=await appHarness({acousticApprovals:acoustic,practiceSelection:noAgreement});
+  assert.equal(excluded.run('questionVerified'),false);
+  assert.equal(excluded.played.length,0);
+  const missing=await appHarness({acousticApprovals:acoustic,practiceSelection:null});
+  assert.equal(missing.played.length,0);
+  assert.match(missing.get('prompt').innerHTML,/could not load/);
+  for(const modify of [
+    item=>item.agreement.blind_pattern='4',
+    item=>item.agreement.supplied_pattern='2',
+    item=>item.agreement.probability=.5,
+    item=>item.agreement.margin=.05,
+    item=>item.agreement.training_overlap=true,
+    item=>item.agreement.identity_supported=false,
+    item=>item.agreement.boundary_stable=false,
+    item=>item.sha256='0'.repeat(64),
+  ]){
+    const invalid=structuredClone(valid);modify(invalid.entries.at(-1));
+    assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger(acoustic),{practiceSelection:invalid}));
+  }
+  const stale={...valid,acoustic_pipeline_sha256:'0'.repeat(64)};
+  assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger(acoustic),{practiceSelection:stale}),/agreement/);
+});
+
+test('agreement selection can be built only from matching original prediction evidence',async()=>{
+  const {agrees}=await import('../scripts/build_agreement_practice.mjs');
+  const ref={id:'ref',sha256:hash,label_identity:'label',weak_training_label:'2',quarantined:false};
+  const predicted={id:'ref',sha256:hash,label_identity:'label',assessment:'reference_supported',
+    reference_overlap:false,identity_supported:true,original_pattern_represented_in_model:true,
+    supplied_pattern:'2',blind_pattern:'2',
+    blind:{pattern:'2',quality_ok:true,boundary_stable:true,minimum_top_probability:.98,minimum_margin:.95,probabilities:{2:.98}}};
+  const options={reference_agreement_threshold:.9,minimum_margin:.15};
+  assert.ok(agrees(predicted,ref,options));
+  assert.equal(agrees({...predicted,assessment:'possible_spoken_variant'},ref,options),false);
+  assert.equal(agrees({...predicted,reference_overlap:true},ref,options),false);
+  assert.equal(agrees(predicted,{...ref,quarantined:true},options),false);
+  assert.equal(agrees({...predicted,sha256:'bad'},ref,options),false);
 });
 
 test('local-only screened imports work locally but are never selected for distribution',async()=>{

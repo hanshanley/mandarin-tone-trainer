@@ -217,7 +217,35 @@
       throw new Error(`Two independent listening approvals required: ${entry.audio_path}`);
     }
   }
-  function createIndex(ledger,acousticLedger=null,{allowLocalOnly=true,sourceRecordings=[],sourceWords=[]}={}){
+  function applyPracticeSelection(index,selection,acousticLedger,{allowLocalOnly=true}={}){
+    if(selection?.version!==1||selection.policy!=='original-label-acoustic-model-agreement-v1'
+      ||selection.accuracy_certified!==false||!Array.isArray(selection.entries)
+      ||selection.acoustic_pipeline_sha256!==acousticLedger?.pipeline_sha256
+      ||selection.minimum_probability!==.9||selection.minimum_margin!==.15
+      ||!['native_model_sha256','native_inventory_sha256','native_predictions_sha256'].every(key=>/^[a-f0-9]{64}$/.test(selection[key]||''))){
+      throw new Error('Invalid agreement-based practice selection');
+    }
+    const allowed=new Set(),seen=new Set();
+    for(const item of selection.entries){
+      if(seen.has(item.identity))throw new Error('Duplicate agreement selection');
+      seen.add(item.identity);
+      if(!allowLocalOnly&&item.distribution_scope==='local_only')continue;
+      const assessment=index.get(item.identity),agreement=item.agreement;
+      const expected=assessment?.kind==='native'?assessment.surface_pattern:assessment?.key.slice(-1);
+      if(!assessment||item.kind!==assessment.kind||item.sha256!==assessment.sha256||item.audio_path!==assessment.audio_path
+        ||item.distribution_scope!==assessment.distribution_scope||item.pattern!==expected
+        ||isSentenceDerived(item)||agreement?.supplied_pattern!==expected||agreement.blind_pattern!==expected
+        ||!Number.isFinite(agreement.probability)||agreement.probability<.9||agreement.probability>1
+        ||!Number.isFinite(agreement.margin)||agreement.margin<.15||agreement.margin>1
+        ||agreement.quality_ok!==true||agreement.boundary_stable!==true||agreement.identity_supported!==true
+        ||agreement.training_overlap!==false){
+        throw new Error(`Recording does not satisfy practice agreement: ${item.audio_path}`);
+      }
+      allowed.add(item.identity);
+    }
+    for(const key of index.keys())if(!allowed.has(key))index.delete(key);
+  }
+  function createIndex(ledger,acousticLedger=null,{allowLocalOnly=true,sourceRecordings=[],sourceWords=[],practiceSelection=null}={}){
     if(ledger?.version!==1||!Array.isArray(ledger.approvals))throw new Error('Invalid audio review ledger');
     const index=new Map();
     for(const entry of ledger.approvals){
@@ -268,6 +296,7 @@
         });
       }
     }
+    if(practiceSelection!==null)applyPracticeSelection(index,practiceSelection,acousticLedger,{allowLocalOnly});
     const alternatives=new Map();
     for(const entry of index.values()){
       if(entry.kind!=='comparison')continue;
@@ -347,7 +376,7 @@
     if(actual!==approval.sha256)throw new Error(`Audio changed since ${approval.assessment==='automated'?'acoustic screening':'listening review'}: ${approval.audio_path}`);
   }
   return {
-    isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,createIndex,
+    isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,applyPracticeSelection,createIndex,
     nativeApproval,comparisonApproval,neutralSelection,correctionSelection,verifyBytes,
   };
 });
