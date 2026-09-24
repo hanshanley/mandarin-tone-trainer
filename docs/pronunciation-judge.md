@@ -63,9 +63,9 @@ for the alignment model, with character-count invariance required.
 
 ```bash
 python3 -m pip install -r requirements-audio-audit.txt
-python3 scripts/download_judge_reference.py
-python3 scripts/calibrated_pronunciation_judge.py prepare
-python3 scripts/calibrated_pronunciation_judge.py train
+npm run judge:reference
+npm run judge:prepare
+npm run judge:train
 ```
 
 Downloads verify pinned Git blob identities and SHA-256. Measurements are
@@ -75,11 +75,20 @@ correct or silently omitted from the dataset count.
 The actual ASR/alignment checkpoint files and feature-tool package versions
 are fingerprinted too; scoring rejects an engine mismatch.
 
-Each target gets a learned tree ensemble. The selection set chooses between the
-fixed candidate configurations by log loss. A separate calibration set fits a
+Each target gets a learned tree ensemble. The current refinement adds pooled
+intermediate states from the pinned Mandarin acoustic encoder, with a
+training-only PCA projection. These are analysis features, not new audio clips.
+If a reference unit has no encoder frame, it is explicitly unscorable.
+
+The refinement compares fixed boosted-tree and forest candidates on development
+AUROC; it retains the existing-feature baseline for a target when the richer
+representation does not improve that development score. Selection settings
+are recorded in `config/pronunciation_judge_refinement.json`. A separate calibration set fits a
 monotonic sigmoid to model log-odds. A fourth set chooses thresholds, including
 minimum-support requirements and a multiple-threshold-adjusted error bound.
-Neither calibration nor threshold selection uses the final test labels.
+Neither calibration nor threshold selection uses test labels. The original
+test benchmark has already been inspected, so refinement results on it are
+explicitly marked **reused benchmark results**, not fresh external validation.
 Threshold selection must satisfy both error rates: errors **among selected
 decisions**, and errors let through **among all incorrect reference units**
 (or correct units for rejection). It cannot propose accepting almost everything
@@ -115,24 +124,26 @@ vowel, along with the unprompted transcription, file hash, and limitations.
 The model supports tone categories 1-4 and neutral as reference features; it
 does not invent a standalone neutral-tone recording.
 
-## Measured result of this version
+## Measured result of the acoustic-encoder refinement
 
-The sealed test partition has **six unseen speakers**, 254 annotated utterances,
+The fixed test partition has **six speakers absent from training**, 254 annotated utterances,
 and 2,906 annotated units. Of those, 2,846 units are measurable; 60 units in four
-utterances are explicitly unscorable. The entire reference has 16 excluded
-utterances: 14 inconsistent annotation/transcript pairs, one recording outside
-the supported duration, and one invalid alignment.
+utterances are explicitly unscorable. The baseline reference has 16 excluded utterances: 14 inconsistent
+annotation/transcript pairs, one recording outside the supported duration, and
+one invalid alignment. The richer representation additionally marks a
+too-short reference unit as unscorable; coverage records it explicitly.
 
 | Human-scored dimension | Calibrated Brier score | Constant-prior Brier | AUROC | Calibration ECE |
 |---|---:|---:|---:|---:|
-| Tone correctness | 0.0854 | 0.0937 | 0.7420 | 0.0195 |
+| Tone correctness | 0.0835 | 0.0937 | 0.7567 | 0.0245 |
 | Consonant correctness | 0.0185 | 0.0213 | 0.8744 | 0.0070 |
-| Vowel correctness | 0.0201 | 0.0217 | 0.8900 | 0.0109 |
+| Vowel correctness | 0.0186 | 0.0217 | 0.9032 | 0.0103 |
 
 Lower Brier/ECE is better; AUROC measures ranking discrimination, not percentage
-accuracy. Tone calibration reduces Brier from 0.1554 before calibration to
-0.0854 after calibration. It improves probabilities but does not create a
-reliable binary pronunciation verdict.
+accuracy. Compared with the prior model, tone AUROC improves from 0.7420 to
+0.7567 and tone Brier improves from 0.0854 to 0.0835. Tone ECE worsens from
+0.0195 to 0.0245: not every metric improves, and that regression is not hidden.
+This is still not a reliable binary pronunciation verdict.
 
 **No head meets the automatic-acceptance gate.** Tone has no threshold with
 sufficient evidence for the configured low-error criterion. An earlier selector
@@ -140,6 +151,10 @@ proposed consonant/vowel thresholds that missed over 91% of incorrect test
 units despite apparently high overall correctness. The selector now rejects
 such thresholds itself, rather than relying on the final gate to catch them.
 Zero errors when abstaining on everything are not evidence of a useful judge.
+The report separately quantifies whether the threshold partition has enough
+incorrect reference units to meet the bound even with zero observed mistakes.
+More model complexity cannot compensate for insufficient independent error
+examples.
 
 Test support by expected tone is 596 first-tone, 561 second-tone, 509 third-tone,
 932 fourth-tone, and 248 neutral-tone units. These are reference tone categories;
@@ -148,6 +163,9 @@ correctness labels still come from the humans, not from a pitch heuristic.
 Full metrics, reliability bins, speaker uncertainty, support counts and
 exclusions are committed in `data/pronunciation_judge_evaluation.json`.
 The five split assignments are in `data/pronunciation_judge_splits.json`.
+The complete development comparison, including worse-performing alternatives,
+is in `data/pronunciation_judge_development.json`; its fingerprint is bound to
+the model.
 
 ## Scope and deployment gate
 

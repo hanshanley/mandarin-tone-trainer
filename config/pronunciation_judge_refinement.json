@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "feature_version": "paraformer-intermediate-encoder-1",
+  "encoder_block": 11,
+  "frame_seconds": 0.06,
+  "pca_components": 64,
+  "candidates": [
+    {"kind": "boost", "depth": 3, "iterations": 250, "learning_rate": 0.05},
+    {"kind": "boost", "depth": 6, "iterations": 250, "learning_rate": 0.05},
+    {"kind": "forest", "depth": 12, "trees": 128, "minimum_leaf": 5}
+  ],
+  "selection_metric": "development_auroc",
+  "test_status": "previously_examined_benchmark_not_a_fresh_test",
+  "automatic_admission": false
+}

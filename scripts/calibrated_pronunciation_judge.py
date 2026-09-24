@@ -298,6 +298,22 @@ def choose_threshold(labels, probabilities, confidence, decision):
     return max(options, key=lambda option: option['selected']) if options else None
 
 
+def threshold_feasibility(labels, policy):
+    corrected = 1 - (1 - policy['confidence']) / (4 * len(policy['threshold_grid']))
+    z = float(norm.ppf(corrected))
+    required = math.ceil(z * z * (1 - policy['maximum_error_rate']) / policy['maximum_error_rate'])
+    labels = np.asarray(labels)
+    incorrect, correct = int(np.sum(labels == 0)), int(np.sum(labels == 1))
+    return {
+        'incorrect_examples': incorrect, 'correct_examples': correct,
+        'minimum_class_examples_even_with_zero_errors': required,
+        'best_possible_false_accept_upper_bound': binomial_upper(0, incorrect, corrected),
+        'best_possible_false_reject_upper_bound': binomial_upper(0, correct, corrected),
+        'enough_incorrect_examples_for_acceptance': incorrect >= required,
+        'enough_correct_examples_for_rejection': correct >= required,
+    }
+
+
 def threshold_metrics(labels, probabilities, accept, reject, quality=None):
     labels, probabilities = np.asarray(labels), np.asarray(probabilities)
     quality = np.ones(len(labels), dtype=bool) if quality is None else np.asarray(quality, dtype=bool)
@@ -529,6 +545,7 @@ def train():
                 'unscorable_policy': 'abstain, not pass',
             },
             'threshold_selection': {'accept': acceptance, 'reject': rejection},
+            'threshold_data_support': threshold_feasibility(labels['threshold'], settings['decision']),
             'test_per_expected_tone': per_tone,
             'test_unanimous_raters': probability_metrics(labels['test'][unanimous], probabilities['test'][unanimous]),
             'speaker_bootstrap': bootstrap,
@@ -588,6 +605,14 @@ def load_model():
     split_manifest = json.loads((ROOT / 'data/pronunciation_judge_splits.json').read_text(encoding='utf-8'))
     if artifact['split_manifest_sha256'] != sha256(stable_json(split_manifest).encode()):
         raise ValueError('Judge speaker split manifest changed')
+    if artifact.get('representation'):
+        from refine_pronunciation_judge import fingerprint
+        if artifact['refinement_sha256'] != sha256((ROOT / 'scripts/refine_pronunciation_judge.py').read_bytes()):
+            raise ValueError('Refinement implementation changed; rebuild and reevaluate')
+        if artifact['representation']['fingerprint'] != fingerprint():
+            raise ValueError('Acoustic representation settings changed')
+        if artifact['development_report_sha256'] != sha256((ROOT / 'data/pronunciation_judge_development.json').read_bytes()):
+            raise ValueError('Development model-selection evidence changed')
     return artifact
 
 
@@ -598,12 +623,17 @@ def judge(audio_path, text, expected_pinyin=None):
         raise ValueError('Inference engines differ from those used for calibration')
     evidence = analyze(audio_path, text, *engines, expected_pinyin=expected_pinyin)
     matrix = np.asarray([row['features'] for row in evidence['units']], dtype=np.float32)
+    if artifact.get('representation'):
+        from refine_pronunciation_judge import representation, project
+        options = artifact['representation']
+        encoded = representation(audio_path, evidence['units'], engines[0], options['settings'])
+        matrix = np.concatenate([matrix, project(encoded, options['projection'])], axis=1).astype(np.float32)
     lower, upper = np.array(artifact['feature_support']['lower']), np.array(artifact['feature_support']['upper'])
     outliers = np.mean((matrix < lower) | (matrix > upper), axis=1)
     known_text = evidence['reference_text'] in artifact['reference_sentences']
     predictions = {}
     for target, model in artifact['heads'].items():
-        raw = forest_predict(model['forest'], matrix)
+        raw = forest_predict(model['forest'], matrix[:, :model.get('input_features', matrix.shape[1])])
         predictions[target] = calibrated(raw, model['calibration'])
     units = []
     for index, unit in enumerate(evidence['units']):

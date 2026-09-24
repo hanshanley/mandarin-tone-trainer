@@ -77,6 +77,12 @@ class PronunciationJudgeTests(unittest.TestCase):
         labels = np.array([1] * 980 + [0] * 20)
         probabilities = np.full(1000, .99)
         self.assertIsNone(judge.choose_threshold(labels, probabilities, policy, 'accept'))
+        support = judge.threshold_feasibility(labels, policy)
+        self.assertEqual(support['incorrect_examples'], 20)
+        self.assertFalse(support['enough_incorrect_examples_for_acceptance'])
+        self.assertGreater(support['best_possible_false_accept_upper_bound'], policy['maximum_error_rate'])
+        self.assertGreater(support['minimum_class_examples_even_with_zero_errors'], 20)
+        self.assertTrue(support['enough_correct_examples_for_rejection'])
 
     def test_accuracy_on_mostly_correct_speech_cannot_pass_the_error_detection_gate(self):
         policy = judge.config()['decision']
@@ -200,6 +206,11 @@ class PronunciationJudgeTests(unittest.TestCase):
         self.assertEqual(artifact['scope'], 'diagnostic_only_until_independent_target_corpus_validation')
         report = json.loads(judge.REPORT.read_text())
         self.assertFalse(report['automatic_practice_admission_enabled'])
+        if artifact.get('representation'):
+            self.assertEqual(report['test_status'], 'previously_examined_benchmark_not_a_fresh_test')
+            development = json.loads((ROOT / 'data/pronunciation_judge_development.json').read_text())
+            self.assertIs(development['test_examined'], False)
+            self.assertIn('threshold_data_support', report['results']['tone'])
         groups = {name: set(speakers) for name, speakers in report['speaker_splits'].items()}
         self.assertEqual(sum(map(len, groups.values())), 49)
         for name, group in groups.items():
