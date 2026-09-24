@@ -4,6 +4,12 @@ This is a supervised pronunciation-assessment experiment, separate from the
 trainer's existing admission rules. Its targets are published human judgments,
 not filenames, ASR transcripts, or the app's heuristic decisions.
 
+The [tone-label validation redesign](tone-validation-redesign.md) is the
+researched next-step plan for the native practice library. It separates this
+learner-assessment experiment from label-aware validation of direct
+single-syllable recordings and whole-word tone sequences. The plan is not an
+implemented accuracy guarantee.
+
 ## Reference data and attribution
 
 The reference is **OMPAL**, pinned in `config/pronunciation_judge.json` and
