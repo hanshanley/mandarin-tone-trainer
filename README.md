@@ -33,12 +33,19 @@ definition, and expected spoken-tone pattern.
 
 ### Listen without visual hints
 
-**Native** playback uses a recording of the complete word. The answer stays
+**Play audio** replays a recording of the complete word. The answer stays
 hidden until you choose a tone for every syllable. Practice uses direct word
 recordings, not fragments cut from sentences or syllables stitched together.
-If your browser blocks automatic audio, tap **Native** to start.
+If your browser blocks automatic audio, tap **Play audio** to start.
 
-Use **Word recordings** to practice with **Both sources**, the **Original
+Choose **Word length** at the top of the exercise. Each syllable has one compact
+row of five tone choices, directly below replay. The replay bar stays within
+reach while you scroll through longer words; replay and navigation bring the
+answer area back into view. Grading reveals feedback below the choices without
+scrolling them away. On phones, **Previous** and **Next word** remain at the
+bottom of the screen.
+
+Open **Practice settings** and use **Word recordings** to practice with **Both sources**, the **Original
 library**, or **Mandarin Native** specifically. This chooses the complete-word
 audio; **Comparison voice** separately controls the isolated tone examples.
 
@@ -58,7 +65,8 @@ syllable identified, rather than an invented isolated fifth-tone clip.
 
 ### Practice your pronunciation
 
-Use **Record me** to capture your voice locally. Play it on its own or use
+Open **Practice your pronunciation** and use **Record me** to capture your voice
+locally. **Play mine** plays it on its own, or use
 **Overlay** to compare it with the native recording. Microphone permission is
 only required for recording.
 

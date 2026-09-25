@@ -31,7 +31,7 @@ not for redistribution**: imported audio still has unverified reuse rights.
 `data/build_scope.json` records this distinction in the bundle. No sentence cuts
 or stitched words are included.
 
-The **Word recordings** setting selects either source or both for initial
+Open **Practice settings** to choose **Word recordings**, either source or both for initial
 whole-word playback. **Comparison voice** is independent and changes only the
 tone-button examples. Sources absent from a build are not offered as selectable
 practice options.
@@ -114,8 +114,12 @@ For later releases, increment `versionCode` in
 Without USB debugging, transfer the APK to the device and open it from the
 Files app. Android may ask you to allow **Install unknown apps** for Files.
 
-The first use of **Record me** requests microphone permission. All listening
-and quiz features work without that permission.
+Replay is beside the answer rows. **Previous** and **Next word** stay at the
+bottom on phones, and grading does not scroll the choices away.
+
+Open **Practice your pronunciation** to use **Record me**, **Play mine**, and
+**Overlay**. The first recording requests microphone permission; all listening
+and quiz features work without it.
 
 If `resources/logo.svg` changes, regenerate launcher and splash resources with
 Android Studio's Image Asset tools.

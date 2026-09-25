@@ -5,6 +5,9 @@ const reviewedAudioBytes=new Map();
 const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const TONE_LABELS={1:'1st tone',2:'2nd tone',3:'3rd tone',4:'4th tone',N:'Neutral tone'};
+const TONE_NAMES={1:'Level',2:'Rising',3:'Low / dip',4:'Falling',N:'Neutral'};
+const TONE_CONTOURS={1:'M4 7H28',2:'M4 19 28 4',3:'M4 8Q16 30 28 10',4:'M4 4 28 19',N:'M15 12h2'};
 function saveResults(){updateProgress()}
 function isPlaybackInterruption(error){return error?.name==='AbortError'}
 function cachedValue(cache,key){
@@ -19,8 +22,13 @@ function cacheValue(cache,key,value,limit){
   while(cache.size>limit)cache.delete(cache.keys().next().value);
 }
 function setAudioStatus(message='',error=false){
+  const recordingOpen=$('recordingTools').open;
+  $('audioStatus').setAttribute('aria-live',recordingOpen?'off':'polite');
+  $('recordingStatus').setAttribute('aria-live',recordingOpen?'polite':'off');
   $('audioStatus').textContent=message;
   $('audioStatus').classList.toggle('error',error);
+  $('recordingStatus').textContent=recordingOpen?message:'';
+  $('recordingStatus').classList.toggle('error',error);
 }
 function resetRecordButton(){
   $('record').innerHTML='<span aria-hidden="true">●</span> Record me';
@@ -168,19 +176,43 @@ function choose(a){return a[Math.floor(Math.random()*a.length)]}
 function patternFor(w,r){return (r&&r.surface_pattern)||expectedPattern(w)}
 function renderToneChoices(){
   const syllables=current._correct.split('-'), tones=['1','2','3','4','N'];
-  const toneLabels={1:'1st tone',2:'2nd tone',3:'3rd tone',4:'4th tone',N:'Neutral'};
   selectedTones=Array(syllables.length).fill(null); $('answers').innerHTML=''; $('answers').className='answers tone-columns';
   syllables.forEach((_,index)=>{
     const column=document.createElement('div'); column.className='tone-column';
+    column.setAttribute('role','group'); column.setAttribute('aria-label',`Syllable ${index+1}`);
     const heading=document.createElement('div'); heading.className='tone-heading'; heading.textContent=`Syllable ${index+1}`; column.appendChild(heading);
-    tones.forEach(tone=>{const button=document.createElement('button'); button.className='tone-choice'; button.dataset.tone=tone; button.innerHTML=`${toneLabels[tone]} <small>${tone}</small>`; button.onclick=()=>{
+    tones.forEach(tone=>{const button=document.createElement('button'); button.type='button'; button.className='tone-choice'; button.dataset.tone=tone;
+      button.innerHTML=`<span class="tone-number">${tone}</span><svg class="tone-contour" viewBox="0 0 32 24" aria-hidden="true"><path d="${TONE_CONTOURS[tone]}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tone-name">${TONE_NAMES[tone]}</span>`;
+      button.onclick=()=>{
       playCorrection(index,tone);
       if(current._graded)return;
-      selectedTones[index]=tone; [...column.querySelectorAll('button')].forEach(x=>x.classList.remove('selected')); button.classList.add('selected');
+      selectedTones[index]=tone;
+      updateAnswerState();
       if(selectedTones.every(Boolean))grade(selectedTones.join('-'),current._correct);
     }; column.appendChild(button)});
     $('answers').appendChild(column);
   });
+  updateAnswerState();
+}
+function updateAnswerState(){
+  const correctTones=current._correct.split('-');
+  [...$('answers').children].forEach((column,index)=>{
+    column.querySelectorAll('button').forEach(button=>{
+      const tone=button.dataset.tone,selected=selectedTones[index]===tone;
+      const correct=current._graded&&tone===correctTones[index];
+      const wrong=current._graded&&selected&&!correct;
+      button.classList.toggle('selected',selected);
+      button.classList.toggle('correct',correct&&selected);
+      button.classList.toggle('wrong',wrong);
+      button.classList.toggle('correct-answer',correct&&!selected);
+      button.dataset.feedback=correct?(selected?'Correct':'Answer'):wrong?'Your choice':selected?'Selected':'';
+      button.setAttribute('aria-pressed',String(selected));
+      button.setAttribute('aria-label',`Syllable ${index+1}, ${TONE_LABELS[tone]}, ${TONE_NAMES[tone]}${button.dataset.feedback?`. ${button.dataset.feedback}`:''}`);
+    });
+  });
+  const count=selectedTones.filter(Boolean).length;
+  $('answerHint').textContent=current._graded?'Tap any tone to compare.':
+    count?`${count} of ${selectedTones.length} selected.`:'Choose one tone per syllable.';
 }
 function currentSnapshot(){
   if(!current||!questionVerified)return null;
@@ -197,16 +229,7 @@ function currentSnapshot(){
 }
 function restoreToneState(state){
   selectedTones=[...state.selectedTones];
-  const correctTones=state.correct.split('-');
-  selectedTones.forEach((tone,index)=>{
-    if(!tone)return;
-    const column=$('answers').children[index];
-    const selected=column.querySelector(`[data-tone="${tone}"]`);
-    selected.classList.add('selected');
-    if(!state.graded)return;
-    selected.classList.add(tone===correctTones[index]?'correct':'wrong');
-    if(tone!==correctTones[index])column.querySelector(`[data-tone="${correctTones[index]}"]`).classList.add('correct-answer');
-  });
+  updateAnswerState();
 }
 async function verifyCurrentQuestion(){
   const loadId=++questionLoadId;
@@ -238,7 +261,7 @@ async function verifyCurrentQuestion(){
   }
 }
 async function back(play=false){
-  if(!quizHistory.length)return;
+  if(!quizHistory.length)return false;
   stopAllAudio();
   clearPersonalRecording();
   setAudioStatus();
@@ -249,14 +272,16 @@ async function back(play=false){
   current._correct=state.correct;
   current._graded=state.graded;
   $('reveal').classList.add('hidden');
-  if(!await verifyCurrentQuestion())return;
+  if(!await verifyCurrentQuestion())return false;
   $('prompt').innerHTML=state.promptHTML;
   renderToneChoices();
   restoreToneState(state);
   $('reveal').innerHTML=state.revealHTML;
   $('reveal').classList.toggle('hidden',state.revealHidden);
   updateBackButton();
+  if(play)scrollToPractice();
   if(currentNative?.playable&&play)playNative();
+  return true;
 }
 async function next(play=false,remember=true){
   if(remember){
@@ -281,18 +306,23 @@ async function next(play=false,remember=true){
         ?'<div class="muted">No exercises are available from this source with the current settings.</div><p>Choose Both sources to continue.</p>'
         :'<div class="muted">No exercises are available right now.</div>');
     $('play').disabled=true; $('record').disabled=true;
-    $('answers').innerHTML=''; $('reveal').classList.add('hidden'); updateBackButton(); return;
+    $('answers').innerHTML=''; $('answerHint').textContent='Change your settings to continue.';
+    $('reveal').classList.add('hidden'); updateBackButton(); return false;
   }
   current=choose(pool); const rs=recordingsFor(current); currentRec=rs.length?choose(rs):null; currentNative=nativePlayback(current,currentRec);
   current._graded=false;
   const correct=patternFor(current,currentRec);
   current._correct=correct;
-  $('prompt').innerHTML=`<div class="muted">Listen first — word hidden until you answer</div>${currentNative?.playable?`<div class="muted">Speaker: ${escapeHTML(currentNative.speaker)} · ${escapeHTML(sourceName(currentNative.source||''))}</div>`:'<div class="muted">No local recording for this item.</div>'}`;
+  const source=sourceName(currentNative?.source||'');
+  const speaker=currentNative?.speaker;
+  $('prompt').innerHTML=`<div class="prompt-title">Listen first. Word hidden.</div>${currentNative?.playable?`<div class="muted">${escapeHTML(source)}${speaker&&speaker!=='unknown'&&speaker!==source?` · ${escapeHTML(speaker)}`:''}</div>`:'<div class="muted">No local recording for this item.</div>'}`;
   $('reveal').classList.add('hidden');
-  if(!await verifyCurrentQuestion())return;
+  if(!await verifyCurrentQuestion())return false;
   renderToneChoices();
   updateBackButton();
+  if(play)scrollToPractice();
   if(currentNative?.playable && play)playNative();
+  return true;
 }
 function grade(p,correct){
   if(!questionVerified||correct!==patternFor(current,currentRec)||!AudioReview.nativeApproval(audioReviews,current,currentRec)||!hasVerifiedCorrections(current,correct)){
@@ -300,14 +330,7 @@ function grade(p,correct){
     return;
   }
   current._graded=true;
-  const correctTones=correct.split('-');
-  selectedTones.forEach((tone,index)=>{
-    const column=$('answers').children[index];
-    const selected=column.querySelector('.selected');
-    const correctButton=column.querySelector(`[data-tone="${correctTones[index]}"]`);
-    selected.classList.add(tone===correctTones[index]?'correct':'wrong');
-    if(tone!==correctTones[index])correctButton.classList.add('correct-answer');
-  });
+  updateAnswerState();
   results.push({timestamp:new Date().toISOString(),word:current.word,pinyin:current.pinyin,selected_pattern:p,correct_pattern:correct,correct:p===correct,source:currentNative?.source||null,recording:currentNative?.filename||null});
   saveResults();
   const tags=current.sandhi_tags.map(x=>`<span class="tag">${x}</span>`).join('');
@@ -316,31 +339,31 @@ function grade(p,correct){
   const compact=pinyin=>pinyin.toLowerCase().normalize('NFC').replace(/[\s'’\-]/g,'');
   const listed=compact(current.pinyin)!==compact(heard)
     ?`<p class="muted">Listed pinyin: ${escapeHTML(current.pinyin)}. This recording uses the spoken form shown above.</p>`:'';
-  $('reveal').innerHTML=`<div class="word">${escapeHTML(current.word)}</div><div class="muted">Heard here</div><div class="pinyin">${escapeHTML(heard)}</div><p>Correct tone pattern: <b>${escapeHTML(correct)}</b></p>${listed}${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
+  $('reveal').innerHTML=`<div class="result-label${p===correct?'':' retry'}">${p===correct?'That’s right.':'Listen once more.'} <span class="muted">Correct tone pattern: ${escapeHTML(correct)}</span></div><div class="reveal-reading"><div class="word">${escapeHTML(current.word)}</div><div><div class="muted reading-label">Heard here</div><div class="pinyin">${escapeHTML(heard)}</div></div></div>${listed}${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
   const reference=document.createElement('a');
   reference.href=`https://mandarin-native.com/#${encodeURIComponent(`word/${current.word}`)}`;
   reference.target='_blank';
   reference.rel='noreferrer noopener';
-  reference.textContent='Compare in Mandarin Native (online, independent reference)';
+  reference.textContent='Explore this word in Mandarin Native (online)';
   $('reveal').appendChild(reference);
-  if(window.matchMedia('(max-width: 680px)').matches){
-    $('reveal').scrollIntoView({
-      behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
-      block:'nearest',
-    });
-  }
 }
-function scrollToPractice(){
-  if(!window.matchMedia('(max-width: 680px)').matches)return;
-  document.querySelector('.card').scrollIntoView({
-    behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
-    block:'start',
-  });
+function scrollToPractice({focus=false}={}){
+  const first=$('answers').children[0];
+  if(!first)return;
+  const bounds=first.getBoundingClientRect();
+  const bottom=window.matchMedia('(max-width: 680px)').matches
+    ?$('practiceNavigation').getBoundingClientRect().top:window.innerHeight;
+  if(bounds.top<$('listenBar').getBoundingClientRect().bottom||bounds.bottom>bottom){
+    $('practiceFocus').scrollIntoView({behavior:'instant',block:'start'});
+  }
+  if(focus)first.querySelector('button').focus({preventScroll:true});
 }
 function audioURL(r){if(!r)return null;let p=r.audio_path||''; if(p.startsWith('audio/'))return '../'+p; return p}
 function stopNative(){
   nativePlayId++;
+  $('play').classList.remove('is-playing');
+  $('playLabel').textContent='Play audio';
   if(nativeObjectURL){URL.revokeObjectURL(nativeObjectURL);nativeObjectURL=null}
   if(!nativeAudio)return;
   nativeAudio.pause();
@@ -408,7 +431,13 @@ async function playAssessedRecording(approval,message){
     nativeAudio=audio;
     audio.onended=()=>{if(nativeAudio===audio)stopNative()};
     await audio.play();
-    if(playId===nativePlayId)setAudioStatus(message);
+    if(playId===nativePlayId){
+      if(approval===currentNative?.approval){
+        $('play').classList.add('is-playing');
+        $('playLabel').textContent='Listening…';
+      }
+      setAudioStatus(message);
+    }
   }catch(error){
     if(playId!==nativePlayId)return;
     stopNative();
@@ -579,14 +608,14 @@ async function playCorrection(index,tone){
   }
   return playPinyinKey(key);
 }
-$('play').onclick=playNative;
-$('back').onclick=()=>{back(true);scrollToPractice()};
-$('next').onclick=()=>{next(true);scrollToPractice()};
-$('syllables').onchange=()=>{quizHistory=[];next(true,false)};
+$('play').onclick=()=>{scrollToPractice();return playNative()};
+$('back').onclick=async event=>{if(await back(true))scrollToPractice({focus:event?.detail===0})};
+$('next').onclick=async event=>{if(await next(true))scrollToPractice({focus:event?.detail===0})};
+$('syllables').onchange=async()=>{quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})};
 $('wordSource').onchange=async()=>{
   quizHistory=[];
   updatePracticeSettings();
-  await next(true,false);
+  if(await next(true,false))scrollToPractice({focus:true});
 };
 $('correctionSource').onchange=async()=>{
   const state=currentSnapshot();
@@ -603,8 +632,9 @@ $('correctionSource').onchange=async()=>{
   const voice={audio_cmn:'human',pinyin_public:'reference',mandarin_native:'Mandarin Native'}[$('correctionSource').value];
   setAudioStatus(`Comparison voice preference: ${voice}. Individual tones may use another available voice.`);
 };
-$('sandhiOnly').onchange=()=>{quizHistory=[];next(true,false)};
+$('sandhiOnly').onchange=async()=>{quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
+$('recordingTools').ontoggle=()=>setAudioStatus($('audioStatus').textContent,$('audioStatus').classList.contains('error'));
 $('record').onclick=async()=>{
   if(recordingStarting)return;
   if(!questionVerified)return;

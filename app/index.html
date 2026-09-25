@@ -2,24 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f4f1ea">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f6f5">
   <title>Mandarin Tone Trainer</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <header>
-      <div class="intro">
-        <p class="eyebrow">听 · 辨 · 说</p>
-        <h1>Mandarin Tone Trainer</h1>
-        <p class="subtitle">Build a sharper ear through focused listening and tone-pattern practice.</p>
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">声</span>
+        <div>
+          <h1>Mandarin Tone Trainer</h1>
+          <p class="subtitle">A little listening, every day.</p>
+        </div>
       </div>
       <div id="progress" class="progress" aria-live="polite"></div>
     </header>
 
     <section class="card" aria-label="Tone practice">
-      <div id="prompt" class="prompt" aria-live="polite">Listen, then choose the tone for each syllable.</div>
+      <div class="practice-toolbar">
+        <div>
+          <p class="eyebrow">Listening practice</p>
+          <h2>Find the tones.</h2>
+        </div>
+        <label class="select-control syllable-control" for="syllables">
+          <span>Word length</span>
+          <select id="syllables">
+            <option value="one" selected>1 syllable</option>
+            <option value="two">2 syllables</option>
+            <option value="longer">3+ syllables</option>
+            <option value="all">Any length</option>
+          </select>
+        </label>
+      </div>
+      <div id="practiceFocus" class="practice-focus">
+        <div id="listenBar" class="listen-bar">
+          <button id="play" class="native-button" type="button" aria-label="Play the native word recording" disabled>
+            <svg class="play-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m8 5 11 7-11 7Z" fill="currentColor"/></svg>
+            <span id="playLabel">Play audio</span>
+          </button>
+          <div id="prompt" class="prompt" aria-live="polite">Getting your exercise ready…</div>
+        </div>
+        <div class="answer-intro">
+          <h3 id="answerTitle">What did you hear?</h3>
+          <p id="answerHint">Choose one tone per syllable.</p>
+        </div>
+        <div id="answers" class="answers" aria-labelledby="answerTitle" aria-describedby="answerHint"></div>
+      </div>
+      <div id="audioStatus" class="audio-status" role="status" aria-live="polite"></div>
+      <div id="reveal" class="reveal hidden" aria-live="polite"></div>
+      <nav id="practiceNavigation" class="practice-navigation" aria-label="Word navigation">
+        <button id="back" class="back-button" type="button" disabled><span aria-hidden="true">←</span> Previous</button>
+        <button id="next" class="primary-button" type="button">Next word <span aria-hidden="true">→</span></button>
+      </nav>
+    </section>
+
+    <details class="tool-panel" id="recordingTools">
+      <summary><span>Practice your pronunciation <small>Record, listen, compare</small></span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
+      <div class="tool-content">
+        <p class="tool-description">Say the word, then listen to your voice beside the original. Your recording stays on this device.</p>
+        <div class="audio-row" aria-label="Your recording controls">
+          <button id="record" class="audio-button record-button" type="button" aria-pressed="false"><span aria-hidden="true">●</span> Record me</button>
+          <button id="playMine" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Play mine</button>
+          <button id="overlay" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Overlay</button>
+        </div>
+        <p id="recordingStatus" class="recording-status" role="status" aria-live="polite"></p>
+      </div>
+    </details>
+
+    <details class="tool-panel" id="practiceSettings">
+      <summary><span>Practice settings <small>Audio sources &amp; tone changes</small></span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
       <div class="controls" aria-label="Practice settings">
         <label class="select-control" for="wordSource">
           <span>Word recordings</span>
@@ -27,15 +80,6 @@
             <option value="all" selected>Both sources</option>
             <option value="audio_cmn">Original library</option>
             <option value="mandarin_native">Mandarin Native</option>
-          </select>
-        </label>
-        <label class="select-control" for="syllables">
-          <span>Syllables</span>
-          <select id="syllables">
-            <option value="one" selected>1 syllable</option>
-            <option value="two">2 syllables</option>
-            <option value="longer">3+ syllables</option>
-            <option value="all">Any syllable</option>
           </select>
         </label>
         <label class="select-control" for="correctionSource">
@@ -48,33 +92,17 @@
         </label>
         <label class="checkbox-control" for="sandhiOnly">
           <input type="checkbox" id="sandhiOnly">
-          <span>Sandhi only</span>
+          <span>Sandhi only <small>Words with connected-speech tone changes</small></span>
         </label>
       </div>
-      <div class="audio-row" aria-label="Audio controls">
-        <button id="play" class="audio-button native-button" type="button"><span aria-hidden="true">▶</span> Native</button>
-        <button id="record" class="audio-button record-button" type="button"><span aria-hidden="true">●</span> Record me</button>
-        <button id="playMine" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Me</button>
-        <button id="overlay" class="audio-button" type="button" disabled><span aria-hidden="true">▶</span> Overlay</button>
-      </div>
-      <div id="audioStatus" class="audio-status" role="status" aria-live="polite"></div>
-      <div id="answers" class="answers"></div>
-      <div id="reveal" class="reveal hidden" aria-live="polite"></div>
-      <nav class="practice-navigation" aria-label="Word navigation">
-        <button id="back" class="back-button" type="button" disabled><span aria-hidden="true">←</span> Previous word</button>
-        <button id="next" class="primary-button" type="button">Next word <span aria-hidden="true">→</span></button>
-      </nav>
-    </section>
+    </details>
 
-    <section class="help progress-panel" aria-label="Progress controls">
-      <div>
-        <h2>Your practice</h2>
-        <p>Results stay available for this practice session.</p>
-      </div>
+    <section class="session-footer" aria-label="Progress controls">
+      <p>One word at a time. Results stay in this session.</p>
       <button id="resetProgress" class="quiet-button" type="button">Reset results</button>
     </section>
 
-    <details class="help credits">
+    <details class="credits">
       <summary>About and audio credits</summary>
       <p>This offline trainer uses human Mandarin recordings from the CC-BY-SA
         <a href="https://github.com/hugolpz/audio-cmn" target="_blank" rel="noreferrer">audio-cmn corpus</a>,

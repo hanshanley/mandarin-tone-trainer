@@ -107,7 +107,8 @@ test('spoken pinyin reflects graded tones, including sandhi, neutral and vowel p
 function element(){
   const classes=new Set();
   return {
-    children:[],dataset:{},value:'',disabled:false,checked:false,textContent:'',
+    children:[],dataset:{},attributes:{},value:'',disabled:false,checked:false,textContent:'',open:false,
+    scrollCalls:[],focusCalls:[],bounds:{top:200,bottom:330,left:30,right:530,width:500,height:130},
     classList:{
       add:c=>classes.add(c),remove:c=>classes.delete(c),contains:c=>classes.has(c),
       toggle:(c,on)=>on?classes.add(c):classes.delete(c),
@@ -115,14 +116,18 @@ function element(){
     appendChild(child){this.children.push(child)},
     set innerHTML(value){this.html=value;this.children=[]},
     get innerHTML(){return this.html||''},
-    setAttribute(){},
+    setAttribute(name,value){this.attributes[name]=String(value)},
+    getAttribute(name){return this.attributes[name]??null},
+    getBoundingClientRect(){return this.bounds},
+    focus(options){this.focusCalls.push(options)},
     querySelectorAll(){return this.children.filter(child=>child.dataset.tone)},
     querySelector(selector){
+      if(selector==='button')return this.children.find(child=>child.dataset.tone);
       if(selector==='.selected')return this.children.find(child=>child.classList.contains('selected'));
       const tone=/data-tone="([^"]+)"/.exec(selector)?.[1];
       return this.children.find(child=>child.dataset.tone===tone);
     },
-    scrollIntoView(){},
+    scrollIntoView(options){this.scrollCalls.push(options)},
   };
 }
 function selectedPractice(approvals){
@@ -151,6 +156,7 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
   get('wordSource').value='all';
   get('syllables').value='all';
   get('correctionSource').value='pinyin_public';
+  get('listenBar').bounds={top:100,bottom:180,left:30,right:530,width:500,height:80};
   const publicRecordings=Object.fromEntries(['1','2','3','4'].map(tone=>[
     `ma${tone}`,{audio_path:`audio/pinyin_public/ma${tone}.mp3`,source:'public'},
   ]));
@@ -175,7 +181,7 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     AudioReview:Review,CorrectionAudio:Policy,crypto:webcrypto,Blob,
     URL:{createObjectURL:()=>`blob:verified-${played.length}`,revokeObjectURL(){}},
     console:{error:(...args)=>errors.push(args)},navigator:{},
-    window:{addEventListener(){},matchMedia:()=>({matches:false})},
+    window:{addEventListener(){},matchMedia:()=>({matches:false}),innerHeight:900},
     document:{getElementById:get,createElement:element,addEventListener(){},querySelectorAll:()=>[]},
     Audio:class{
       constructor(url){played.push(url)}
@@ -461,6 +467,95 @@ test('browser autoplay restrictions leave a playable exercise rather than an err
   assert.equal(app.get('audioStatus').classList.contains('error'),false);
   await app.get('play').onclick();
   assert.match(app.get('audioStatus').textContent,/Playing the native recording/);
+});
+
+test('tone choices expose selection and grading without moving the answer controls',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run("window.matchMedia=()=>({matches:true});playCorrection=async()=>{}");
+  const column=app.get('answers').children[0];
+  assert.equal(column.getAttribute('role'),'group');
+  assert.equal(column.getAttribute('aria-label'),'Syllable 1');
+  const correct=column.querySelector('[data-tone="1"]'),wrong=column.querySelector('[data-tone="2"]');
+  assert.equal(correct.getAttribute('aria-pressed'),'false');
+  assert.match(correct.getAttribute('aria-label'),/Syllable 1, 1st tone/);
+  wrong.onclick();
+  assert.equal(wrong.getAttribute('aria-pressed'),'true');
+  assert.equal(wrong.dataset.feedback,'Your choice');
+  assert.equal(correct.dataset.feedback,'Answer');
+  assert.match(app.get('answerHint').textContent,/Tap any tone/);
+  assert.equal(app.get('reveal').classList.contains('hidden'),false);
+  assert.equal(app.get('reveal').scrollCalls.length,0);
+  assert.equal(app.get('practiceFocus').scrollCalls.length,0);
+  correct.onclick();
+  assert.equal(app.run('results.length'),1);
+  assert.equal(wrong.getAttribute('aria-pressed'),'true');
+});
+
+test('replay reveals offscreen answers, and keyboard navigation waits for verified choices before focus',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  const row=app.get('answers').children[0];
+  row.bounds={...row.bounds,top:-200,bottom:-70};
+  await app.get('play').onclick();
+  assert.equal(app.get('practiceFocus').scrollCalls.length,1);
+  assert.equal(app.get('practiceFocus').scrollCalls[0].block,'start');
+  assert.equal(app.get('playLabel').textContent,'Listening…');
+  app.run('stopNative()');
+  assert.equal(app.get('playLabel').textContent,'Play audio');
+  assert.equal(app.get('play').classList.contains('is-playing'),false);
+  app.run(`
+    const originalApprovedBytes=approvedAudioBytes;
+    let releaseAudio;
+    const awaitingAudio=new Promise(resolve=>releaseAudio=resolve);
+    approvedAudioBytes=async approval=>{await awaitingAudio;return originalApprovedBytes(approval)};
+  `);
+  const pending=app.get('next').onclick({detail:0});
+  assert.equal(app.get('answers').children.length,0);
+  app.run('releaseAudio()');
+  await pending;
+  const first=app.get('answers').children[0].querySelector('button');
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(first.focusCalls.length,1);
+  assert.equal(first.focusCalls[0].preventScroll,true);
+});
+
+test('returning to an answered word restores accessible choices without adding another attempt',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run('playCorrection=async()=>{}');
+  app.get('answers').children[0].querySelector('[data-tone="1"]').onclick();
+  await app.get('next').onclick({detail:1});
+  await app.get('back').onclick({detail:0});
+  const button=app.get('answers').children[0].querySelector('[data-tone="1"]');
+  assert.equal(button.getAttribute('aria-pressed'),'true');
+  assert.equal(button.dataset.feedback,'Correct');
+  assert.equal(app.run('results.length'),1);
+  assert.equal(app.get('reveal').classList.contains('hidden'),false);
+});
+
+test('changing a word filter returns keyboard focus to the new verified answers',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.get('syllables').value='one';
+  await app.get('syllables').onchange();
+  let first=app.get('answers').children[0].querySelector('button');
+  assert.equal(first.focusCalls.length,1);
+  app.get('wordSource').value='audio_cmn';
+  await app.get('wordSource').onchange();
+  first=app.get('answers').children[0].querySelector('button');
+  assert.equal(first.focusCalls.length,1);
+  assert.equal(app.run('questionVerified'),true);
+});
+
+test('recording feedback is announced beside the controls without duplicate live announcements',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.get('recordingTools').open=true;
+  app.run("setAudioStatus('Recording failed.',true)");
+  assert.equal(app.get('recordingStatus').textContent,'Recording failed.');
+  assert.equal(app.get('recordingStatus').getAttribute('aria-live'),'polite');
+  assert.equal(app.get('audioStatus').getAttribute('aria-live'),'off');
+  assert.equal(app.get('recordingStatus').classList.contains('error'),true);
+  app.get('recordingTools').open=false;
+  app.get('recordingTools').ontoggle();
+  assert.equal(app.get('recordingStatus').textContent,'');
+  assert.equal(app.get('audioStatus').getAttribute('aria-live'),'polite');
 });
 
 test('tampered native or comparison audio prevents all playback and grading',async()=>{

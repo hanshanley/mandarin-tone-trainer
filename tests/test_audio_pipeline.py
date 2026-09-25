@@ -306,11 +306,12 @@ process.stdout.write(JSON.stringify(result));
         card = index.split('<section class="card"', 1)[1].split('</section>', 1)[0]
         self.assertIn('aria-label="Word navigation"', card)
         self.assertGreater(card.index('id="next"'), card.index('id="reveal"'))
-        self.assertGreater(card.index('class="controls"'), card.index('id="prompt"'))
-        self.assertLess(card.index('class="controls"'), card.index('class="audio-row"'))
-        controls = card.split('<div class="controls"', 1)[1].split('</div>', 1)[0]
-        self.assertIn('id="syllables"', controls)
-        self.assertNotIn('id="next"', controls)
+        self.assertIn('id="syllables"', card)
+        self.assertNotIn('id="wordSource"', card)
+        self.assertNotIn('id="record"', card)
+        self.assertLess(card.index('id="play"'), card.index('id="answers"'))
+        self.assertLess(card.index('id="answers"'), card.index('id="audioStatus"'))
+        self.assertIn('<details class="tool-panel" id="practiceSettings">', index)
         self.assertIn('QUIZ_HISTORY_LIMIT=50', source)
         self.assertIn('function currentSnapshot()', source)
         self.assertIn('selectedTones:[...selectedTones]', source)
@@ -318,19 +319,19 @@ process.stdout.write(JSON.stringify(result));
         self.assertIn('function restoreToneState(state)', source)
         self.assertIn('function back(play=false)', source)
         self.assertIn('quizHistory.pop()', source)
-        self.assertIn("function scrollToPractice()", source)
-        self.assertIn("$('reveal').scrollIntoView", source)
-        self.assertIn("document.querySelector('.card').scrollIntoView", source)
+        self.assertIn("function scrollToPractice({focus=false}={})", source)
+        self.assertNotIn("$('reveal').scrollIntoView", source)
+        self.assertIn("$('practiceFocus').scrollIntoView", source)
         self.assertIn(
-            "$('back').onclick=()=>{back(true);scrollToPractice()}",
+            "$('back').onclick=async event=>{if(await back(true))scrollToPractice({focus:event?.detail===0})}",
             source,
         )
         self.assertIn(
-            "$('next').onclick=()=>{next(true);scrollToPractice()}",
+            "$('next').onclick=async event=>{if(await next(true))scrollToPractice({focus:event?.detail===0})}",
             source,
         )
         self.assertIn("load().then(()=>next(true,false))", source)
-        self.assertIn("quizHistory=[];next(true,false)", source)
+        self.assertIn("quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})", source)
 
     def test_comparison_voice_switches_all_tone_buttons(self):
         index = (ROOT / 'app' / 'index.html').read_text(encoding='utf-8')
