@@ -93,8 +93,7 @@ main {
 
 h1 { margin: 0; font-size: 1.15rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.03em; }
 .subtitle { margin: 0.2rem 0 0; font-size: 0.8rem; color: var(--muted); }
-.progress { flex-shrink: 0; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
-.progress:empty { display: none; }
+.progress { flex-shrink: 0; min-height: 1.5em; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
 
 .card {
   padding: 1.65rem;
@@ -219,12 +218,14 @@ a { color: var(--accent-dark); text-underline-offset: 0.2em; }
 .tool-panel { margin-top: 0.75rem; border: 1px solid var(--border); border-radius: 13px; background: #ffffffb3; }
 .tool-panel summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 62px; padding: 0.85rem 1.25rem; border-radius: inherit; list-style: none; cursor: pointer; font-size: 0.87rem; font-weight: 650; }
 .tool-panel summary::-webkit-details-marker { display: none; }
+.tool-panel summary[aria-disabled="true"] { cursor: default; }
+.tool-panel summary[aria-disabled="true"] .disclosure-icon { visibility: hidden; }
 .tool-panel summary small { margin-left: 0.65rem; font-size: 0.75rem; font-weight: 400; color: var(--muted); }
 .disclosure-icon { font-size: 1.3rem; font-weight: 400; color: var(--muted); }
 .tool-panel[open] .disclosure-icon { transform: rotate(45deg); }
 .tool-content, .controls { padding: 0 1.25rem 1.15rem; }
 .tool-description { margin: 0 0 1rem; font-size: 0.82rem; color: var(--muted); }
-.controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; }
 .checkbox-control { display: flex; align-items: center; gap: 0.65rem; grid-column: 1 / -1; min-height: 44px; font-size: 0.85rem; cursor: pointer; }
 .checkbox-control input { width: 19px; height: 19px; margin: 0; accent-color: var(--accent); }
 .checkbox-control small { display: block; color: var(--muted); font-size: 0.75rem; }
@@ -249,7 +250,7 @@ code { padding: 0.1rem 0.2rem; background: #e8eee9; border-radius: 4px; font-siz
   h1 { font-size: 1rem; }
   .subtitle { font-size: 0.72rem; }
   .brand-mark { width: 2.25rem; height: 2.25rem; border-radius: 10px; font-size: 1.25rem; }
-  .progress { margin-left: auto; font-size: 0.68rem; }
+  .progress { flex-basis: 100%; margin-left: auto; font-size: 0.68rem; }
   .card { padding: 16px; border-radius: 16px; }
   .practice-toolbar { gap: 0.6rem; margin-bottom: 1rem; }
   h2 { font-size: 1.5rem; }
@@ -291,16 +292,16 @@ code { padding: 0.1rem 0.2rem; background: #e8eee9; border-radius: 4px; font-siz
   .word { font-size: 2.2rem; }
   .tool-panel summary { padding: 0.85rem 1rem; min-height: 62px; }
   .tool-panel summary small { display: block; margin: 0.15rem 0 0; font-size: 0.7rem; }
-  .tool-content, .controls { padding-inline: 1rem; }
-  .audio-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
+  .tool-content, .controls { padding-inline: 16px; }
+  .audio-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 6rem), 1fr)); gap: 0.4rem; }
   .audio-button { padding-inline: 0.25rem; font-size: 0.73rem; gap: 0.3rem; }
   .session-footer { gap: 0.75rem; font-size: 0.7rem; }
 }
 
 @media (max-width: 360px) {
-  main { padding-top: calc(0.75rem + env(safe-area-inset-top)); padding-inline: max(0.625rem, env(safe-area-inset-left)) max(0.625rem, env(safe-area-inset-right)); }
+  main { padding-top: calc(0.75rem + env(safe-area-inset-top)); padding-inline: max(10px, env(safe-area-inset-left)) max(10px, env(safe-area-inset-right)); }
   .app-header { margin-bottom: 0.75rem; }
-  .card { padding: 0.8rem; }
+  .card { padding: 13px; }
   .practice-toolbar { align-items: center; margin-bottom: 0.75rem; }
   .eyebrow { display: none; }
   h2 { font-size: 1.2rem; }

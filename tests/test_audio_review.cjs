@@ -181,7 +181,13 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     AudioReview:Review,CorrectionAudio:Policy,crypto:webcrypto,Blob,
     URL:{createObjectURL:()=>`blob:verified-${played.length}`,revokeObjectURL(){}},
     console:{error:(...args)=>errors.push(args)},navigator:{},
-    window:{addEventListener(){},matchMedia:()=>({matches:false}),innerHeight:900},
+    window:{addEventListener(){},matchMedia:()=>({matches:false}),innerHeight:900,
+      AudioContext:class{
+        async decodeAudioData(){
+          return {sampleRate:48000,numberOfChannels:1,length:4,duration:4/48000,
+            getChannelData:()=>Float32Array.from([0,.5,-.5,0])};
+        }
+      }},
     document:{getElementById:get,createElement:element,addEventListener(){},querySelectorAll:()=>[]},
     Audio:class{
       constructor(url){played.push(url)}
@@ -433,7 +439,7 @@ test('missing alternative examples never play but do not disable a checked quest
   const app=await appHarness({approvals:allApprovals().filter(a=>a.key!=='ma3')});
   assert.equal(app.run('questionVerified'),true);
   assert.equal(app.get('answers').children.length,1);
-  app.run("mineUrl='blob:personal-recording'");
+  app.run("mineUrl='blob:personal-recording';mineBlob=new Blob([Uint8Array.from([1,2,3,4])])");
   await app.get('overlay').onclick();
   assert.equal(app.run('overlayAudios.length'),2);
   app.get('answers').children[0].querySelector('[data-tone="3"]').onclick();
@@ -558,6 +564,146 @@ test('recording feedback is announced beside the controls without duplicate live
   assert.equal(app.get('audioStatus').getAttribute('aria-live'),'polite');
 });
 
+test('progress is present before the first answer and remains after resetting results',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  assert.equal(app.get('progress').textContent,'0 attempts · 0 correct');
+  app.run("selectedTones=['1'];grade('1','1')");
+  assert.equal(app.get('progress').textContent,'1 attempts · 1 correct (100%)');
+  app.run('results=[];saveResults()');
+  assert.equal(app.get('progress').textContent,'0 attempts · 0 correct');
+});
+
+test('recording controls stay expanded through capture and finalization and unlock afterward',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run(`
+    let tracksStopped=false;
+    navigator.mediaDevices={getUserMedia:async()=>({getTracks:()=>[{stop(){tracksStopped=true}}]})};
+    globalThis.MediaRecorder=class{
+      state='inactive';mimeType='audio/webm';
+      start(){this.state='recording'}
+      stop(){this.state='inactive'}
+    };
+  `);
+  await app.get('record').onclick();
+  assert.equal(app.get('recordingTools').open,true);
+  assert.equal(app.get('recordingToggle').getAttribute('aria-disabled'),'true');
+  let prevented=false;
+  app.get('recordingToggle').onclick({preventDefault(){prevented=true}});
+  assert.equal(prevented,true);
+  app.get('recordingTools').open=false;
+  app.get('recordingTools').ontoggle();
+  assert.equal(app.get('recordingTools').open,true);
+  await app.get('record').onclick();
+  assert.equal(app.get('record').disabled,true);
+  assert.equal(app.get('recordingToggle').getAttribute('aria-disabled'),'true');
+  app.run(`
+    mediaRecorder.ondataavailable({data:new Blob([Uint8Array.from([1,2,3])])});
+    mediaRecorder.onstop();
+  `);
+  assert.equal(app.run('tracksStopped'),true);
+  assert.equal(app.get('recordingToggle').getAttribute('aria-disabled'),'false');
+  assert.equal(app.get('record').disabled,false);
+  assert.equal(app.get('next').disabled,false);
+  assert.equal(app.run('mineBlob.size'),3);
+  app.get('recordingTools').open=false;
+  app.get('recordingTools').ontoggle();
+  assert.equal(app.get('recordingTools').open,false);
+});
+
+test('failed microphone permission unlocks the pronunciation panel',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run(`
+    navigator.mediaDevices={getUserMedia:async()=>{throw Object.assign(new Error('Denied'),{name:'NotAllowedError'})}};
+    globalThis.MediaRecorder=class{};
+  `);
+  await app.get('record').onclick();
+  assert.equal(app.get('recordingToggle').getAttribute('aria-disabled'),'false');
+  assert.equal(app.run('recordingInProgress()'),false);
+  assert.match(app.get('audioStatus').textContent,/permission was denied/);
+});
+
+test('playback completion updates status without a stale player overwriting current playback',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  const first=app.run('nativeAudio');
+  await app.get('play').onclick();
+  first.onended();
+  assert.match(app.get('audioStatus').textContent,/^Playing the native/);
+  app.run('nativeAudio.onended()');
+  assert.equal(app.get('playLabel').textContent,'Play audio');
+  assert.equal(app.get('audioStatus').textContent,'Finished playing the native recording.');
+  await app.run("playAssessedRecording(currentNative.approval,'Playing a whole-word example; listen for neutral tone on syllable 2.')");
+  app.run('nativeAudio.onended()');
+  assert.match(app.get('audioStatus').textContent,/^Finished playing.*neutral tone on syllable 2/);
+  app.run("mineUrl='blob:mine';mineBlob=new Blob([Uint8Array.from([1,2,3])])");
+  await app.get('playMine').onclick();
+  app.run('mineAudio.onended()');
+  assert.equal(app.get('audioStatus').textContent,'Finished playing your recording.');
+  await app.get('overlay').onclick();
+  app.run('overlayAudios[0].ended=true;overlayAudios[0].onended()');
+  assert.match(app.get('audioStatus').textContent,/^Playing.*together/);
+  app.run('overlayAudios[1].ended=true;overlayAudios[1].onended()');
+  assert.equal(app.get('audioStatus').textContent,'Finished playing the native and recorded audio together.');
+  await app.get('play').onclick();
+  app.run('stopAllAudio()');
+  assert.equal(app.get('audioStatus').textContent,'Playback stopped.');
+});
+
+test('comparison completion cannot overwrite a newer native playback status',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run(`
+    let testSource;
+    getCorrectionContext=()=>({resume:async()=>{},createBufferSource:()=>{
+      testSource={start(){},stop(){},disconnect(){}};
+      return testSource;
+    }});
+    pinyinSequenceBuffer=async()=>({});
+    connectPinyinSource=()=>{};
+  `);
+  await app.run("playPinyinKey('ma1')");
+  const finished=app.run('testSource');
+  finished.onended();
+  assert.match(app.get('audioStatus').textContent,/^Finished playing tone 1/);
+  await app.run("playPinyinKey('ma2')");
+  const stale=app.run('testSource');
+  await app.get('play').onclick();
+  stale.onended();
+  assert.match(app.get('audioStatus').textContent,/^Playing the native/);
+});
+
+test('playback gain reserves headroom without boosting, clipping or masking invalid samples',()=>{
+  assert.equal(Policy.playbackGain([Float32Array.from([0,.2,-.2])]),1);
+  const peak=1.27151072,gain=Policy.playbackGain([[0,peak,-peak]]);
+  assert.ok(gain<1);
+  assert.ok(Math.abs(peak*gain-.9)<1e-12);
+  const other=2,otherGain=Policy.playbackGain([[other]]);
+  assert.ok(peak*gain/2+other*otherGain/2<=.900000000001);
+  const stereoGain=Policy.playbackGain([[.9],[.9]]);
+  assert.ok(Math.abs(.9*Math.sqrt(2)*stereoGain-.9)<1e-12);
+  for(const channels of [[],[[]],[[NaN]],[[Infinity]],[[1],[1,2]]])assert.throws(()=>Policy.playbackGain(channels));
+});
+
+test('comparison boundary ramps use only padding and preserve every original speech sample',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run(`
+    const speech=Float32Array.from([.25,.4,-.2,.35]);
+    rawPinyinBuffer=async()=>({sampleRate:1000,numberOfChannels:1,length:speech.length,getChannelData:()=>speech});
+    getCorrectionContext=()=>({createBuffer(channels,length,sampleRate){
+      const data=new Float32Array(length);
+      return {sampleRate,numberOfChannels:channels,length,getChannelData:()=>data};
+    }});
+  `);
+  const result=await app.run('pinyinSequenceBuffer(["ma1"])');
+  const samples=result.getChannelData(0),speech=Float32Array.from([.25,.4,-.2,.35]);
+  const normalization=Policy.normalizationParameters([speech]);
+  const expected=Float32Array.from(speech,sample=>(sample-normalization.offsets[0])*normalization.gain);
+  assert.equal(samples.length,120+speech.length+200);
+  assert.deepEqual(Array.from(samples.slice(120,124)),Array.from(expected));
+  assert.ok(samples.slice(0,115).every(value=>value===0));
+  assert.ok(samples.slice(129).every(value=>value===0));
+  assert.ok(samples[115]>0&&samples[119]<samples[120]);
+  assert.ok(samples[124]>samples[128]&&samples[124]<samples[123]);
+});
+
 test('tampered native or comparison audio prevents all playback and grading',async()=>{
   for(const audio of ['../audio/audio_cmn/test/test.mp3','../audio/pinyin_public/ma2.mp3']){
     const app=await appHarness({approvals:allApprovals(),tamper:audio});
@@ -620,7 +766,7 @@ test('empty filters explain how to get back to the available exercises',async()=
 
 test('overlay and alternate-voice fallback use only verified bytes',async()=>{
   const app=await appHarness({approvals:allApprovals()});
-  app.run("mineUrl='blob:personal-recording'");
+  app.run("mineUrl='blob:personal-recording';mineBlob=new Blob([Uint8Array.from([1,2,3,4])])");
   await app.get('overlay').onclick();
   assert.equal(app.played.length,3);
   assert.match(app.played[1],/^blob:verified-/);

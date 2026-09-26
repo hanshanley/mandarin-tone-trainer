@@ -59,6 +59,24 @@
     };
   }
   function normalizationGain(channels){return normalizationParameters(channels).gain}
+  function playbackGain(channels){
+    if(!Array.isArray(channels)||!channels.length||channels.some(channel=>!channel.length||channel.length!==channels[0].length)){
+      throw new Error('Playback audio requires nonempty, matching channels');
+    }
+    let peak=0;
+    const downmixScale=1/Math.sqrt(channels.length);
+    for(let index=0;index<channels[0].length;index++){
+      let mono=0;
+      for(const channel of channels){
+        const sample=channel[index];
+        if(!Number.isFinite(sample))throw new Error('Playback audio contains invalid samples');
+        peak=Math.max(peak,Math.abs(sample));
+        mono+=sample;
+      }
+      peak=Math.max(peak,Math.abs(mono)*downmixScale);
+    }
+    return peak?Math.min(1,NORMALIZATION_MAX_PEAK/peak):1;
+  }
   function correctionSelection(key,quality,recordings,preferredSource='pinyin_public'){
     const audioCmnReview=quality.audio_cmn?.[key]||quality[key];
     const publicReview=quality.pinyin_public?.[key];
@@ -100,5 +118,5 @@
     }
     return audioCmnUnavailable?null:audioCmnSelection();
   }
-  return {correctionKey,spokenPinyin,correctionSelection,normalizationGain,normalizationParameters};
+  return {correctionKey,spokenPinyin,correctionSelection,normalizationGain,normalizationParameters,playbackGain};
 });

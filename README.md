@@ -53,7 +53,7 @@ audio; **Comparison voice** separately controls the isolated tone examples.
 
 Tone buttons use screened isolated-syllable examples when available. Switch
 **Comparison voice** to choose reference-corpus or human `audio-cmn` recordings.
-**Mandarin Native voice** is also available in local-use builds. Each button
+**Mandarin Native** is also available under **Comparison voice** in local-use builds. Each button
 selects its own suitable syllable/tone recording; if that voice lacks a checked
 clip, the app uses an available recording from another source. This never
 changes the initial whole-word recording or stitches syllables together.
@@ -68,7 +68,14 @@ syllable identified, rather than an invented isolated fifth-tone clip.
 Open **Practice your pronunciation** and use **Record me** to capture your voice
 locally. **Play mine** plays it on its own, or use
 **Overlay** to compare it with the native recording. Microphone permission is
-only required for recording.
+only required for recording. The panel stays open while permission, recording,
+or finalization is in progress so **Stop** cannot disappear.
+
+Playback reduces excessive peaks without changing pitch, timing, or source
+files. Overlay reserves headroom for both voices. Tone examples retain every
+decoded speech sample, with short boundary ramps confined to the added padding
+to avoid clicks. The [playback audit](docs/playback-integrity.json) records the
+measured scope and the limits of these checks.
 
 ## Quickstart
 

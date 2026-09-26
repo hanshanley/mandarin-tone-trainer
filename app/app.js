@@ -1,8 +1,9 @@
-let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
+let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineBlob=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
 let audioReviews=new Map(), nativePlayId=0, overlayPlayId=0, nativeObjectURL=null, overlayObjectURL=null, questionLoadId=0, questionVerified=false;
 const reviewedAudioBytes=new Map();
-const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, NATIVE_SYLLABLE_GAP_SECONDS=.06;
+const playbackGains=new Map();
+const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, CORRECTION_EDGE_RAMP_SECONDS=.005, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const TONE_LABELS={1:'1st tone',2:'2nd tone',3:'3rd tone',4:'4th tone',N:'Neutral tone'};
@@ -34,10 +35,17 @@ function resetRecordButton(){
   $('record').innerHTML='<span aria-hidden="true">●</span> Record me';
   $('record').setAttribute('aria-pressed','false');
 }
+function recordingInProgress(){return recordingStarting||mediaStream!==null}
+function syncRecordingPanel(){
+  const active=recordingInProgress();
+  $('recordingToggle').setAttribute('aria-disabled',String(active));
+  if(active)$('recordingTools').open=true;
+}
 function updateBackButton(){$('back').disabled=!quizHistory.length}
 function setPracticeControlsDisabled(disabled){
   for(const id of ['play','back','next','wordSource','syllables','correctionSource','sandhiOnly'])$(id).disabled=disabled;
   document.querySelectorAll('.tone-choice').forEach(button=>button.disabled=disabled);
+  syncRecordingPanel();
   if(!disabled)updateBackButton();
 }
 function updateProgress(){
@@ -100,7 +108,6 @@ async function load(){
   audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{
     sourceRecordings:recordings,sourceWords:words,
   });
-  $('progress').textContent='';
   rebuildIndex();
   updatePracticeSettings();
 }
@@ -360,7 +367,7 @@ function scrollToPractice({focus=false}={}){
   if(focus)first.querySelector('button').focus({preventScroll:true});
 }
 function audioURL(r){if(!r)return null;let p=r.audio_path||''; if(p.startsWith('audio/'))return '../'+p; return p}
-function stopNative(){
+function stopNative(message='Playback stopped.'){
   nativePlayId++;
   $('play').classList.remove('is-playing');
   $('playLabel').textContent='Play audio';
@@ -369,8 +376,10 @@ function stopNative(){
   nativeAudio.pause();
   nativeAudio.currentTime=0;
   nativeAudio=null;
+  setAudioStatus(message);
 }
-function stopPersonalAudio(){
+function stopPersonalAudio(message='Playback stopped.'){
+  const wasPlaying=Boolean(mineAudio||overlayAudios.length);
   overlayPlayId++;
   if(overlayObjectURL){URL.revokeObjectURL(overlayObjectURL);overlayObjectURL=null}
   if(mineAudio){
@@ -383,11 +392,13 @@ function stopPersonalAudio(){
     audio.currentTime=0;
   }
   overlayAudios=[];
+  if(wasPlaying)setAudioStatus(message);
 }
 function clearPersonalRecording(){
   stopPersonalAudio();
-  if(mineUrl)URL.revokeObjectURL(mineUrl);
+  if(mineUrl){playbackGains.delete(mineUrl);URL.revokeObjectURL(mineUrl)}
   mineUrl=null;
+  mineBlob=null;
   $('playMine').disabled=true;
   $('overlay').disabled=true;
 }
@@ -418,6 +429,21 @@ async function playNative(){
   if(!questionVerified||!currentNative?.playable)return;
   return playAssessedRecording(currentNative.approval,'Playing the native recording.');
 }
+async function safePlaybackGain(bytes,key){
+  const cached=cachedValue(playbackGains,key);
+  if(cached)return cached;
+  const promise=(async()=>{
+    const buffer=await getCorrectionContext().decodeAudioData(bytes.slice(0));
+    return CorrectionAudio.playbackGain(Array.from(
+      {length:buffer.numberOfChannels},(_,channel)=>buffer.getChannelData(channel),
+    ));
+  })();
+  cacheValue(playbackGains,key,promise,RAW_BUFFER_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(playbackGains.get(key)===promise)playbackGains.delete(key);
+    throw error;
+  }
+}
 async function playAssessedRecording(approval,message){
   stopCorrection();
   stopNative();
@@ -426,10 +452,15 @@ async function playAssessedRecording(approval,message){
   try{
     const bytes=await approvedAudioBytes(approval);
     if(playId!==nativePlayId)return;
+    const gain=await safePlaybackGain(bytes,`${approval.audio_path}:${approval.sha256}`);
+    if(playId!==nativePlayId)return;
     nativeObjectURL=URL.createObjectURL(new Blob([bytes]));
     const audio=new Audio(nativeObjectURL);
+    audio.volume=gain;
     nativeAudio=audio;
-    audio.onended=()=>{if(nativeAudio===audio)stopNative()};
+    audio.onended=()=>{
+      if(nativeAudio===audio)stopNative(message.replace(/^Playing /,'Finished playing '));
+    };
     await audio.play();
     if(playId===nativePlayId){
       if(approval===currentNative?.approval){
@@ -488,6 +519,7 @@ async function pinyinSequenceBuffer(keys){
     const lead=Math.round(sampleRate*CORRECTION_LEAD_SECONDS);
     const tail=Math.round(sampleRate*CORRECTION_TAIL_SECONDS);
     const gap=Math.round(sampleRate*NATIVE_SYLLABLE_GAP_SECONDS);
+    const ramp=Math.round(sampleRate*CORRECTION_EDGE_RAMP_SECONDS);
     const length=lead+tail+decoded.reduce((total,buffer)=>total+buffer.length,0)+gap*Math.max(0,decoded.length-1);
     const combined=context.createBuffer(channels,length,sampleRate);
     let offset=lead;
@@ -503,6 +535,11 @@ async function pinyinSequenceBuffer(keys){
         const output=combined.getChannelData(channel);
         const dcOffset=normalization.offsets[sourceChannel];
         for(let index=0;index<input.length;index++)output[offset+index]=(input[index]-dcOffset)*normalization.gain;
+        // Join DC-corrected endpoints to silence using padding, never speech samples.
+        for(let index=0;index<ramp;index++){
+          output[offset-ramp+index]=output[offset]*(index+1)/(ramp+1);
+          output[offset+input.length+index]=output[offset+input.length-1]*(ramp-index)/(ramp+1);
+        }
       }
       offset+=buffer.length+gap;
     }
@@ -514,13 +551,14 @@ async function pinyinSequenceBuffer(keys){
     throw error;
   }
 }
-function stopCorrection(){
+function stopCorrection(message='Playback stopped.'){
   correctionPlayId++;
   const source=correctionSource;
   correctionSource=null;
   if(source){
     try{source.stop()}catch(error){if(error.name!=='InvalidStateError')throw error}
     source.disconnect();
+    setAudioStatus(message);
   }
 }
 function connectPinyinSource(source,context,key){
@@ -530,6 +568,10 @@ function connectPinyinSource(source,context,key){
   limiter.ratio.value=20;
   limiter.attack.value=.003;
   limiter.release.value=.12;
+  const output=context.createGain();
+  // Leave headroom after processing, including correlated stereo folded to mono.
+  output.gain.value=.9/Math.sqrt(source.buffer.numberOfChannels);
+  limiter.connect(output).connect(context.destination);
   if(correctionSelection(key)?.enhanced){
     const highpass=context.createBiquadFilter();
     highpass.type='highpass';
@@ -546,9 +588,9 @@ function connectPinyinSource(source,context,key){
     clarity.gain.value=3;
     const headroom=context.createGain();
     headroom.gain.value=.88;
-    source.connect(highpass).connect(presence).connect(clarity).connect(headroom).connect(limiter).connect(context.destination);
+    source.connect(highpass).connect(presence).connect(clarity).connect(headroom).connect(limiter);
   }else{
-    source.connect(limiter).connect(context.destination);
+    source.connect(limiter);
   }
 }
 async function playPinyinKey(key){
@@ -567,13 +609,16 @@ async function playPinyinSequence(keys){
     const source=context.createBufferSource();
     source.buffer=buffer;
     connectPinyinSource(source,context,keys[0]);
-    source.onended=()=>{if(correctionSource===source)correctionSource=null};
+    const selection=correctionSelection(keys[0]);
+    const message=keys.length===1
+      ?`Playing tone ${keys[0].slice(-1)} (${sourceName(selection.source)}).`
+      :`Playing screened tone sequence ${keys.map(key=>key.slice(-1)).join('-')}.`;
+    source.onended=()=>{
+      if(correctionSource===source)stopCorrection(message.replace(/^Playing /,'Finished playing '));
+    };
     correctionSource=source;
     source.start();
-    const selection=correctionSelection(keys[0]);
-    setAudioStatus(keys.length===1
-      ?`Playing tone ${keys[0].slice(-1)} (${sourceName(selection.source)}).`
-      :`Playing screened tone sequence ${keys.map(key=>key.slice(-1)).join('-')}.`);
+    setAudioStatus(message);
   }catch(error){
     if(playId===correctionPlayId){
       setAudioStatus(`Comparison playback blocked: ${error.message}`,true);
@@ -634,15 +679,21 @@ $('correctionSource').onchange=async()=>{
 };
 $('sandhiOnly').onchange=async()=>{quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
-$('recordingTools').ontoggle=()=>setAudioStatus($('audioStatus').textContent,$('audioStatus').classList.contains('error'));
+$('recordingToggle').onclick=event=>{if(recordingInProgress())event.preventDefault()};
+$('recordingTools').ontoggle=()=>{
+  syncRecordingPanel();
+  setAudioStatus($('audioStatus').textContent,$('audioStatus').classList.contains('error'));
+};
 $('record').onclick=async()=>{
   if(recordingStarting)return;
   if(!questionVerified)return;
   if(mediaRecorder?.state==='recording'){
     mediaRecorder.stop();
+    $('record').disabled=true;
     setAudioStatus('Finishing your recording.');
     return;
   }
+  if(mediaStream)return;
   if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){
     setAudioStatus('Audio recording is not available on this device.',true);
     return;
@@ -695,6 +746,7 @@ $('record').onclick=async()=>{
         return;
       }
       mineUrl=URL.createObjectURL(blob);
+      mineBlob=blob;
       $('playMine').disabled=false;
       $('overlay').disabled=false;
       setAudioStatus('Your recording is ready.');
@@ -728,32 +780,52 @@ $('record').onclick=async()=>{
     console.error('Microphone failed',error);
   }
 }
-$('playMine').onclick=()=>{
-  if(!mineUrl)return;
+$('playMine').onclick=async()=>{
+  if(!mineUrl||!mineBlob)return;
   stopNative();
   stopCorrection();
   stopPersonalAudio();
-  const audio=new Audio(mineUrl);
-  mineAudio=audio;
-  audio.onended=()=>{if(mineAudio===audio)mineAudio=null};
-  audio.play().then(()=>setAudioStatus('Playing your recording.')).catch(error=>{
-    if(mineAudio===audio)mineAudio=null;
+  const playId=overlayPlayId,url=mineUrl,blob=mineBlob;
+  try{
+    const gain=await safePlaybackGain(await blob.arrayBuffer(),url);
+    if(playId!==overlayPlayId||url!==mineUrl)return;
+    const audio=new Audio(url);
+    audio.volume=gain;
+    mineAudio=audio;
+    audio.onended=()=>{if(mineAudio===audio)stopPersonalAudio('Finished playing your recording.')};
+    await audio.play();
+    if(mineAudio===audio)setAudioStatus('Playing your recording.');
+  }catch(error){
+    if(playId!==overlayPlayId)return;
+    stopPersonalAudio();
     if(isPlaybackInterruption(error))return;
     setAudioStatus('Your recording could not be played.',true);
     console.error('Recorded audio failed',error);
-  });
+  }
 };
 $('overlay').onclick=async()=>{
-  if(!questionVerified||!currentNative?.playable||!mineUrl)return;
+  if(!questionVerified||!currentNative?.playable||!mineUrl||!mineBlob)return;
   stopAllAudio();
-  const playId=overlayPlayId;
+  const playId=overlayPlayId,url=mineUrl,blob=mineBlob,approval=currentNative.approval;
   try{
-    const bytes=await approvedAudioBytes(currentNative.approval);
-    if(playId!==overlayPlayId||!mineUrl)return;
+    const bytes=await approvedAudioBytes(approval);
+    if(playId!==overlayPlayId||url!==mineUrl)return;
+    const [nativeGain,mineGain]=await Promise.all([
+      safePlaybackGain(bytes,`${approval.audio_path}:${approval.sha256}`),
+      blob.arrayBuffer().then(bytes=>safePlaybackGain(bytes,url)),
+    ]);
+    if(playId!==overlayPlayId||url!==mineUrl)return;
     overlayObjectURL=URL.createObjectURL(new Blob([bytes]));
-    const native=new Audio(overlayObjectURL),mine=new Audio(mineUrl);
+    const native=new Audio(overlayObjectURL),mine=new Audio(url);
+    // Reserve half the peak budget for each voice, including coincident peaks.
+    native.volume=nativeGain/2;
+    mine.volume=mineGain/2;
     overlayAudios=[native,mine];
-    const finished=()=>{if(overlayAudios.includes(native)&&native.ended&&mine.ended)stopPersonalAudio()};
+    const finished=()=>{
+      if(overlayAudios.includes(native)&&native.ended&&mine.ended){
+        stopPersonalAudio('Finished playing the native and recorded audio together.');
+      }
+    };
     native.onended=finished;
     mine.onended=finished;
     await Promise.all([native.play(),mine.play()]);

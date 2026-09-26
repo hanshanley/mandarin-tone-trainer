@@ -119,7 +119,9 @@ bottom on phones, and grading does not scroll the choices away.
 
 Open **Practice your pronunciation** to use **Record me**, **Play mine**, and
 **Overlay**. The first recording requests microphone permission; all listening
-and quiz features work without it.
+and quiz features work without it. The panel stays open until recording and
+finalization finish, keeping **Stop** reachable. Playback status changes when
+audio ends, and native/personal playback and Overlay reserve clipping headroom.
 
 If `resources/logo.svg` changes, regenerate launcher and splash resources with
 Android Studio's Image Asset tools.

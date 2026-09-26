@@ -198,6 +198,36 @@ machine screening as human review.
 Reviewer IDs record attestations, not authenticated digital signatures;
 maintainers must verify that the independent listening actually occurred.
 
+## Playback integrity and headroom
+
+`CorrectionAudio.playbackGain` measures the decoded channels before native,
+neutral-word, personal, or overlay playback. It only attenuates, never boosts,
+and reserves a 0.9 peak budget for both individual channels and an equal-power
+mono fold-down. Each overlay voice gets half its safe gain so coincident peaks
+do not overload the mix. Encoded source files and their assessment hashes are
+unchanged.
+
+Comparison playback retains every decoded source sample after its existing
+DC/loudness normalization. The 120 ms lead and 200 ms tail remain; 5 ms ramps
+join the endpoints to silence **inside those added buffers**, not inside the
+speech. Post-processing also reserves output headroom. Nothing is cut,
+time-stretched, pitch-shifted, or synthesized to replace a missing syllable.
+
+The audit in `docs/playback-integrity.json` covers 3,526 reachable local-use
+files and 1,475 distinct comparison processing paths, rendered at both 44.1
+and 48 kHz. It checks hashes, complete decoding, peak levels, exact retention
+of normalized source samples, full buffer lengths, and settled output tails.
+The peak check found two over-full-scale files in browser decoding and twelve
+when stereo was folded to mono; runtime headroom handles both cases.
+
+Source-boundary energy flags are diagnostics, not proof of an incomplete
+syllable. The follow-up inspected short-window energy and existing pitch
+tracks, but it cannot independently certify how every original utterance was
+recorded or edited. The report distinguishes that limitation from the verified
+absence of player-induced sample loss and clipping. Likewise, software cannot
+repair distortion already captured by a microphone or caused by external
+hardware.
+
 ## Rebuild automatic acoustic decisions
 
 Install the optional dependencies in `requirements-audio-audit.txt`, then:
