@@ -149,18 +149,6 @@ signing, installation, and updates.
 
 ## Audio and vocabulary
 
-The source dataset contains:
-
-- **11,092** HSK vocabulary entries
-- **2,346** additional source-derived word and character readings
-- **8,596** isolated native word recordings
-- **1,707** human tone-specific syllables
-- **1,622** public-domain reference syllables
-- **2,944** Mandarin Native recordings imported for local review: **869**
-  standalone word clips and **2,075** contextual sentence clips
-- **4,396** Explore vocabulary entries linked to their sentence recordings;
-  these are vocabulary entries, not 4,396 separate isolated-word recordings
-
 One-, two-, and **3+ syllable** practice uses qualifying direct recordings.
 Standalone one-character imports can also supply local tone-button comparisons.
 Previously generated sentence excerpts are retained for investigation only;
