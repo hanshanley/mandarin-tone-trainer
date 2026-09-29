@@ -218,17 +218,22 @@ def main():
             )
 
     node_script = """
-import {loadReviewData,validateLedger,practiceInventory,requireToneCoverage} from './scripts/review_audio.mjs';
+import {loadReviewData,validateLedger,practiceInventory,quizInventory,requireToneCoverage} from './scripts/review_audio.mjs';
 const data=loadReviewData();
 const index=validateLedger(data);
 const inventory=practiceInventory(data,index);
 const packaged=practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false}));
 requireToneCoverage(inventory);
 requireToneCoverage(packaged);
+const quiz=quizInventory(data,index);
+const packagedQuiz=quizInventory(data,validateLedger(data,undefined,{allowLocalOnly:false}));
+requireToneCoverage(quiz);
+requireToneCoverage(packagedQuiz);
 process.stdout.write(JSON.stringify({
   approvals:index.size,eligible:inventory.eligibleWords.length,audio:[...inventory.audio],
   packagedEligible:packaged.eligibleWords.length,packagedAudio:[...packaged.audio],
   toneCoverage:inventory.toneCoverage,packagedToneCoverage:packaged.toneCoverage,
+  quizEntries:quiz.eligibleWords.length,packagedQuizEntries:packagedQuiz.eligibleWords.length,
 }));
 """
     try:
@@ -238,7 +243,7 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         selections = json.loads(output)
-        print(f"Screened direct practice: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; {selections['approvals']} audio assessments")
+        print(f"Retained library: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; complete-comparison quiz: {selections['quizEntries']} local / {selections['packagedQuizEntries']} redistributable")
         if not args.skip_mobile:
             expected_audio=selections['audio'] if local_bundle else selections['packagedAudio']
             bundled_audio = {

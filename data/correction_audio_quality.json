@@ -264,5 +264,4860 @@
       "reason": "Reported as incorrect or unnatural.",
       "replacement": "audio_cmn"
     }
+  },
+  "native_clarity": {
+    "audio/mandarin_native/ba3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.47,
+        "voiced_seconds": 0.41,
+        "curves": {
+          "praat": [
+            168.127,
+            164.041,
+            161.341,
+            156.92,
+            152.583,
+            149.334,
+            146.727,
+            143.584,
+            139.836,
+            137.259,
+            135.716,
+            135.498,
+            136.097,
+            139.961,
+            144.868,
+            152.15,
+            161.177
+          ],
+          "world": [
+            169.008,
+            164.173,
+            160.865,
+            156.738,
+            152.276,
+            149.419,
+            146.58,
+            143.955,
+            139.558,
+            136.763,
+            135.638,
+            135.174,
+            135.921,
+            139.937,
+            145.291,
+            152.17,
+            161.814
+          ]
+        },
+        "median_hz": 148.829,
+        "high_hz": 168.567
+      },
+      "features": {
+        "praat": {
+          "delta": -1.3027453160923783,
+          "range": 3.3241815283303326,
+          "dip": 3.2815875448761735,
+          "rebound": 1.9788422287837955,
+          "trough": 0.625,
+          "median_hz": 146.727,
+          "start_hz": 164.041
+        },
+        "world": {
+          "delta": -1.3143950100769621,
+          "range": 3.355715147386606,
+          "dip": 3.305465557663523,
+          "rebound": 1.9910705475865607,
+          "trough": 0.625,
+          "median_hz": 146.58,
+          "start_hz": 164.173
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ba3",
+      "sha256": "d14e7d5dfbaf5bb643c1b5004b42344d919d328ababaad396bb0b7c760e9c8b5"
+    },
+    "audio/mandarin_native/ba3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bai3",
+      "sha256": "f34a6f3f0b7c36cd949b7e6f10b161ed6af40d3a087ba8a5e738d414ad705cd2"
+    },
+    "audio/mandarin_native/ba3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ban3",
+      "sha256": "42bccdee296ca2d9a26957412725903b342a9409dac59899118d8f6f6e351e42"
+    },
+    "audio/mandarin_native/ba3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bang3",
+      "sha256": "1fe0d77adc923e379a3d112bd4c5f8f779883c077c0c72d7ee8257468f87b86c"
+    },
+    "audio/mandarin_native/ba3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bao3",
+      "sha256": "c16e0cb28d62e692e168c1f14a08cb8ba7893aa6cef0a2004e88d7fa2088aeba"
+    },
+    "audio/mandarin_native/be3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bei3",
+      "sha256": "2c7588eee7c69dfdf00e66e6b144bc5734fcad480de1734b5fef298f61e41244"
+    },
+    "audio/mandarin_native/be3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.03,
+        "end": 0.4,
+        "voiced_seconds": 0.37,
+        "curves": {
+          "praat": [
+            234.741,
+            224.481,
+            217.998,
+            209.977,
+            203.245,
+            192.381,
+            187.112,
+            183.108,
+            182.133,
+            177.414,
+            170.937,
+            167.582,
+            155.116,
+            137.196,
+            130.579,
+            240.939,
+            221.831
+          ],
+          "world": [
+            235.644,
+            222.21,
+            217.527,
+            208.744,
+            202.094,
+            190.475,
+            185.606,
+            182.576,
+            181.276,
+            177.32,
+            171.614,
+            168.189,
+            155.389,
+            137.017,
+            130.731,
+            225.826,
+            204.354
+          ]
+        },
+        "median_hz": 191.426,
+        "high_hz": 234.033
+      },
+      "features": {
+        "praat": {
+          "delta": -0.20558820485923324,
+          "range": 8.935676971104282,
+          "dip": 8.524259052834555,
+          "rebound": 8.318670847975321,
+          "trough": 0.8125,
+          "median_hz": 187.112,
+          "start_hz": 224.481
+        },
+        "world": {
+          "delta": -1.4502391231901133,
+          "range": 8.472448330464644,
+          "dip": 8.370826084842236,
+          "rebound": 6.920586961652122,
+          "trough": 0.8125,
+          "median_hz": 185.606,
+          "start_hz": 222.21
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ben3",
+      "sha256": "e1510a3c8dde6f3fe5e83972010b40bfafe327f0b77915c0ba0a0735a0d260f3"
+    },
+    "audio/mandarin_native/bi3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.42,
+        "voiced_seconds": 0.33,
+        "curves": {
+          "praat": [
+            239.514,
+            230.351,
+            224.546,
+            214.286,
+            206.882,
+            198.266,
+            187.931,
+            170.893,
+            163.077,
+            149.777,
+            141.176,
+            134.694,
+            127.38,
+            109.127,
+            111.037,
+            96.422,
+            81.808
+          ],
+          "world": [
+            237.086,
+            231.033,
+            221.324,
+            214.398,
+            206.426,
+            196.358,
+            187.308,
+            170.053,
+            161.756,
+            149.131,
+            143.172,
+            135.272,
+            119.422,
+            109.466,
+            110.561,
+            101.461,
+            83.303
+          ]
+        },
+        "median_hz": 170.472,
+        "high_hz": 233.509
+      },
+      "features": {
+        "praat": {
+          "delta": -15.076795214695837,
+          "range": 15.428871073407267,
+          "dip": 16.499517755756685,
+          "rebound": 1.4227225410608462,
+          "trough": 1.0,
+          "median_hz": 163.077,
+          "start_hz": 230.351
+        },
+        "world": {
+          "delta": -14.246083816240397,
+          "range": 14.632239574037381,
+          "dip": 15.952993379962898,
+          "rebound": 1.706909563722503,
+          "trough": 1.0,
+          "median_hz": 161.756,
+          "start_hz": 231.033
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bi3",
+      "sha256": "b9e9dbf910b86f1e5376f5a3be215891f958b0c40402735d9ee20b90250684cd"
+    },
+    "audio/mandarin_native/bia3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 5.86
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bian3",
+      "sha256": "975071a61a50ef9151be4b4cdb761065c4dd3912b6478ea828a17b7ed0ca43fc"
+    },
+    "audio/mandarin_native/ca3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "cai3",
+      "sha256": "d384419f45ac11e9d7f67b05ef5acfe893803d2afb0ecd96afe6f62c68d82613"
+    },
+    "audio/mandarin_native/cha3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 4.31
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "chang3",
+      "sha256": "21e64c464e9dcf28f28a751af065d49e061687089d820c1d6895cd24e75745bd"
+    },
+    "audio/mandarin_native/cha3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "chao3",
+      "sha256": "d6d5fbe1eb410447a7d7d43c307e6468826da1c81181c5c1f8de7aec21ee2101"
+    },
+    "audio/mandarin_native/chua3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 6.877
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "chuan3",
+      "sha256": "67eaa53e0ede2cdb4cd953f8310784b89b19a29c8c8619032334a238f7005d4f"
+    },
+    "audio/mandarin_native/da3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 9.777
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "da3",
+      "sha256": "5afed9666ec468b77a10ff5391780a986241a9f88f38d429a06dc9afcad820ff"
+    },
+    "audio/mandarin_native/de3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "dei3",
+      "sha256": "e88b39b4cd7abe99690515b59979f2942c944faa8a88d1e97e1564b39eb5377e"
+    },
+    "audio/mandarin_native/de3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.09,
+        "end": 0.43,
+        "voiced_seconds": 0.31,
+        "curves": {
+          "praat": [
+            228.171,
+            214.644,
+            207.373,
+            199.493,
+            189.739,
+            180.511,
+            172.879,
+            153.754,
+            145.902,
+            143.747,
+            139.822,
+            133.321,
+            119.052,
+            108.908,
+            107.634,
+            113.378,
+            119.123
+          ],
+          "world": [
+            229.396,
+            213.681,
+            205.547,
+            197.111,
+            186.595,
+            177.552,
+            163.979,
+            152.267,
+            143.377,
+            142.736,
+            139.307,
+            128.595,
+            117.997,
+            107.2,
+            107.2,
+            110.949,
+            118.184
+          ]
+        },
+        "median_hz": 148.715,
+        "high_hz": 214.162
+      },
+      "features": {
+        "praat": {
+          "delta": -11.049661441397987,
+          "range": 11.851834458331913,
+          "dip": 11.746030944573395,
+          "rebound": 0.6963695031754069,
+          "trough": 0.8125,
+          "median_hz": 145.902,
+          "start_hz": 214.644
+        },
+        "world": {
+          "delta": -11.346743620379621,
+          "range": 12.06470264614499,
+          "dip": 11.941844723228769,
+          "rebound": 0.5951011028491466,
+          "trough": 0.8125,
+          "median_hz": 143.377,
+          "start_hz": 213.681
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "deng3",
+      "sha256": "04f9da6a86846ba6af2752bb15675415a84fd501c6755a8e88e8aa5eab114ca9"
+    },
+    "audio/mandarin_native/di3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 3.7
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "di3",
+      "sha256": "9496caac8234b695839c193dd68a1762a87248165b75ea1742494680b665884f"
+    },
+    "audio/mandarin_native/dia3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.39,
+        "voiced_seconds": 0.24,
+        "curves": {
+          "praat": [
+            251.905,
+            241.228,
+            230.415,
+            225.57,
+            220.539,
+            217.462,
+            210.714,
+            198.886,
+            196.828,
+            176.057,
+            155.286,
+            153.99,
+            151.746,
+            136.275,
+            120.804,
+            105.333,
+            105.061
+          ],
+          "world": [
+            248.591,
+            236.705,
+            231.24,
+            225.382,
+            220.893,
+            216.828,
+            209.717,
+            196.608,
+            171.746,
+            167.704,
+            157.626,
+            153.658,
+            144.753,
+            125.272,
+            108.357,
+            107.23,
+            103.144
+          ]
+        },
+        "median_hz": 216.6,
+        "high_hz": 246.055
+      },
+      "features": {
+        "praat": {
+          "delta": -14.345278588449048,
+          "range": 14.424733773293013,
+          "dip": 14.367660211674636,
+          "rebound": 0.022381623225589564,
+          "trough": 1.0,
+          "median_hz": 196.828,
+          "start_hz": 241.228
+        },
+        "world": {
+          "delta": -13.708579108012666,
+          "range": 13.860658195729009,
+          "dip": 14.044871236551371,
+          "rebound": 0.33629212853870527,
+          "trough": 1.0,
+          "median_hz": 171.746,
+          "start_hz": 236.705
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "dian3",
+      "sha256": "1d99dde38993589e49da3ce2e28f1f3d07e1307524694ac32fc6bf3d62e388d8"
+    },
+    "audio/mandarin_native/do3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.21,
+        "end": 0.6,
+        "voiced_seconds": 0.4,
+        "curves": {
+          "praat": [
+            246.804,
+            233.937,
+            221.654,
+            211.523,
+            205.232,
+            195.861,
+            191.728,
+            181.218,
+            176.128,
+            175.034,
+            173.523,
+            166.268,
+            158.053,
+            151.078,
+            140.41,
+            140.336,
+            144.271
+          ],
+          "world": [
+            244.815,
+            231.547,
+            221.4,
+            210.958,
+            205.184,
+            195.616,
+            188.211,
+            179.873,
+            175.501,
+            175.391,
+            173.485,
+            163.158,
+            158.221,
+            149.831,
+            139.346,
+            140.526,
+            144.471
+          ]
+        },
+        "median_hz": 175.651,
+        "high_hz": 233.463
+      },
+      "features": {
+        "praat": {
+          "delta": -8.837692458916294,
+          "range": 8.930387319432425,
+          "dip": 8.837692458916294,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 176.128,
+          "start_hz": 233.937
+        },
+        "world": {
+          "delta": -8.64561580540709,
+          "range": 8.742080074160924,
+          "dip": 8.64561580540709,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 175.501,
+          "start_hz": 231.547
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "dong3",
+      "sha256": "a75965bad3533bd2eee45c958fc534ed61008c77198403b3451e4692f716d62c"
+    },
+    "audio/mandarin_native/du3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.13,
+        "end": 0.51,
+        "voiced_seconds": 0.38,
+        "curves": {
+          "pyin": [
+            249.903,
+            244.195,
+            235.877,
+            226.53,
+            220.081,
+            213.816,
+            208.932,
+            205.343,
+            198.93,
+            192.701,
+            187.216,
+            183.999,
+            179.797,
+            175.69,
+            171.678,
+            170.689,
+            170.689
+          ],
+          "praat": [
+            253.453,
+            244.339,
+            235.327,
+            226.542,
+            219.622,
+            212.931,
+            208.756,
+            204.402,
+            198.54,
+            192.613,
+            187.28,
+            182.643,
+            180.19,
+            174.823,
+            170.109,
+            170.387,
+            132.845
+          ],
+          "world": [
+            249.937,
+            243.386,
+            234.177,
+            225.232,
+            219.648,
+            211.417,
+            208.173,
+            203.324,
+            198.114,
+            192.677,
+            186.711,
+            182.875,
+            180.04,
+            174.275,
+            169.905,
+            170.469,
+            174.047
+          ]
+        },
+        "median_hz": 198.492,
+        "high_hz": 246.113
+      },
+      "features": {
+        "pyin": {
+          "delta": -6.199962881859859,
+          "range": 6.239964353591605,
+          "dip": 6.199962881859859,
+          "rebound": 0.0,
+          "trough": 0.9375,
+          "median_hz": 198.93,
+          "start_hz": 244.195
+        },
+        "praat": {
+          "delta": -6.269096216400083,
+          "range": 6.7577288152155965,
+          "dip": 8.395254707943625,
+          "rebound": 2.126158491543543,
+          "trough": 1.0,
+          "median_hz": 198.54,
+          "start_hz": 244.339
+        },
+        "world": {
+          "delta": -6.164841321797217,
+          "range": 6.210823288869259,
+          "dip": 6.164841321797217,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 198.114,
+          "start_hz": 243.386
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "du3",
+      "sha256": "49fabcacbd79133107c35f6d2510066e51caf6d5497b45826c1c18cbbf45e2ff"
+    },
+    "audio/mandarin_native/dua3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 2.508
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "duan3",
+      "sha256": "23569feb0c07634a8162101371b46d394e967f1d02e72f1263d49316bb2a6173"
+    },
+    "audio/mandarin_native/dǒnɡ.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.21,
+        "end": 0.6,
+        "voiced_seconds": 0.4,
+        "curves": {
+          "praat": [
+            246.804,
+            233.937,
+            221.654,
+            211.523,
+            205.232,
+            195.861,
+            191.728,
+            181.218,
+            176.128,
+            175.034,
+            173.523,
+            166.268,
+            158.053,
+            151.078,
+            140.41,
+            140.336,
+            144.271
+          ],
+          "world": [
+            244.815,
+            231.547,
+            221.4,
+            210.958,
+            205.184,
+            195.616,
+            188.211,
+            179.873,
+            175.501,
+            175.391,
+            173.485,
+            163.158,
+            158.221,
+            149.831,
+            139.346,
+            140.526,
+            144.471
+          ]
+        },
+        "median_hz": 175.651,
+        "high_hz": 233.463
+      },
+      "features": {
+        "praat": {
+          "delta": -8.837692458916294,
+          "range": 8.930387319432425,
+          "dip": 8.837692458916294,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 176.128,
+          "start_hz": 233.937
+        },
+        "world": {
+          "delta": -8.64561580540709,
+          "range": 8.742080074160924,
+          "dip": 8.64561580540709,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 175.501,
+          "start_hz": 231.547
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "dong3",
+      "sha256": "a75965bad3533bd2eee45c958fc534ed61008c77198403b3451e4692f716d62c"
+    },
+    "audio/mandarin_native/fa3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 3.86
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "fan3",
+      "sha256": "c14e818929b812e6bb2b81e68a5221211973c9a67d238e189266d5a29ca90c08"
+    },
+    "audio/mandarin_native/ga3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.13,
+        "end": 0.37,
+        "voiced_seconds": 0.19,
+        "curves": {
+          "praat": [
+            144.772,
+            146.05,
+            146.637,
+            147.235,
+            147.301,
+            142.372,
+            144.967,
+            147.215,
+            146.868,
+            135.642,
+            124.415,
+            113.189,
+            109.795,
+            109.795,
+            111.077,
+            119.707,
+            126.638
+          ],
+          "world": [
+            145.022,
+            145.022,
+            146.445,
+            146.961,
+            146.961,
+            143.654,
+            146.572,
+            146.572,
+            137.753,
+            132.501,
+            127.436,
+            116.901,
+            111.359,
+            110.388,
+            110.731,
+            119.925,
+            127.101
+          ]
+        },
+        "median_hz": 142.119,
+        "high_hz": 147.122
+      },
+      "features": {
+        "praat": {
+          "delta": -3.4434580826572696,
+          "range": 5.079699676522418,
+          "dip": 4.939800021784012,
+          "rebound": 1.4963419391267423,
+          "trough": 0.75,
+          "median_hz": 142.372,
+          "start_hz": 146.05
+        },
+        "world": {
+          "delta": -3.289672029099479,
+          "range": 4.900490113783427,
+          "dip": 4.670551235934711,
+          "rebound": 1.3808792068352322,
+          "trough": 0.8125,
+          "median_hz": 137.753,
+          "start_hz": 145.022
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "gan3",
+      "sha256": "12bba40529f506521a99920abac79a21619d6412b48739cbce8b942d2b1aa352"
+    },
+    "audio/mandarin_native/ge3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.06,
+        "end": 0.32,
+        "voiced_seconds": 0.21,
+        "curves": {
+          "praat": [
+            263.621,
+            262.689,
+            240.4,
+            235.893,
+            221.401,
+            216.361,
+            207.253,
+            201.333,
+            191.85,
+            190.799,
+            158.715,
+            157.739,
+            156.763,
+            132.832,
+            131.13,
+            130.649,
+            131.081
+          ],
+          "world": [
+            263.195,
+            263.195,
+            241.024,
+            234.147,
+            220.272,
+            212.659,
+            204.949,
+            199.006,
+            183.786,
+            172.419,
+            163.404,
+            154.422,
+            146.599,
+            134.83,
+            131.045,
+            128.775,
+            126.252
+          ]
+        },
+        "median_hz": 206.098,
+        "high_hz": 261.557
+      },
+      "features": {
+        "praat": {
+          "delta": -12.034766463261919,
+          "range": 12.046612878019122,
+          "dip": 12.063341475234882,
+          "rebound": 0.028575011972963082,
+          "trough": 1.0,
+          "median_hz": 191.85,
+          "start_hz": 262.689
+        },
+        "world": {
+          "delta": -12.37535450317127,
+          "range": 12.409610060534737,
+          "dip": 12.546632289988612,
+          "rebound": 0.17127778681734274,
+          "trough": 1.0,
+          "median_hz": 183.786,
+          "start_hz": 263.195
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "gei3",
+      "sha256": "dfe68532944c5a1fde4f40c45850e1a7937663ebabb73b039dfd4f7a726af4bc"
+    },
+    "audio/mandarin_native/gu3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.12,
+        "end": 0.6,
+        "voiced_seconds": 0.47,
+        "curves": {
+          "pyin": [
+            239.309,
+            237.938,
+            224.584,
+            217.553,
+            211.36,
+            207.13,
+            201.815,
+            196.638,
+            189.394,
+            181.889,
+            177.226,
+            166.793,
+            159.725,
+            155.623,
+            154.724,
+            158.341,
+            161.109
+          ],
+          "praat": [
+            233.79,
+            241.946,
+            229.0,
+            217.196,
+            210.85,
+            206.57,
+            200.576,
+            196.492,
+            188.542,
+            182.588,
+            175.084,
+            168.02,
+            157.889,
+            156.061,
+            152.937,
+            159.088,
+            165.697
+          ],
+          "world": [
+            233.887,
+            238.628,
+            228.638,
+            217.5,
+            210.875,
+            205.832,
+            200.173,
+            195.928,
+            186.947,
+            182.25,
+            173.289,
+            167.342,
+            157.336,
+            155.701,
+            152.95,
+            159.21,
+            175.226
+          ]
+        },
+        "median_hz": 192.73,
+        "high_hz": 232.414
+      },
+      "features": {
+        "pyin": {
+          "delta": -7.0506099433043765,
+          "range": 7.360311551068845,
+          "dip": 7.350364800599966,
+          "rebound": 0.2997548572955897,
+          "trough": 0.8125,
+          "median_hz": 189.394,
+          "start_hz": 237.938
+        },
+        "praat": {
+          "delta": -6.664658457816266,
+          "range": 7.056604310064923,
+          "dip": 6.997238071206399,
+          "rebound": 0.33257961339013375,
+          "trough": 0.8125,
+          "median_hz": 188.542,
+          "start_hz": 233.79
+        },
+        "world": {
+          "delta": -6.658568650649933,
+          "range": 7.079143574209099,
+          "dip": 7.044401582634215,
+          "rebound": 0.3858329319842819,
+          "trough": 0.8125,
+          "median_hz": 186.947,
+          "start_hz": 233.887
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "gu3",
+      "sha256": "a0e5c23cf82b51aae8b88493675aecc71151a9515a34490daf0d8c33ead03cdc"
+    },
+    "audio/mandarin_native/ha3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "clear_citation_third",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.22,
+        "end": 0.74,
+        "voiced_seconds": 0.5,
+        "curves": {
+          "praat": [
+            168.625,
+            163.596,
+            158.915,
+            154.872,
+            151.114,
+            148.471,
+            146.466,
+            144.743,
+            142.572,
+            140.138,
+            140.459,
+            144.361,
+            148.215,
+            152.869,
+            168.452,
+            176.836,
+            185.785
+          ],
+          "world": [
+            168.366,
+            163.174,
+            158.12,
+            154.683,
+            150.871,
+            148.188,
+            145.877,
+            144.149,
+            141.704,
+            139.828,
+            140.09,
+            142.14,
+            147.839,
+            152.498,
+            166.166,
+            177.39,
+            187.442
+          ]
+        },
+        "median_hz": 152.05,
+        "high_hz": 181.77
+      },
+      "features": {
+        "praat": {
+          "delta": 1.3472943855381116,
+          "range": 4.072621669716876,
+          "dip": 2.639860861202325,
+          "rebound": 3.987155246740437,
+          "trough": 0.5625,
+          "median_hz": 151.114,
+          "start_hz": 163.596
+        },
+        "world": {
+          "delta": 1.446161820708212,
+          "range": 4.182271967173689,
+          "dip": 2.6406866625035286,
+          "rebound": 4.086848483211741,
+          "trough": 0.5625,
+          "median_hz": 150.871,
+          "start_hz": 163.174
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hai3",
+      "sha256": "327451b4ff4ef9129aceffb94ebd0b11492c47afab1bc8bbfc3983c7c8b91a3e"
+    },
+    "audio/mandarin_native/ha3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "han3",
+      "sha256": "a21bd4d5f771ace77f8507485b910463dc0bf2000ae2a29e5db9aa6cb501fe69"
+    },
+    "audio/mandarin_native/ha3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.2,
+        "end": 0.32,
+        "voiced_seconds": 0.13,
+        "curves": {
+          "praat": [
+            228.983,
+            229.275,
+            229.275,
+            229.275,
+            228.867,
+            225.731,
+            225.731,
+            222.701,
+            218.495,
+            218.495,
+            214.804,
+            210.774,
+            210.774,
+            205.21,
+            197.857,
+            197.857,
+            192.255
+          ],
+          "world": [
+            227.776,
+            228.142,
+            229.074,
+            229.074,
+            228.142,
+            224.44,
+            224.44,
+            223.498,
+            216.979,
+            216.979,
+            214.045,
+            210.458,
+            210.458,
+            204.633,
+            196.051,
+            196.051,
+            190.793
+          ]
+        },
+        "median_hz": 217.736,
+        "high_hz": 229.136
+      },
+      "features": {
+        "praat": {
+          "delta": -2.5514513459911514,
+          "range": 2.6011757320953053,
+          "dip": 2.800073276511922,
+          "rebound": 0.24862193052077064,
+          "trough": 1.0,
+          "median_hz": 218.495,
+          "start_hz": 229.275
+        },
+        "world": {
+          "delta": -2.6244367758221094,
+          "range": 2.7420815603719895,
+          "dip": 2.8597613318521256,
+          "rebound": 0.23532455603001612,
+          "trough": 1.0,
+          "median_hz": 216.979,
+          "start_hz": 228.142
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hao3",
+      "sha256": "70a4b881b7955eac50d8e195c5665841ff448e2ffffb6f10b2f8690d30f932fe"
+    },
+    "audio/mandarin_native/he3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 7.802
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hen3",
+      "sha256": "d7c6bd272b8b7c5220823ba80171625844a860697caf8fc8141aef4951ce2e66"
+    },
+    "audio/mandarin_native/hua3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 10.092
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "huan3",
+      "sha256": "56198df5729d0307438733f78033a1e7cb6980485a39153c514189391f925b17"
+    },
+    "audio/mandarin_native/hua3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.2,
+        "end": 0.55,
+        "voiced_seconds": 0.33,
+        "curves": {
+          "praat": [
+            249.8,
+            249.313,
+            242.992,
+            232.972,
+            223.428,
+            214.596,
+            200.916,
+            191.789,
+            178.938,
+            171.126,
+            150.582,
+            154.807,
+            157.776,
+            154.957,
+            162.263,
+            171.31,
+            175.237
+          ],
+          "world": [
+            252.477,
+            247.625,
+            241.695,
+            228.884,
+            221.097,
+            213.076,
+            196.619,
+            188.68,
+            173.887,
+            158.86,
+            150.647,
+            157.464,
+            155.593,
+            153.851,
+            165.219,
+            172.87,
+            176.623
+          ]
+        },
+        "median_hz": 188.567,
+        "high_hz": 247.743
+      },
+      "features": {
+        "praat": {
+          "delta": -6.49618490779903,
+          "range": 8.253227280361063,
+          "dip": 8.249848842013606,
+          "rebound": 1.753663934214576,
+          "trough": 0.625,
+          "median_hz": 178.938,
+          "start_hz": 249.313
+        },
+        "world": {
+          "delta": -6.221633410561464,
+          "range": 8.078151819355668,
+          "dip": 8.044557827805564,
+          "rebound": 1.8229244172441006,
+          "trough": 0.6875,
+          "median_hz": 176.623,
+          "start_hz": 247.625
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "huang3",
+      "sha256": "3ad11015c233b034f82904b8143ef7687b54ae97ec7cf2e7f2cf95bd635571fb"
+    },
+    "audio/mandarin_native/ji3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.19,
+        "end": 0.5,
+        "voiced_seconds": 0.32,
+        "curves": {
+          "pyin": [
+            226.53,
+            226.53,
+            217.553,
+            213.816,
+            208.932,
+            193.332,
+            177.732,
+            176.711,
+            169.706,
+            162.981,
+            162.981,
+            155.621,
+            152.069,
+            145.356,
+            138.642,
+            137.452,
+            137.452
+          ],
+          "praat": [
+            225.153,
+            229.476,
+            220.363,
+            215.187,
+            201.385,
+            190.101,
+            177.934,
+            177.071,
+            169.816,
+            163.653,
+            160.739,
+            155.614,
+            151.841,
+            144.608,
+            138.937,
+            135.671,
+            129.804
+          ],
+          "world": [
+            225.433,
+            230.245,
+            219.461,
+            215.433,
+            201.527,
+            186.749,
+            178.466,
+            175.258,
+            169.315,
+            163.077,
+            160.26,
+            153.828,
+            150.882,
+            142.99,
+            138.403,
+            135.247,
+            128.231
+          ]
+        },
+        "median_hz": 167.809,
+        "high_hz": 224.879
+      },
+      "features": {
+        "pyin": {
+          "delta": -8.64929068880402,
+          "range": 8.64929068880402,
+          "dip": 8.64929068880402,
+          "rebound": 0.0,
+          "trough": 0.9375,
+          "median_hz": 169.706,
+          "start_hz": 226.53
+        },
+        "praat": {
+          "delta": -8.769519917607985,
+          "range": 8.87897804666292,
+          "dip": 9.152185112822002,
+          "rebound": 0.3826651952140172,
+          "trough": 1.0,
+          "median_hz": 169.816,
+          "start_hz": 225.153
+        },
+        "world": {
+          "delta": -8.845225521032667,
+          "range": 8.974012668562004,
+          "dip": 9.306334615039088,
+          "rebound": 0.4611090940064191,
+          "trough": 1.0,
+          "median_hz": 169.315,
+          "start_hz": 225.433
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ji3",
+      "sha256": "4c64ef8900efbafd6a7f2ddb8ceba0caeb50aef2e28a7c6e26232cde562edcb2"
+    },
+    "audio/mandarin_native/jia3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient continuous pitch evidence",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient continuous pitch evidence"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "jiang3",
+      "sha256": "5caa78c287e7ef8ab227fb70c27c1df00f556228571d1c6d2a16e62247ffeac2"
+    },
+    "audio/mandarin_native/jiu3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "jiu3",
+      "sha256": "f62c1946e352616c78366f0c54f4962848b5af0c82d9759d2714f05c92b6b8c8"
+    },
+    "audio/mandarin_native/jiǎnɡ.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient continuous pitch evidence",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient continuous pitch evidence"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "jiang3",
+      "sha256": "5caa78c287e7ef8ab227fb70c27c1df00f556228571d1c6d2a16e62247ffeac2"
+    },
+    "audio/mandarin_native/ka3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 3.74
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "kao3",
+      "sha256": "32e1f6550f9cb14d50bde90a546896ae01c81470b67fdaf09b72ac1217e58319"
+    },
+    "audio/mandarin_native/ke3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.19,
+        "end": 0.33,
+        "voiced_seconds": 0.15,
+        "curves": {
+          "praat": [
+            255.402,
+            255.323,
+            250.286,
+            241.8,
+            241.8,
+            235.747,
+            231.822,
+            226.584,
+            218.907,
+            218.907,
+            211.418,
+            204.815,
+            199.433,
+            199.433,
+            188.048,
+            180.818,
+            177.759
+          ],
+          "world": [
+            253.005,
+            252.229,
+            248.28,
+            236.669,
+            236.669,
+            233.391,
+            229.522,
+            221.737,
+            214.498,
+            214.498,
+            210.238,
+            199.772,
+            188.401,
+            188.401,
+            180.873,
+            180.558,
+            175.039
+          ]
+        },
+        "median_hz": 216.691,
+        "high_hz": 252.022
+      },
+      "features": {
+        "praat": {
+          "delta": -5.973422432036703,
+          "range": 6.003496848854303,
+          "dip": 6.12111660744651,
+          "rebound": 0.14769417540980623,
+          "trough": 1.0,
+          "median_hz": 218.907,
+          "start_hz": 255.323
+        },
+        "world": {
+          "delta": -5.78726178686577,
+          "range": 5.846323002498089,
+          "dip": 6.05597744002643,
+          "rebound": 0.2687156531606596,
+          "trough": 1.0,
+          "median_hz": 214.498,
+          "start_hz": 252.229
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ke3",
+      "sha256": "87a8404089682121b98b1f1619350895efc2f4bbc1edaa657ef0eeb138d27a4a"
+    },
+    "audio/mandarin_native/ko3u.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.32,
+        "end": 0.54,
+        "voiced_seconds": 0.15,
+        "curves": {
+          "praat": [
+            227.01,
+            221.711,
+            214.345,
+            204.36,
+            195.64,
+            193.022,
+            175.944,
+            158.865,
+            141.786,
+            124.708,
+            124.03,
+            123.352,
+            121.066,
+            115.362,
+            107.954,
+            101.721,
+            96.136
+          ],
+          "world": [
+            221.444,
+            221.444,
+            209.692,
+            202.597,
+            192.997,
+            178.929,
+            140.922,
+            125.114,
+            135.787,
+            135.787,
+            125.747,
+            123.081,
+            120.99,
+            114.215,
+            113.999,
+            102.06,
+            99.891
+          ]
+        },
+        "median_hz": 125.226,
+        "high_hz": 223.104
+      },
+      "features": {
+        "praat": {
+          "delta": -13.488753599725104,
+          "range": 13.627406841810405,
+          "dip": 13.977566804672618,
+          "rebound": 0.48881320494751357,
+          "trough": 1.0,
+          "median_hz": 141.786,
+          "start_hz": 221.711
+        },
+        "world": {
+          "delta": -13.410292335115276,
+          "range": 13.447481465618399,
+          "dip": 13.596237987630895,
+          "rebound": 0.18594565251561868,
+          "trough": 1.0,
+          "median_hz": 135.787,
+          "start_hz": 221.444
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "kou3",
+      "sha256": "e8399376b278b0818b89ba8be8a12331de02bef8a1a9dcd2a8ed79a3f4cc86b6"
+    },
+    "audio/mandarin_native/la3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.03,
+        "end": 0.37,
+        "voiced_seconds": 0.32,
+        "curves": {
+          "praat": [
+            270.942,
+            219.297,
+            223.9,
+            226.52,
+            227.127,
+            226.833,
+            223.778,
+            225.813,
+            227.928,
+            223.071,
+            221.078,
+            219.259,
+            213.868,
+            201.207,
+            195.245,
+            191.464,
+            185.627
+          ],
+          "world": [
+            214.274,
+            217.763,
+            225.308,
+            226.277,
+            227.175,
+            224.779,
+            224.564,
+            223.736,
+            226.879,
+            222.592,
+            221.696,
+            220.105,
+            211.78,
+            199.113,
+            195.098,
+            190.137,
+            183.628
+          ]
+        },
+        "median_hz": 221.468,
+        "high_hz": 227.132
+      },
+      "features": {
+        "praat": {
+          "delta": -2.7093764776358817,
+          "range": 3.237419385543401,
+          "dip": 2.9773759878490598,
+          "rebound": 0.26799951021317847,
+          "trough": 1.0,
+          "median_hz": 223.071,
+          "start_hz": 223.9
+        },
+        "world": {
+          "delta": -2.3486345345872914,
+          "range": 3.0729116434395727,
+          "dip": 2.650153986128299,
+          "rebound": 0.30151945154100757,
+          "trough": 1.0,
+          "median_hz": 221.696,
+          "start_hz": 217.763
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "lao3",
+      "sha256": "83ff08206d7c1c978a5ea404443aaeae41308c0221e4443e6c997d23aff85f5b"
+    },
+    "audio/mandarin_native/le3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.08,
+        "end": 0.64,
+        "voiced_seconds": 0.54,
+        "curves": {
+          "praat": [
+            228.993,
+            230.992,
+            230.736,
+            227.059,
+            220.34,
+            224.092,
+            220.314,
+            214.882,
+            208.415,
+            198.994,
+            189.093,
+            176.739,
+            162.487,
+            148.861,
+            150.159,
+            159.836,
+            165.115
+          ],
+          "world": [
+            228.939,
+            231.195,
+            230.16,
+            225.377,
+            219.958,
+            225.013,
+            221.015,
+            214.086,
+            207.067,
+            197.278,
+            185.566,
+            173.132,
+            161.032,
+            148.166,
+            150.829,
+            162.006,
+            172.3
+          ]
+        },
+        "median_hz": 207.74,
+        "high_hz": 230.589
+      },
+      "features": {
+        "praat": {
+          "delta": -6.355808761326307,
+          "range": 7.437026002698154,
+          "dip": 7.437026002698154,
+          "rebound": 1.0812172413718475,
+          "trough": 0.8125,
+          "median_hz": 208.415,
+          "start_hz": 230.736
+        },
+        "world": {
+          "delta": -6.079078571037039,
+          "range": 7.316679394834522,
+          "dip": 7.316679394834522,
+          "rebound": 1.2376008237974832,
+          "trough": 0.8125,
+          "median_hz": 207.067,
+          "start_hz": 230.16
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "leng3",
+      "sha256": "74abc5e51b8505feaa056e5b53b4705c0fb5da0ac6d19f78c45dc59a272da89f"
+    },
+    "audio/mandarin_native/li3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.08,
+        "end": 0.53,
+        "voiced_seconds": 0.46,
+        "curves": {
+          "pyin": [
+            229.162,
+            227.842,
+            227.842,
+            242.098,
+            249.903,
+            249.903,
+            245.61,
+            235.206,
+            226.53,
+            221.997,
+            216.3,
+            210.751,
+            210.142,
+            208.932,
+            207.729,
+            204.752,
+            201.815
+          ],
+          "praat": [
+            226.666,
+            229.122,
+            226.579,
+            233.233,
+            250.835,
+            251.213,
+            244.931,
+            232.012,
+            226.056,
+            221.537,
+            214.814,
+            210.896,
+            208.721,
+            209.115,
+            206.652,
+            203.972,
+            201.277
+          ],
+          "world": [
+            227.166,
+            229.762,
+            226.053,
+            232.204,
+            248.969,
+            250.908,
+            243.583,
+            231.158,
+            224.538,
+            221.379,
+            213.456,
+            211.436,
+            208.676,
+            209.478,
+            205.932,
+            204.399,
+            201.241
+          ]
+        },
+        "median_hz": 224.862,
+        "high_hz": 247.652
+      },
+      "features": {
+        "pyin": {
+          "delta": -1.8498740569368652,
+          "range": 3.474901082308965,
+          "dip": 1.9749388765527576,
+          "rebound": 0.12506481961589233,
+          "trough": 1.0,
+          "median_hz": 226.53,
+          "start_hz": 227.842
+        },
+        "praat": {
+          "delta": -1.9196505009168179,
+          "range": 3.603437102651333,
+          "dip": 2.0347832845835154,
+          "rebound": 0.11513278366669755,
+          "trough": 1.0,
+          "median_hz": 226.056,
+          "start_hz": 226.666
+        },
+        "world": {
+          "delta": -1.9266651527559011,
+          "range": 3.441892414134535,
+          "dip": 2.061448398663154,
+          "rebound": 0.1347832459072531,
+          "trough": 1.0,
+          "median_hz": 224.538,
+          "start_hz": 227.166
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "li3",
+      "sha256": "93e0af2565e93e55d08fe2745513c8a5407bb0ec45bc1a977d32ecdc4feb0342"
+    },
+    "audio/mandarin_native/lia3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.06,
+        "end": 0.47,
+        "voiced_seconds": 0.4,
+        "curves": {
+          "praat": [
+            229.62,
+            232.032,
+            231.838,
+            228.776,
+            222.341,
+            230.608,
+            234.026,
+            233.012,
+            228.81,
+            223.372,
+            218.122,
+            207.753,
+            197.05,
+            192.797,
+            174.105,
+            170.413,
+            163.781
+          ],
+          "world": [
+            230.22,
+            232.152,
+            231.723,
+            228.382,
+            218.609,
+            229.529,
+            233.774,
+            232.865,
+            229.547,
+            223.379,
+            217.94,
+            210.381,
+            198.753,
+            191.798,
+            176.235,
+            169.346,
+            162.309
+          ]
+        },
+        "median_hz": 224.612,
+        "high_hz": 232.953
+      },
+      "features": {
+        "praat": {
+          "delta": -5.328979898596923,
+          "range": 5.4851471780663825,
+          "dip": 5.672584265201351,
+          "rebound": 0.3436043666044286,
+          "trough": 1.0,
+          "median_hz": 223.372,
+          "start_hz": 231.838
+        },
+        "world": {
+          "delta": -5.429128052521501,
+          "range": 5.587715965186736,
+          "dip": 5.7965135193130095,
+          "rebound": 0.3673854667915082,
+          "trough": 1.0,
+          "median_hz": 223.379,
+          "start_hz": 231.723
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "lia3",
+      "sha256": "f211146e29464668ff1dad20a474aef3093f151ce55173c5abab88373f8e5baa"
+    },
+    "audio/mandarin_native/lia3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.12,
+        "end": 0.68,
+        "voiced_seconds": 0.54,
+        "curves": {
+          "praat": [
+            223.625,
+            218.641,
+            214.63,
+            213.789,
+            227.954,
+            227.283,
+            220.517,
+            212.284,
+            203.092,
+            202.058,
+            183.013,
+            166.055,
+            156.375,
+            150.801,
+            81.981,
+            84.408,
+            94.222
+          ],
+          "world": [
+            221.562,
+            217.467,
+            214.312,
+            211.844,
+            226.458,
+            226.507,
+            221.312,
+            213.533,
+            204.203,
+            194.014,
+            177.676,
+            166.328,
+            154.399,
+            148.82,
+            82.038,
+            85.814,
+            96.114
+          ]
+        },
+        "median_hz": 205.681,
+        "high_hz": 225.964
+      },
+      "features": {
+        "praat": {
+          "delta": -16.477347810533363,
+          "range": 17.148457602839123,
+          "dip": 16.477347810533363,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 203.092,
+          "start_hz": 218.641
+        },
+        "world": {
+          "delta": -16.09813865128176,
+          "range": 16.79950280922978,
+          "dip": 16.09813865128176,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 204.203,
+          "start_hz": 217.467
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "lian3",
+      "sha256": "01de3c1566ed249031f118ad50b81ffb4e20af3772951d72512d7f34ae6ab868"
+    },
+    "audio/mandarin_native/lia3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 4.881
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "liang3",
+      "sha256": "1e36a50d10a02c0641cbef7e96869eb8c7939e9262c83e7a977d4d1a820ad93f"
+    },
+    "audio/mandarin_native/lia3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "liao3",
+      "sha256": "e1e50061d71c727d3e4c8364d40cbd1cb9092039f46bb15ce3080a6bd746d43c"
+    },
+    "audio/mandarin_native/ma3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.03,
+        "end": 0.21,
+        "voiced_seconds": 0.19,
+        "curves": {
+          "praat": [
+            220.598,
+            217.825,
+            217.825,
+            217.935,
+            220.361,
+            222.071,
+            223.421,
+            224.249,
+            224.249,
+            223.216,
+            222.084,
+            219.247,
+            211.512,
+            209.228,
+            206.039,
+            198.749,
+            192.45
+          ],
+          "world": [
+            214.256,
+            215.692,
+            215.692,
+            218.539,
+            220.663,
+            222.781,
+            224.105,
+            224.366,
+            224.366,
+            222.804,
+            222.804,
+            220.537,
+            214.388,
+            208.904,
+            204.293,
+            195.703,
+            190.59
+          ]
+        },
+        "median_hz": 218.237,
+        "high_hz": 224.033
+      },
+      "features": {
+        "praat": {
+          "delta": -1.5866632994407481,
+          "range": 2.1456041185251866,
+          "dip": 1.8654468817627905,
+          "rebound": 0.27878358232204237,
+          "trough": 1.0,
+          "median_hz": 219.247,
+          "start_hz": 217.825
+        },
+        "world": {
+          "delta": -1.6836815559293608,
+          "range": 2.4120905062615945,
+          "dip": 1.9128422363727005,
+          "rebound": 0.2291606804433397,
+          "trough": 1.0,
+          "median_hz": 218.539,
+          "start_hz": 215.692
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "mai3",
+      "sha256": "0134441da1442e3df95f89b84f8977d711730b7c7676fb49a27527eb98d7324b"
+    },
+    "audio/mandarin_native/me3i.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.58,
+        "voiced_seconds": 0.5,
+        "curves": {
+          "praat": [
+            220.392,
+            227.996,
+            230.885,
+            231.543,
+            231.171,
+            231.38,
+            229.25,
+            229.062,
+            231.439,
+            217.713,
+            202.328,
+            191.254,
+            173.611,
+            166.116,
+            153.807,
+            148.796,
+            135.61
+          ],
+          "world": [
+            220.301,
+            228.595,
+            231.26,
+            231.633,
+            231.181,
+            231.218,
+            229.238,
+            228.842,
+            228.717,
+            217.199,
+            200.345,
+            186.161,
+            173.285,
+            165.336,
+            154.147,
+            146.908,
+            135.04
+          ]
+        },
+        "median_hz": 219.889,
+        "high_hz": 231.4
+      },
+      "features": {
+        "praat": {
+          "delta": -7.388073239145174,
+          "range": 7.791271770334,
+          "dip": 8.191306293998773,
+          "rebound": 0.8032330548535986,
+          "trough": 1.0,
+          "median_hz": 220.392,
+          "start_hz": 227.996
+        },
+        "world": {
+          "delta": -7.654570643755726,
+          "range": 8.00106486096818,
+          "dip": 8.38372755611737,
+          "rebound": 0.7291569123616428,
+          "trough": 1.0,
+          "median_hz": 220.301,
+          "start_hz": 228.595
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "mei3",
+      "sha256": "8144d693f023a2966ac4caf4a274a50dc094531ae65989c0bc6b4a7789da674f"
+    },
+    "audio/mandarin_native/mi3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.01,
+        "end": 0.47,
+        "voiced_seconds": 0.47,
+        "curves": {
+          "pyin": [
+            233.168,
+            232.496,
+            234.518,
+            236.56,
+            239.309,
+            241.39,
+            244.195,
+            242.789,
+            239.316,
+            230.49,
+            224.584,
+            217.553,
+            212.588,
+            200.082,
+            187.216,
+            173.19,
+            163.925
+          ],
+          "praat": [
+            230.574,
+            229.381,
+            234.01,
+            236.017,
+            238.296,
+            241.151,
+            242.349,
+            245.922,
+            237.059,
+            229.933,
+            223.547,
+            216.433,
+            209.42,
+            196.031,
+            185.038,
+            173.578,
+            163.708
+          ],
+          "world": [
+            231.357,
+            229.134,
+            234.287,
+            236.056,
+            238.459,
+            241.07,
+            241.987,
+            242.816,
+            235.86,
+            228.701,
+            224.081,
+            215.357,
+            208.699,
+            194.673,
+            184.488,
+            172.406,
+            164.178
+          ]
+        },
+        "median_hz": 230.096,
+        "high_hz": 242.145
+      },
+      "features": {
+        "pyin": {
+          "delta": -5.148170103962584,
+          "range": 5.9433528190472025,
+          "dip": 5.624088521867891,
+          "rebound": 0.47591841790530687,
+          "trough": 1.0,
+          "median_hz": 232.496,
+          "start_hz": 233.168
+        },
+        "praat": {
+          "delta": -4.915748816539754,
+          "range": 5.879375418566047,
+          "dip": 5.42250450704759,
+          "rebound": 0.5067556905078359,
+          "trough": 1.0,
+          "median_hz": 229.933,
+          "start_hz": 230.574
+        },
+        "world": {
+          "delta": -5.091729201331479,
+          "range": 5.954093741837575,
+          "dip": 5.515024195689154,
+          "rebound": 0.4232949943576747,
+          "trough": 1.0,
+          "median_hz": 229.134,
+          "start_hz": 231.357
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "mi3",
+      "sha256": "1316f7520532d779a49725b0814d7436b5a359b3b1f1acd4d2eda67df039e316"
+    },
+    "audio/mandarin_native/mo3u.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 5.153
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "mou3",
+      "sha256": "022dcd772928a30dace8eafc432efef17767f7aba784f2495e31c379223524a3"
+    },
+    "audio/mandarin_native/na3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "na3",
+      "sha256": "a455087c70cc2334bb872226cf81f1508adeb4eae9926a1eb24b13fe3b5fff9a"
+    },
+    "audio/mandarin_native/ni3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.04,
+        "end": 0.63,
+        "voiced_seconds": 0.6,
+        "curves": {
+          "pyin": [
+            231.825,
+            231.825,
+            231.825,
+            233.843,
+            235.877,
+            230.493,
+            225.878,
+            221.997,
+            216.3,
+            208.33,
+            202.4,
+            198.922,
+            197.206,
+            197.206,
+            197.777,
+            204.16,
+            206.532
+          ],
+          "praat": [
+            229.777,
+            231.295,
+            231.862,
+            232.534,
+            237.338,
+            229.835,
+            226.82,
+            221.859,
+            214.924,
+            206.882,
+            202.397,
+            198.532,
+            196.437,
+            197.236,
+            196.21,
+            205.479,
+            207.46
+          ],
+          "world": [
+            229.187,
+            231.243,
+            231.934,
+            232.838,
+            234.035,
+            229.013,
+            227.059,
+            221.054,
+            214.43,
+            205.174,
+            201.222,
+            198.031,
+            196.935,
+            196.844,
+            196.647,
+            204.003,
+            203.801
+          ]
+        },
+        "median_hz": 213.143,
+        "high_hz": 233.865
+      },
+      "features": {
+        "pyin": {
+          "delta": -2.200031048422469,
+          "range": 2.950041557387997,
+          "dip": 2.7999925017911336,
+          "rebound": 0.5999614533686641,
+          "trough": 0.75,
+          "median_hz": 216.3,
+          "start_hz": 231.825
+        },
+        "praat": {
+          "delta": -2.048917455486106,
+          "range": 2.8642801989790914,
+          "dip": 2.8280086092260626,
+          "rebound": 0.7790911537399567,
+          "trough": 0.8125,
+          "median_hz": 214.924,
+          "start_hz": 231.295
+        },
+        "world": {
+          "delta": -2.1869827648574813,
+          "range": 2.9072855051183755,
+          "dip": 2.7882834696621277,
+          "rebound": 0.6013007048046464,
+          "trough": 0.8125,
+          "median_hz": 214.43,
+          "start_hz": 231.243
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ni3",
+      "sha256": "b459d05a9856646a498e348612f1474500591f89c8b0e80acdc3644347d2507c"
+    },
+    "audio/mandarin_native/pa3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "pao3",
+      "sha256": "5aff626c6a933789570ca70095cd1eb45af86454378c29a4ef26089130b41d9f"
+    },
+    "audio/mandarin_native/qi3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.34,
+        "end": 0.57,
+        "voiced_seconds": 0.2,
+        "curves": {
+          "praat": [
+            246.362,
+            244.458,
+            237.351,
+            218.659,
+            213.379,
+            210.65,
+            204.864,
+            194.456,
+            180.937,
+            174.766,
+            164.594,
+            161.194,
+            155.53,
+            146.004,
+            148.76,
+            155.379,
+            159.472
+          ],
+          "world": [
+            246.412,
+            240.585,
+            233.726,
+            219.021,
+            214.861,
+            211.191,
+            203.423,
+            189.197,
+            184.169,
+            176.794,
+            161.749,
+            158.064,
+            151.558,
+            145.816,
+            141.843,
+            150.236,
+            164.119
+          ]
+        },
+        "median_hz": 194.496,
+        "high_hz": 239.658
+      },
+      "features": {
+        "praat": {
+          "delta": -7.845541046307128,
+          "range": 8.612631342559425,
+          "dip": 8.599199590943499,
+          "rebound": 0.7536585446363708,
+          "trough": 0.8125,
+          "median_hz": 180.937,
+          "start_hz": 244.458
+        },
+        "world": {
+          "delta": -8.151793667365757,
+          "range": 8.710202959663315,
+          "dip": 8.66877197648526,
+          "rebound": 0.5169783091195042,
+          "trough": 0.8125,
+          "median_hz": 184.169,
+          "start_hz": 240.585
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "qi3",
+      "sha256": "b230c065f8ea676056055cf9aba01a6279ffd99a1afd5b6b8c3b8cae2acffef8"
+    },
+    "audio/mandarin_native/qi3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.3,
+        "end": 0.64,
+        "voiced_seconds": 0.31,
+        "curves": {
+          "praat": [
+            267.429,
+            245.067,
+            231.058,
+            223.125,
+            208.382,
+            197.468,
+            183.438,
+            177.713,
+            170.605,
+            165.812,
+            156.357,
+            147.893,
+            140.313,
+            127.764,
+            127.764,
+            162.93,
+            198.095
+          ],
+          "world": [
+            263.062,
+            243.283,
+            229.843,
+            213.975,
+            202.533,
+            192.259,
+            182.069,
+            176.338,
+            169.472,
+            163.905,
+            153.074,
+            146.567,
+            135.455,
+            126.27,
+            158.354,
+            207.652,
+            200.394
+          ]
+        },
+        "median_hz": 182.752,
+        "high_hz": 244.173
+      },
+      "features": {
+        "praat": {
+          "delta": -7.067087509499775,
+          "range": 11.427513735700863,
+          "dip": 11.276338105853323,
+          "rebound": 4.209250596353549,
+          "trough": 0.8125,
+          "median_hz": 177.713,
+          "start_hz": 245.067
+        },
+        "world": {
+          "delta": -3.3575543819755476,
+          "range": 10.273183185443255,
+          "dip": 10.137862364810871,
+          "rebound": 6.780307982835325,
+          "trough": 0.75,
+          "median_hz": 182.069,
+          "start_hz": 243.283
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "qing3",
+      "sha256": "327139559c5bcdc12dda563980c582f60c4633acc56bac8c42745e56763b55e9"
+    },
+    "audio/mandarin_native/qu3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.28,
+        "end": 0.58,
+        "voiced_seconds": 0.28,
+        "curves": {
+          "praat": [
+            250.875,
+            238.445,
+            221.503,
+            217.375,
+            207.703,
+            203.085,
+            201.406,
+            194.498,
+            188.383,
+            184.798,
+            178.246,
+            171.934,
+            165.718,
+            160.739,
+            162.209,
+            181.82,
+            201.43
+          ],
+          "world": [
+            248.008,
+            236.486,
+            222.272,
+            215.238,
+            206.694,
+            204.184,
+            198.568,
+            195.178,
+            189.541,
+            184.563,
+            178.118,
+            171.895,
+            164.995,
+            160.203,
+            209.51,
+            214.283,
+            195.766
+          ]
+        },
+        "median_hz": 196.914,
+        "high_hz": 232.286
+      },
+      "features": {
+        "praat": {
+          "delta": -4.693747533187988,
+          "range": 6.757606568793517,
+          "dip": 6.669631951960852,
+          "rebound": 1.9758844187728648,
+          "trough": 0.8125,
+          "median_hz": 194.498,
+          "start_hz": 238.445
+        },
+        "world": {
+          "delta": -2.0968280683712672,
+          "range": 6.314347927169509,
+          "dip": 6.231989671120642,
+          "rebound": 4.135161602749375,
+          "trough": 0.75,
+          "median_hz": 198.568,
+          "start_hz": 236.486
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "qu3",
+      "sha256": "37b2d8dabf470da8085b961324d61ffd8ebca51c466ec762f1fef664899d312c"
+    },
+    "audio/mandarin_native/sha3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "shao3",
+      "sha256": "25c5b6f0e376e2e22055ec01204a83ceccbff9fa2ce11ebf8a9cc4241a6f5972"
+    },
+    "audio/mandarin_native/sho3u.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.47,
+        "end": 0.76,
+        "voiced_seconds": 0.24,
+        "curves": {
+          "praat": [
+            255.51,
+            242.058,
+            224.84,
+            206.799,
+            196.21,
+            192.736,
+            182.726,
+            174.834,
+            164.206,
+            155.396,
+            153.228,
+            149.076,
+            146.449,
+            143.172,
+            139.428,
+            137.336,
+            114.943
+          ],
+          "world": [
+            250.52,
+            223.744,
+            216.105,
+            204.722,
+            195.392,
+            189.615,
+            180.35,
+            170.53,
+            162.498,
+            154.259,
+            150.956,
+            148.115,
+            144.717,
+            142.541,
+            135.705,
+            126.445,
+            115.52
+          ]
+        },
+        "median_hz": 164.354,
+        "high_hz": 239.387
+      },
+      "features": {
+        "praat": {
+          "delta": -9.811715112549392,
+          "range": 10.213496977278911,
+          "dip": 11.352462558235992,
+          "rebound": 1.540747445686601,
+          "trough": 1.0,
+          "median_hz": 164.206,
+          "start_hz": 242.058
+        },
+        "world": {
+          "delta": -9.880068063093105,
+          "range": 10.232201020844915,
+          "dip": 10.662272117902944,
+          "rebound": 0.7822040548098377,
+          "trough": 1.0,
+          "median_hz": 162.498,
+          "start_hz": 223.744
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "shou3",
+      "sha256": "c7e26081728fb5e74a44d3ba9356820ff9456c09ebd310693f8f5ce992af1374"
+    },
+    "audio/mandarin_native/shu3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.31,
+        "end": 0.44,
+        "voiced_seconds": 0.14,
+        "curves": {
+          "pyin": [
+            237.243,
+            235.206,
+            233.168,
+            233.168,
+            230.49,
+            226.53,
+            222.638,
+            222.638,
+            218.813,
+            213.816,
+            213.816,
+            210.142,
+            206.532,
+            202.984,
+            202.984,
+            201.24,
+            199.497
+          ],
+          "praat": [
+            242.49,
+            239.84,
+            236.722,
+            236.722,
+            233.525,
+            229.675,
+            224.564,
+            224.564,
+            219.264,
+            214.143,
+            214.143,
+            208.957,
+            204.457,
+            199.519,
+            199.519,
+            192.189,
+            183.96
+          ],
+          "world": [
+            242.362,
+            239.16,
+            237.955,
+            237.955,
+            233.101,
+            229.092,
+            223.294,
+            223.294,
+            218.109,
+            213.288,
+            213.288,
+            206.554,
+            203.163,
+            196.954,
+            196.954,
+            187.756,
+            181.726
+          ]
+        },
+        "median_hz": 216.509,
+        "high_hz": 238.851
+      },
+      "features": {
+        "pyin": {
+          "delta": -2.7000932209646513,
+          "range": 2.730082061249937,
+          "dip": 2.775393479647574,
+          "rebound": 0.07530025868292256,
+          "trough": 1.0,
+          "median_hz": 218.813,
+          "start_hz": 235.206
+        },
+        "praat": {
+          "delta": -3.8345582765310744,
+          "range": 3.9293422296742753,
+          "dip": 4.213360251673093,
+          "rebound": 0.37880197514201797,
+          "trough": 1.0,
+          "median_hz": 219.264,
+          "start_hz": 239.84
+        },
+        "world": {
+          "delta": -4.189405250875344,
+          "range": 4.268943131752698,
+          "dip": 4.471970255222386,
+          "rebound": 0.28256500434704135,
+          "trough": 1.0,
+          "median_hz": 218.109,
+          "start_hz": 239.16
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "shu3",
+      "sha256": "584f1d27da9209e26f44616d02610cbdb3c418797af64aba844bbf14b7d28fad"
+    },
+    "audio/mandarin_native/shui3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.41,
+        "end": 0.75,
+        "voiced_seconds": 0.26,
+        "curves": {
+          "praat": [
+            245.681,
+            236.486,
+            226.216,
+            214.945,
+            202.094,
+            186.416,
+            168.685,
+            161.389,
+            154.01,
+            132.826,
+            132.826,
+            134.673,
+            134.14,
+            113.59,
+            130.798,
+            151.734,
+            151.734
+          ],
+          "world": [
+            244.758,
+            233.334,
+            221.406,
+            212.413,
+            197.713,
+            182.133,
+            168.53,
+            159.56,
+            144.172,
+            132.627,
+            132.05,
+            134.801,
+            126.406,
+            118.744,
+            143.787,
+            162.048,
+            223.571
+          ]
+        },
+        "median_hz": 172.865,
+        "high_hz": 237.457
+      },
+      "features": {
+        "praat": {
+          "delta": -7.682524592768472,
+          "range": 10.319009380680587,
+          "dip": 10.252971567124622,
+          "rebound": 2.57044697435615,
+          "trough": 0.8125,
+          "median_hz": 154.01,
+          "start_hz": 236.486
+        },
+        "world": {
+          "delta": -6.311703939898331,
+          "range": 10.694730555530292,
+          "dip": 10.611979188805918,
+          "rebound": 4.300275248907586,
+          "trough": 0.75,
+          "median_hz": 162.048,
+          "start_hz": 233.334
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "shui3",
+      "sha256": "d3fd316f6ff01f9e2d757a613e72267048e1644f97e0b5b05358bee5e0b05371"
+    },
+    "audio/mandarin_native/si3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.32,
+        "end": 0.46,
+        "voiced_seconds": 0.15,
+        "curves": {
+          "praat": [
+            259.242,
+            259.361,
+            259.636,
+            259.636,
+            259.636,
+            257.663,
+            252.843,
+            247.54,
+            240.679,
+            240.679,
+            234.255,
+            228.064,
+            222.122,
+            222.122,
+            212.741,
+            200.245,
+            178.857
+          ],
+          "world": [
+            268.191,
+            260.685,
+            260.642,
+            260.642,
+            260.642,
+            257.893,
+            252.345,
+            245.43,
+            239.045,
+            239.045,
+            231.619,
+            226.876,
+            216.262,
+            216.262,
+            208.135,
+            192.012,
+            175.517
+          ]
+        },
+        "median_hz": 240.339,
+        "high_hz": 260.128
+      },
+      "features": {
+        "praat": {
+          "delta": -4.478344063687569,
+          "range": 4.692242146836807,
+          "dip": 5.456101885979631,
+          "rebound": 0.9777578222920629,
+          "trough": 1.0,
+          "median_hz": 240.679,
+          "start_hz": 259.361
+        },
+        "world": {
+          "delta": -5.293333139949948,
+          "range": 5.497979888169425,
+          "dip": 6.070847367366479,
+          "rebound": 0.777514227416531,
+          "trough": 1.0,
+          "median_hz": 239.045,
+          "start_hz": 260.685
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "si3",
+      "sha256": "4f946f1f32e101c414ffa0528b2c038b3deb54c6b580b778972b8352baec6f3f"
+    },
+    "audio/mandarin_native/suo3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "clear_citation_third",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.36,
+        "end": 0.84,
+        "voiced_seconds": 0.47,
+        "curves": {
+          "praat": [
+            240.426,
+            229.064,
+            213.34,
+            204.062,
+            197.168,
+            184.58,
+            175.59,
+            172.149,
+            169.174,
+            168.201,
+            162.764,
+            159.536,
+            160.411,
+            161.694,
+            188.682,
+            197.666,
+            208.633
+          ],
+          "world": [
+            237.232,
+            225.389,
+            209.36,
+            202.81,
+            195.831,
+            181.201,
+            174.59,
+            171.808,
+            168.755,
+            166.651,
+            162.396,
+            159.213,
+            160.295,
+            162.214,
+            187.873,
+            194.638,
+            202.885
+          ]
+        },
+        "median_hz": 180.398,
+        "high_hz": 227.606
+      },
+      "features": {
+        "praat": {
+          "delta": -2.5522320277588775,
+          "range": 6.251542585879307,
+          "dip": 6.167731971178879,
+          "rebound": 3.6154999434200015,
+          "trough": 0.6875,
+          "median_hz": 184.58,
+          "start_hz": 229.064
+        },
+        "world": {
+          "delta": -2.539484473548295,
+          "range": 5.988910010570343,
+          "dip": 5.900252187077731,
+          "rebound": 3.3607677135294356,
+          "trough": 0.6875,
+          "median_hz": 181.201,
+          "start_hz": 225.389
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "suo3",
+      "sha256": "f76e01d3b6146e57e79007180be56661adce51d5416abb11f47c1ee92e8788e6"
+    },
+    "audio/mandarin_native/ta3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.21,
+        "end": 0.44,
+        "voiced_seconds": 0.23,
+        "curves": {
+          "praat": [
+            232.0,
+            226.042,
+            220.145,
+            212.531,
+            208.607,
+            203.141,
+            198.248,
+            190.487,
+            186.77,
+            182.207,
+            169.635,
+            160.532,
+            158.591,
+            154.276,
+            148.575,
+            146.258,
+            140.411
+          ],
+          "world": [
+            235.979,
+            224.948,
+            217.475,
+            211.693,
+            206.7,
+            200.968,
+            195.915,
+            188.608,
+            184.538,
+            179.541,
+            166.053,
+            160.901,
+            155.967,
+            152.61,
+            146.824,
+            144.628,
+            140.551
+          ]
+        },
+        "median_hz": 185.651,
+        "high_hz": 224.157
+      },
+      "features": {
+        "praat": {
+          "delta": -7.5369038401054365,
+          "range": 7.652576067065221,
+          "dip": 7.890061297977149,
+          "rebound": 0.3531574578717125,
+          "trough": 1.0,
+          "median_hz": 186.77,
+          "start_hz": 226.042
+        },
+        "world": {
+          "delta": -7.646935857273866,
+          "range": 7.779319983724116,
+          "dip": 7.894454859032942,
+          "rebound": 0.24751900175907604,
+          "trough": 1.0,
+          "median_hz": 184.538,
+          "start_hz": 224.948
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "tang3",
+      "sha256": "5d81264acc7331f1f1417d1b68f506fe1ffa6f23653c0f1f3bf68e1057aecfb4"
+    },
+    "audio/mandarin_native/ti3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 4.023
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ting3",
+      "sha256": "9edf36392f4228c3735b548689f8e16c5e2b632a5b8bf8ca20617e89524909b7"
+    },
+    "audio/mandarin_native/wa3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 16.5
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "wan3",
+      "sha256": "f40995afd411e633c058524f70b11563b024d1580e9d0283acb025e136f7e626"
+    },
+    "audio/mandarin_native/wa3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.12,
+        "end": 0.64,
+        "voiced_seconds": 0.51,
+        "curves": {
+          "praat": [
+            228.466,
+            216.482,
+            210.558,
+            211.573,
+            215.835,
+            226.379,
+            235.413,
+            228.862,
+            220.412,
+            212.144,
+            203.492,
+            195.736,
+            163.814,
+            162.453,
+            157.694,
+            154.1,
+            160.636
+          ],
+          "world": [
+            223.908,
+            215.648,
+            210.329,
+            212.07,
+            215.685,
+            226.231,
+            232.978,
+            227.164,
+            218.638,
+            210.988,
+            201.739,
+            184.33,
+            164.314,
+            162.199,
+            153.976,
+            154.572,
+            162.926
+          ]
+        },
+        "median_hz": 210.979,
+        "high_hz": 232.821
+      },
+      "features": {
+        "praat": {
+          "delta": -5.4854316487059585,
+          "range": 6.456114154259042,
+          "dip": 5.5249922036512995,
+          "rebound": 0.03956055494534105,
+          "trough": 1.0,
+          "median_hz": 211.573,
+          "start_hz": 216.482
+        },
+        "world": {
+          "delta": -5.764791967435108,
+          "range": 6.665462583144135,
+          "dip": 5.764791967435108,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 210.988,
+          "start_hz": 215.648
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "wang3",
+      "sha256": "f8ed98ed7aee272b7f3fffc3d73f23b8b66281907321596bad714396dd035ddd"
+    },
+    "audio/mandarin_native/wo3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 2.354
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "wo3",
+      "sha256": "6e547d3f1b8af6cb723d2b869497bc016e20a697b10d57dae149610476d5e0ac"
+    },
+    "audio/mandarin_native/wu3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.65,
+        "voiced_seconds": 0.57,
+        "curves": {
+          "pyin": [
+            233.843,
+            237.243,
+            236.56,
+            235.198,
+            230.493,
+            221.36,
+            211.36,
+            201.818,
+            193.266,
+            184.538,
+            171.678,
+            164.4,
+            160.184,
+            155.178,
+            152.507,
+            157.429,
+            159.258
+          ],
+          "praat": [
+            232.545,
+            237.315,
+            236.436,
+            235.658,
+            230.237,
+            222.306,
+            212.026,
+            201.82,
+            192.68,
+            182.726,
+            170.009,
+            164.017,
+            161.329,
+            152.894,
+            151.55,
+            157.671,
+            163.267
+          ],
+          "world": [
+            233.604,
+            237.433,
+            236.099,
+            235.867,
+            229.679,
+            222.039,
+            211.588,
+            200.812,
+            191.886,
+            181.582,
+            169.807,
+            163.515,
+            161.195,
+            152.099,
+            151.568,
+            157.648,
+            166.822
+          ]
+        },
+        "median_hz": 196.421,
+        "high_hz": 236.454
+      },
+      "features": {
+        "pyin": {
+          "delta": -7.050057892265154,
+          "range": 7.299385335385729,
+          "dip": 7.299385335385729,
+          "rebound": 0.24932744312057498,
+          "trough": 0.8125,
+          "median_hz": 193.266,
+          "start_hz": 236.56
+        },
+        "praat": {
+          "delta": -7.014388620055337,
+          "range": 7.547015114778161,
+          "dip": 7.547015114778161,
+          "rebound": 0.5326264947228245,
+          "trough": 0.8125,
+          "median_hz": 192.68,
+          "start_hz": 236.436
+        },
+        "world": {
+          "delta": -6.992220763549906,
+          "range": 7.612575158058097,
+          "dip": 7.612575158058097,
+          "rebound": 0.6203543945081913,
+          "trough": 0.8125,
+          "median_hz": 191.886,
+          "start_hz": 236.099
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "wu3",
+      "sha256": "226361a4fa0bf363846a3361c5a99ebae8cf934ff6bae6d099a826f812fb3a52"
+    },
+    "audio/mandarin_native/xi3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.34,
+        "end": 0.6,
+        "voiced_seconds": 0.27,
+        "curves": {
+          "praat": [
+            229.892,
+            227.577,
+            215.229,
+            210.445,
+            193.384,
+            185.172,
+            175.525,
+            173.081,
+            153.214,
+            144.368,
+            137.692,
+            124.638,
+            120.613,
+            118.776,
+            131.221,
+            131.802,
+            140.963
+          ],
+          "world": [
+            227.223,
+            224.263,
+            213.649,
+            206.438,
+            192.482,
+            184.913,
+            175.805,
+            169.908,
+            150.512,
+            138.756,
+            132.778,
+            124.667,
+            119.555,
+            124.834,
+            128.325,
+            134.157,
+            141.989
+          ]
+        },
+        "median_hz": 156.314,
+        "high_hz": 221.611
+      },
+      "features": {
+        "praat": {
+          "delta": -9.455789965351087,
+          "range": 11.00915395858317,
+          "dip": 10.991632154766998,
+          "rebound": 1.5358421894159102,
+          "trough": 0.75,
+          "median_hz": 153.214,
+          "start_hz": 227.577
+        },
+        "world": {
+          "delta": -8.89523141020716,
+          "range": 10.188044593517336,
+          "dip": 10.165343884267148,
+          "rebound": 1.2701124740599883,
+          "trough": 0.6875,
+          "median_hz": 150.512,
+          "start_hz": 224.263
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xi3",
+      "sha256": "3765fd77ceac47113165f0cf25d7ebf860ddf7c293a83dbb7181d462ad65beee"
+    },
+    "audio/mandarin_native/xia3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.35,
+        "end": 0.59,
+        "voiced_seconds": 0.16,
+        "curves": {
+          "praat": [
+            260.723,
+            256.973,
+            246.579,
+            240.905,
+            235.161,
+            207.108,
+            207.108,
+            205.556,
+            175.6,
+            175.452,
+            175.272,
+            148.993,
+            122.713,
+            96.433,
+            70.154,
+            70.209,
+            70.296
+          ],
+          "world": [
+            254.276,
+            254.276,
+            242.546,
+            231.986,
+            222.22,
+            210.459,
+            203.738,
+            187.454,
+            175.617,
+            174.985,
+            172.825,
+            156.531,
+            126.719,
+            73.787,
+            70.786,
+            70.786,
+            70.18
+          ]
+        },
+        "median_hz": 207.113,
+        "high_hz": 257.0
+      },
+      "features": {
+        "praat": {
+          "delta": -22.46266679500697,
+          "range": 22.48774808300368,
+          "dip": 22.46266679500697,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 175.6,
+          "start_hz": 256.973
+        },
+        "world": {
+          "delta": -22.138312082937812,
+          "range": 22.153197009752073,
+          "dip": 22.21273671700913,
+          "rebound": 0.07442463407131861,
+          "trough": 1.0,
+          "median_hz": 175.617,
+          "start_hz": 254.276
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xiang3",
+      "sha256": "8275e1391b9a2cf60036158560176f5c3a05b76663c6458ea984977c2a269cad"
+    },
+    "audio/mandarin_native/xia3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.36,
+        "end": 0.49,
+        "voiced_seconds": 0.14,
+        "curves": {
+          "praat": [
+            254.112,
+            253.482,
+            251.252,
+            251.252,
+            238.814,
+            227.424,
+            225.523,
+            225.523,
+            223.316,
+            218.683,
+            218.683,
+            214.427,
+            209.95,
+            206.957,
+            206.957,
+            204.102,
+            200.355
+          ],
+          "world": [
+            253.173,
+            251.749,
+            233.556,
+            233.556,
+            230.383,
+            228.11,
+            227.952,
+            227.952,
+            224.156,
+            218.396,
+            218.396,
+            212.835,
+            207.511,
+            205.45,
+            205.45,
+            199.159,
+            197.457
+          ]
+        },
+        "median_hz": 221.138,
+        "high_hz": 249.503
+      },
+      "features": {
+        "praat": {
+          "delta": -3.7511158111984724,
+          "range": 3.7874914205889234,
+          "dip": 3.9115066457140584,
+          "rebound": 0.16039083451558622,
+          "trough": 1.0,
+          "median_hz": 223.316,
+          "start_hz": 253.482
+        },
+        "world": {
+          "delta": -4.056784451476108,
+          "range": 4.081408055936146,
+          "dip": 4.131077431057608,
+          "rebound": 0.07429297958149972,
+          "trough": 1.0,
+          "median_hz": 224.156,
+          "start_hz": 251.749
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xiao3",
+      "sha256": "26363135aa10e95bac7089476b759d8aa54f1ebca0dfe08efb7137b227bed004"
+    },
+    "audio/mandarin_native/xie3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.34,
+        "end": 0.58,
+        "voiced_seconds": 0.23,
+        "curves": {
+          "praat": [
+            236.064,
+            228.679,
+            216.935,
+            211.239,
+            205.701,
+            199.821,
+            195.398,
+            193.131,
+            181.08,
+            178.266,
+            178.23,
+            170.798,
+            164.15,
+            164.329,
+            171.311,
+            169.841,
+            167.298
+          ],
+          "world": [
+            239.877,
+            228.347,
+            216.758,
+            209.946,
+            204.964,
+            199.963,
+            195.347,
+            188.489,
+            177.336,
+            179.201,
+            179.201,
+            171.813,
+            167.31,
+            167.31,
+            171.133,
+            169.103,
+            167.657
+          ]
+        },
+        "median_hz": 178.972,
+        "high_hz": 227.457
+      },
+      "features": {
+        "praat": {
+          "delta": -5.1496693897113825,
+          "range": 5.775866397537165,
+          "dip": 5.720841406372314,
+          "rebound": 0.5711720166609315,
+          "trough": 0.75,
+          "median_hz": 181.08,
+          "start_hz": 228.679
+        },
+        "world": {
+          "delta": -5.199906978129451,
+          "range": 5.469730307630378,
+          "dip": 5.38444990854691,
+          "rebound": 0.18454293041745906,
+          "trough": 0.75,
+          "median_hz": 179.201,
+          "start_hz": 228.347
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xie3",
+      "sha256": "0d1aae8b74a726fa97d899c639ce951267c37f75b83800ddf0d0b59002292297"
+    },
+    "audio/mandarin_native/xua3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.36,
+        "end": 0.74,
+        "voiced_seconds": 0.31,
+        "curves": {
+          "praat": [
+            244.73,
+            234.218,
+            233.849,
+            216.316,
+            198.895,
+            177.932,
+            156.969,
+            156.156,
+            148.239,
+            144.888,
+            142.959,
+            140.798,
+            124.134,
+            127.14,
+            133.03,
+            145.46,
+            168.905
+          ],
+          "world": [
+            242.161,
+            231.917,
+            214.539,
+            211.273,
+            196.971,
+            180.98,
+            162.382,
+            153.722,
+            147.386,
+            145.522,
+            140.041,
+            140.041,
+            122.369,
+            128.217,
+            133.194,
+            149.496,
+            171.501
+          ]
+        },
+        "median_hz": 157.112,
+        "high_hz": 236.503
+      },
+      "features": {
+        "praat": {
+          "delta": -8.246753663241607,
+          "range": 10.653214330073556,
+          "dip": 10.577207517663489,
+          "rebound": 2.330453854421881,
+          "trough": 0.75,
+          "median_hz": 156.156,
+          "start_hz": 234.218
+        },
+        "world": {
+          "delta": -7.60202031655194,
+          "range": 10.335081771293776,
+          "dip": 10.260252217541966,
+          "rebound": 2.6582319009900264,
+          "trough": 0.75,
+          "median_hz": 153.722,
+          "start_hz": 231.917
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xuan3",
+      "sha256": "4e00cbbde72c545c6ea831a6dce52f625b4ff43d914160e049dc4b9741cafd73"
+    },
+    "audio/mandarin_native/ya3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 4.11
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "yang3",
+      "sha256": "6510e78791b32e4d5bb705644a7147d6ccb6b9a29449144f1045937f25e492ac"
+    },
+    "audio/mandarin_native/ye3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.41,
+        "voiced_seconds": 0.35,
+        "curves": {
+          "praat": [
+            221.317,
+            220.073,
+            218.561,
+            215.944,
+            216.209,
+            220.368,
+            230.473,
+            235.096,
+            234.456,
+            224.432,
+            217.462,
+            217.462,
+            203.774,
+            194.487,
+            179.23,
+            164.256,
+            164.324
+          ],
+          "world": [
+            220.202,
+            220.015,
+            217.54,
+            215.844,
+            216.998,
+            221.856,
+            231.61,
+            236.808,
+            233.575,
+            224.066,
+            218.608,
+            213.627,
+            198.963,
+            191.552,
+            165.67,
+            164.83,
+            164.539
+          ]
+        },
+        "median_hz": 218.687,
+        "high_hz": 232.439
+      },
+      "features": {
+        "praat": {
+          "delta": -5.0572674154811805,
+          "range": 6.1540044928459094,
+          "dip": 5.060850223838877,
+          "rebound": 0.003582808357696088,
+          "trough": 1.0,
+          "median_hz": 217.462,
+          "start_hz": 220.073
+        },
+        "world": {
+          "delta": -4.999476489879994,
+          "range": 6.0379433910886195,
+          "dip": 5.014772077484233,
+          "rebound": 0.015295587604238214,
+          "trough": 1.0,
+          "median_hz": 217.54,
+          "start_hz": 220.015
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ye3",
+      "sha256": "17f4e4e005f969cab8dba2037ae0d7ba34251c1d4a80cad35c05471ddb060fb3"
+    },
+    "audio/mandarin_native/yi3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.02,
+        "end": 0.42,
+        "voiced_seconds": 0.41,
+        "curves": {
+          "praat": [
+            222.788,
+            225.814,
+            227.859,
+            233.135,
+            233.158,
+            228.925,
+            216.406,
+            206.52,
+            195.101,
+            185.501,
+            168.1,
+            149.406,
+            132.724,
+            125.609,
+            125.838,
+            132.141,
+            136.367
+          ],
+          "world": [
+            222.456,
+            226.007,
+            228.851,
+            233.886,
+            232.782,
+            228.127,
+            217.367,
+            205.144,
+            193.289,
+            183.149,
+            162.09,
+            146.884,
+            129.962,
+            125.489,
+            125.982,
+            132.757,
+            135.676
+          ]
+        },
+        "median_hz": 190.433,
+        "high_hz": 232.366
+      },
+      "features": {
+        "praat": {
+          "delta": -9.276681183257656,
+          "range": 10.675175549233,
+          "dip": 10.122807436076926,
+          "rebound": 0.8461262528192703,
+          "trough": 0.8125,
+          "median_hz": 195.101,
+          "start_hz": 225.814
+        },
+        "world": {
+          "delta": -9.21095428625437,
+          "range": 10.62914262764445,
+          "dip": 10.11779804978667,
+          "rebound": 0.9068437635322981,
+          "trough": 0.8125,
+          "median_hz": 193.289,
+          "start_hz": 226.007
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "yi3",
+      "sha256": "fb46ad10c7d5ac26c182ea624c1ff7ff81f0b48485e55867969c798ca8ecc24f"
+    },
+    "audio/mandarin_native/yi3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.62,
+        "voiced_seconds": 0.56,
+        "curves": {
+          "pyin": [
+            217.553,
+            218.183,
+            226.534,
+            240.016,
+            245.61,
+            235.198,
+            229.826,
+            225.878,
+            218.813,
+            204.16,
+            191.604,
+            160.181,
+            157.432,
+            152.069,
+            146.463,
+            145.199,
+            145.199
+          ],
+          "praat": [
+            215.964,
+            216.382,
+            223.753,
+            235.59,
+            246.152,
+            238.873,
+            229.869,
+            223.978,
+            213.0,
+            199.565,
+            185.2,
+            168.039,
+            156.645,
+            153.074,
+            142.955,
+            149.886,
+            175.262
+          ],
+          "world": [
+            213.888,
+            216.577,
+            223.372,
+            235.562,
+            247.09,
+            238.789,
+            229.679,
+            223.912,
+            212.872,
+            199.168,
+            184.662,
+            167.373,
+            156.94,
+            153.381,
+            141.795,
+            150.598,
+            174.218
+          ]
+        },
+        "median_hz": 211.422,
+        "high_hz": 236.718
+      },
+      "features": {
+        "pyin": {
+          "delta": -7.0500861513317155,
+          "range": 8.701188778969803,
+          "dip": 7.0500861513317155,
+          "rebound": 0.0,
+          "trough": 0.9375,
+          "median_hz": 217.553,
+          "start_hz": 218.183
+        },
+        "praat": {
+          "delta": -6.356578274219018,
+          "range": 8.068537901331322,
+          "dip": 6.356578274219018,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 213.0,
+          "start_hz": 216.382
+        },
+        "world": {
+          "delta": -6.290129153542303,
+          "range": 7.980405224213135,
+          "dip": 6.290129153542303,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 212.872,
+          "start_hz": 216.577
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ying3",
+      "sha256": "7ac9d8d62d4f441977d29092f2a44504ef9b70efd1eefd43ae3065f64372b53c"
+    },
+    "audio/mandarin_native/yo3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.1,
+        "end": 0.57,
+        "voiced_seconds": 0.47,
+        "curves": {
+          "pyin": [
+            221.356,
+            213.819,
+            212.598,
+            238.618,
+            242.114,
+            232.271,
+            222.427,
+            212.584,
+            211.36,
+            206.536,
+            202.984,
+            190.599,
+            178.215,
+            165.83,
+            161.581,
+            158.8,
+            164.874
+          ],
+          "praat": [
+            221.798,
+            211.967,
+            208.002,
+            220.486,
+            239.474,
+            246.464,
+            225.807,
+            216.152,
+            211.831,
+            206.056,
+            198.127,
+            187.757,
+            178.181,
+            167.826,
+            159.726,
+            155.865,
+            166.472
+          ],
+          "world": [
+            220.337,
+            210.058,
+            208.345,
+            220.974,
+            239.804,
+            238.865,
+            223.43,
+            215.085,
+            211.643,
+            204.87,
+            196.406,
+            185.914,
+            177.062,
+            166.024,
+            157.691,
+            156.851,
+            167.946
+          ]
+        },
+        "median_hz": 207.301,
+        "high_hz": 233.419
+      },
+      "features": {
+        "pyin": {
+          "delta": -4.849589911336952,
+          "range": 6.749343739434417,
+          "dip": 4.849589911336952,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 211.36,
+          "start_hz": 213.819
+        },
+        "praat": {
+          "delta": -4.898886058575383,
+          "range": 7.011238286835787,
+          "dip": 4.898886058575383,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 208.002,
+          "start_hz": 211.967
+        },
+        "world": {
+          "delta": -4.964248906701334,
+          "range": 7.189141847122674,
+          "dip": 4.964248906701334,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 208.345,
+          "start_hz": 210.058
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "yong3",
+      "sha256": "cfc80ec689fc97bf50887a615538fa186a9d073e32a1ca1c0cd6f62cd6b195a1"
+    },
+    "audio/mandarin_native/yo3u.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.03,
+        "end": 0.4,
+        "voiced_seconds": 0.26,
+        "curves": {
+          "praat": [
+            233.303,
+            229.691,
+            217.915,
+            214.56,
+            220.308,
+            243.393,
+            248.6,
+            251.925,
+            252.72,
+            194.174,
+            190.234,
+            175.025,
+            166.29,
+            148.53,
+            130.77,
+            113.011,
+            95.251
+          ],
+          "world": [
+            232.835,
+            228.584,
+            216.639,
+            212.668,
+            220.853,
+            240.497,
+            248.43,
+            247.816,
+            220.129,
+            197.417,
+            186.476,
+            171.845,
+            156.616,
+            136.673,
+            124.277,
+            110.709,
+            96.755
+          ]
+        },
+        "median_hz": 221.873,
+        "high_hz": 248.417
+      },
+      "features": {
+        "praat": {
+          "delta": -12.2787734813721,
+          "range": 14.17436156709758,
+          "dip": 13.758715847983554,
+          "rebound": 1.4799423666114535,
+          "trough": 1.0,
+          "median_hz": 214.56,
+          "start_hz": 229.691
+        },
+        "world": {
+          "delta": -12.55142297227388,
+          "range": 14.183199189509917,
+          "dip": 13.71760929610418,
+          "rebound": 1.166186323830301,
+          "trough": 1.0,
+          "median_hz": 212.668,
+          "start_hz": 228.584
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "you3",
+      "sha256": "27655449cd9b9fa03a902d37cf8cbe1f20def31552ef3945085ec7c63bb4a325"
+    },
+    "audio/mandarin_native/yu3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.1,
+        "end": 0.63,
+        "voiced_seconds": 0.51,
+        "curves": {
+          "praat": [
+            225.215,
+            236.279,
+            238.119,
+            231.856,
+            220.912,
+            212.905,
+            207.265,
+            199.452,
+            191.033,
+            186.122,
+            175.762,
+            162.308,
+            153.933,
+            156.454,
+            156.747,
+            162.62,
+            201.932
+          ],
+          "world": [
+            225.159,
+            237.12,
+            238.049,
+            231.359,
+            221.628,
+            211.137,
+            207.128,
+            199.48,
+            190.498,
+            185.6,
+            174.192,
+            160.526,
+            154.534,
+            156.356,
+            157.74,
+            164.293,
+            191.138
+          ]
+        },
+        "median_hz": 198.199,
+        "high_hz": 235.742
+      },
+      "features": {
+        "praat": {
+          "delta": -6.467840537101198,
+          "range": 7.137034407641458,
+          "dip": 7.137034407641458,
+          "rebound": 0.6691938705402598,
+          "trough": 0.75,
+          "median_hz": 199.452,
+          "start_hz": 236.279
+        },
+        "world": {
+          "delta": -6.352156077442311,
+          "range": 7.209393245989679,
+          "dip": 7.209393245989679,
+          "rebound": 0.8572371685473676,
+          "trough": 0.75,
+          "median_hz": 191.138,
+          "start_hz": 237.12
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "yu3",
+      "sha256": "921f8dc1baa0cc497fc303b85b9eb51d23f9a5a61eecd8d5d714022a0a491d42"
+    },
+    "audio/mandarin_native/za3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zao3",
+      "sha256": "ad427f980cc7261bc6026310ae28c06488d267a09c3afcd564df56888f1d349f"
+    },
+    "audio/mandarin_native/zha3o.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.09,
+        "end": 0.26,
+        "voiced_seconds": 0.13,
+        "curves": {
+          "praat": [
+            257.159,
+            258.087,
+            258.087,
+            254.714,
+            251.341,
+            224.757,
+            221.5,
+            218.242,
+            211.07,
+            208.476,
+            205.881,
+            189.955,
+            174.029,
+            172.146,
+            170.262,
+            167.854,
+            163.162
+          ],
+          "world": [
+            260.654,
+            260.139,
+            252.075,
+            249.063,
+            233.572,
+            230.301,
+            220.784,
+            216.943,
+            209.765,
+            203.483,
+            191.87,
+            184.087,
+            174.575,
+            171.189,
+            169.141,
+            165.367,
+            159.884
+          ]
+        },
+        "median_hz": 210.416,
+        "high_hz": 256.368
+      },
+      "features": {
+        "praat": {
+          "delta": -7.447806679511761,
+          "range": 7.496888864290911,
+          "dip": 7.693217603407515,
+          "rebound": 0.24541092389575514,
+          "trough": 1.0,
+          "median_hz": 211.07,
+          "start_hz": 258.087
+        },
+        "world": {
+          "delta": -7.843336074490264,
+          "range": 7.905134980468589,
+          "dip": 8.135210830769541,
+          "rebound": 0.2918747562792765,
+          "trough": 1.0,
+          "median_hz": 209.765,
+          "start_hz": 260.139
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zhao3",
+      "sha256": "4cb0559eb70468ac406b727c54ff41290e3d76c7aa9403abd5870334df38f3c7"
+    },
+    "audio/mandarin_native/zhe3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.21,
+        "end": 0.41,
+        "voiced_seconds": 0.18,
+        "curves": {
+          "praat": [
+            266.233,
+            266.233,
+            262.325,
+            256.597,
+            248.143,
+            240.728,
+            234.322,
+            228.425,
+            214.065,
+            208.488,
+            204.839,
+            201.19,
+            176.489,
+            176.489,
+            167.555,
+            152.293,
+            145.965
+          ],
+          "world": [
+            262.426,
+            262.426,
+            260.952,
+            258.995,
+            245.7,
+            237.732,
+            232.478,
+            226.679,
+            212.648,
+            206.957,
+            197.6,
+            190.112,
+            178.278,
+            170.819,
+            158.593,
+            148.427,
+            144.362
+          ]
+        },
+        "median_hz": 223.809,
+        "high_hz": 262.443
+      },
+      "features": {
+        "praat": {
+          "delta": -9.670077304639992,
+          "range": 9.743549890853883,
+          "dip": 10.037440235709443,
+          "rebound": 0.36736293106944906,
+          "trough": 1.0,
+          "median_hz": 214.065,
+          "start_hz": 266.233
+        },
+        "world": {
+          "delta": -9.865885317722691,
+          "range": 9.913960338552604,
+          "dip": 10.106260421872257,
+          "rebound": 0.24037510414956564,
+          "trough": 1.0,
+          "median_hz": 212.648,
+          "start_hz": 262.426
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zheng3",
+      "sha256": "75ccbb36504378603a018fb835f1ce525763bdf9e556319fc695e51e8b3c1a07"
+    },
+    "audio/mandarin_native/zhi3.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.09,
+        "end": 0.36,
+        "voiced_seconds": 0.26,
+        "curves": {
+          "praat": [
+            234.997,
+            227.662,
+            225.3,
+            189.498,
+            182.792,
+            172.855,
+            159.856,
+            155.418,
+            145.464,
+            133.151,
+            132.848,
+            126.038,
+            119.026,
+            119.213,
+            119.642,
+            117.704,
+            115.78
+          ],
+          "world": [
+            236.471,
+            225.831,
+            215.784,
+            190.591,
+            183.94,
+            166.414,
+            160.778,
+            151.528,
+            145.459,
+            133.29,
+            132.34,
+            120.102,
+            119.542,
+            119.57,
+            119.934,
+            116.922,
+            114.278
+          ]
+        },
+        "median_hz": 141.444,
+        "high_hz": 230.402
+      },
+      "features": {
+        "praat": {
+          "delta": -11.420761875598684,
+          "range": 11.50419322117056,
+          "dip": 11.563425600190104,
+          "rebound": 0.14266372459141996,
+          "trough": 1.0,
+          "median_hz": 145.464,
+          "start_hz": 227.662
+        },
+        "world": {
+          "delta": -11.39636552664993,
+          "range": 11.515667663330019,
+          "dip": 11.594357844447616,
+          "rebound": 0.19799231779768656,
+          "trough": 1.0,
+          "median_hz": 145.459,
+          "start_hz": 225.831
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zhi3",
+      "sha256": "03b7e1dc32e83abb9e37f009c0ac4ea3fb04f5afbb1f00bc29bc06dd1d726aa0"
+    },
+    "audio/mandarin_native/zho3ng.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.17,
+        "end": 0.41,
+        "voiced_seconds": 0.24,
+        "curves": {
+          "praat": [
+            260.181,
+            259.614,
+            245.361,
+            240.116,
+            232.874,
+            219.942,
+            214.681,
+            209.856,
+            202.976,
+            199.079,
+            189.718,
+            175.546,
+            167.043,
+            160.24,
+            150.892,
+            127.392,
+            107.656
+          ],
+          "world": [
+            260.493,
+            258.257,
+            245.52,
+            239.681,
+            230.704,
+            218.916,
+            212.454,
+            208.408,
+            200.835,
+            190.554,
+            188.83,
+            175.05,
+            165.429,
+            159.383,
+            143.051,
+            133.121,
+            108.655
+          ]
+        },
+        "median_hz": 203.396,
+        "high_hz": 257.353
+      },
+      "features": {
+        "praat": {
+          "delta": -12.325122034333571,
+          "range": 12.620314091643614,
+          "dip": 13.782197758793874,
+          "rebound": 1.457075724460303,
+          "trough": 1.0,
+          "median_hz": 202.976,
+          "start_hz": 259.614
+        },
+        "world": {
+          "delta": -11.472831329433639,
+          "range": 11.839336244367487,
+          "dip": 13.230732996968317,
+          "rebound": 1.7579016675346768,
+          "trough": 1.0,
+          "median_hz": 200.835,
+          "start_hz": 258.257
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zhong3",
+      "sha256": "a46c2edfdd29a4612ef440187b5a501937be998f25fae9c3a5478f2842b088ad"
+    },
+    "audio/mandarin_native/zhua3n.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "A clear isolated fall-rise is not established; low third tones are not automatically wrong.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.14,
+        "end": 0.53,
+        "voiced_seconds": 0.4,
+        "curves": {
+          "praat": [
+            258.076,
+            246.571,
+            236.291,
+            221.92,
+            213.508,
+            201.171,
+            190.246,
+            179.429,
+            171.383,
+            166.722,
+            159.627,
+            153.048,
+            150.835,
+            150.654,
+            148.001,
+            149.505,
+            165.329
+          ],
+          "world": [
+            258.617,
+            242.45,
+            226.346,
+            220.403,
+            208.936,
+            198.647,
+            187.46,
+            175.197,
+            170.851,
+            164.764,
+            156.799,
+            152.899,
+            150.441,
+            150.154,
+            145.059,
+            155.58,
+            165.908
+          ]
+        },
+        "median_hz": 173.65,
+        "high_hz": 244.135
+      },
+      "features": {
+        "praat": {
+          "delta": -8.661712745717626,
+          "range": 8.74066416960339,
+          "dip": 8.661712745717626,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 171.383,
+          "start_hz": 246.571
+        },
+        "world": {
+          "delta": -7.680367700510895,
+          "range": 8.406687981846979,
+          "dip": 8.294932151001387,
+          "rebound": 0.6145644504904917,
+          "trough": 0.8125,
+          "median_hz": 170.851,
+          "start_hz": 242.45
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zhuan3",
+      "sha256": "5bab8ecb133f7a288e9646b0d5f78b526f67cb9000716bbabe72e2824e5921a5"
+    },
+    "audio/mandarin_native/zo3u.mp3": {
+      "method": "isolated-third-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient jointly voiced frames",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient jointly voiced frames"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zou3",
+      "sha256": "cd3eb983ebd7ba5b6bb8e3734f6fe8ba987aac77e3e29d4bb3a1bf8bd3fdbaee"
+    }
   }
 }

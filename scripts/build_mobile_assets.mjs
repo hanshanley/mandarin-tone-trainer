@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {parseArgs} from 'node:util';
-import { loadReviewData, validateLedger, practiceInventory, requireToneCoverage } from './review_audio.mjs';
+import { loadReviewData, validateLedger, practiceInventory, quizInventory, requireToneCoverage } from './review_audio.mjs';
 import AudioReview from '../app/audio_review.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -61,7 +61,8 @@ const reviewData = loadReviewData();
 const words = reviewData.words;
 const reviewIndex = validateLedger(reviewData, ROOT, { allowLocalOnly: localUse });
 const inventory = practiceInventory(reviewData, reviewIndex);
-requireToneCoverage(inventory);
+const quiz = quizInventory(reviewData, reviewIndex);
+requireToneCoverage(quiz);
 const referencedAudio = inventory.audio;
 
 let referencedBytes = 0;
@@ -111,7 +112,8 @@ console.log(
     'Built offline mobile assets:',
     `  ${localUse?'Local-use build: not for redistribution':'Redistributable-source build'}`,
     `  ${words.length.toLocaleString()} vocabulary entries`,
-    `  ${inventory.eligibleWords.length.toLocaleString()} screened practice entries`,
+    `  ${inventory.eligibleWords.length.toLocaleString()} retained library entries`,
+    `  ${quiz.eligibleWords.length.toLocaleString()} quiz entries with all four comparisons`,
     `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,
     `  ${(totalBytes / 1024 / 1024).toFixed(1)} MiB total`,
   ].join('\n'),

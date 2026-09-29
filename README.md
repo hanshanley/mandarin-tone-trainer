@@ -15,11 +15,13 @@
 ## Learn tones from real words
 
 **Practice uses the acoustically checked direct-recording library.**
-Items require matching syllable identity, usable spoken-tone evidence, and
-qualifying correct-tone references. The experimental native-agreement model is
-diagnostic: its uncertainty does not silently remove otherwise eligible items.
-Unresolved comparison clips are withheld; missing alternative examples do not
-disable a checked question.
+Test items require matching syllable identity, usable spoken-tone evidence,
+and playable **tones 1, 2, 3, and 4 for every syllable**. The app checks all four
+recordings before presenting the question, and all four buttons remain usable
+after an incorrect guess. Entries without complete comparisons remain in the
+library but are not shown in testing. Neutral comparisons use genuine whole-word
+context, not an invented fifth isolated recording.
+The experimental native-agreement model is not a blanket quiz admission gate.
 Audio hashes are checked before the question is shown. These checks reduce
 errors; they are not a guarantee of 100% pronunciation accuracy.
 
@@ -59,9 +61,16 @@ clip, the app uses an available recording from another source. This never
 changes the initial whole-word recording or stitches syllables together.
 Only recordings with qualifying acoustic evidence or explicit listening
 approval can play. Clear single-syllable word recordings can supply a fallback;
-unavailable alternatives remain selectable answers without playing unsafe audio.
+testing excludes words that would leave any of the four comparison buttons silent.
 Neutral tone is demonstrated in a checked whole word, with the relevant
 syllable identified, rather than an invented isolated fifth-tone clip.
+
+Imported isolated third tones also undergo a citation-clarity check. A low or
+mostly falling third tone is not automatically a source error, but a recording
+without a clear, consistently tracked fall-rise is withheld from isolated quiz
+prompts and comparison buttons. Original labels and downloaded files remain intact.
+The retained library currently has **2,263 entries**; **856 entries** meet the
+complete-comparison and clarity requirements for testing.
 
 ### Practice your pronunciation
 

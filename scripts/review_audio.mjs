@@ -123,6 +123,11 @@ export function audioHash(relativePath, root = ROOT) {
 }
 
 export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}) {
+  for(const [audioPath,review] of Object.entries(data.quality.native_clarity||{})){
+    if(!audioPath.startsWith('audio/mandarin_native/')||!['clear_citation_third','needs_clearer_citation'].includes(review.status)
+      ||!/^[a-f0-9]{64}$/.test(review.sha256||'')||review.method!=='isolated-third-clarity-1'
+      ||audioHash(audioPath,root)!==review.sha256)throw new Error(`Stale or invalid isolated-third clarity evidence: ${audioPath}`);
+  }
   const index = AudioReview.createIndex(data.ledger, data.acousticLedger || null, {
     allowLocalOnly, sourceRecordings: data.recordings, sourceWords: data.words,
   });
@@ -150,6 +155,21 @@ export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}
   return index;
 }
 
+export function recordingReplacement(data,index,inventory,pair){
+  const record=data.recordings.find(record=>record.audio_path===pair.audio_path);
+  const replacement=record?.practice_replacement,word=data.words.find(word=>word.id===pair.word_id);
+  if(record?.review_status!=='rejected'||record.quiz_eligible!==false||!word
+    ||replacement?.word_id!==word.id||typeof replacement.reason!=='string'||!replacement.reason.trim()
+    ||replacement.surface_pattern!==(record.surface_pattern||word.default_surface_pattern||word.lexical_pattern)
+    ||!inventory.recordingLabelPairs.some(candidate=>candidate.word_id===word.id&&candidate.audio_path===replacement.audio_path))return null;
+  const target=data.recordings.find(record=>record.audio_path===replacement.audio_path);
+  const approval=target&&AudioReview.nativeApproval(index,word,target);
+  if(!approval||approval.sha256!==replacement.sha256||approval.surface_pattern!==replacement.surface_pattern
+    ||approval.sha256===record.sha256)return null;
+  return {word_id:word.id,previous_audio_path:pair.audio_path,audio_path:replacement.audio_path,
+    sha256:replacement.sha256,surface_pattern:replacement.surface_pattern,reason:replacement.reason};
+}
+
 export function validateAudioUpdate({ledger,imported},before=loadReviewData(),root=ROOT){
   const data={...before,acousticLedger:ledger,recordings:[
     ...before.recordings.filter(row=>row.source!=='mandarin_native'),
@@ -158,11 +178,16 @@ export function validateAudioUpdate({ledger,imported},before=loadReviewData(),ro
   const impact={};
   for(const allowLocalOnly of [true,false]){
     const baseline=practiceInventory(before,validateLedger(before,root,{allowLocalOnly}));
-    const after=practiceInventory(data,validateLedger(data,root,{allowLocalOnly}));
+    const index=validateLedger(data,root,{allowLocalOnly});
+    const after=practiceInventory(data,index);
     const scope=allowLocalOnly?'local-use':'redistributable';
     const keys=new Set(after.recordingLabelPairs.map(pair=>JSON.stringify(pair)));
+    const replacements=[];
     for(const pair of baseline.recordingLabelPairs){
-      if(!keys.has(JSON.stringify(pair)))throw new Error(`${scope} audio update removed a usable initial recording`);
+      if(keys.has(JSON.stringify(pair)))continue;
+      const replacement=recordingReplacement(data,index,after,pair);
+      if(!replacement)throw new Error(`${scope} audio update removed a usable initial recording`);
+      replacements.push(replacement);
     }
     const words=new Set(after.eligibleWords);
     for(const id of baseline.eligibleWords){
@@ -172,12 +197,13 @@ export function validateAudioUpdate({ledger,imported},before=loadReviewData(),ro
     Object.assign(impact,{
       [`before_words${suffix}`]:baseline.eligibleWords.length,[`after_words${suffix}`]:after.eligibleWords.length,
       [`before_examples${suffix}`]:baseline.recordingLabelPairs.length,[`after_examples${suffix}`]:after.recordingLabelPairs.length,
+      [`replaced_examples${suffix}`]:replacements,
     });
   }
   return impact;
 }
 
-export function practiceInventory(data, index) {
+export function practiceInventory(data, index, {completeComparisons=false}={}) {
   const recordingsByWord = new Map();
   for (const {word, recording} of AudioReview.nativeCandidates(data.words, data.recordings)) {
     if (!recordingsByWord.has(word.id)) recordingsByWord.set(word.id, []);
@@ -187,20 +213,24 @@ export function practiceInventory(data, index) {
   const eligibleWords = [];
   const recordingLabelPairs = [];
   const toneCoverage = Object.fromEntries(['1','2','3','4','N'].map(tone=>[tone,0]));
+  const quality=completeComparisons?data.quality:{...data.quality,native_clarity:{}};
   for (const word of data.words) {
     const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
       AudioReview.nativeApproval(index, word, recording)
-      && word.pinyin_syllables.every((base, position) => {
+      && (!completeComparisons||AudioReview.clearForIsolatedQuiz(AudioReview.nativeApproval(index,word,recording),quality))
+      && (completeComparisons?['pinyin_public','audio_cmn','mandarin_native'].every(mode=>
+        AudioReview.hasCompleteToneReferences(CorrectionAudio,word.pinyin_syllables,quality,data.publicRecordings,index,mode)
+      ):word.pinyin_syllables.every((base, position) => {
         const tone = (recording.surface_pattern || word.default_surface_pattern || word.lexical_pattern).split('-')[position];
         return tone === 'N' || ['pinyin_public', 'audio_cmn', 'mandarin_native'].every(mode =>
           AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
-            data.quality, data.publicRecordings, index, mode));
-      }));
+            quality, data.publicRecordings, index, mode));
+      })));
     if (!natives.length) continue;
     const comparisons = (word.pinyin_syllables || []).flatMap(base =>
       ['1', '2', '3', '4'].flatMap(tone => ['pinyin_public', 'audio_cmn', 'mandarin_native'].map(mode =>
         AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
-          data.quality, data.publicRecordings, index, mode))));
+          quality, data.publicRecordings, index, mode))));
     eligibleWords.push(word.id);
     for (const recording of natives) {
       recordingLabelPairs.push({ word_id: word.id, audio_path: recording.audio_path });
@@ -214,6 +244,10 @@ export function practiceInventory(data, index) {
     }
   }
   return { eligibleWords, recordingLabelPairs, audio, toneCoverage };
+}
+
+export function quizInventory(data,index){
+  return practiceInventory(data,index,{completeComparisons:true});
 }
 
 export function requireToneCoverage(inventory) {

@@ -6599,11 +6599,18 @@
       "surface_pattern": null,
       "license": null,
       "rights_status": "unverified",
-      "review_status": "source_corroborated",
-      "quiz_eligible": true,
-      "notes": "Downloaded for local review. Filename matches are candidates, not verified readings. Listening accuracy and redistribution permission are unverified.",
+      "review_status": "rejected",
+      "quiz_eligible": false,
+      "notes": "Reported third/fourth-tone ambiguity in the imported han3 prompt. Its short, mostly falling contour lacks two continuous usable tracks in the spectral check. Use the independently corroborated original whole-word recording with a clear fall-rise instead; retain the imported file and its original label for investigation, without relabeling it or claiming a definitive source error.",
       "sha256": "a21bd4d5f771ace77f8507485b910463dc0bf2000ae2a29e5db9aa6cb501fe69",
-      "byte_length": 11119
+      "byte_length": 11119,
+      "practice_replacement": {
+        "word_id": "L2-0213",
+        "audio_path": "audio/audio_cmn/喊/cmn-喊.mp3",
+        "sha256": "7f559320efd7f88657aa4397df3972ff1e54a892551ee607d9e5f421a7d796aa",
+        "surface_pattern": "3",
+        "reason": "Reported third/fourth-tone ambiguity in the imported han3 prompt. Its short, mostly falling contour lacks two continuous usable tracks in the spectral check. Use the independently corroborated original whole-word recording with a clear fall-rise instead; retain the imported file and its original label for investigation, without relabeling it or claiming a definitive source error."
+      }
     },
     {
       "source": "mandarin_native",

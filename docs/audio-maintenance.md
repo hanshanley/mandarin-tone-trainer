@@ -46,6 +46,37 @@ removed most usable exercises without independently proving them wrong.
 Runtime tests now ensure experimental agreement data cannot reduce normal
 practice implicitly.
 
+## Complete-comparison quiz selection
+
+The retained assessment library and the quiz pool are now separate.
+`practiceInventory` reports the retained library; `quizInventory` applies the
+same rules as the browser's question selector. Every quiz syllable requires
+playable references for **all four full tones**, in every comparison voice
+preference. The browser verifies every selected file before showing choices.
+An incorrect answer never disables subsequent comparison playback.
+
+Current local-use counts are **2,263 retained library entries** and **856 quiz
+entries / 951 initial choices**. The quiz contains 102 syllable bases, with
+408 of 408 full-tone slots playable. Neutral is still demonstrated in whole-word
+context where a qualifying example exists, not synthesized as an isolated tone.
+The smaller quiz pool is an explicit completeness rule, not deletion of recordings.
+
+`audio:third-clarity -- --inventory .audit/native-tone-inventory.json` reviews
+all mapped imported isolated third-tone files. `data/correction_audio_quality.json`
+stores the file hash, continuous tracker measurements and clarity decision.
+For isolated teaching examples, two or more usable tracks must consistently
+show a dip and rebound of at least 2.5 semitones, with the trough inside the
+central 25–80% of the contour. Files that do not meet this citation-form criterion
+are withheld from isolated prompts and comparison buttons. This does **not**
+declare a low/falling third tone linguistically incorrect and does not rewrite
+its original label. Multi-syllable connected-speech rules are unchanged.
+
+The reported imported `han3` prompt is explicitly retired in favor of the
+original whole-word 喊 recording. A replacement must match the same vocabulary
+reading and spoken pattern, have its own qualifying assessment and hash, and
+remain playable in the relevant build. Staging rejects unsupported replacements
+and reports every replaced initial example; it never silently drops a word.
+
 ## Acoustic prerequisites
 
 ### Additive mixed-source comparison bank
@@ -68,14 +99,28 @@ existing `data/acoustic_reviews.json`, not a competing allowlist:
 - The same syllable/tone must be supported in a genuinely different source.
   Matching decoded hashes or near-identical waveform payloads do not count as
   independent corroboration.
-- Known quarantines are not overridden. A clear primary ASR disagreement on the
-  base syllable cannot be rescued by a fallback recognizer.
+- Known quarantines are not overridden. The default secondary route cannot
+  override a primary recognizer's different valid single base.
 
 For unresolved identity-only gaps, a separate unprompted Whisper-small check
 examines both the raw audio and a cleaned, silence-padded analysis copy. The
 original playback file is unchanged. Both independent checks must resolve the
 same base, and the evidence preserves the original primary-model outputs and
 model fingerprint. This is additional evidence, not a human attestation.
+
+Explicit `--adjudicate-latin-conflicts` checks can resolve a primary recognizer's
+Latin spelling outputs (for example `ha` / `haan`) only when both unprompted
+Whisper-small inputs independently resolve the exact expected base. A conflicting
+Hanzi reading is not overridden by this route. Its distinct method identifier
+and both original primary outputs remain in the evidence. Tone confidence,
+signal requirements and distinct-source corroboration are unchanged.
+
+For isolated spectral references, `--model large-v3-turbo` supplies a separately
+fingerprinted independent phonetic check. Both raw and prepared results must
+match the base at the existing log-probability threshold, with no clear
+single-base primary contradiction. It does not decide tones: the existing
+multi-tracker spectral tone rules still have to pass. This recovered `han1`;
+the Latin-adjudication route recovered `han4` and the clearer original `han3`.
 
 Supported comparison recordings may also serve their exactly mapped
 single-syllable native word readings. Initial-word and comparison identities
@@ -116,7 +161,8 @@ npm run audio:coverage -- --inventory .audit/native-tone-inventory.json \
 
 The compiler validates proposed data through the real runtime policy before
 publishing it and refuses to remove a previously usable word/initial-recording
-pair in either the local-use or redistributable build. Model files are published
+pair in either the local-use or redistributable build unless an explicit
+same-reading replacement satisfies the checks above. Model files are published
 only after that validation succeeds. The report
 in `data/mixed_audio_coverage.json` accounts for every imported
 standalone file, actual selection under every comparison voice, original
@@ -132,14 +178,15 @@ does not lower the identity, tone or signal thresholds; it fixes the earlier
 gap-only selection that skipped alternative voices for already covered keys.
 
 Measured against commit `61e4066`, the local-use expansion preserves all 1,736
-previously usable entries and 1,814 initial examples. It supplies 2,258 entries
-and 2,455 initial examples; Mandarin Native contributes 416 of those examples
-using 187 distinct files, plus 139 files selected for comparisons across the
+previously usable entries and 1,814 initial examples in the library. It retains
+2,263 entries and 2,460 initial examples; Mandarin Native contributes 415 of
+those examples using 186 distinct files, plus 113 files selected for comparisons across the
 three voice preferences. These file-role counts overlap and must not be added.
-Of the original 1,192 comparison slots, 880 are playable (44 more than before);
-102 original families now have all four tones, versus 74 before. The original
-pool still has 312 unresolved slots. Including newly usable syllables, the
-expanded pool has 923 playable slots out of 1,276 and 353 unresolved slots.
+Of the original 1,192 comparison slots, 882 are playable (46 more than before);
+103 original families now have all four tones, versus 74 before. The original
+library still has 310 unresolved slots. Including newly usable syllables, the
+library has 925 playable slots out of 1,276 and 351 unresolved slots. None of
+these missing slots belongs to a word currently shown in the quiz.
 All 869 imported standalone files are accounted for.
 
 The follow-on word recovery preserves the mixed bank and uses its references
@@ -155,8 +202,8 @@ candidates and recovered direct `hao4`, `li3` and `shuo1` alternatives. Their
 corroboration also enabled original-source counterparts: eight additional
 entries and ten initial choices in total. Of 270 mapped imported single-syllable
 files, 258 have full-tone labels and 12 require neutral-tone word context;
-140 files are now used in at least one role. The other full-tone files remain
-unresolved, not independently established errors.
+This was a library expansion; current quiz use additionally applies the
+complete-comparison and isolated-third clarity requirements above.
 
 The new models learn from uncertain source annotations. Source agreement plus
 independent-recording corroboration is **not independently certified 100%
@@ -173,10 +220,9 @@ Every eligible question requires:
    spellings such as `jai` -> `zhai` or `lee` -> `li` are not guessed.
    Concatenated pinyin must have a unique syllable segmentation; ambiguous
    `XIAN` is not forced into either `xian` or `xi-an`.
-2. A screened reference for each **correct spoken tone**. Alternative answers
-   remain selectable, but play an example only when it is also screened. A
-   missing alternative reference is reported explicitly after selection, not
-   played unverified or used to give away the answer by disabling its button.
+2. A screened reference for **each of tones 1–4 for every syllable**, not just
+   the correct answer. Incomplete sets exclude the entire item from testing;
+   the app never hints at the answer by selectively disabling tone buttons.
    Clear licensed single-syllable word clips can replace unclear corpus clips;
    a whole multi-syllable word cannot be used as a comparison.
 3. An exact match between assessed labels and current vocabulary/recording
@@ -213,9 +259,9 @@ join the endpoints to silence **inside those added buffers**, not inside the
 speech. Post-processing also reserves output headroom. Nothing is cut,
 time-stretched, pitch-shifted, or synthesized to replace a missing syllable.
 
-The audit in `docs/playback-integrity.json` covers 3,526 reachable local-use
-files and 1,475 distinct comparison processing paths, rendered at both 44.1
-and 48 kHz. It checks hashes, complete decoding, peak levels, exact retention
+The current audit in `docs/playback-integrity.json` covers 3,534 retained local-use
+files and all 659 distinct comparison processing paths selected by the complete
+quiz, rendered at both 44.1 and 48 kHz. It checks hashes, complete decoding, peak levels, exact retention
 of normalized source samples, full buffer lengths, and settled output tails.
 The peak check found two over-full-scale files in browser decoding and twelve
 when stereo was folded to mono; runtime headroom handles both cases.

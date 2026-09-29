@@ -12,7 +12,8 @@ from pathlib import Path
 import numpy as np
 
 from acoustic_analysis import VERSION, curve_features, decide, decide_neutral, segment, speaker_high_reference
-from audit_native_readings import polyphonic_bases
+from audit_native_readings import polyphonic_bases, recognized_pinyin
+from verify_comparison_identity import TURBO_VERSION, no_primary_contradiction
 from collect_acoustic_evidence import (
     ALIGNMENT_VERSION, ASR_VERSION, PREPARED_ASR_VERSION, PROFILE_VERSION,
     decoded_bases, identity_encoding, read_jsonl, resolved_recognition,
@@ -94,7 +95,7 @@ def syllable_intervals(recognition, count, duration):
 
 
 def compile_reviews(candidates, profiles, recognitions, recordings, alignments, prepared_recognitions,
-                    neutral_dictionary, comparison_approvals=()):
+                    neutral_dictionary, comparison_approvals=(), independent_recognitions=None):
     measured = {path: segment(profile) for path, profile in profiles.items()}
     levels = defaultdict(list)
     family = defaultdict(list)
@@ -128,6 +129,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
         raw_recognition = recognitions.get(path)
         prepared = prepared_recognitions.get(path)
         recognition = None
+        independent = None
         recording = recordings.get(path, {})
         group = source_group(path)
         if row.get('source_segment') or recording.get('recording_type') in ('aligned_word', 'context_sentence') or '/excerpts/' in path or '/context/' in path:
@@ -152,6 +154,20 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
         ]
         if not reason:
             recognition, conflict = resolved_recognition(raw_recognition, prepared)
+            alternative = (independent_recognitions or {}).get(path)
+            if (len(expected_bases) == 1 and (conflict or not identity_encoding(recognition, expected_bases))
+                    and alternative and alternative.get('version') == TURBO_VERSION
+                    and alternative.get('sha256') == row['sha256']
+                    and no_primary_contradiction(raw_recognition, prepared, expected_bases[0])
+                    and len(alternative.get('checks', [])) == 2
+                    and [check.get('input') for check in alternative['checks']] == ['raw', 'prepared']
+                    and all(check.get('audio_sha256') == row['sha256']
+                            and check.get('decoded_bases') == expected_bases and check.get('minimum_log_probability', -100) >= -1
+                            for check in alternative['checks'])):
+                independent = alternative
+                transcript = alternative['checks'][0]['transcript']
+                recognition = {'text': transcript, 'recognized_pinyin': recognized_pinyin(transcript)}
+                conflict = None
             if conflict:
                 reason = conflict
         encoding = identity_encoding(recognition, expected_bases) if recognition else None
@@ -260,7 +276,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
                 'method': VERSION,
                 'audio_sha256': row['sha256'],
                 'label_identity': label_identity(row),
-                'identity_method': 'unprompted_paraformer',
+                'identity_method': 'unprompted_whisper_turbo' if independent else 'unprompted_paraformer',
                 'identity_encoding': encoding,
                 'asr_transcript': recognition['text'],
                 'recognition_checks': [
@@ -283,6 +299,14 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
                    if neutral_reading else {}),
             },
         }
+        if independent:
+            approval['evidence']['primary_recognition_checks'] = approval['evidence']['recognition_checks']
+            approval['evidence']['identity_model_sha256'] = independent['model_sha256']
+            approval['evidence']['recognition_checks'] = [
+                {**check, 'evidence_version': TURBO_VERSION,
+                 **({'preparation': independent['preparation']} if check['input'] == 'prepared' else {})}
+                for check in independent['checks']
+            ]
         approvals.append(approval)
         if kind == 'comparison':
             reference_by_key[row['key']].append(approval)
@@ -337,6 +361,7 @@ validateLedger(loadReviewData());
     approvals, findings, registers = compile_reviews(
         required, profiles, recognition, recordings, read_jsonl(args.alignment), prepared_recognition,
         neutral_dictionary, [entry for entry in supplemental if entry['kind'] == 'comparison'],
+        read_jsonl(ROOT / '.audit/comparison-independent-identity.jsonl'),
     )
     code_hash = hashlib.sha256(b''.join(
         (ROOT / 'scripts' / name).read_bytes()

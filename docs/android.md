@@ -36,6 +36,11 @@ whole-word playback. **Comparison voice** is independent and changes only the
 tone-button examples. Sources absent from a build are not offered as selectable
 practice options.
 
+Every word shown in testing has playable tones 1–4 for each syllable, including
+after an incorrect answer. The APK retains the larger assessed library, but
+incomplete comparison families and unclear imported isolated third tones are
+not selected for quizzes. Neutral examples remain whole-word contextual audio.
+
 Adding or revoking decisions requires rebuilding and reinstalling; rebuilding
 cannot change an already installed APK. External reference links still need
 internet, but selected practice recordings are bundled for offline use.

@@ -59,6 +59,29 @@ test('missing, malformed, automated, conflicting and single-review approvals fai
   assert.throws(()=>index([good,good]),/Duplicate/);
 });
 
+test('independent spectral recognition requires two exact checks and cannot override a different primary base',()=>{
+  const entry=automaticComparisons()[0];
+  entry.evidence.identity_method='unprompted_whisper_turbo';
+  entry.evidence.identity_model_sha256='b'.repeat(64);
+  entry.evidence.primary_recognition_checks=['raw','prepared'].map(input=>({
+    input,audio_sha256:hash,transcript:'ma ma',decoded_bases:['ma','ma'],
+  }));
+  entry.evidence.recognition_checks=['raw','prepared'].map(input=>({
+    input,audio_sha256:hash,transcript:'妈',decoded_bases:['ma'],minimum_log_probability:-.5,
+    evidence_version:'whisper-large-v3-turbo-dual-unprompted-v1',
+    ...(input==='prepared'?{preparation:{sample_rate:16000,gain:1,trim_start_seconds:0,trim_end_seconds:.5}}:{}),
+  }));
+  Review.validateApproval(entry);
+  for(const edit of [
+    x=>x.evidence.primary_recognition_checks[0].decoded_bases=['na'],
+    x=>x.evidence.recognition_checks[0].decoded_bases=null,
+    x=>x.evidence.recognition_checks[1].minimum_log_probability=-1.2,
+    x=>delete x.evidence.recognition_checks,
+    x=>x.evidence.identity_model_sha256='',
+  ]){
+    const changed=structuredClone(entry);edit(changed);assert.throws(()=>Review.validateApproval(changed));
+  }
+});
 test('native approvals bind word, pinyin, lexical and spoken tones, and exact clip',()=>{
   const approval=approve(Review.nativeDescriptor(word,native));
   const reviewed=index([approval]);
@@ -144,7 +167,7 @@ function selectedPractice(approvals){
     }),
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
+async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},quality={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -164,7 +187,7 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     '../data/hsk_words.json':[structuredClone(word)],'../data/definitions.json':{},
     '../data/mandarin_native_words.json':{version:1,words:importedWords},
     '../data/recordings.json':recording?[recording]:[],'../data/pinyin_public_recordings.json':publicRecordings,
-    '../data/correction_audio_quality.json':{},'../data/audio_reviews.json':{version:1,approvals},
+    '../data/correction_audio_quality.json':quality,'../data/audio_reviews.json':{version:1,approvals},
     '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
     '../data/context_word_recordings.json':{version:1,recordings:excerpts},
     '../data/acoustic_reviews.json':{
@@ -435,22 +458,26 @@ test('actual app rejects a missing ledger instead of trusting the old corpus',as
   assert.equal(app.get('next').disabled,true);
 });
 
-test('missing alternative examples never play but do not disable a checked question',async()=>{
-  const app=await appHarness({approvals:allApprovals().filter(a=>a.key!=='ma3')});
-  assert.equal(app.run('questionVerified'),true);
-  assert.equal(app.get('answers').children.length,1);
-  app.run("mineUrl='blob:personal-recording';mineBlob=new Blob([Uint8Array.from([1,2,3,4])])");
-  await app.get('overlay').onclick();
-  assert.equal(app.run('overlayAudios.length'),2);
-  app.get('answers').children[0].querySelector('[data-tone="3"]').onclick();
-  assert.match(app.get('audioStatus').textContent,/No comparison recording is available/);
-  assert.equal(app.run('results.length'),1);
+test('every shown question requires all four comparisons, including incorrect answers',async()=>{
+  for(const tone of ['1','2','3','4']){
+    const app=await appHarness({approvals:allApprovals().filter(a=>a.key!==`ma${tone}`)});
+    assert.equal(app.run('questionVerified'),false);
+    assert.equal(app.get('answers').children.length,0);
+    assert.match(app.get('prompt').innerHTML,/all four tone comparisons/);
+    assert.equal(app.played.length,0);
+  }
+});
+
+test('all four tones replay after an incorrect grade without changing the original answer',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  app.run('const compared=[];playPinyinKey=async key=>compared.push(key)');
+  const column=app.get('answers').children[0];
+  column.querySelector('[data-tone="4"]').onclick();
   assert.equal(app.run('results[0].correct'),false);
-  assert.equal(app.requests.includes('../audio/pinyin_public/ma3.mp3'),false);
-  assert.equal(app.run('overlayAudios.length'),0);
-  const missingCorrect=await appHarness({approvals:allApprovals().filter(a=>a.key!=='ma1')});
-  assert.match(missingCorrect.get('prompt').innerHTML,/No exercises are available/);
-  assert.equal(missingCorrect.played.length,0);
+  for(const tone of ['1','2','3','4'])column.querySelector(`[data-tone="${tone}"]`).onclick();
+  assert.deepEqual(Array.from(app.run('compared')),['ma4','ma1','ma2','ma3','ma4']);
+  assert.equal(app.run('results.length'),1);
+  assert.equal(app.run('selectedTones[0]'),'4');
 });
 
 test('complete approvals verify all five files before rendering and playing',async()=>{
@@ -488,7 +515,7 @@ test('tone choices expose selection and grading without moving the answer contro
   assert.equal(wrong.getAttribute('aria-pressed'),'true');
   assert.equal(wrong.dataset.feedback,'Your choice');
   assert.equal(correct.dataset.feedback,'Answer');
-  assert.match(app.get('answerHint').textContent,/Tap any tone/);
+  assert.match(app.get('answerHint').textContent,/Tap 1–4/);
   assert.equal(app.get('reveal').classList.contains('hidden'),false);
   assert.equal(app.get('reveal').scrollCalls.length,0);
   assert.equal(app.get('practiceFocus').scrollCalls.length,0);
@@ -1169,6 +1196,88 @@ test('mixed-source references reject self-training, source copying, wrong identi
   assert.equal(Review.createIndex({version:1,approvals:[]},goodLedger).size,1);
   assert.equal(Review.createIndex({version:1,approvals:[]},goodLedger,{allowLocalOnly:false}).size,0);
   assert.throws(()=>Review.createIndex({version:1,approvals:[]},acousticLedger([assessment])),/Mixed-source pipeline/);
+});
+
+test('Latin transcription adjudication keeps independent evidence and rejects Hanzi conflicts',()=>{
+  const assessment=mixedComparison(),value=assessment.evidence.cross_fit;
+  value.identity_method='whisper-small-latin-adjudication-v1';
+  value.identity_model_sha256='9'.repeat(64);
+  value.primary_recognition_checks=['raw','prepared'].map(input=>({
+    input,audio_sha256:assessment.sha256,transcript:'na',decoded_bases:['na'],
+  }));
+  value.recognition_checks.forEach(check=>check.minimum_log_probability=-.5);
+  Review.validateApproval(assessment);
+  for(const edit of [
+    a=>a.evidence.cross_fit.primary_recognition_checks[0].transcript='那',
+    a=>a.evidence.cross_fit.recognition_checks[0].decoded_bases=['na'],
+    a=>a.evidence.cross_fit.recognition_checks[0].decoded_bases=null,
+    a=>a.evidence.cross_fit.recognition_checks[0].minimum_log_probability=-1.5,
+    a=>a.evidence.cross_fit.primary_recognition_checks[1].audio_sha256='0'.repeat(64),
+  ]){
+    const changed=structuredClone(assessment);edit(changed);assert.throws(()=>Review.validateApproval(changed));
+  }
+});
+
+test('unclear isolated imported third tones cannot override a clearer comparison',()=>{
+  const assessment=mixedComparison();
+  const quality={native_clarity:{[assessment.audio_path]:{sha256:assessment.sha256,status:'needs_clearer_citation'}}};
+  const recording={source:'mandarin_native',recording_type:'word_candidate',audio_path:assessment.audio_path,
+    quiz_eligible:true,review_status:'source_corroborated',rights_status:'unverified',license:null};
+  const publicApproval=comparison('ma3');
+  const reviewed=Review.createIndex({version:1,approvals:[publicApproval]},{
+    ...acousticLedger([assessment]),supplemental_pipelines:mixedPipeline(),
+  },{sourceRecordings:[recording]});
+  const chosen=Review.correctionSelection(Policy,'ma3',quality,{ma3:{audio_path:publicApproval.audio_path}},reviewed,'mandarin_native');
+  assert.equal(chosen.audio_path,publicApproval.audio_path);
+  assert.equal(Review.clearForIsolatedQuiz(assessment,quality),false);
+  quality.native_clarity[assessment.audio_path].status='clear_citation_third';
+  assert.equal(Review.clearForIsolatedQuiz(assessment,quality),true);
+  quality.native_clarity[assessment.audio_path].sha256='0'.repeat(64);
+  assert.equal(Review.clearForIsolatedQuiz(assessment,quality),false);
+});
+
+test('every actual quiz word has four playable comparisons in all voice preferences',async()=>{
+  const {loadReviewData,validateLedger,quizInventory,practiceInventory}=await import('../scripts/review_audio.mjs');
+  const data=loadReviewData();
+  for(const allowLocalOnly of [true,false]){
+    const reviewed=validateLedger(data,undefined,{allowLocalOnly}),quiz=quizInventory(data,reviewed);
+    assert.ok(quiz.eligibleWords.length>0);
+    assert.ok(quiz.eligibleWords.includes('L2-0213'),'Clear original han3 must remain in testing');
+    const words=new Map(data.words.map(word=>[word.id,word]));
+    for(const id of quiz.eligibleWords)for(const mode of ['pinyin_public','audio_cmn','mandarin_native']){
+      assert.equal(Review.hasCompleteToneReferences(Policy,words.get(id).pinyin_syllables,
+        data.quality,data.publicRecordings,reviewed,mode),true,`${id}/${mode}`);
+    }
+    assert.ok(practiceInventory(data,reviewed).eligibleWords.length>=quiz.eligibleWords.length);
+    assert.equal(quiz.audio.has('audio/mandarin_native/ha3n.mp3'),false);
+    const hanPaths=new Set();
+    for(const tone of ['1','2','3','4']){
+      const clip=Review.correctionSelection(Policy,`han${tone}`,data.quality,data.publicRecordings,reviewed);
+      assert.ok(clip,`han${tone} must replay`);
+      hanPaths.add(clip.approval.sha256);
+    }
+    assert.equal(hanPaths.size,4);
+    for(const pair of quiz.recordingLabelPairs){
+      const recording=data.recordings.find(recording=>recording.audio_path===pair.audio_path);
+      assert.equal(Review.clearForIsolatedQuiz(Review.nativeApproval(reviewed,words.get(pair.word_id),recording),data.quality),true);
+    }
+  }
+});
+
+test('a rejected prompt can only be replaced by an admitted recording of the exact same reading',async()=>{
+  const {recordingReplacement}=await import('../scripts/review_audio.mjs');
+  const replacement=approve(Review.nativeDescriptor(word,native));
+  const old={...native,audio_path:'audio/mandarin_native/old.mp3',sha256:nativeHash,quiz_eligible:false,
+    review_status:'rejected',practice_replacement:{word_id:word.id,audio_path:native.audio_path,
+      sha256:replacement.sha256,surface_pattern:'1',reason:'Specific source ambiguity'}};
+  const data={words:[word],recordings:[old,native]},reviewed=index([replacement]);
+  const inventory={recordingLabelPairs:[{word_id:word.id,audio_path:native.audio_path}]},pair={word_id:word.id,audio_path:old.audio_path};
+  assert.ok(recordingReplacement(data,reviewed,inventory,pair));
+  for(const update of [{sha256:'0'.repeat(64)},{surface_pattern:'4'},{word_id:'wrong'},{reason:''}]){
+    const changed={...old,practice_replacement:{...old.practice_replacement,...update}};
+    assert.equal(recordingReplacement({...data,recordings:[changed,native]},reviewed,inventory,pair),null);
+  }
+  assert.equal(recordingReplacement(data,reviewed,{recordingLabelPairs:[]},pair),null);
 });
 
 test('new-source comparison voice fills a tone independently of the initial word source',async()=>{

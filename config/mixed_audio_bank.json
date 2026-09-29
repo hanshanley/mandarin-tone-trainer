@@ -10,5 +10,14 @@
   "maximum_tracker_difference_semitones": 2.0,
   "maximum_duplicate_similarity": 0.995,
   "forest": {"n_estimators": 128, "max_depth": 14, "min_samples_leaf": 4, "random_state": 7324},
-  "independent_gold_accuracy_claimed": false
+  "independent_gold_accuracy_claimed": false,
+  "recording_replacements": [
+    {
+      "audio_path": "audio/mandarin_native/ha3n.mp3",
+      "sha256": "a21bd4d5f771ace77f8507485b910463dc0bf2000ae2a29e5db9aa6cb501fe69",
+      "word_id": "L2-0213",
+      "replacement_audio_path": "audio/audio_cmn/喊/cmn-喊.mp3",
+      "reason": "Reported third/fourth-tone ambiguity in the imported han3 prompt. Its short, mostly falling contour lacks two continuous usable tracks in the spectral check. Use the independently corroborated original whole-word recording with a clear fall-rise instead; retain the imported file and its original label for investigation, without relabeling it or claiming a definitive source error."
+    }
+  ]
 }

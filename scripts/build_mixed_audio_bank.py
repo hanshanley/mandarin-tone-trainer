@@ -20,7 +20,9 @@ from collect_acoustic_evidence import (
 from native_tone_labels import canonical, digest, safe_audio, verify_inventory
 from native_tone_validator import audio_features, export_forest, fit_temperature, forest_predict, temperature_scale
 from runtime_data import ROOT
-from verify_comparison_identity import VERSION as IDENTITY_VERSION, no_primary_contradiction
+from verify_comparison_identity import (
+    VERSION as IDENTITY_VERSION, LATIN_CONFLICT_VERSION, latin_only_primary_conflict, no_primary_contradiction,
+)
 
 
 CONFIG = ROOT / 'config/mixed_audio_bank.json'
@@ -214,17 +216,21 @@ def fit_cross_source_models(inventory):
             identity_method = 'paraformer-raw-prepared'
             identity_model_sha = None
             alternative = secondary.get(row['audio_path'])
+            secondary_allowed = bool(a and b and alternative and (
+                alternative.get('version') == IDENTITY_VERSION and no_primary_contradiction(a, b, row['syllables'][0])
+                or alternative.get('version') == LATIN_CONFLICT_VERSION and latin_only_primary_conflict(a, b, row['syllables'][0])
+            ))
             if (not identity_ok and a and b and a.get('sha256') == b.get('sha256') == row['sha256']
                     and a.get('evidence_version') == ASR_VERSION and b.get('evidence_version') == PREPARED_ASR_VERSION
-                    and no_primary_contradiction(a, b, row['syllables'][0])
+                    and secondary_allowed
                     and alternative and alternative.get('sha256') == row['sha256']
-                    and alternative.get('version') == IDENTITY_VERSION and alternative.get('identity_supported') is True
+                    and alternative.get('identity_supported') is True
                     and len(alternative.get('checks', [])) == 2
                     and all(check['decoded_bases'] == row['syllables'] and check['minimum_log_probability'] >= -1.
                             for check in alternative['checks'])):
                 identity_ok = True
                 recognition_checks = alternative['checks']
-                identity_method = IDENTITY_VERSION
+                identity_method = alternative['version']
                 identity_model_sha = alternative['model_sha256']
             result = {
                 'audio_path': row['audio_path'], 'sha256': row['sha256'],
@@ -296,6 +302,23 @@ def build(inventory_path, predictions_output):
     options = json.loads(CONFIG.read_text())
     ledger_path = ROOT / 'data/acoustic_reviews.json'
     ledger = json.loads(ledger_path.read_text())
+    prior_approvals = ledger['approvals']
+    imported = json.loads((ROOT / 'data/mandarin_native_recordings.json').read_text())
+    imported_by_path = {record['audio_path']: record for record in imported['recordings']}
+    retired = {}
+    for replacement in options.get('recording_replacements', []):
+        record = imported_by_path.get(replacement['audio_path'])
+        target = next((row for row in inventory['records']
+                       if row['audio_path'] == replacement['replacement_audio_path']
+                       and row.get('word_id') == replacement['word_id']), None)
+        if (not record or record['sha256'] != replacement['sha256'] or not target
+                or replacement['word_id'] not in record['candidate_hsk_ids'] or not replacement['reason'].strip()):
+            raise ValueError('Recording replacement does not match the original file and vocabulary reading')
+        retired[record['audio_path']] = replacement
+        record.update(review_status='rejected', quiz_eligible=False, notes=replacement['reason'],
+                      practice_replacement={'word_id': replacement['word_id'], 'audio_path': target['audio_path'],
+                                            'sha256': target['sha256'], 'surface_pattern': target['weak_training_label'],
+                                            'reason': replacement['reason']})
     baseline_ids = {identity(entry) for entry in ledger['approvals']}
     baseline_words = {entry['word_id'] for entry in ledger['approvals'] if entry['kind'] == 'native'}
     original_word_references = defaultdict(list)
@@ -304,9 +327,9 @@ def build(inventory_path, predictions_output):
                 and entry['audio_path'].startswith('audio/audio_cmn/')):
             original_word_references[(entry['word_id'], entry['surface_pattern'])].append(entry)
     rows, outcomes, model_bundle = fit_cross_source_models(inventory)
-    grouped = supported_groups(rows, outcomes)
+    grouped = supported_groups([row for row in rows if row['audio_path'] not in retired], outcomes)
     pairs = cross_source_pairs(grouped, options)
-    existing = {identity(entry): entry for entry in ledger['approvals']}
+    existing = {identity(entry): entry for entry in ledger['approvals'] if entry['audio_path'] not in retired}
     model_payload = gzip.compress(canonical(model_bundle).encode(), mtime=0)
     model_digest = hashlib.sha256(model_payload).hexdigest()
     added = []
@@ -336,7 +359,7 @@ def build(inventory_path, predictions_output):
                 added.append(entry)
     added_native = []
     for row in rows:
-        if row['kind'] != 'word' or row['quarantined']:
+        if row['kind'] != 'word' or row['quarantined'] or row['audio_path'] in retired:
             continue
         key = row['syllables'][0] + row['weak_training_label']
         comparison = existing.get(identity({'kind': 'comparison', 'audio_path': row['audio_path'], 'key': key}))
@@ -451,10 +474,10 @@ def build(inventory_path, predictions_output):
         'independent_gold_accuracy_claimed': False,
     }
     ledger['approvals'] = list(existing.values())
-    if not baseline_ids <= set(existing):
+    retired_ids = {identity(entry) for entry in prior_approvals if entry['audio_path'] in retired}
+    if not baseline_ids - retired_ids <= set(existing):
         raise ValueError('Mixed-source expansion may not remove existing assessments')
     # All imported files are accounted for even when they have no eligible role.
-    imported = json.loads((ROOT / 'data/mandarin_native_recordings.json').read_text())
     coverage = []
     for record in imported['recordings']:
         if record['recording_type'] != 'word_candidate':
@@ -493,6 +516,7 @@ process.stdout.write(JSON.stringify(validateAudioUpdate(staged)));
         'new_comparison_assessments': len(added),
         'new_initial_recording_assessments': len(added_native),
         'runtime_impact': impact,
+        'recording_replacements': list(retired.values()),
         'total_mixed_comparison_assessments': sum(entry['kind'] == 'comparison' and entry['evidence']['method'] == METHOD for entry in ledger['approvals']),
         'new_comparison_keys': sorted({entry['key'] for entry in added}),
         'new_imported_comparison_files': sorted({entry['audio_path'] for entry in added if entry['audio_path'].startswith('audio/mandarin_native/')}),

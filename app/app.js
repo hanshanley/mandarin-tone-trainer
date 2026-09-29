@@ -142,7 +142,8 @@ function updatePracticeSettings(){
 function qualifyingRecordingsFor(w){
   return (byWord.get(w.word)||[]).filter(r=>{
     if(r.quiz_eligible===false)return false;
-    return Boolean(AudioReview.nativeApproval(audioReviews,w,r))&&hasVerifiedCorrections(w,patternFor(w,r));
+    return AudioReview.clearForIsolatedQuiz(AudioReview.nativeApproval(audioReviews,w,r),correctionQuality)
+      &&hasVerifiedCorrections(w,patternFor(w,r));
   });
 }
 function recordingsFor(w){
@@ -165,10 +166,9 @@ function hasAlignedCorrections(w){
   return Array.isArray(w.pinyin_syllables) && w.pinyin_syllables.length===tones.length;
 }
 function hasVerifiedCorrections(w,pattern=expectedPattern(w)){
-  const tones=(pattern||'').split('-');
-  return (w.pinyin_syllables||[]).every((pinyin,index)=>
-    tones[index]==='N'||Boolean(correctionSelection(correctionKey(pinyin,tones[index])))
-  );
+  return (pattern||'').split('-').length===w.pinyin_syllables?.length
+    &&AudioReview.hasCompleteToneReferences(CorrectionAudio,w.pinyin_syllables,correctionQuality,
+      correctionRecordings,audioReviews,$('correctionSource')?.value||'pinyin_public');
 }
 function practiceWords(){return words.filter(w=>recordingsFor(w).length&&hasAlignedCorrections(w))}
 function filtered(eligible=practiceWords()){return eligible.filter(w=>{
@@ -218,7 +218,7 @@ function updateAnswerState(){
     });
   });
   const count=selectedTones.filter(Boolean).length;
-  $('answerHint').textContent=current._graded?'Tap any tone to compare.':
+  $('answerHint').textContent=current._graded?'Tap 1–4 to compare. Neutral uses word context.':
     count?`${count} of ${selectedTones.length} selected.`:'Choose one tone per syllable.';
 }
 function currentSnapshot(){
@@ -245,12 +245,13 @@ async function verifyCurrentQuestion(){
   $('play').disabled=true;
   $('record').disabled=true;
   try{
-    if(!hasVerifiedCorrections(current,current._correct))throw new Error('A correct-tone reference is unavailable');
+    if(!hasVerifiedCorrections(current,current._correct))throw new Error('A complete set of tone 1–4 references is unavailable');
     const approvals=[currentNative?.approval];
     for(const pinyin of current.pinyin_syllables){
       for(const tone of ['1','2','3','4']){
         const selected=correctionSelection(correctionKey(pinyin,tone));
-        if(selected)approvals.push(selected.approval);
+        if(!selected)throw new Error(`Missing tone ${tone} reference for ${pinyin}`);
+        approvals.push(selected.approval);
       }
     }
     await Promise.all(approvals.map(approvedAudioBytes));
@@ -310,8 +311,8 @@ async function next(play=false,remember=true){
     $('prompt').innerHTML=eligible.length
       ?'<div class="muted">No exercises match these filters.</div><p>Try another syllable setting or turn off Sandhi only.</p>'
       :($('wordSource').value&&$('wordSource').value!=='all'
-        ?'<div class="muted">No exercises are available from this source with the current settings.</div><p>Choose Both sources to continue.</p>'
-        :'<div class="muted">No exercises are available right now.</div>');
+        ?'<div class="muted">No complete-comparison exercises are available from this source with the current settings.</div><p>Choose Both sources to continue.</p>'
+        :'<div class="muted">No exercises are available right now.</div><p>Testing requires clear word audio and all four tone comparisons.</p>');
     $('play').disabled=true; $('record').disabled=true;
     $('answers').innerHTML=''; $('answerHint').textContent='Change your settings to continue.';
     $('reveal').classList.add('hidden'); updateBackButton(); return false;

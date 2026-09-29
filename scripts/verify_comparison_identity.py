@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 import librosa
@@ -15,6 +16,8 @@ from runtime_data import ROOT
 
 
 VERSION = 'whisper-small-dual-unprompted-v1'
+LATIN_CONFLICT_VERSION = 'whisper-small-latin-adjudication-v1'
+TURBO_VERSION = 'whisper-large-v3-turbo-dual-unprompted-v1'
 OUTPUT = ROOT / '.audit/comparison-independent-identity.jsonl'
 
 
@@ -51,7 +54,16 @@ def no_primary_contradiction(raw, prepared, expected):
                for bases in (decoded_bases(raw), decoded_bases(prepared)))
 
 
-def identity_candidates(rows, outcomes, raw, prepared, *, gap_keys=None, source=None):
+def latin_only_primary_conflict(raw, prepared, expected):
+    conflicts = [result for result in (raw, prepared)
+                 if decoded_bases(result) is not None and decoded_bases(result) != [expected]]
+    return bool(conflicts) and all(
+        re.fullmatch(r"[A-Za-z]+(?:[ '\-]+[A-Za-z]+)*", result.get('text', '').strip())
+        for result in conflicts
+    )
+
+
+def identity_candidates(rows, outcomes, raw, prepared, *, gap_keys=None, source=None, adjudicate_latin=False):
     candidates = {}
     for row in rows:
         if row['quarantined'] or len(row['syllables']) != 1 or (source and row['source'] != source):
@@ -70,7 +82,8 @@ def identity_candidates(rows, outcomes, raw, prepared, *, gap_keys=None, source=
         if (not a or not b or a.get('sha256') != b.get('sha256') or a.get('sha256') != row['sha256']
                 or a.get('evidence_version') != ASR_VERSION or b.get('evidence_version') != PREPARED_ASR_VERSION):
             continue
-        if no_primary_contradiction(a, b, row['syllables'][0]):
+        allowed = latin_only_primary_conflict(a, b, row['syllables'][0]) if adjudicate_latin else no_primary_contradiction(a, b, row['syllables'][0])
+        if allowed:
             candidates[row['audio_path']] = row
     return candidates
 
@@ -85,7 +98,12 @@ def main():
     parser.add_argument('--gap-keys', type=Path, default=ROOT / '.audit/comparison-coverage-gaps-for-plan.json')
     parser.add_argument('--scope', choices=('comparison-gaps', 'imported-singles'), default='comparison-gaps',
                         help='also check imported single syllables whose tone slot is already covered by another source')
+    parser.add_argument('--adjudicate-latin-conflicts', action='store_true',
+                        help='explicitly recheck ASR Latin-spelling conflicts; never overrides a conflicting Hanzi reading')
+    parser.add_argument('--model', choices=('small','large-v3-turbo'), default='small')
     args = parser.parse_args()
+    if args.adjudicate_latin_conflicts and args.model != 'small':
+        parser.error('Latin adjudication currently requires the separately versioned small-model route')
     inventory = verify_inventory(json.loads(args.inventory.read_text()))
     outcome_data = json.loads(args.outcomes.read_text())
     if outcome_data['inventory_sha256'] != inventory['inventory_sha256']:
@@ -94,13 +112,15 @@ def main():
     raw = read_jsonl(ROOT / '.audit/acoustic-asr.jsonl')
     prepared = read_jsonl(ROOT / '.audit/acoustic-prepared-asr.jsonl')
     candidates = identity_candidates(inventory['records'], outcome_data['outcomes'], raw, prepared,
-                                     gap_keys=keys, source='mandarin_native' if args.scope == 'imported-singles' else None)
-    model_dir = Path(download_model('small', local_files_only=True))
+                                     gap_keys=keys, source='mandarin_native' if args.scope == 'imported-singles' else None,
+                                     adjudicate_latin=args.adjudicate_latin_conflicts)
+    version = LATIN_CONFLICT_VERSION if args.adjudicate_latin_conflicts else TURBO_VERSION if args.model == 'large-v3-turbo' else VERSION
+    model_dir = Path(download_model(args.model, local_files_only=True))
     model_hash = hashlib.sha256((model_dir / 'model.bin').read_bytes()).hexdigest()
     done = read_jsonl(OUTPUT)
     pending = [row for path, row in sorted(candidates.items())
                if done.get(path, {}).get('sha256') != row['sha256']
-               or done.get(path, {}).get('version') != VERSION or done.get(path, {}).get('model_sha256') != model_hash]
+               or done.get(path, {}).get('version') != version or done.get(path, {}).get('model_sha256') != model_hash]
     print(f'Independent unresolved-syllable checks: {len(pending)} pending / {len(candidates)} candidates', flush=True)
     if not pending:
         return
@@ -111,7 +131,7 @@ def main():
         for index, row in enumerate(pending, 1):
             path = safe_audio(row['audio_path'])
             samples, rate = librosa.load(path, sr=16000, mono=True)
-            clean, _ = prepare_recognition(samples, rate)
+            clean, preparation = prepare_recognition(samples, rate)
             inputs = [('raw', samples), ('prepared', np.pad(clean, (4000, 4000)))]
             checks = []
             for name, signal in inputs:
@@ -129,8 +149,9 @@ def main():
             if hashlib.sha256(path.read_bytes()).hexdigest() != row['sha256']:
                 raise ValueError('Audio changed during independent recognition')
             result = {
-                'audio_path': row['audio_path'], 'sha256': row['sha256'], 'version': VERSION,
+                'audio_path': row['audio_path'], 'sha256': row['sha256'], 'version': version,
                 'model_sha256': model_hash, 'checks': checks,
+                'preparation': {**preparation, 'silence_padding_samples_per_side': 4000},
                 'identity_supported': all(check['decoded_bases'] == row['syllables']
                                           and check['minimum_log_probability'] >= -1. for check in checks),
             }

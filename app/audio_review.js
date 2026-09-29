@@ -122,13 +122,23 @@
     }
     const validPrediction=(value,path,sha,source)=>{
       const quality=value?.quality;
-      if(value?.identity_method==='whisper-small-dual-unprompted-v1'){
+      if(['whisper-small-dual-unprompted-v1','whisper-small-latin-adjudication-v1'].includes(value?.identity_method)){
+        const adjudicated=value.identity_method==='whisper-small-latin-adjudication-v1';
         if(!/^[a-f0-9]{64}$/.test(value.identity_model_sha256||'')
           ||!Array.isArray(value.primary_recognition_checks)||value.primary_recognition_checks.length!==2
-          ||value.primary_recognition_checks.some(check=>check.audio_sha256!==sha
-            ||(Array.isArray(check.decoded_bases)&&check.decoded_bases.length===1&&check.decoded_bases[0]!==base))
-          ||value.recognition_checks?.some(check=>!Number.isFinite(check.minimum_log_probability)||check.minimum_log_probability< -1)){
+          ||value.primary_recognition_checks[0]?.input!=='raw'||value.primary_recognition_checks[1]?.input!=='prepared'
+          ||value.primary_recognition_checks.some(check=>check.audio_sha256!==sha||typeof check.transcript!=='string'
+            ||(!adjudicated&&Array.isArray(check.decoded_bases)&&check.decoded_bases.length===1&&check.decoded_bases[0]!==base))
+          ||!Array.isArray(value.recognition_checks)||value.recognition_checks.length!==2
+          ||value.recognition_checks.some(check=>!Number.isFinite(check.minimum_log_probability)||check.minimum_log_probability< -1
+            ||JSON.stringify(check.decoded_bases)!==JSON.stringify([base]))){
           return false;
+        }
+        if(adjudicated){
+          const conflicts=value.primary_recognition_checks.filter(check=>
+            check.decoded_bases!==null&&JSON.stringify(check.decoded_bases)!==JSON.stringify([base]));
+          if(!conflicts.length||conflicts.some(check=>!Array.isArray(check.decoded_bases)||!check.decoded_bases.length
+            ||!/^[A-Za-z]+(?:[ '\-]+[A-Za-z]+)*$/.test(check.transcript.trim())))return false;
         }
       }else if(value?.identity_method&&value.identity_method!=='paraformer-raw-prepared'){
         return false;
@@ -221,7 +231,7 @@
         ||evidence?.method!=='spectral-consensus-1'
         ||!/^[a-f0-9]{64}$/.test(evidence.pipeline_sha256||'')
         ||evidence.audio_sha256!==entry.sha256||evidence.label_identity!==identity(entry)
-        ||evidence.identity_method!=='unprompted_paraformer'
+        ||!['unprompted_paraformer','unprompted_whisper_turbo'].includes(evidence.identity_method)
         ||JSON.stringify(evidence.recognized_bases)!==JSON.stringify(expectedBases)
         ||!Number.isFinite(evidence.register_hz)||evidence.register_hz<=0
         ||!Array.isArray(evidence.tones)||evidence.tones.length!==tones.length){
@@ -235,9 +245,19 @@
       }
       if(evidence.recognition_checks!==undefined){
         const checks=evidence.recognition_checks;
+        const independent=evidence.identity_method==='unprompted_whisper_turbo';
+        if(independent&&(expectedBases.length!==1||!/^[a-f0-9]{64}$/.test(evidence.identity_model_sha256||'')
+          ||!Array.isArray(evidence.primary_recognition_checks)||evidence.primary_recognition_checks.length!==2
+          ||evidence.primary_recognition_checks[0]?.input!=='raw'||evidence.primary_recognition_checks[1]?.input!=='prepared'
+          ||evidence.primary_recognition_checks.some(check=>check.audio_sha256!==entry.sha256||typeof check.transcript!=='string'
+            ||(Array.isArray(check.decoded_bases)&&check.decoded_bases.length===1&&check.decoded_bases[0]!==expectedBases[0]))
+          ||!Array.isArray(checks)||checks.some(check=>JSON.stringify(check.decoded_bases)!==JSON.stringify(expectedBases)
+            ||!Number.isFinite(check.minimum_log_probability)||check.minimum_log_probability< -1))){
+          throw new Error(`Invalid independent phonetic evidence: ${entry.audio_path}`);
+        }
         if(!Array.isArray(checks)||checks.length!==2||checks[0].input!=='raw'||checks[1].input!=='prepared'
-          ||checks[0].evidence_version!=='paraformer-unprompted-1'
-          ||checks[1].evidence_version!=='paraformer-dc70-rms010-trim30-1'){
+          ||checks[0].evidence_version!==(independent?'whisper-large-v3-turbo-dual-unprompted-v1':'paraformer-unprompted-1')
+          ||checks[1].evidence_version!==(independent?'whisper-large-v3-turbo-dual-unprompted-v1':'paraformer-dc70-rms010-trim30-1')){
           throw new Error(`Missing raw/prepared recognition comparison: ${entry.audio_path}`);
         }
         let matched=0;
@@ -255,6 +275,9 @@
           ||!Number.isFinite(preparation.trim_end_seconds)||preparation.trim_end_seconds<=preparation.trim_start_seconds){
           throw new Error(`Invalid recognition preparation evidence: ${entry.audio_path}`);
         }
+      }
+      if(evidence.identity_method==='unprompted_whisper_turbo'&&!evidence.recognition_checks){
+        throw new Error('Independent phonetic evidence must include both unprompted checks');
       }
       evidence.tones.forEach((decision,index)=>{
         const votes=decision?.votes;
@@ -457,6 +480,20 @@
   function comparisonApproval(index,key,recording){
     return index.get(identity(comparisonDescriptor(key,recording)))||null;
   }
+  function clearForIsolatedQuiz(approval,quality){
+    if(!approval)return false;
+    const third=approval.kind==='comparison'?approval.key.endsWith('3'):
+      approval.pinyin_syllables.length===1&&approval.surface_pattern==='3';
+    if(!third)return true;
+    const review=quality.native_clarity?.[approval.audio_path];
+    return !review||(review.sha256===approval.sha256&&review.status==='clear_citation_third');
+  }
+  function hasCompleteToneReferences(policy,bases,quality,recordings,index,preferredSource='pinyin_public'){
+    return Array.isArray(bases)&&bases.length>0&&bases.every(base=>
+      ['1','2','3','4'].every(tone=>Boolean(correctionSelection(
+        policy,policy.correctionKey(base,tone),quality,recordings,index,preferredSource,
+      ))));
+  }
   function neutralSelection(index,base){
     for(const approval of index.neutralReferences?.get(base.replace(/ü/g,'v'))||[]){
       const recording=index.sourceRecordings.get(approval.audio_path);
@@ -467,6 +504,7 @@
   }
   function correctionSelection(policy,key,quality,recordings,index,preferredSource='pinyin_public'){
     const allowed=approval=>{
+      if(!clearForIsolatedQuiz(approval,quality))return false;
       const recording=index.sourceRecordings?.get(approval.audio_path);
       if(approval.audio_path.startsWith('audio/mandarin_native/')){
         return recording?.recording_type==='word_candidate'&&!nativeBlockReason(recording,approval);
@@ -512,6 +550,6 @@
   }
   return {
     isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,applyPracticeSelection,createIndex,
-    nativeApproval,comparisonApproval,neutralSelection,correctionSelection,verifyBytes,
+    nativeApproval,comparisonApproval,clearForIsolatedQuiz,hasCompleteToneReferences,neutralSelection,correctionSelection,verifyBytes,
   };
 });

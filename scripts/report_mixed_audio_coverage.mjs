@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {createHash} from 'node:crypto';
-import {loadReviewData,validateLedger,practiceInventory} from './review_audio.mjs';
+import {loadReviewData,validateLedger,practiceInventory,quizInventory,recordingReplacement} from './review_audio.mjs';
 import AudioReview from '../app/audio_review.js';
 import CorrectionAudio from '../app/correction_audio.js';
 
@@ -52,7 +52,8 @@ export function importedSingleAudit(inventory,outcomes,imports){
     const recording=usage.get(audio_path),checks=[...results.values()];
     const used=recording.used_for_initial||recording.used_for_comparison;
     const reasons=[...new Set(checks.map(check=>check.reason||'missing_analysis'))];
-    const status=used?'in_use':checks.some(check=>check.known_quarantine)?'known_quarantine':
+    const status=used?'in_use':recording.review_status==='rejected'?'explicitly_withheld':
+      checks.some(check=>check.known_quarantine)?'known_quarantine':
       checks.every(check=>check.source_tone==='N')?'neutral_requires_word_context':
       recording.available_comparison_keys.length?'eligible_not_selected':
       checks.some(check=>check.diagnostic_status==='candidate_supported')?'awaiting_distinct_source_corroboration':
@@ -81,19 +82,23 @@ function main(){
   }});
   if(!values.inventory||!values.baseline)throw new Error('--inventory and --baseline are required');
   const data=loadReviewData(),index=validateLedger(data),practice=practiceInventory(data,index);
+  const quiz=quizInventory(data,index);
   const baseline=read(values.baseline),inventory=read(values.inventory),outcomes=read(values.outcomes);
   if(outcomes.inventory_sha256!==inventory.inventory_sha256)throw new Error('Mixed-source outcomes have a stale inventory');
   const words=new Map(data.words.map(word=>[word.id,word]));
   const currentIds=new Set(practice.eligibleWords);
   const missingBaseline=baseline.entries.filter(id=>!currentIds.has(id));
   const currentPairs=new Set(practice.recordingLabelPairs.map(pair=>JSON.stringify(pair)));
-  const removedExamples=baseline.initial_examples.filter(pair=>!currentPairs.has(JSON.stringify(pair)));
+  const missingExamples=baseline.initial_examples.filter(pair=>!currentPairs.has(JSON.stringify(pair)));
+  const replacedExamples=missingExamples.map(pair=>recordingReplacement(data,index,practice,pair)).filter(Boolean);
+  const removedExamples=missingExamples.filter(pair=>!recordingReplacement(data,index,practice,pair));
   if(missingBaseline.length||removedExamples.length)throw new Error('Mixed-source integration removed baseline practice');
   const beforeBases=new Set(baseline.bases);
   const currentBases=new Set(practice.eligibleWords.flatMap(id=>words.get(id).pinyin_syllables));
   const covered=comparisonCoverage(data,index,currentBases);
   const baselineCoverage=comparisonCoverage(data,index,beforeBases);
   const byKey=new Map();
+  const rejectedPaths=new Set(data.recordings.filter(record=>record.review_status==='rejected').map(record=>record.audio_path));
   for(const row of inventory.records){
     if(row.syllables.length!==1||!['1','2','3','4'].includes(row.weak_training_label))continue;
     const key=row.syllables[0]+row.weak_training_label;
@@ -103,9 +108,9 @@ function main(){
     byKey.get(key).set(row.audio_path,{
       audio_path:row.audio_path,sha256:row.sha256,source:row.source,
       source_url:row.source_url,source_label:row.weak_training_label,
-      known_quarantine:row.quarantined,assessed_for_comparison:Boolean(assessment),
+      known_quarantine:row.quarantined||rejectedPaths.has(row.audio_path),assessed_for_comparison:Boolean(assessment),
       diagnostic_status:outcome?.status||'not_analyzed',
-      unresolved_reason:row.quarantined?'known_source_quarantine':
+      unresolved_reason:row.quarantined||rejectedPaths.has(row.audio_path)?'explicitly_withheld_recording':
         outcome?.status==='candidate_supported'&&!assessment?'no_distinct_source_corroboration':
           outcome?.reason||(!assessment?'no_qualifying_assessment':null),
     });
@@ -143,8 +148,10 @@ function main(){
       native_word_ids_used:validWords,used_for_initial:initialPaths.has(recording.audio_path),
       used_for_comparison:comparisonPaths.has(recording.audio_path),
       available_comparison_keys:entries.filter(entry=>entry.kind==='comparison').map(entry=>entry.key),
+      review_status:recording.review_status,
+      practice_replacement:recording.practice_replacement||null,
       original_word_evidence_reasons:[...(originalReasons.get(recording.audio_path)||[])].sort(),
-      unresolved_reason:entries.length?null:
+      unresolved_reason:recording.review_status==='rejected'?recording.notes:entries.length?null:
         recording.candidate_hsk_ids.length?'original_word_or_tone_evidence_unresolved':'no_exact_vocabulary_reading_mapping',
     };
   });
@@ -154,6 +161,7 @@ function main(){
     acoustic_ledger_sha256:createHash('sha256').update(fs.readFileSync(path.join(ROOT,'data/acoustic_reviews.json'))).digest('hex'),
     baseline:{commit:baseline.commit,entries:baseline.entries.length,initial_examples:baseline.initial_examples.length,
       bases:baseline.bases.length,entries_removed:missingBaseline,initial_examples_removed:removedExamples,
+      initial_examples_replaced:replacedExamples,
       current_comparison_coverage:{playable_slots:baselineCoverage.playable_slots,
         complete_families:baselineCoverage.complete_families,required_slots:baselineCoverage.required_slots}},
     current:{entries:practice.eligibleWords.length,initial_examples:practice.recordingLabelPairs.length,
@@ -162,6 +170,11 @@ function main(){
       initial_imported_files:imports.filter(row=>row.used_for_initial).length,
       comparison_imported_files:imports.filter(row=>row.used_for_comparison).length,
       reachable_audio:practice.audio.size,tone_coverage:practice.toneCoverage},
+    quiz:{entries:quiz.eligibleWords.length,initial_examples:quiz.recordingLabelPairs.length,
+      bases:new Set(quiz.eligibleWords.flatMap(id=>words.get(id).pinyin_syllables)).size,
+      comparisons_complete:true,by_syllables:quiz.eligibleWords.reduce((counts,id)=>{
+        const length=words.get(id).pinyin_syllables.length;counts[length]=(counts[length]||0)+1;return counts;
+      },{}),tone_coverage:quiz.toneCoverage},
     comparison_coverage:covered,unresolved_keys:covered.families.flatMap(family=>family.slots.filter(slot=>!slot.available).map(slot=>slot.key)),
     imported_single_syllable_audit:importedSingleAudit(inventory,outcomes.outcomes,imports),
     imported_standalone_files:imports,independent_accuracy_verified:false,
@@ -169,7 +182,7 @@ function main(){
   fs.mkdirSync(path.dirname(path.resolve(values.output)),{recursive:true});
   fs.writeFileSync(values.output+'.part',JSON.stringify(report,null,2)+'\n');
   fs.renameSync(values.output+'.part',values.output);
-  console.log(JSON.stringify({baseline:report.baseline,current:report.current,
+  console.log(JSON.stringify({baseline:report.baseline,current:report.current,quiz:report.quiz,
     current_comparison_slots:covered.playable_slots,required:covered.required_slots,
     complete_families:covered.complete_families,unresolved:report.unresolved_keys.length},null,2));
 }

@@ -15,12 +15,37 @@ AVAILABLE = all(importlib.util.find_spec(name) for name in (
 if AVAILABLE:
     with patch.object(sys, 'path', [str(ROOT / 'scripts'), *sys.path]):
         import build_mixed_audio_bank as mixed
-        from verify_comparison_identity import identity_candidates, no_primary_contradiction, StableWhisperFeatures
+        from verify_comparison_identity import identity_candidates, latin_only_primary_conflict, no_primary_contradiction, StableWhisperFeatures
+        import review_imported_third_clarity as third_clarity
     import numpy as np
 
 
 @unittest.skipUnless(AVAILABLE, 'optional audio audit dependencies unavailable')
 class MixedAudioBankTests(unittest.TestCase):
+    def test_isolated_clarity_distinguishes_teaching_suitability_from_claimed_tone_errors(self):
+        clear = np.concatenate([np.geomspace(260, 120, 9), np.geomspace(130, 280, 8)]).tolist()
+        falling = np.geomspace(260, 120, 17).tolist()
+        for curve, expected in [(clear, 'clear_citation_third'), (falling, 'needs_clearer_citation')]:
+            with patch.object(third_clarity, 'segment', return_value={
+                'status': 'measured', 'curves': {'praat': curve, 'world': curve},
+            }):
+                result = third_clarity.clarity({})
+                self.assertEqual(result['status'], expected)
+                self.assertFalse(result['linguistic_error_established'])
+                self.assertFalse(result['source_label_changed'])
+        with patch.object(third_clarity, 'segment', return_value={'status': 'review', 'reason': 'trackers disagree'}):
+            self.assertEqual(third_clarity.clarity({})['status'], 'needs_clearer_citation')
+
+    def test_explicit_latin_adjudication_never_overrides_hanzi_contradictions(self):
+        latin = {'text': 'ha', 'recognized_pinyin': []}
+        hanzi = {'text': '汉', 'recognized_pinyin': ['han4']}
+        other = {'text': '好', 'recognized_pinyin': ['hao3']}
+        self.assertTrue(latin_only_primary_conflict(latin, hanzi, 'han'))
+        self.assertTrue(latin_only_primary_conflict({'text': 'haan', 'recognized_pinyin': []}, latin, 'han'))
+        self.assertFalse(latin_only_primary_conflict(latin, other, 'han'))
+        self.assertFalse(latin_only_primary_conflict(hanzi, hanzi, 'han'))
+        self.assertFalse(no_primary_contradiction(latin, hanzi, 'han'))
+
     def test_imported_identity_checks_do_not_require_an_unfilled_comparison_slot(self):
         row = {'id': 'example', 'audio_path': 'audio/mandarin_native/bi3.mp3', 'sha256': 'a',
                'quarantined': False, 'source': 'mandarin_native', 'syllables': ['bi'], 'weak_training_label': '3'}
