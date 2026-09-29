@@ -202,8 +202,8 @@ def body_regions(scan_row, intro):
     if scan_row['lesson_id'].startswith('vowel-part-'):
         # A vowel demonstration follows the English title, before the five-tone rows.
         groups = cadence_groups(regions, rate)
-        first = next((group[0] for group in groups if len(group) == 5
-                      and regions[group[0]][0] / rate > 3
+        first = next((group[0] for group in groups if len(group) >= 4
+                      and 3 < regions[group[0]][0] / rate < 14
                       and all((regions[number][1] - regions[number][0]) / rate < 2 for number in group)), None)
         if first is None:
             raise ValueError('No complete isolated five-tone cadence follows the verified introduction')
@@ -284,7 +284,10 @@ def collect_recognition(limit=None):
                 print(f"Recognition held: {row['lesson_id']}: {error}", flush=True)
                 continue
             jobs = []
-            for number in range(offset, len(regions)):
+            first_region = 0 if not row['lesson_id'].startswith('vowel-part-') else offset
+            for number in range(first_region, len(regions)):
+                if (regions[number][1] - regions[number][0]) / row['sample_rate'] > 3:
+                    continue
                 identifier = f"{row['lesson_id']}-region-{number:04d}"
                 try:
                     segment = interval_for(row, regions, number)
@@ -393,12 +396,17 @@ def anchored_positions(items, observed, positions):
         i for i, position in enumerate(positions)
         if position is not None and phonetic_match(items[i]['pinyin_syllables'], observed[position])
     }
+    exact_order = (len(items) == len(observed) and positions == list(range(len(items)))
+                   and len(confirmed) >= max(1, (3 * len(items) + 3) // 4))
     accepted = {}
     for i, position in enumerate(positions):
         if position is None:
             continue
         if i in confirmed:
             accepted[i] = 'unprompted_phonetic_match'
+            continue
+        if exact_order:
+            accepted[i] = 'publisher_exact_count_order_with_phonetic_anchors'
             continue
         if items[i]['kind'] == 'syllable_drill':
             family = [number for number, item in enumerate(items)
@@ -428,8 +436,14 @@ def align_syllable_groups(items, speech, regions, offset, rate):
                 or any(item['pinyin_syllables'] != row[0]['pinyin_syllables'] for item in row)):
             raise ValueError('Source five-tone row is inconsistent')
         rows.append({'kind': 'word_drill', 'pinyin_syllables': row[0]['pinyin_syllables']})
-    groups = [group for group in cadence_groups(regions, rate)
-              if group[0] >= offset and len(group) == 5]
+    groups = []
+    for group in cadence_groups(regions, rate):
+        if group[0] < offset:
+            continue
+        if len(group) % 5 == 0:
+            groups.extend(group[start:start + 5] for start in range(0, len(group), 5))
+        else:
+            groups.append(group)
     recognized_groups = []
     for group in groups:
         bases = set()
@@ -438,17 +452,22 @@ def align_syllable_groups(items, speech, regions, offset, rate):
             if recognized and len(set(recognized)) == 1:
                 bases.add(recognized[0])
         recognized_groups.append(bases)
-    positions = align_items([row['pinyin_syllables'] for row in rows], recognized_groups)
-    accepted = anchored_positions(rows, recognized_groups, positions)
+    ordered_grid = len(groups) == len(rows) and all(4 <= len(group) <= 6 for group in groups)
+    if ordered_grid:
+        positions = list(range(len(rows)))
+        accepted = {number: 'publisher_five_column_table_and_recorded_cadence' for number in positions}
+    else:
+        positions = align_items([row['pinyin_syllables'] for row in rows], recognized_groups)
+        accepted = anchored_positions(rows, recognized_groups, positions)
     item_positions = [None] * len(items)
     item_support = {}
     for row, group_number in enumerate(positions):
-        if group_number is None or row not in accepted:
+        if group_number is None or row not in accepted or len(groups[group_number]) != 5:
             continue
         for tone, region in enumerate(groups[group_number]):
             item = row * 5 + tone
             item_positions[item] = region - offset
-            item_support[item] = 'publisher_five_tone_cadence_and_phonetic_anchors'
+            item_support[item] = accepted[row]
     return item_positions, item_support
 
 
@@ -473,6 +492,13 @@ def publish_mappings():
                                 {'item_id': item['id'], 'segment': None, 'status': 'unresolved', 'reason': str(error)}
                                 for item in lesson['items']]})
             continue
+        if lesson['items'][0]['kind'] == 'word_drill' and len(lesson['items']) >= 2:
+            for earlier in range(max(0, offset - 2), offset):
+                pair = [recognized.get(f"{row['lesson_id']}-region-{number:04d}") for number in (earlier, earlier + 1)]
+                if all(result and phonetic_match(item['pinyin_syllables'], result['decoded_bases'])
+                       for item, result in zip(lesson['items'][:2], pair)):
+                    offset = earlier
+                    break
         speech = []
         for number in range(offset, len(regions)):
             identifier = f"{row['lesson_id']}-region-{number:04d}"

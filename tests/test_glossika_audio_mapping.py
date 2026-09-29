@@ -60,6 +60,9 @@ class GlossikaAudioMappingTests(unittest.TestCase):
         positions, support = mapping.align_syllable_groups(items, [['o']] * 5, regions, offset, 1000)
         self.assertEqual(positions, [0, 1, 2, 3, 4])
         self.assertEqual(len(support), 5)
+        positions, support = mapping.align_syllable_groups(items, [None] * 5, regions, offset, 1000)
+        self.assertEqual(positions, [0, 1, 2, 3, 4])
+        self.assertEqual(set(support.values()), {'publisher_five_column_table_and_recorded_cadence'})
 
     def test_syllable_family_requires_all_five_ordered_positions_and_a_phonetic_anchor(self):
         items = [{'pinyin_syllables': ['zhi'], 'kind': 'syllable_drill'} for _ in range(5)]
