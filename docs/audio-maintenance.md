@@ -90,6 +90,28 @@ and reports every replaced initial example; it never silently drops a word.
 
 ## Acoustic prerequisites
 
+### Sinosplice source archive
+
+`python3 scripts/download_sinosplice.py` restores 90 intact recordings from the
+SHA-256-pinned official Tone Pair Drills archive: 36 single-syllable files and
+54 two-syllable files. The committed `data/sinosplice_recordings.json` retains
+source labels, expected spoken sandhi, exact file hashes, and vocabulary matches.
+The two `te4bie2` takes remain separate recordings. Sandhi-only `bu2`, `hen2`,
+and `ting2` demonstrations are not dictionary-tone quiz prompts.
+
+These recordings are currently **pending candidates, not active app audio**.
+Indexing/restoration grants no pronunciation approvals. Raw and prepared ASR
+collection must use `--batch-size 1`, because separate source groups contain
+different recordings with identical basenames.
+
+Attribution: **Mandarin Chinese Tone Pair Drills by John Pasden,
+[Sinosplice.com](https://www.sinosplice.com/learn-chinese/tone-pair-drills)**,
+licensed under [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/).
+John Pasden is the credited creator; speaker identity is not verified.
+The original README and recording notes are restored under `imports/sinosplice/`.
+Keep these noncommercial recordings out of generic redistributable builds;
+any integration must preserve attribution and the applicable ShareAlike terms.
+
 ### Additive mixed-source comparison bank
 
 The runtime comparison index combines all eligible direct sources per

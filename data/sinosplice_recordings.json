@@ -1,0 +1,3307 @@
+{
+  "version": 1,
+  "source": "sinosplice",
+  "title": "Mandarin Chinese Tone Pair Drills",
+  "creator": "John Pasden",
+  "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+  "archive_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+  "archive_sha256": "012db77929affde66f5c22edbeca3d1d2e19e8c4dec913f20afe0892a63c1af5",
+  "license": "CC-BY-NC-SA-2.5",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+  "attribution": "Mandarin Chinese Tone Pair Drills by John Pasden, Sinosplice.com. CC BY-NC-SA 2.5.",
+  "chart_sha256": {
+    "3": "0af2484de325b1a05e1075a5ce89420de261967db24183917ffb029f4835f608",
+    "5": "a5c49f17beb478adfd4ab9ea4c22f74bf486075f64ccfadaa68ff4e420e7eccd"
+  },
+  "recordings": [
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "长"
+      ],
+      "source_audio_key": "chang2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "chang"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [
+        "L2-0055"
+      ],
+      "comparison_key": "chang2",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/chang2.mp3",
+      "filename": "chang2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/chang2.mp3",
+      "sha256": "a256a19840c58b411f94677c1336fca008eaa873ba5084fe33eef59d2b1476e6",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/chang2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "大"
+      ],
+      "source_audio_key": "da4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "da"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0061"
+      ],
+      "comparison_key": "da4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/da4.mp3",
+      "filename": "da4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/da4.mp3",
+      "sha256": "21de5dcf39fe9d70edef1a4915fd6701274e40c2643a0abb34167812d8de77eb",
+      "byte_length": 45184,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/da4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "短"
+      ],
+      "source_audio_key": "duan3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "duan"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L2-0140"
+      ],
+      "comparison_key": "duan3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/duan3.mp3",
+      "filename": "duan3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/duan3.mp3",
+      "sha256": "2bed572d9e868d881442f3c91648865390b8e8242059c819a6c168a8f347cbfc",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/duan3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "饿"
+      ],
+      "source_audio_key": "e4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "e"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0096"
+      ],
+      "comparison_key": "e4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/e4.mp3",
+      "filename": "e4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/e4.mp3",
+      "sha256": "b895d5a83356f9747858ee205891466aa91ac988b4b45d87faa523e0264c02a2",
+      "byte_length": 45184,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/e4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "干"
+      ],
+      "source_audio_key": "gan1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "gan"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L1-0111"
+      ],
+      "comparison_key": "gan1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/gan1.mp3",
+      "filename": "gan1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/gan1.mp3",
+      "sha256": "f83cf0246c64f7374768f60e7647ceff20917b8df5a4e4e8bbbfc9ab554fd4d1",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/gan1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "贵"
+      ],
+      "source_audio_key": "gui4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "gui"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0127"
+      ],
+      "comparison_key": "gui4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/gui4.mp3",
+      "filename": "gui4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/gui4.mp3",
+      "sha256": "4cdf67c712dedb2a8a7cdded0d43e570fe5f9b2c2e2ab3944826d5416f680860",
+      "byte_length": 45184,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/gui4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好"
+      ],
+      "source_audio_key": "hao3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "hao"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0138",
+        "L2-0214"
+      ],
+      "comparison_key": "hao3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/hao3.mp3",
+      "filename": "hao3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/hao3.mp3",
+      "sha256": "5a1024926582516180c87dd7f0cf49fcfd43309260a35f4bb2b56a5a2b7c0770",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/hao3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "黑"
+      ],
+      "source_audio_key": "hei1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "hei"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L2-0223"
+      ],
+      "comparison_key": "hei1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/hei1.mp3",
+      "filename": "hei1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/hei1.mp3",
+      "sha256": "3148083f3df42f02e18f8aea3d0819f19b720717757f500cbd9b90f5fe3f27c7",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/hei1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "红"
+      ],
+      "source_audio_key": "hong2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "hong"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [
+        "L2-0226"
+      ],
+      "comparison_key": "hong2",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/hong2.mp3",
+      "filename": "hong2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/hong2.mp3",
+      "sha256": "b538e6e7f871335668bd0fb3823c29b48a05a001a53287b3c0860d6abd9b48cc",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/hong2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "坏"
+      ],
+      "source_audio_key": "huai4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "huai"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0152"
+      ],
+      "comparison_key": "huai4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/huai4.mp3",
+      "filename": "huai4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/huai4.mp3",
+      "sha256": "98d80c68b356ccbd024a7b02bfca7ccc4fbeb8dad020bd60cb3d8b568a64df3a",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/huai4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "快"
+      ],
+      "source_audio_key": "kuai4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "kuai"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0204"
+      ],
+      "comparison_key": "kuai4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/kuai4.mp3",
+      "filename": "kuai4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/kuai4.mp3",
+      "sha256": "eb4353318ce1850955ee77b04ab3a6dac36ed727a7cd999da2bda6617cdeaf3b",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/kuai4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "冷"
+      ],
+      "source_audio_key": "leng3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "leng"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0212"
+      ],
+      "comparison_key": "leng3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/leng3.mp3",
+      "filename": "leng3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/leng3.mp3",
+      "sha256": "e820b51ebd94b08786de300d0e36da31144d279ef124d0b36d64ea5305e10688",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/leng3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "慢"
+      ],
+      "source_audio_key": "man4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "man"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0229"
+      ],
+      "comparison_key": "man4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/man4.mp3",
+      "filename": "man4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/man4.mp3",
+      "sha256": "93f0a98f1423127afdad0312bb836fc272c8804451944ae6ac6fd4cb74bd120a",
+      "byte_length": 45184,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/man4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "忙"
+      ],
+      "source_audio_key": "mang2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "mang"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [
+        "L1-0230"
+      ],
+      "comparison_key": "mang2",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/mang2.mp3",
+      "filename": "mang2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/mang2.mp3",
+      "sha256": "941b47cf24180c6f7b39b8472be895dcf63dc2bf8f482cebd8eb481d1b65096d",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/mang2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "美"
+      ],
+      "source_audio_key": "mei3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "mei"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L3-0480"
+      ],
+      "comparison_key": "mei3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/mei3.mp3",
+      "filename": "mei3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/mei3.mp3",
+      "sha256": "54c521d9e73ae82b1d01c13db5325644f042322e37eac9757093f5a875e3e7ba",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/mei3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "强"
+      ],
+      "source_audio_key": "qiang2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "qiang"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [
+        "L3-0555"
+      ],
+      "comparison_key": "qiang2",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/qiang2.mp3",
+      "filename": "qiang2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/qiang2.mp3",
+      "sha256": "f6bf3f94a8b3deb55129dbea76a96b4f97b2280537eedb4d6b79ca90b4787715",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/qiang2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "轻"
+      ],
+      "source_audio_key": "qing1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "qing"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L2-0439"
+      ],
+      "comparison_key": "qing1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/qing1.mp3",
+      "filename": "qing1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/qing1.mp3",
+      "sha256": "09398295099befebc014857a036e0e6ad608f42c56f266489724ac420f12da57",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/qing1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "热"
+      ],
+      "source_audio_key": "re4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "re"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0304"
+      ],
+      "comparison_key": "re4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/re4.mp3",
+      "filename": "re4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/re4.mp3",
+      "sha256": "2f5d17af121f32dd024c3a7ac7e4afbe9f2a84d9be292d1df384856b2b7df8a2",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/re4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "酸"
+      ],
+      "source_audio_key": "suan1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "suan"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L4-0687"
+      ],
+      "comparison_key": "suan1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/suan1.mp3",
+      "filename": "suan1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/suan1.mp3",
+      "sha256": "81db3946f56ff62068d7e8f9bb8496cbd82426887294552a131b63babea7646f",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/suan1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "晚"
+      ],
+      "source_audio_key": "wan3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "wan"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0372"
+      ],
+      "comparison_key": "wan3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/wan3.mp3",
+      "filename": "wan3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/wan3.mp3",
+      "sha256": "f6c2a5a0af3eec10d67972b520c86802ee04e109e41b09fef9f97cdf9c1662f5",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/wan3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "小"
+      ],
+      "source_audio_key": "xiao3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "xiao"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0401"
+      ],
+      "comparison_key": "xiao3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/xiao3.mp3",
+      "filename": "xiao3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/xiao3.mp3",
+      "sha256": "65d05563ff58c1338d8caf0e560c30c6a6d941b3c6e67cd3f39ae3b37b1c0b2a",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/xiao3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "新"
+      ],
+      "source_audio_key": "xin1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "xin"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L1-0411"
+      ],
+      "comparison_key": "xin1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/xin1.mp3",
+      "filename": "xin1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/xin1.mp3",
+      "sha256": "28667246d5cda88c08a6f0bec13e1e8395c2c6a300898b3b0d554420c37564d1",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/xin1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "油"
+      ],
+      "source_audio_key": "you2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "you"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [
+        "L2-0681"
+      ],
+      "comparison_key": "you2",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/you2.mp3",
+      "filename": "you2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/you2.mp3",
+      "sha256": "10811c2c0b27e09a02fd70e2d66f8f560b44a23e2c311a776be729f94652dcb6",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/you2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "早"
+      ],
+      "source_audio_key": "zao3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "zao"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0457"
+      ],
+      "comparison_key": "zao3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-1/zao3.mp3",
+      "filename": "zao3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/1-Char Adj/zao3.mp3",
+      "sha256": "f6faa33a8e3f244191857e8fc6f3c9fa5cd798b80ad30549191b7ebf35a9e6d8",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/1-Char Adj/zao3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "安静"
+      ],
+      "source_audio_key": "an1jing4",
+      "source_tone_pattern": "1-4",
+      "source_syllables": [
+        "an",
+        "jing"
+      ],
+      "surface_pattern": "1-4",
+      "candidate_hsk_ids": [
+        "L2-0004"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/an1jing4.mp3",
+      "filename": "an1jing4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/an1jing4.mp3",
+      "sha256": "e9b3d789203f7c5fc9f9948dc48e717ed1d20a7a12530d708564037149cb1912",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/an1jing4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "保守"
+      ],
+      "source_audio_key": "bao3shou3",
+      "source_tone_pattern": "3-3",
+      "source_syllables": [
+        "bao",
+        "shou"
+      ],
+      "surface_pattern": "2-3",
+      "candidate_hsk_ids": [
+        "L4-0029"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/bao3shou3.mp3",
+      "filename": "bao3shou3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/bao3shou3.mp3",
+      "sha256": "775ebae4904411d1788262c774bb6bdd58abc7e79567873dd486c86146646ba7",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/bao3shou3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "不错"
+      ],
+      "source_audio_key": "bu2cuo4",
+      "source_tone_pattern": "2-4",
+      "source_syllables": [
+        "bu",
+        "cuo"
+      ],
+      "surface_pattern": "2-4",
+      "candidate_hsk_ids": [
+        "L2-0030"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/bu2cuo4.mp3",
+      "filename": "bu2cuo4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/bu2cuo4.mp3",
+      "sha256": "d15aced129c83011cd00ee694298a17c13aca51caaceadeeeaf12b0f662c2fac",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/bu2cuo4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "聪明"
+      ],
+      "source_audio_key": "cong1ming0",
+      "source_tone_pattern": "1-N",
+      "source_syllables": [
+        "cong",
+        "ming"
+      ],
+      "surface_pattern": "1-N",
+      "candidate_hsk_ids": [
+        "L5-0144",
+        "MN-5428e86cc1f594f0"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/cong1ming0.mp3",
+      "filename": "cong1ming0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/cong1ming0.mp3",
+      "sha256": "6b5b48eec3cbb14c6fe08894112c9fe7ac838a184908687c12be8f1b02fd3158",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/cong1ming0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "方便"
+      ],
+      "source_audio_key": "fang1bian4",
+      "source_tone_pattern": "1-4",
+      "source_syllables": [
+        "fang",
+        "bian"
+      ],
+      "surface_pattern": "1-4",
+      "candidate_hsk_ids": [
+        "L2-0157"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/fang1bian4.mp3",
+      "filename": "fang1bian4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/fang1bian4.mp3",
+      "sha256": "8a019bca33df857fcd1a9005f2ce5d1d527512f35ca6a6e855beb26a47bc7965",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/fang1bian4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "高兴"
+      ],
+      "source_audio_key": "gao1xing4",
+      "source_tone_pattern": "1-4",
+      "source_syllables": [
+        "gao",
+        "xing"
+      ],
+      "surface_pattern": "1-4",
+      "candidate_hsk_ids": [
+        "L1-0116"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/gao1xing4.mp3",
+      "filename": "gao1xing4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/gao1xing4.mp3",
+      "sha256": "2972e4e398af3616b00341e32f80885da060358b52ccc794c9d143b18f948332",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/gao1xing4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好吃"
+      ],
+      "source_audio_key": "hao3chi1",
+      "source_tone_pattern": "3-1",
+      "source_syllables": [
+        "hao",
+        "chi"
+      ],
+      "surface_pattern": "3-1",
+      "candidate_hsk_ids": [
+        "L1-0139"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/hao3chi1.mp3",
+      "filename": "hao3chi1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/hao3chi1.mp3",
+      "sha256": "74c5c2d454f1711809ba3c551dcc7cdaec39ae0f3c67e52df23040e3bea55374",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/hao3chi1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好懂"
+      ],
+      "source_audio_key": "hao3dong3",
+      "source_tone_pattern": "3-3",
+      "source_syllables": [
+        "hao",
+        "dong"
+      ],
+      "surface_pattern": "2-3",
+      "candidate_hsk_ids": [],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/hao3dong3.mp3",
+      "filename": "hao3dong3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/hao3dong3.mp3",
+      "sha256": "c231f16bc99bf979cd2d0c34284095b3645f3b213cc2094615ca99da098724c6",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/hao3dong3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好看"
+      ],
+      "source_audio_key": "hao3kan4",
+      "source_tone_pattern": "3-4",
+      "source_syllables": [
+        "hao",
+        "kan"
+      ],
+      "surface_pattern": "3-4",
+      "candidate_hsk_ids": [
+        "L1-0140"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/hao3kan4.mp3",
+      "filename": "hao3kan4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/hao3kan4.mp3",
+      "sha256": "0085fd7087b18cc585203ab0d8f4d29e6224eb3dad602ba4b26c976a2482e3f5",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/hao3kan4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好听"
+      ],
+      "source_audio_key": "hao3ting1",
+      "source_tone_pattern": "3-1",
+      "source_syllables": [
+        "hao",
+        "ting"
+      ],
+      "surface_pattern": "3-1",
+      "candidate_hsk_ids": [
+        "L1-0141"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/hao3ting1.mp3",
+      "filename": "hao3ting1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/hao3ting1.mp3",
+      "sha256": "5f85c66781561f571cfc69574505ca1ec7322e2e24e9af30b5f03c45b3191248",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/hao3ting1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好玩"
+      ],
+      "source_audio_key": "hao3wan2",
+      "source_tone_pattern": "3-2",
+      "source_syllables": [
+        "hao",
+        "wan"
+      ],
+      "surface_pattern": "3-2",
+      "candidate_hsk_ids": [],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/hao3wan2.mp3",
+      "filename": "hao3wan2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/hao3wan2.mp3",
+      "sha256": "9115317e24201556c3fb9109ba76c0c425969a110bae2b88f53cf0d7d79c439e",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/hao3wan2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "好奇"
+      ],
+      "source_audio_key": "hao4qi2",
+      "source_tone_pattern": "4-2",
+      "source_syllables": [
+        "hao",
+        "qi"
+      ],
+      "surface_pattern": "4-2",
+      "candidate_hsk_ids": [
+        "L3-0285"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/hao4qi2.mp3",
+      "filename": "hao4qi2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/hao4qi2.mp3",
+      "sha256": "9ddf7c66cc4c0d18d13d5672ae640be315c57da1081ce81a104781bd328727a7",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/hao4qi2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "合适"
+      ],
+      "source_audio_key": "he2shi4",
+      "source_tone_pattern": "2-4",
+      "source_syllables": [
+        "he",
+        "shi"
+      ],
+      "surface_pattern": "2-4",
+      "candidate_hsk_ids": [
+        "L2-0221"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/he2shi4.mp3",
+      "filename": "he2shi4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/he2shi4.mp3",
+      "sha256": "a033ef09502bf283b88f8578bd7491704c9da402eab115627f505faae3c89f77",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/he2shi4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "狡猾"
+      ],
+      "source_audio_key": "jiao3hua2",
+      "source_tone_pattern": "3-2",
+      "source_syllables": [
+        "jiao",
+        "hua"
+      ],
+      "surface_pattern": "3-2",
+      "candidate_hsk_ids": [
+        "L7-2066"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/jiao3hua2.mp3",
+      "filename": "jiao3hua2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/jiao3hua2.mp3",
+      "sha256": "928a711cc84ea73f863cef027c3626e4c5ec98058620c27fc29ac45a69200cb3",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/jiao3hua2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "紧张"
+      ],
+      "source_audio_key": "jin3zhang1",
+      "source_tone_pattern": "3-1",
+      "source_syllables": [
+        "jin",
+        "zhang"
+      ],
+      "surface_pattern": "3-1",
+      "candidate_hsk_ids": [
+        "L3-0375"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/jin3zhang1.mp3",
+      "filename": "jin3zhang1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/jin3zhang1.mp3",
+      "sha256": "05cab91064500ce23d8d0d53f0c659c2891f97386f0897e0bd02097b244b6ec9",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/jin3zhang1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "可爱"
+      ],
+      "source_audio_key": "ke3ai4",
+      "source_tone_pattern": "3-4",
+      "source_syllables": [
+        "ke",
+        "ai"
+      ],
+      "surface_pattern": "3-4",
+      "candidate_hsk_ids": [
+        "L2-0318"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/ke3ai4.mp3",
+      "filename": "ke3ai4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/ke3ai4.mp3",
+      "sha256": "877369f6d68bc08952a46334ac5f27e116b1071177a00434c709f5cda07ea96b",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/ke3ai4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "客气"
+      ],
+      "source_audio_key": "ke4qi0",
+      "source_tone_pattern": "4-N",
+      "source_syllables": [
+        "ke",
+        "qi"
+      ],
+      "surface_pattern": "4-N",
+      "candidate_hsk_ids": [
+        "L5-0443"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/ke4qi0.mp3",
+      "filename": "ke4qi0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/ke4qi0.mp3",
+      "sha256": "0b801cc00451c8b1ad99810f5ce7ff3af269014b324844928d96a4298b5337df",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/ke4qi0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "快乐"
+      ],
+      "source_audio_key": "kuai4le4",
+      "source_tone_pattern": "4-4",
+      "source_syllables": [
+        "kuai",
+        "le"
+      ],
+      "surface_pattern": "4-4",
+      "candidate_hsk_ids": [
+        "L2-0331"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/kuai4le4.mp3",
+      "filename": "kuai4le4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/kuai4le4.mp3",
+      "sha256": "22afa349f1c4a249f3c101943dfec29a5780bea87c4b8d831d61f230a5c40717",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/kuai4le4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "厉害"
+      ],
+      "source_audio_key": "li4hai0",
+      "source_tone_pattern": "4-N",
+      "source_syllables": [
+        "li",
+        "hai"
+      ],
+      "surface_pattern": "4-N",
+      "candidate_hsk_ids": [
+        "L5-0466"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/li4hai0.mp3",
+      "filename": "li4hai0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/li4hai0.mp3",
+      "sha256": "94b70dfe1747ad34818a88bedf51365247b9310c81aced681e7d8b45dd43e554",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/li4hai0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "流行"
+      ],
+      "source_audio_key": "liu2xing2",
+      "source_tone_pattern": "2-2",
+      "source_syllables": [
+        "liu",
+        "xing"
+      ],
+      "surface_pattern": "2-2",
+      "candidate_hsk_ids": [
+        "L2-0365"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/liu2xing2.mp3",
+      "filename": "liu2xing2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/liu2xing2.mp3",
+      "sha256": "b5751b60bf082771ee823ce6caef3109b73f1611817589fe91e96b366e00adf7",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/liu2xing2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "麻烦"
+      ],
+      "source_audio_key": "ma2fan0",
+      "source_tone_pattern": "2-N",
+      "source_syllables": [
+        "ma",
+        "fan"
+      ],
+      "surface_pattern": "2-N",
+      "candidate_hsk_ids": [
+        "L3-0471"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/ma2fan0.mp3",
+      "filename": "ma2fan0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/ma2fan0.mp3",
+      "sha256": "72ccca530483634b0a9067088d617c6d298d0877d8bd70edc2716e87e10da1e4",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/ma2fan0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "满意"
+      ],
+      "source_audio_key": "man3yi4",
+      "source_tone_pattern": "3-4",
+      "source_syllables": [
+        "man",
+        "yi"
+      ],
+      "surface_pattern": "3-4",
+      "candidate_hsk_ids": [
+        "L2-0374"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/man3yi4.mp3",
+      "filename": "man3yi4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/man3yi4.mp3",
+      "sha256": "3318cb3ae05856469fe83df55c9f94617c349c4444fab7bd09c913bc101a97b6",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/man3yi4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "明显"
+      ],
+      "source_audio_key": "ming2xian3",
+      "source_tone_pattern": "2-3",
+      "source_syllables": [
+        "ming",
+        "xian"
+      ],
+      "surface_pattern": "2-3",
+      "candidate_hsk_ids": [
+        "L3-0493"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/ming2xian3.mp3",
+      "filename": "ming2xian3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/ming2xian3.mp3",
+      "sha256": "12bf469d50568e489db27770f2ecf8ed1e849c22564a58ef262071103b1a60d9",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/ming2xian3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "难懂"
+      ],
+      "source_audio_key": "nan2dong3",
+      "source_tone_pattern": "2-3",
+      "source_syllables": [
+        "nan",
+        "dong"
+      ],
+      "surface_pattern": "2-3",
+      "candidate_hsk_ids": [],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/nan2dong3.mp3",
+      "filename": "nan2dong3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/nan2dong3.mp3",
+      "sha256": "464b485611f56cef57a8f2967963530bf44085994b5851ecb68725fd78afa224",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/nan2dong3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "难说"
+      ],
+      "source_audio_key": "nan2shuo1",
+      "source_tone_pattern": "2-1",
+      "source_syllables": [
+        "nan",
+        "shuo"
+      ],
+      "surface_pattern": "2-1",
+      "candidate_hsk_ids": [
+        "L7-2970"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/nan2shuo1.mp3",
+      "filename": "nan2shuo1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/nan2shuo1.mp3",
+      "sha256": "4eebd51f92472874abbca0cb3b417ad2e17caa3fede1e60871a78ff58a9539b5",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/nan2shuo1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "难听"
+      ],
+      "source_audio_key": "nan2ting1",
+      "source_tone_pattern": "2-1",
+      "source_syllables": [
+        "nan",
+        "ting"
+      ],
+      "surface_pattern": "2-1",
+      "candidate_hsk_ids": [
+        "L2-0397"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/nan2ting1.mp3",
+      "filename": "nan2ting1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/nan2ting1.mp3",
+      "sha256": "01886e9653c9b91d25dca3d0760ccfdf9828d24c65eca7bb7fe8fec3b73a4177",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/nan2ting1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "年轻"
+      ],
+      "source_audio_key": "nian2qing1",
+      "source_tone_pattern": "2-1",
+      "source_syllables": [
+        "nian",
+        "qing"
+      ],
+      "surface_pattern": "2-1",
+      "candidate_hsk_ids": [
+        "L2-0400"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/nian2qing1.mp3",
+      "filename": "nian2qing1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/nian2qing1.mp3",
+      "sha256": "f3b056478da62dbf068fb9da30f0a156c068f1060ae0ae9d09d3cdf5adecaee6",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/nian2qing1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "暖和"
+      ],
+      "source_audio_key": "nuan3he0",
+      "source_tone_pattern": "3-N",
+      "source_syllables": [
+        "nuan",
+        "he"
+      ],
+      "surface_pattern": "3-N",
+      "candidate_hsk_ids": [],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/nuan3he0.mp3",
+      "filename": "nuan3he0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/nuan3he0.mp3",
+      "sha256": "ee4938ef984739b183daface311a6f287819603bbc42cffd5e327fc977c79c90",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/nuan3he0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "暖和"
+      ],
+      "source_audio_key": "nuan3huo0",
+      "source_tone_pattern": "3-N",
+      "source_syllables": [
+        "nuan",
+        "huo"
+      ],
+      "surface_pattern": "3-N",
+      "candidate_hsk_ids": [
+        "L3-0520"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/nuan3huo0.mp3",
+      "filename": "nuan3huo0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/nuan3huo0.mp3",
+      "sha256": "00bad3a027e495e804506120c655002f2f25b70b4a5d05f37c2bcf9c2275bb64",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/nuan3huo0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "便宜"
+      ],
+      "source_audio_key": "pian2yi0",
+      "source_tone_pattern": "2-N",
+      "source_syllables": [
+        "pian",
+        "yi"
+      ],
+      "surface_pattern": "2-N",
+      "candidate_hsk_ids": [
+        "L2-0414"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/pian2yi0.mp3",
+      "filename": "pian2yi0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/pian2yi0.mp3",
+      "sha256": "eb5b42e48e75beaf9d4fd0d8aee899aa4a876a64343fdfec22df212eb9c330c1",
+      "byte_length": 57344,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/pian2yi0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "漂亮"
+      ],
+      "source_audio_key": "piao4liang0",
+      "source_tone_pattern": "4-N",
+      "source_syllables": [
+        "piao",
+        "liang"
+      ],
+      "surface_pattern": "4-N",
+      "candidate_hsk_ids": [
+        "L2-0416"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/piao4liang0.mp3",
+      "filename": "piao4liang0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/piao4liang0.mp3",
+      "sha256": "75f586d7e3aa2d6106f92a75ce10842ddbaa91cabd021e6fbf471d6d9041c4c7",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/piao4liang0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "清楚"
+      ],
+      "source_audio_key": "qing1chu0",
+      "source_tone_pattern": "1-N",
+      "source_syllables": [
+        "qing",
+        "chu"
+      ],
+      "surface_pattern": "1-N",
+      "candidate_hsk_ids": [
+        "L2-0440"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/qing1chu0.mp3",
+      "filename": "qing1chu0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/qing1chu0.mp3",
+      "sha256": "52de45b94fc26ccc29311ae4bfaba092bf7e5bc43e5f45aba9dff8dfbc119f35",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/qing1chu0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "热情"
+      ],
+      "source_audio_key": "re4qing2",
+      "source_tone_pattern": "4-2",
+      "source_syllables": [
+        "re",
+        "qing"
+      ],
+      "surface_pattern": "4-2",
+      "candidate_hsk_ids": [
+        "L2-0461"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/re4qing2.mp3",
+      "filename": "re4qing2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/re4qing2.mp3",
+      "sha256": "c52e5843d8a08dd0646708fee85f60c533a90faf5a9ba04b4ae07bd322e39e42",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/re4qing2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "容易"
+      ],
+      "source_audio_key": "rong2yi4",
+      "source_tone_pattern": "2-4",
+      "source_syllables": [
+        "rong",
+        "yi"
+      ],
+      "surface_pattern": "2-4",
+      "candidate_hsk_ids": [
+        "L3-0605"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/rong2yi4.mp3",
+      "filename": "rong2yi4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/rong2yi4.mp3",
+      "sha256": "ba8feef4c8a616b139bb0b7623d61a3b07e0773c5052f97adf3fc0ea1b9f9e4d",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/rong2yi4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "伤心"
+      ],
+      "source_audio_key": "shang1xin1",
+      "source_tone_pattern": "1-1",
+      "source_syllables": [
+        "shang",
+        "xin"
+      ],
+      "surface_pattern": "1-1",
+      "candidate_hsk_ids": [
+        "L3-0611"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/shang1xin1.mp3",
+      "filename": "shang1xin1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/shang1xin1.mp3",
+      "sha256": "3a2736032275b2dec5581a78f3b9fd92fdab35a13763fceab6c493f79a0290c9",
+      "byte_length": 63616,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/shang1xin1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "舒服"
+      ],
+      "source_audio_key": "shu1fu0",
+      "source_tone_pattern": "1-N",
+      "source_syllables": [
+        "shu",
+        "fu"
+      ],
+      "surface_pattern": "1-N",
+      "candidate_hsk_ids": [
+        "L2-0499"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/shu1fu0.mp3",
+      "filename": "shu1fu0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/shu1fu0.mp3",
+      "sha256": "dc6c0fd3ba01b6f1c20296e0d9e55c98d9970cf2dbc57d77ba4c4f01ba0279a9",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/shu1fu0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "特别"
+      ],
+      "source_audio_key": "te4bie2",
+      "source_tone_pattern": "4-2",
+      "source_syllables": [
+        "te",
+        "bie"
+      ],
+      "surface_pattern": "4-2",
+      "candidate_hsk_ids": [
+        "L2-0522"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/te4bie2.mp3",
+      "filename": "te4bie2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/te4bie2.mp3",
+      "sha256": "915416aa86451938b379363a86a688c9039f323c3e77183420634b19f3be6be7",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/te4bie2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "突然"
+      ],
+      "source_audio_key": "tu1ran2",
+      "source_tone_pattern": "1-2",
+      "source_syllables": [
+        "tu",
+        "ran"
+      ],
+      "surface_pattern": "1-2",
+      "candidate_hsk_ids": [
+        "L3-0727"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/tu1ran2.mp3",
+      "filename": "tu1ran2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/tu1ran2.mp3",
+      "sha256": "4ec87295f00113503a5921f9136b50727bf609acd02c888e818e4f80932fcc6a",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/tu1ran2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "危险"
+      ],
+      "source_audio_key": "wei1xian3",
+      "source_tone_pattern": "1-3",
+      "source_syllables": [
+        "wei",
+        "xian"
+      ],
+      "surface_pattern": "1-3",
+      "candidate_hsk_ids": [
+        "L3-0750"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/wei1xian3.mp3",
+      "filename": "wei1xian3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/wei1xian3.mp3",
+      "sha256": "6f80ea4971f4cf8fb702dc0835393dfb4a3e18351d108d9a474d40f86a5f3d4c",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/wei1xian3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "无聊"
+      ],
+      "source_audio_key": "wu2liao2",
+      "source_tone_pattern": "2-2",
+      "source_syllables": [
+        "wu",
+        "liao"
+      ],
+      "surface_pattern": "2-2",
+      "candidate_hsk_ids": [
+        "L4-0766"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/wu2liao2.mp3",
+      "filename": "wu2liao2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/wu2liao2.mp3",
+      "sha256": "f198b714b5a968f0eed9adf8740e07c004fe1bffe61a9fc1a37a2424234fb100",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/wu2liao2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "辛苦"
+      ],
+      "source_audio_key": "xin1ku3",
+      "source_tone_pattern": "1-3",
+      "source_syllables": [
+        "xin",
+        "ku"
+      ],
+      "surface_pattern": "1-3",
+      "candidate_hsk_ids": [
+        "L5-0847"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/xin1ku3.mp3",
+      "filename": "xin1ku3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/xin1ku3.mp3",
+      "sha256": "fbdf353fb9bf6debaa1795107c067ddf1bd5dc95b07174fdfbeb2988467ff694",
+      "byte_length": 63616,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/xin1ku3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "性感"
+      ],
+      "source_audio_key": "xing4gan3",
+      "source_tone_pattern": "4-3",
+      "source_syllables": [
+        "xing",
+        "gan"
+      ],
+      "surface_pattern": "4-3",
+      "candidate_hsk_ids": [],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/xing4gan3.mp3",
+      "filename": "xing4gan3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/xing4gan3.mp3",
+      "sha256": "907eb59a899adfeca68875b7e86a31ea52ea914282a12dad521ca92adfdb5940",
+      "byte_length": 61568,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/xing4gan3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "用功"
+      ],
+      "source_audio_key": "yong4gong1",
+      "source_tone_pattern": "4-1",
+      "source_syllables": [
+        "yong",
+        "gong"
+      ],
+      "surface_pattern": "4-1",
+      "candidate_hsk_ids": [
+        "L7-5041"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/yong4gong1.mp3",
+      "filename": "yong4gong1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/yong4gong1.mp3",
+      "sha256": "a5f6add09f4bfe6bf8482033de55dec98ffe1c413b71d6fcac7e09b11897987e",
+      "byte_length": 59520,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/yong4gong1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "有名"
+      ],
+      "source_audio_key": "you3ming2",
+      "source_tone_pattern": "3-2",
+      "source_syllables": [
+        "you",
+        "ming"
+      ],
+      "surface_pattern": "3-2",
+      "candidate_hsk_ids": [
+        "L1-0443"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/you3ming2.mp3",
+      "filename": "you3ming2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/you3ming2.mp3",
+      "sha256": "aeda518180c996267cb8daf6b8bbd0fb0c24e15808c23a85b92b48edacc49ab9",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/you3ming2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "糟糕"
+      ],
+      "source_audio_key": "zao1gao1",
+      "source_tone_pattern": "1-1",
+      "source_syllables": [
+        "zao",
+        "gao"
+      ],
+      "surface_pattern": "1-1",
+      "candidate_hsk_ids": [
+        "L5-0961"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/zao1gao1.mp3",
+      "filename": "zao1gao1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/zao1gao1.mp3",
+      "sha256": "dedd877aad41e42a1ac51ed4b0a4f088df92d63760865046a0303a12f64b39f4",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/zao1gao1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "重要"
+      ],
+      "source_audio_key": "zhong4yao4",
+      "source_tone_pattern": "4-4",
+      "source_syllables": [
+        "zhong",
+        "yao"
+      ],
+      "surface_pattern": "4-4",
+      "candidate_hsk_ids": [
+        "L1-0484"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/zhong4yao4.mp3",
+      "filename": "zhong4yao4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/zhong4yao4.mp3",
+      "sha256": "990556a6e4de565fae26c0a575af457829cade813167629cdb608171222c5433",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/zhong4yao4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "自私"
+      ],
+      "source_audio_key": "zi4si1",
+      "source_tone_pattern": "4-1",
+      "source_syllables": [
+        "zi",
+        "si"
+      ],
+      "surface_pattern": "4-1",
+      "candidate_hsk_ids": [
+        "L7-5564"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/adjectives-2/zi4si1.mp3",
+      "filename": "zi4si1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/2-Char Adj/zi4si1.mp3",
+      "sha256": "c1fd2375bf330f4f9fd106d60eec4b0a3d4c43641f01571a6790b82c4ec38648",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/2-Char Adj/zi4si1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "比较"
+      ],
+      "source_audio_key": "bi3jiao4",
+      "source_tone_pattern": "3-4",
+      "source_syllables": [
+        "bi",
+        "jiao"
+      ],
+      "surface_pattern": "3-4",
+      "candidate_hsk_ids": [
+        "L3-0037"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/bi3jiao4.mp3",
+      "filename": "bi3jiao4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/bi3jiao4.mp3",
+      "sha256": "9c78c9deb78478e809aba0ef5aaed79839972271bc84aa8ff071437bb9eb213f",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/bi3jiao4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "不"
+      ],
+      "source_audio_key": "bu2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "bu"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [],
+      "comparison_key": "bu2",
+      "recording_type": "isolated_tone",
+      "audio_path": "audio/sinosplice/modifiers/bu2.mp3",
+      "filename": "bu2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/bu2.mp3",
+      "sha256": "938542b195fbd9b675b41f1d2eb6e68dfd4f1cc831bd82ff9a0efa72d4b1a542",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/bu2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "不太"
+      ],
+      "source_audio_key": "bu2tai4",
+      "source_tone_pattern": "2-4",
+      "source_syllables": [
+        "bu",
+        "tai"
+      ],
+      "surface_pattern": "2-4",
+      "candidate_hsk_ids": [
+        "L2-0034"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/bu2tai4.mp3",
+      "filename": "bu2tai4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/bu2tai4.mp3",
+      "sha256": "324e50ccb75a95e02726575b952cbf43b6c3a6a0a492fc3cb29c71aceaa303bd",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/bu2tai4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "不"
+      ],
+      "source_audio_key": "bu4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "bu"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0034"
+      ],
+      "comparison_key": "bu4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/bu4.mp3",
+      "filename": "bu4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/bu4.mp3",
+      "sha256": "093af4ab5a16db210d09a459595378cca4eb122c5335b5005d17cf5d75330308",
+      "byte_length": 43136,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/bu4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "非常"
+      ],
+      "source_audio_key": "fei1chang2",
+      "source_tone_pattern": "1-2",
+      "source_syllables": [
+        "fei",
+        "chang"
+      ],
+      "surface_pattern": "1-2",
+      "candidate_hsk_ids": [
+        "L1-0108"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/fei1chang2.mp3",
+      "filename": "fei1chang2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/fei1chang2.mp3",
+      "sha256": "ec132b80aa5459bce19a3c52c167f1b4f1876490c258a4c332033fe696844d74",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/fei1chang2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "很"
+      ],
+      "source_audio_key": "hen2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "hen"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [],
+      "comparison_key": "hen2",
+      "recording_type": "isolated_tone",
+      "audio_path": "audio/sinosplice/modifiers/hen2.mp3",
+      "filename": "hen2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/hen2.mp3",
+      "sha256": "cb7832c9a1d01c8d192e911fbd2539740adf70673bdd57806555e349a2456f42",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/hen2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "很"
+      ],
+      "source_audio_key": "hen3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "hen"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0146"
+      ],
+      "comparison_key": "hen3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/hen3.mp3",
+      "filename": "hen3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/hen3.mp3",
+      "sha256": "d6d319011294d795a7c1c3a377870a8b89c951af6d801632da26a4053a604cb6",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/hen3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "蛮"
+      ],
+      "source_audio_key": "man2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "man"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [
+        "L7-2785"
+      ],
+      "comparison_key": "man2",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/man2.mp3",
+      "filename": "man2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/man2.mp3",
+      "sha256": "84a2220239e1d1abb284bf381a08807a84d639d655605418a52402c58dbf5d19",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/man2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "太"
+      ],
+      "source_audio_key": "tai4",
+      "source_tone_pattern": "4",
+      "source_syllables": [
+        "tai"
+      ],
+      "surface_pattern": "4",
+      "candidate_hsk_ids": [
+        "L1-0358"
+      ],
+      "comparison_key": "tai4",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/tai4.mp3",
+      "filename": "tai4.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/tai4.mp3",
+      "sha256": "fda58aee44b3f6980d7329ab5e07a95524296f09e14be12885fa71b7dc82f657",
+      "byte_length": 45184,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/tai4.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "特别"
+      ],
+      "source_audio_key": "te4bie2",
+      "source_tone_pattern": "4-2",
+      "source_syllables": [
+        "te",
+        "bie"
+      ],
+      "surface_pattern": "4-2",
+      "candidate_hsk_ids": [
+        "L2-0522"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/te4bie2.mp3",
+      "filename": "te4bie2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/te4bie2.mp3",
+      "sha256": "477728c4d66b136c6a9a6b8a6f2d442bab3dc30dc0330a4b265cdb886371f2c7",
+      "byte_length": 57472,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/te4bie2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "挺"
+      ],
+      "source_audio_key": "ting2",
+      "source_tone_pattern": "2",
+      "source_syllables": [
+        "ting"
+      ],
+      "surface_pattern": "2",
+      "candidate_hsk_ids": [],
+      "comparison_key": "ting2",
+      "recording_type": "isolated_tone",
+      "audio_path": "audio/sinosplice/modifiers/ting2.mp3",
+      "filename": "ting2.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/ting2.mp3",
+      "sha256": "c7c232c6a1de1db3aa525fffb1ead6490345229cbd1858a49047541fd397ed87",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/ting2.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "挺"
+      ],
+      "source_audio_key": "ting3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "ting"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L2-0541",
+        "L4-0718"
+      ],
+      "comparison_key": "ting3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/ting3.mp3",
+      "filename": "ting3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/ting3.mp3",
+      "sha256": "1930f3a4f3e374b9de47c2bcb4c70ed78c6c480f0ac5a497afd4440f04e1ddfb",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/ting3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "真"
+      ],
+      "source_audio_key": "zhen1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "zhen"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L1-0470"
+      ],
+      "comparison_key": "zhen1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/modifiers/zhen1.mp3",
+      "filename": "zhen1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Modifiers/zhen1.mp3",
+      "sha256": "6b79d5002e01d45d6533b41d68b6c683c0930498e98569de49e30db529fc6e91",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Modifiers/zhen1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "你"
+      ],
+      "source_audio_key": "ni3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "ni"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0271"
+      ],
+      "comparison_key": "ni3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/pronouns/ni3.mp3",
+      "filename": "ni3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Pronouns/ni3.mp3",
+      "sha256": "ccc21d81f4eeb5d0970ea419066f44cccdd33f03a52552fe0302088daa4da2d5",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Pronouns/ni3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "你们"
+      ],
+      "source_audio_key": "ni3men0",
+      "source_tone_pattern": "3-N",
+      "source_syllables": [
+        "ni",
+        "men"
+      ],
+      "surface_pattern": "3-N",
+      "candidate_hsk_ids": [
+        "L1-0272"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/pronouns/ni3men0.mp3",
+      "filename": "ni3men0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Pronouns/ni3men0.mp3",
+      "sha256": "bb35dc027d6c1e2c0c6b041cabc92161d6462b9b5adc21fae432168d3b4973bb",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Pronouns/ni3men0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "他",
+        "她",
+        "它"
+      ],
+      "source_audio_key": "ta1",
+      "source_tone_pattern": "1",
+      "source_syllables": [
+        "ta"
+      ],
+      "surface_pattern": "1",
+      "candidate_hsk_ids": [
+        "L1-0354",
+        "L1-0356",
+        "L2-0515"
+      ],
+      "comparison_key": "ta1",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/pronouns/ta1.mp3",
+      "filename": "ta1.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Pronouns/ta1.mp3",
+      "sha256": "0ee3faf14c0a5cb93d47c470c8d486b3669c0382630559435b9441e8ef30abbc",
+      "byte_length": 47232,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Pronouns/ta1.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "他们",
+        "她们",
+        "它们"
+      ],
+      "source_audio_key": "ta1men0",
+      "source_tone_pattern": "1-N",
+      "source_syllables": [
+        "ta",
+        "men"
+      ],
+      "surface_pattern": "1-N",
+      "candidate_hsk_ids": [
+        "L1-0355",
+        "L1-0357",
+        "L2-0516"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/pronouns/ta1men0.mp3",
+      "filename": "ta1men0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Pronouns/ta1men0.mp3",
+      "sha256": "3cc35e9265fe1836874cb562464cd9e359f79e564d960858e8ee88b67c3ab614",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Pronouns/ta1men0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "我"
+      ],
+      "source_audio_key": "wo3",
+      "source_tone_pattern": "3",
+      "source_syllables": [
+        "wo"
+      ],
+      "surface_pattern": "3",
+      "candidate_hsk_ids": [
+        "L1-0380"
+      ],
+      "comparison_key": "wo3",
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/pronouns/wo3.mp3",
+      "filename": "wo3.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Pronouns/wo3.mp3",
+      "sha256": "892d9ec516497a6a901121ce32e9d2ab67577f7e11223489bc63b30010bf2df1",
+      "byte_length": 49280,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Pronouns/wo3.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    },
+    {
+      "source": "sinosplice",
+      "word": null,
+      "source_words": [
+        "我们"
+      ],
+      "source_audio_key": "wo3men0",
+      "source_tone_pattern": "3-N",
+      "source_syllables": [
+        "wo",
+        "men"
+      ],
+      "surface_pattern": "3-N",
+      "candidate_hsk_ids": [
+        "L1-0381"
+      ],
+      "comparison_key": null,
+      "recording_type": "word_candidate",
+      "audio_path": "audio/sinosplice/pronouns/wo3men0.mp3",
+      "filename": "wo3men0.mp3",
+      "archive_member": "Sinosplice Tone Pair Drills/Audio/Pronouns/wo3men0.mp3",
+      "sha256": "c416c2858041d774ce95daf9dfc9cabb29d57a13e8bae3413a44e6931890aa87",
+      "byte_length": 55424,
+      "source_url": "https://www.sinosplice.com/wp-content/uploads/files/sinosplice-tpd-10.zip",
+      "source_page": "https://www.sinosplice.com/learn-chinese/tone-pair-drills",
+      "source_recording_id": "sinosplice/tpd-1.0/Pronouns/wo3men0.mp3",
+      "creator": "John Pasden",
+      "speaker": "unknown",
+      "language_code": "zh",
+      "license": "CC-BY-NC-SA-2.5",
+      "license_url": "https://creativecommons.org/licenses/by-nc-sa/2.5/",
+      "rights_status": "noncommercial_permitted",
+      "distribution_scope": "local_only",
+      "review_status": "pending",
+      "quiz_eligible": false,
+      "notes": "Intact licensed recording; original source tone labels retained. Spoken sandhi is a hypothesis until screened. Noncommercial use only; attribution and ShareAlike terms apply."
+    }
+  ]
+}
