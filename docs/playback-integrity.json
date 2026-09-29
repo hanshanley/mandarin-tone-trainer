@@ -3,9 +3,10 @@
   "verification_date": "2026-09-29",
   "scope": "Retained library decoding and all-source citation-screened complete-comparison quiz; not independent human linguistic certification",
   "player_sha256": {
-    "app/app.js": "1323677d8c95cc40de8c77d10a68a3fcdf194560927eca4cc9c7498b6f780b4a",
+    "app/app.js": "b1172b09193c8e59a458b9aedc6f21704a5ad3bac2b1385b1d59ee91d4f5c319",
     "app/correction_audio.js": "5d7d1d9fbc9a879748cc6efeb739e082cb719f2429166e813ca5571b93af8cba",
-    "app/audio_review.js": "441fd222356885feb5b02f3937aa111a7ffecdbe22863569c985588f4b15eecd"
+    "app/audio_review.js": "764a68df87698f424584c69c4853717430c95f565bb89201bede0392b754d884",
+    "app/glossika_lessons.js": "9dfb6654dc0745513ee27cf6cb8da03cd7b8e6ca51beb77ae618785dd3673e6c"
   },
   "inventory_sha256": "57c670c01805c06c19bc943e6a3f40461b67e13be64855ae9145b053c2a4e095",
   "practice": {
@@ -179,5 +180,115 @@
     "candidate_isolated_files": 5107,
     "all_sources_and_tones": true,
     "independent_accuracy_certified": false
+  },
+  "glossika_companion": {
+    "assets_verified": 274,
+    "lessons_decoded": 117,
+    "book_pages": 156,
+    "maximum_output_peak": 0.9000000000000002,
+    "clipped_outputs": 0,
+    "original_files_unchanged": true,
+    "interactions": {
+      "plays": [
+        {
+          "id": "tone-11",
+          "duration": 37.133333,
+          "volume": 0.6363961030678928,
+          "page": "Book page 34 (1 of 1)"
+        },
+        {
+          "id": "tone-111",
+          "duration": 25.349333,
+          "volume": 0.6363961030678928,
+          "page": "Book page 78 (1 of 1)"
+        },
+        {
+          "id": "vowel-part-1",
+          "duration": 39.461333,
+          "volume": 0.6607109942927684,
+          "page": "Book page 8 (1 of 1)"
+        },
+        {
+          "id": "consonant-1",
+          "duration": 43.0375,
+          "volume": 1,
+          "page": "Book page 4 (1 of 1)"
+        }
+      ],
+      "exclusive_playback": true,
+      "collapse_stops_audio": true,
+      "page_navigation": true,
+      "full_lesson_end_event": true,
+      "quiz_attempts_unchanged": true
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "normal": true,
+        "zoomed": true
+      },
+      {
+        "width": 393,
+        "normal": true,
+        "zoomed": true
+      },
+      {
+        "width": 1024,
+        "normal": true,
+        "zoomed": true
+      }
+    ],
+    "independent_pronunciation_certification": false,
+    "catalog_sha256": "47195b3134e263fbbb2f843657e8c6d498b1d227821526c163f148bfd8a62cd3"
+  },
+  "on_device_verification": {
+    "date": "2026-09-29",
+    "device": "Pixel 10",
+    "installed_apk_hash_verified": true,
+    "installed_apk_sha256": "379e59e49b87a2d7bd5b395f5d4ec7bbec4e982c6f5fbc2dbb2b47c167e50acd",
+    "quiz_entries": 666,
+    "decoded_quiz_files": 1121,
+    "verified_syllable_tone_voice_slots": 1424,
+    "unique_comparison_files": 530,
+    "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
+    "han_button_plays": 20,
+    "wrong_guess_preserved": true,
+    "playback_finished": true,
+    "test_attempts_restored_after_verification": true,
+    "glossika_companion": {
+      "device": "Pixel 10",
+      "lessons_decoded": 117,
+      "maximum_output_peak": 0.9000000000000002,
+      "original_encoded_recordings_preserved": true,
+      "book_pages_displayed": true,
+      "exclusive_playback": true,
+      "quiz_results_unchanged": true,
+      "plays": [
+        {
+          "id": "tone-12",
+          "duration": 51.005333,
+          "page": "Book page 35 (1 of 2)",
+          "volume": 0.6363961030678928
+        },
+        {
+          "id": "tone-444",
+          "duration": 181.037333,
+          "page": "Book page 157 (1 of 6)",
+          "volume": 0.6372075570932387
+        },
+        {
+          "id": "vowel-part-1",
+          "duration": 39.461333,
+          "page": "Book page 8 (1 of 1)",
+          "volume": 0.6607109942927684
+        },
+        {
+          "id": "consonant-1",
+          "duration": 43.0375,
+          "page": "Book page 4 (1 of 1)",
+          "volume": 1
+        }
+      ]
+    }
   }
 }

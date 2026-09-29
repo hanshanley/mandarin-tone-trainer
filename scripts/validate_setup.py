@@ -171,6 +171,7 @@ def main():
             'app.js',
             'correction_audio.js',
             'audio_review.js',
+            'glossika_lessons.js',
             'data/hsk_words.json',
             'data/definitions.json',
             'data/recordings.json',
@@ -182,10 +183,11 @@ def main():
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
             'data/sinosplice_recordings.json',
+            'data/glossika_recordings.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
-            for relative in ['index.html', 'style.css', 'app.js', 'audio_review.js', 'correction_audio.js']:
+            for relative in ['index.html', 'style.css', 'app.js', 'audio_review.js', 'correction_audio.js', 'glossika_lessons.js']:
                 target = bundle / relative
                 if target.is_file():
                     require(
@@ -204,6 +206,13 @@ def main():
                         errors,
                     )
             acoustic_path = bundle / 'data/acoustic_reviews.json'
+            companion_path = bundle / 'data/glossika_recordings.json'
+            if companion_path.is_file():
+                expected_companion = read_json('data/glossika_recordings.json') if local_bundle else {
+                    'version': 1, 'source': 'glossika', 'available': False, 'book': None, 'pages': [], 'lessons': [],
+                }
+                require(json.loads(companion_path.read_text()) == expected_companion,
+                        'mobile companion catalog is stale or includes personal-only lessons', errors)
             if acoustic_path.is_file():
                 expected = read_json('data/acoustic_reviews.json')
                 expected['approvals'] = [
@@ -226,7 +235,10 @@ def main():
 
     node_script = """
 import {loadReviewData,validateLedger,practiceInventory,quizInventory,requireToneCoverage} from './scripts/review_audio.mjs';
+import fs from 'node:fs';
+import GlossikaLessons from './app/glossika_lessons.js';
 const data=loadReviewData();
+const companion=GlossikaLessons.validateCatalog(JSON.parse(fs.readFileSync('data/glossika_recordings.json','utf8')));
 const index=validateLedger(data);
 const inventory=practiceInventory(data,index);
 const packaged=practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false}));
@@ -241,6 +253,7 @@ process.stdout.write(JSON.stringify({
   packagedEligible:packaged.eligibleWords.length,packagedAudio:[...packaged.audio],
   toneCoverage:inventory.toneCoverage,packagedToneCoverage:packaged.toneCoverage,
   quizEntries:quiz.eligibleWords.length,packagedQuizEntries:packagedQuiz.eligibleWords.length,
+  companionAssets:GlossikaLessons.assetsFor(companion),
 }));
 """
     try:
@@ -250,9 +263,15 @@ process.stdout.write(JSON.stringify({
             text=True,
         )
         selections = json.loads(output)
+        for asset in selections['companionAssets']:
+            source = ROOT / asset['audio_path']
+            require(source.is_file() and file_hash(source) == asset['sha256'],
+                    f"missing or changed original companion asset: {asset['audio_path']}", errors)
         print(f"Retained library: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; complete-comparison quiz: {selections['quizEntries']} local / {selections['packagedQuizEntries']} redistributable")
         if not args.skip_mobile:
             expected_audio=selections['audio'] if local_bundle else selections['packagedAudio']
+            if local_bundle:
+                expected_audio += [asset['audio_path'] for asset in selections['companionAssets']]
             bundled_audio = {
                 path.relative_to(bundle).as_posix()
                 for path in (bundle / 'audio').rglob('*')
@@ -285,7 +304,7 @@ process.stdout.write(JSON.stringify({
         f'{len(word_recordings)} word recordings, '
         f'{len(syllables)} human syllables, '
         f'{len(public)} public syllables'
-        f', {len(imported_recordings)} imported Mandarin Native candidates'
+        f', {len(imported_recordings)} Mandarin Native/Sinosplice source files'
         + (', mobile bundle ready' if not args.skip_mobile else '')
     )
 

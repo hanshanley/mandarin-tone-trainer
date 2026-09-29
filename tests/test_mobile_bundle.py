@@ -39,6 +39,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'style.css',
             'correction_audio.js',
             'audio_review.js',
+            'glossika_lessons.js',
             'app.js',
             'data/hsk_words.json',
             'data/definitions.json',
@@ -50,11 +51,12 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
             'data/sinosplice_recordings.json',
+            'data/glossika_recordings.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
             self.assertGreater(path.stat().st_size, 0, relative_path)
-            if relative_path == 'data/acoustic_reviews.json':
+            if relative_path in ('data/acoustic_reviews.json', 'data/glossika_recordings.json'):
                 continue
             source = ROOT / relative_path if relative_path.startswith('data/') else ROOT / 'app' / relative_path
             self.assertEqual(path.read_bytes(), source.read_bytes(), f'stale bundled {relative_path}')
@@ -77,6 +79,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         self.assertFalse((self.bundle / 'data/practice_selection.json').exists())
         self.assertFalse(any('mandarin_native/excerpts/' in path.as_posix() for path in bundled))
         self.assertFalse(any(path.as_posix().startswith('audio/sinosplice/') for path in bundled))
+        self.assertFalse(any(path.as_posix().startswith('audio/glossika/') for path in bundled))
         ledger = json.loads((ROOT / 'data/audio_reviews.json').read_text())
         acoustic = json.loads((ROOT / 'data/acoustic_reviews.json').read_text())
         if not ledger['approvals'] and not acoustic['approvals']:
@@ -123,6 +126,11 @@ process.stdout.write(JSON.stringify({
         self.assertTrue(all(entry['distribution_scope']!='local_only' for entry in acoustic['approvals']))
         self.assertFalse(acoustic['certifies_accuracy'])
         self.assertFalse((self.bundle/'data/practice_selection.json').exists())
+        companion=json.loads((self.bundle/'data/glossika_recordings.json').read_text())
+        self.assertIs(companion['available'],False)
+        self.assertEqual(companion['lessons'],[])
+        self.assertEqual(companion['pages'],[])
+        self.assertIsNone(companion['book'])
 
 
 if __name__ == '__main__':

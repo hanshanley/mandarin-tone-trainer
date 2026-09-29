@@ -399,6 +399,7 @@ def main():
     ])
     run_retry([sys.executable, 'scripts/download_mandarin_native.py', '--standalone-only'])
     run_retry([sys.executable, 'scripts/download_sinosplice.py'])
+    run_retry([sys.executable, 'scripts/download_glossika.py'])
     run([sys.executable, 'scripts/import_local_audio.py'])
     run(['npm', 'run', 'build:mobile'])
     run([sys.executable, 'scripts/validate_setup.py'])

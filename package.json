@@ -39,6 +39,7 @@
     "audit:agreement-selection": "node scripts/build_agreement_practice.mjs",
     "download:mandarin-native": "python3 scripts/download_mandarin_native.py --standalone-only",
     "download:sinosplice": "python3 scripts/download_sinosplice.py",
+    "download:glossika": "python3 scripts/download_glossika.py",
     "test": "python3 -m unittest discover -s tests -q"
   },
   "dependencies": {

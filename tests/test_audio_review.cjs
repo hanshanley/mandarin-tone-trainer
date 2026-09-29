@@ -6,6 +6,7 @@ const path=require('node:path');
 const vm=require('node:vm');
 const Review=require('../app/audio_review.js');
 const Policy=require('../app/correction_audio.js');
+const GlossikaLessons=require('../app/glossika_lessons.js');
 const ROOT=path.resolve(__dirname,'..');
 const bytes=Uint8Array.from([1,2,3,4]);
 const hash=createHash('sha256').update(bytes).digest('hex');
@@ -34,6 +35,31 @@ const comparison=(key,source='pinyin_public')=>approve(Review.comparisonDescript
   audio_path:source==='pinyin_public'?`audio/pinyin_public/${key}.mp3`:`audio/audio_cmn/syllabs/cmn-${key}.mp3`,
 }));
 const index=approvals=>Review.createIndex({version:1,approvals});
+
+test('Glossika companion schema preserves complete lessons, accompanying pages, and personal scope',()=>{
+  const catalog=JSON.parse(fs.readFileSync(path.join(ROOT,'data/glossika_recordings.json'),'utf8'));
+  assert.equal(GlossikaLessons.validateCatalog(catalog),catalog);
+  assert.equal(GlossikaLessons.assetsFor(catalog).length,1+catalog.pages.length+117);
+  assert.deepEqual(GlossikaLessons.assetsFor(GlossikaLessons.excludedCatalog()),[]);
+  for(const edit of [
+    c=>c.distribution_scope='redistributable',
+    c=>c.lessons.pop(),
+    c=>c.lessons[0].quiz_eligible=true,
+    c=>c.lessons[0].recording_type='word_candidate',
+    c=>c.lessons[0].audio_path='audio/glossika/../other.mp3',
+    c=>c.lessons[0].printed_pages=[999],
+    c=>c.pages[0].sha256='',
+    c=>c.book=null,
+    c=>c.available=false,
+  ]){
+    const changed=structuredClone(catalog);edit(changed);
+    assert.throws(()=>GlossikaLessons.validateCatalog(changed));
+  }
+  const lesson={...native,source:'glossika',recording_type:'book_lesson',
+    audio_path:catalog.lessons[0].audio_path,candidate_hsk_ids:[word.id],quiz_eligible:true};
+  assert.deepEqual(Review.nativeCandidates([word],[lesson]),[]);
+  assert.throws(()=>Review.validateApproval(approve(Review.nativeDescriptor(word,lesson))),/cannot be quiz approvals/);
+});
 
 test('missing, malformed, automated, conflicting and single-review approvals fail closed',()=>{
   assert.throws(()=>Review.createIndex({}),/ledger/);
@@ -190,6 +216,7 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     '../data/correction_audio_quality.json':quality,'../data/audio_reviews.json':{version:1,approvals},
     '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
     '../data/sinosplice_recordings.json':{version:1,recordings:sinospliceRecordings},
+    '../data/glossika_recordings.json':GlossikaLessons.excludedCatalog(),
     '../data/context_word_recordings.json':{version:1,recordings:excerpts},
     '../data/acoustic_reviews.json':{
       version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
@@ -202,7 +229,7 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     ?selectedPractice([...approvals,...acousticApprovals]):practiceSelection;
   const requests=[],played=[],errors=[];
   const context=vm.createContext({
-    AudioReview:Review,CorrectionAudio:Policy,crypto:webcrypto,Blob,
+    AudioReview:Review,CorrectionAudio:Policy,GlossikaLessons,crypto:webcrypto,Blob,
     URL:{createObjectURL:()=>`blob:verified-${played.length}`,revokeObjectURL(){}},
     console:{error:(...args)=>errors.push(args)},navigator:{},
     window:{addEventListener(){},matchMedia:()=>({matches:false}),innerHeight:900,

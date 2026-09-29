@@ -129,6 +129,19 @@ The runtime comparison index combines all eligible direct sources per
 Native, or Sinosplice syllables. Missing preferred-source clips fall back across
 the same mixed bank. Rights-filtered builds omit unavailable imported voices.
 
+Glossika is deliberately outside this comparison bank. Its 117 archive members
+are complete lessons, not isolated word takes. `download_glossika.py` verifies
+the publisher-linked ZIP and original PDF against pinned hashes, preserves the
+MP3s unchanged, and renders exact book pages using pinned PyMuPDF 1.26.5.
+`data/glossika_recordings.json` records original page numbers, physical PDF page
+indexes, hashes, and the basis for each lesson/page association. Consonant
+associations are explicitly identified as sequential rather than exact numbered
+matches. Duplicate front-matter page 3 and unnumbered promotional pages do not
+shift the lesson mappings. The app verifies each loaded recording and book page,
+keeps the accompanying book accessible, and never grades these lessons.
+Both quiz-approval validation and redistributable packaging reject their use as
+quiz clips or public app media.
+
 `cross-source-native-reference-v1` is an additional evidence route in the
 existing `data/acoustic_reviews.json`, not a competing allowlist:
 
@@ -221,15 +234,12 @@ gap-only selection that skipped alternative voices for already covered keys.
 
 Measured against commit `61e4066`, the local-use expansion preserves all 1,736
 previously usable entries and 1,814 initial examples in the library. It retains
-2,265 entries and 2,463 initial examples; Mandarin Native contributes 415 of
-those examples using 186 distinct files, plus 94 files selected for comparisons across the
-three voice preferences. These file-role counts overlap and must not be added.
-With all-source citation clarity enforced, 861 of the original 1,192 comparison
-slots are playable; 89 original families have all four tones, versus 74 in the
-original baseline. The original library has 331 unresolved slots. Including
-newly usable syllables, the library has 901 playable slots out of 1,276 and
-375 unresolved slots. None of
-these missing slots belongs to a word currently shown in the quiz.
+2,273 entries and 2,494 initial examples; Mandarin Native contributes 416 of
+those examples using 187 distinct files, and Sinosplice contributes 30 examples.
+Mandarin Native additionally provides 94 selected comparison files. These
+file-role counts overlap and must not be added. The coverage report separates
+original-baseline and expanded-library gaps across all four voice preferences.
+None of the missing slots belongs to a word currently shown in the quiz.
 All 869 imported standalone files are accounted for.
 
 The follow-on word recovery preserves the mixed bank and uses its references

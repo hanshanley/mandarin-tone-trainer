@@ -1,5 +1,6 @@
 let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineBlob=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
+let lessonPlayer=null;
 let audioReviews=new Map(), nativePlayId=0, overlayPlayId=0, nativeObjectURL=null, overlayObjectURL=null, questionLoadId=0, questionVerified=false;
 const reviewedAudioBytes=new Map();
 const playbackGains=new Map();
@@ -116,6 +117,11 @@ async function load(){
   });
   rebuildIndex();
   updatePracticeSettings();
+  lessonPlayer=GlossikaLessons.createController({
+    get:$,fetch,hashBytes:AudioReview.hashBytes,playbackGain:safePlaybackGain,
+    stopOthers:()=>stopAllAudio(true),canPlay:()=>!recordingStarting&&!mediaStream,
+  });
+  await lessonPlayer.initialize();
 }
 function updatePracticeSettings(){
   const availableSources=new Set();
@@ -411,10 +417,11 @@ function clearPersonalRecording(){
   $('playMine').disabled=true;
   $('overlay').disabled=true;
 }
-function stopAllAudio(){
+function stopAllAudio(keepLesson=false){
   stopNative();
   stopCorrection();
   stopPersonalAudio();
+  if(!keepLesson)lessonPlayer?.stop();
 }
 async function approvedAudioBytes(approval){
   if(!approval)throw new Error('No qualifying assessment for this audio');
@@ -454,9 +461,7 @@ async function safePlaybackGain(bytes,key){
   }
 }
 async function playAssessedRecording(approval,message){
-  stopCorrection();
-  stopNative();
-  stopPersonalAudio();
+  stopAllAudio();
   const playId=nativePlayId;
   try{
     const bytes=await approvedAudioBytes(approval);
@@ -606,9 +611,7 @@ async function playPinyinKey(key){
   return playPinyinSequence([key]);
 }
 async function playPinyinSequence(keys){
-  stopNative();
-  stopCorrection();
-  stopPersonalAudio();
+  stopAllAudio();
   const playId=correctionPlayId;
   try{
     const context=getCorrectionContext();
@@ -791,9 +794,7 @@ $('record').onclick=async()=>{
 }
 $('playMine').onclick=async()=>{
   if(!mineUrl||!mineBlob)return;
-  stopNative();
-  stopCorrection();
-  stopPersonalAudio();
+  stopAllAudio();
   const playId=overlayPlayId,url=mineUrl,blob=mineBlob;
   try{
     const gain=await safePlaybackGain(await blob.arrayBuffer(),url);

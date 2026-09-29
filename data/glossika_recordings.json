@@ -1,0 +1,3062 @@
+{
+  "version": 1,
+  "source": "glossika",
+  "available": true,
+  "title": "Chinese Pronunciation & Tone Training",
+  "creator": "Michael Campbell / Glossika",
+  "copyright": "Copyright 2018 Glossika. All rights reserved.",
+  "license": "All rights reserved",
+  "rights_status": "personal_companion_only",
+  "distribution_scope": "local_only",
+  "source_page": "https://ai.glossika.com/free-download/glossika-chinese-pronunciation-tones-training",
+  "archive_url": "https://glossika-saas.s3-ap-northeast-1.amazonaws.com/free-download/Glossika+Tone+Training.zip",
+  "archive_sha256": "3363ef0452006ad5422a6335906a8856c242c912d2c8c4b8cb31b738c14bd81b",
+  "terms_url": "https://ai.glossika.com/terms",
+  "book": {
+    "audio_path": "audio/glossika/book.pdf",
+    "sha256": "598fb985ed52628ec1a5d27e0a9e41347d49244f81abcd713d6aa233dacf49ba",
+    "source_url": "https://d310pm6npapqqb.cloudfront.net/free-download/Glossika%20Chinese%20Pronunciation%20%26%20Tone%20Training.pdf",
+    "page_count": 175,
+    "byte_length": 8525325
+  },
+  "renderer": {
+    "name": "PyMuPDF",
+    "version": "1.26.5",
+    "scale": 1.75
+  },
+  "pages": [
+    {
+      "printed_page": 3,
+      "pdf_page": 4,
+      "audio_path": "audio/glossika/pages/003.png",
+      "sha256": "cab9af90cc95a2c21fcd9f0bb07ef0ed62bc3f794a8e5ffde555e4f5d9283d35",
+      "byte_length": 112599
+    },
+    {
+      "printed_page": 4,
+      "pdf_page": 5,
+      "audio_path": "audio/glossika/pages/004.png",
+      "sha256": "d63c6a94487dea793c9d223c9c3c73eb6e3b82216829f64a6fe1b2dc11c79a8e",
+      "byte_length": 166213
+    },
+    {
+      "printed_page": 5,
+      "pdf_page": 6,
+      "audio_path": "audio/glossika/pages/005.png",
+      "sha256": "d36f0e2a772287176526df3f6bb78cea2248e62ec0c431fab9f242063018c1dc",
+      "byte_length": 84049
+    },
+    {
+      "printed_page": 6,
+      "pdf_page": 7,
+      "audio_path": "audio/glossika/pages/006.png",
+      "sha256": "bba9ca7a828f62f3a9236c11f22f952d787518242c476367a703ca8dbd86fe0f",
+      "byte_length": 189082
+    },
+    {
+      "printed_page": 8,
+      "pdf_page": 9,
+      "audio_path": "audio/glossika/pages/008.png",
+      "sha256": "ac079b062baa0d93fc9ae256042792178aea933aa322bb390104dd5118ac26eb",
+      "byte_length": 118379
+    },
+    {
+      "printed_page": 9,
+      "pdf_page": 10,
+      "audio_path": "audio/glossika/pages/009.png",
+      "sha256": "c94946a4ffbded5b5dfed605f8470eb25438a3008c082e98e24e9f1306d5146f",
+      "byte_length": 105247
+    },
+    {
+      "printed_page": 10,
+      "pdf_page": 11,
+      "audio_path": "audio/glossika/pages/010.png",
+      "sha256": "803c26235a7cba700d3206154bc3b44173d99b5c134e5e4ee8633b1ed1defdae",
+      "byte_length": 120536
+    },
+    {
+      "printed_page": 11,
+      "pdf_page": 12,
+      "audio_path": "audio/glossika/pages/011.png",
+      "sha256": "bb548e4df09b63bfdbfdd6cd1f5e9920bc38fafe40625972392168acd2461d77",
+      "byte_length": 76462
+    },
+    {
+      "printed_page": 12,
+      "pdf_page": 13,
+      "audio_path": "audio/glossika/pages/012.png",
+      "sha256": "b8f85a5f33973d77eecd81549fcc8053872e6d9d9703b10223ce822fcaf2b33e",
+      "byte_length": 109387
+    },
+    {
+      "printed_page": 13,
+      "pdf_page": 14,
+      "audio_path": "audio/glossika/pages/013.png",
+      "sha256": "b9c760f2dde5b21f735a4cd9cd17b284914b5f33257c317ca1e2b85a4751aab0",
+      "byte_length": 61943
+    },
+    {
+      "printed_page": 14,
+      "pdf_page": 15,
+      "audio_path": "audio/glossika/pages/014.png",
+      "sha256": "e3cdad68fe9f66b7efade73b1e2d27cd0f12ddf514644dcc0bdd707030338105",
+      "byte_length": 146354
+    },
+    {
+      "printed_page": 15,
+      "pdf_page": 16,
+      "audio_path": "audio/glossika/pages/015.png",
+      "sha256": "39e66149d5bb39bd77f0d2c9d690b684ec5e2e89ff5581e79a6b6b2fe91f0364",
+      "byte_length": 128256
+    },
+    {
+      "printed_page": 16,
+      "pdf_page": 17,
+      "audio_path": "audio/glossika/pages/016.png",
+      "sha256": "cfa180bc88e26bf0b8224471b54f92da2334797183e139049e203974ac5e6983",
+      "byte_length": 149059
+    },
+    {
+      "printed_page": 17,
+      "pdf_page": 18,
+      "audio_path": "audio/glossika/pages/017.png",
+      "sha256": "39398b07763e07cc6ce691b25d83f779683c10971ded951095491613d4fc3029",
+      "byte_length": 156315
+    },
+    {
+      "printed_page": 18,
+      "pdf_page": 19,
+      "audio_path": "audio/glossika/pages/018.png",
+      "sha256": "e26f54212eaaadc36c6384dd81ec5384b77478f9efa4675230e00af01366b8b4",
+      "byte_length": 171266
+    },
+    {
+      "printed_page": 19,
+      "pdf_page": 20,
+      "audio_path": "audio/glossika/pages/019.png",
+      "sha256": "3054562c1de6e0197cedff3adf3b8d7792bd7d38dd8a65c7362cb3c8c42909a9",
+      "byte_length": 72246
+    },
+    {
+      "printed_page": 20,
+      "pdf_page": 21,
+      "audio_path": "audio/glossika/pages/020.png",
+      "sha256": "eca732e14ae0f0dd425e989a9d8fbe2e5127ef3c98b3ba5e6f46bafb41ecdf32",
+      "byte_length": 161035
+    },
+    {
+      "printed_page": 21,
+      "pdf_page": 22,
+      "audio_path": "audio/glossika/pages/021.png",
+      "sha256": "88e439da1e12b9a0cb6752fd83f749aca963a7f8eba6551a63ea332d7673a430",
+      "byte_length": 133366
+    },
+    {
+      "printed_page": 22,
+      "pdf_page": 23,
+      "audio_path": "audio/glossika/pages/022.png",
+      "sha256": "aeb6114e2d3ca3e3527ac70dac59c204471a2309ef26afb8e315a9c080d5b848",
+      "byte_length": 106341
+    },
+    {
+      "printed_page": 23,
+      "pdf_page": 24,
+      "audio_path": "audio/glossika/pages/023.png",
+      "sha256": "05e590e9f8920e062daec0693d341c1bbbdca0b65f6951804c69f7c6ab5529eb",
+      "byte_length": 119166
+    },
+    {
+      "printed_page": 24,
+      "pdf_page": 25,
+      "audio_path": "audio/glossika/pages/024.png",
+      "sha256": "a215f3b3bded811a91a7265ea481782b30eda12b4fad564717fbdaa4ba056052",
+      "byte_length": 155584
+    },
+    {
+      "printed_page": 25,
+      "pdf_page": 26,
+      "audio_path": "audio/glossika/pages/025.png",
+      "sha256": "b950df2e26e3b00cd253ca6d7b254447988c79e317b01f11ff9500cd3786b0b0",
+      "byte_length": 79277
+    },
+    {
+      "printed_page": 26,
+      "pdf_page": 27,
+      "audio_path": "audio/glossika/pages/026.png",
+      "sha256": "c64375eaa09edd9aea79fb8218c27637ddc45cb7616720fb388165f9d4bb1ffc",
+      "byte_length": 149611
+    },
+    {
+      "printed_page": 27,
+      "pdf_page": 28,
+      "audio_path": "audio/glossika/pages/027.png",
+      "sha256": "46a00ce75b6e1ca76a6c2cc85150ae89dbe74b971a7c9cc3248d0b64e26a7d09",
+      "byte_length": 159823
+    },
+    {
+      "printed_page": 28,
+      "pdf_page": 29,
+      "audio_path": "audio/glossika/pages/028.png",
+      "sha256": "119fcf97e148497a24a578c4981731134d86d8ace23f22073525ea69018a0340",
+      "byte_length": 75742
+    },
+    {
+      "printed_page": 29,
+      "pdf_page": 30,
+      "audio_path": "audio/glossika/pages/029.png",
+      "sha256": "229ef33a987736398c7e89e1b13ec4fdea6bbd5f288f3448b62fe921f9fad4ed",
+      "byte_length": 145977
+    },
+    {
+      "printed_page": 30,
+      "pdf_page": 31,
+      "audio_path": "audio/glossika/pages/030.png",
+      "sha256": "b69f1f77c18ab90d1148655be188daba8cef351d802b10261f5f2e6370640403",
+      "byte_length": 94117
+    },
+    {
+      "printed_page": 34,
+      "pdf_page": 36,
+      "audio_path": "audio/glossika/pages/034.png",
+      "sha256": "9742c7d12a4cb5fc40654d596e16cf33557a9798c590f1ac2272484b6437ac69",
+      "byte_length": 143015
+    },
+    {
+      "printed_page": 35,
+      "pdf_page": 37,
+      "audio_path": "audio/glossika/pages/035.png",
+      "sha256": "0907f027e3ebdd8191eed428630e171354932d32f790f7673b6ef429c148d2a0",
+      "byte_length": 149830
+    },
+    {
+      "printed_page": 36,
+      "pdf_page": 38,
+      "audio_path": "audio/glossika/pages/036.png",
+      "sha256": "541909186ef85a8e5c2d0f7bc6dcf022699dfc327af4398b556ac95e0b10ece2",
+      "byte_length": 78413
+    },
+    {
+      "printed_page": 37,
+      "pdf_page": 39,
+      "audio_path": "audio/glossika/pages/037.png",
+      "sha256": "dc0bcc0fde180bb78d470481a6b312858ab401f159a24153b44a5160c834c5b7",
+      "byte_length": 152121
+    },
+    {
+      "printed_page": 38,
+      "pdf_page": 40,
+      "audio_path": "audio/glossika/pages/038.png",
+      "sha256": "59d83b89302812f61041ceab54cb4acc9469b3d7f51740f450d11cc714850dc6",
+      "byte_length": 112147
+    },
+    {
+      "printed_page": 39,
+      "pdf_page": 41,
+      "audio_path": "audio/glossika/pages/039.png",
+      "sha256": "8f0036957a48e48b34eb6eae6af9d146056a5ec3d42e092a691fea8e42e87d21",
+      "byte_length": 169670
+    },
+    {
+      "printed_page": 40,
+      "pdf_page": 42,
+      "audio_path": "audio/glossika/pages/040.png",
+      "sha256": "ccbaf3a7ee0c455dcab2dec85f0c1bfbca30124465e5cb6130b0b717828e8fd1",
+      "byte_length": 167420
+    },
+    {
+      "printed_page": 41,
+      "pdf_page": 43,
+      "audio_path": "audio/glossika/pages/041.png",
+      "sha256": "b876c84b44d6a25532c6ededa955be5dabf0317e103f965223aeefec103116cc",
+      "byte_length": 101039
+    },
+    {
+      "printed_page": 42,
+      "pdf_page": 44,
+      "audio_path": "audio/glossika/pages/042.png",
+      "sha256": "b7b03385d946af89dfb32528255cbcb64875f68b13e482e4a876542b08b720b8",
+      "byte_length": 168916
+    },
+    {
+      "printed_page": 43,
+      "pdf_page": 45,
+      "audio_path": "audio/glossika/pages/043.png",
+      "sha256": "0d108d02c2415cb32caada13f50c4b5d682d7bf59f56fd05c325bd36fed7517d",
+      "byte_length": 96711
+    },
+    {
+      "printed_page": 44,
+      "pdf_page": 46,
+      "audio_path": "audio/glossika/pages/044.png",
+      "sha256": "2f30fdef330eaf9fe454f9bda575ec717cd6f87727bdc73825a27e196bcaad9b",
+      "byte_length": 170341
+    },
+    {
+      "printed_page": 45,
+      "pdf_page": 47,
+      "audio_path": "audio/glossika/pages/045.png",
+      "sha256": "0efbeea1b073949f329e4f1a23d343eb2946efcc40014e3f4b8ebe87c47a56e8",
+      "byte_length": 142470
+    },
+    {
+      "printed_page": 46,
+      "pdf_page": 48,
+      "audio_path": "audio/glossika/pages/046.png",
+      "sha256": "e960c5e5fb463b1196bf58addc8e7c7a99b106a2e5a02f509cde6a791116b38e",
+      "byte_length": 153334
+    },
+    {
+      "printed_page": 47,
+      "pdf_page": 49,
+      "audio_path": "audio/glossika/pages/047.png",
+      "sha256": "5d07748ee54787c92129372ac8591ff36b502014ee06bcdf5d3befa162c1dbb3",
+      "byte_length": 96563
+    },
+    {
+      "printed_page": 48,
+      "pdf_page": 50,
+      "audio_path": "audio/glossika/pages/048.png",
+      "sha256": "87b5552f341760f9e4d6109b13253f049ffae698397abad77bfd79277eb7a4e3",
+      "byte_length": 147768
+    },
+    {
+      "printed_page": 49,
+      "pdf_page": 51,
+      "audio_path": "audio/glossika/pages/049.png",
+      "sha256": "f87ae6c81c36f2a19c502ecaf3c936df56c6b270562ee6e721b14031c6c1fefa",
+      "byte_length": 170036
+    },
+    {
+      "printed_page": 50,
+      "pdf_page": 52,
+      "audio_path": "audio/glossika/pages/050.png",
+      "sha256": "17c693f255e7b6d0cc862dc9262047df005653537d6f308133be7e2d4b2e9893",
+      "byte_length": 137135
+    },
+    {
+      "printed_page": 51,
+      "pdf_page": 53,
+      "audio_path": "audio/glossika/pages/051.png",
+      "sha256": "9609b14c2980a495b156892debb55fb00a47b85bf7139c5df98ae528dcd2d407",
+      "byte_length": 95246
+    },
+    {
+      "printed_page": 52,
+      "pdf_page": 54,
+      "audio_path": "audio/glossika/pages/052.png",
+      "sha256": "7af38737745fbfaecf0c8af9e541baa1d8c135fbcc7459dae8d659ccf37befea",
+      "byte_length": 162115
+    },
+    {
+      "printed_page": 53,
+      "pdf_page": 55,
+      "audio_path": "audio/glossika/pages/053.png",
+      "sha256": "75bcc7db76085d8bd6d4471089e9effa6b9f9015486853ad816cd8a3dfed6237",
+      "byte_length": 80409
+    },
+    {
+      "printed_page": 54,
+      "pdf_page": 56,
+      "audio_path": "audio/glossika/pages/054.png",
+      "sha256": "189774d792cc8562e2d1eea5baad1c2c6a00f35f697cd6cb921bddaff063ab03",
+      "byte_length": 161447
+    },
+    {
+      "printed_page": 55,
+      "pdf_page": 57,
+      "audio_path": "audio/glossika/pages/055.png",
+      "sha256": "c804609c09703f7e183e56f05b84f6a9d8449a8da2439dd37f960de4757c64c2",
+      "byte_length": 108224
+    },
+    {
+      "printed_page": 56,
+      "pdf_page": 58,
+      "audio_path": "audio/glossika/pages/056.png",
+      "sha256": "5e278983621c6c29f61b4ce8451f5ed4700013b406b1dc589a63e72a5fa855e1",
+      "byte_length": 150420
+    },
+    {
+      "printed_page": 57,
+      "pdf_page": 59,
+      "audio_path": "audio/glossika/pages/057.png",
+      "sha256": "de46b910dff2a17ab3eeaa4f38920783e28de3c396b38523a7d0bacc68933e2a",
+      "byte_length": 104576
+    },
+    {
+      "printed_page": 58,
+      "pdf_page": 60,
+      "audio_path": "audio/glossika/pages/058.png",
+      "sha256": "fc0ad966304beaec51100ac2c9ac942e7b610350383293564e354bd5af424dca",
+      "byte_length": 158272
+    },
+    {
+      "printed_page": 59,
+      "pdf_page": 61,
+      "audio_path": "audio/glossika/pages/059.png",
+      "sha256": "de2ad1bc4d8f9b074307052efce32d0b28895ec7c3458aa5a5f5f57a4b08a8ba",
+      "byte_length": 162424
+    },
+    {
+      "printed_page": 60,
+      "pdf_page": 62,
+      "audio_path": "audio/glossika/pages/060.png",
+      "sha256": "2d140ba688a9c38b6f75b9670ceddc51f38df728d863a3e2144abe40407a49b0",
+      "byte_length": 156767
+    },
+    {
+      "printed_page": 61,
+      "pdf_page": 63,
+      "audio_path": "audio/glossika/pages/061.png",
+      "sha256": "0af980c2c51b04ca1dced53b499a3ffc23877e2ac513da461ec0d4c57c671889",
+      "byte_length": 90664
+    },
+    {
+      "printed_page": 62,
+      "pdf_page": 64,
+      "audio_path": "audio/glossika/pages/062.png",
+      "sha256": "a710a60c0dd726c014fe918ce268358eb06843bb8444d109c5fef41319dc39ab",
+      "byte_length": 161073
+    },
+    {
+      "printed_page": 63,
+      "pdf_page": 65,
+      "audio_path": "audio/glossika/pages/063.png",
+      "sha256": "16d37ee82b3940c7ca5b5de9528446fa6d5e7bae113ffac7c4e3fe8c4a0ff2d8",
+      "byte_length": 155499
+    },
+    {
+      "printed_page": 64,
+      "pdf_page": 66,
+      "audio_path": "audio/glossika/pages/064.png",
+      "sha256": "d84697a032b3e871c3ebf29fe555ca603e8e2fb66b88848c4cae32c28aef9c0a",
+      "byte_length": 46847
+    },
+    {
+      "printed_page": 65,
+      "pdf_page": 67,
+      "audio_path": "audio/glossika/pages/065.png",
+      "sha256": "04925008a4d64d68bfaea42a7225f7ec93fe83d89938d3c2ce00304b36270910",
+      "byte_length": 160110
+    },
+    {
+      "printed_page": 66,
+      "pdf_page": 68,
+      "audio_path": "audio/glossika/pages/066.png",
+      "sha256": "853bfce5b607f4af8b5124c384efb5555a80431c7df9f6c6430940f8a3aa3fbb",
+      "byte_length": 175005
+    },
+    {
+      "printed_page": 67,
+      "pdf_page": 69,
+      "audio_path": "audio/glossika/pages/067.png",
+      "sha256": "82d241f0a69ad1448ac6b0eb461b3bc7bedb3bdc50214914af650994a5f963f7",
+      "byte_length": 166540
+    },
+    {
+      "printed_page": 68,
+      "pdf_page": 70,
+      "audio_path": "audio/glossika/pages/068.png",
+      "sha256": "41f0c90bd02c04d84ed8891048679a36f11eebff6d628ffdb29ab7bef733af6d",
+      "byte_length": 170694
+    },
+    {
+      "printed_page": 69,
+      "pdf_page": 71,
+      "audio_path": "audio/glossika/pages/069.png",
+      "sha256": "6370f477d712e0a0cf24fe0555f329667aa4810b2553c2fa4cd7e8e94653dac5",
+      "byte_length": 168585
+    },
+    {
+      "printed_page": 70,
+      "pdf_page": 72,
+      "audio_path": "audio/glossika/pages/070.png",
+      "sha256": "08781568afe74bad22c73985e2d17b1b6686a4d1e1918ef1563259e8cae64bb9",
+      "byte_length": 133448
+    },
+    {
+      "printed_page": 71,
+      "pdf_page": 73,
+      "audio_path": "audio/glossika/pages/071.png",
+      "sha256": "94688edf0c754bde613ff18e5ef11cb8e64dad0c350a3343c3b5a8008a353bbf",
+      "byte_length": 170437
+    },
+    {
+      "printed_page": 72,
+      "pdf_page": 74,
+      "audio_path": "audio/glossika/pages/072.png",
+      "sha256": "299152620eaa042d82d84ad49d24189fb9712958ddf672b38a3022d014e20f37",
+      "byte_length": 157751
+    },
+    {
+      "printed_page": 73,
+      "pdf_page": 75,
+      "audio_path": "audio/glossika/pages/073.png",
+      "sha256": "5e638583b8ddc68d5f2c135bb978121cabdeaa90e6699a26306eb567825db25a",
+      "byte_length": 185160
+    },
+    {
+      "printed_page": 74,
+      "pdf_page": 76,
+      "audio_path": "audio/glossika/pages/074.png",
+      "sha256": "cc52974dc31cf212b3695519b0686232ce17b0a912023c5c9f770b05840f5877",
+      "byte_length": 162415
+    },
+    {
+      "printed_page": 75,
+      "pdf_page": 77,
+      "audio_path": "audio/glossika/pages/075.png",
+      "sha256": "82abf676131ee32d8d2f071d1d9326915a071c0b059d89dcdf58b35a9b8934d4",
+      "byte_length": 170463
+    },
+    {
+      "printed_page": 76,
+      "pdf_page": 78,
+      "audio_path": "audio/glossika/pages/076.png",
+      "sha256": "9c29a61910e6ae297170b8dd035d782c6de348478bb385d823a553753ef7bdf2",
+      "byte_length": 161015
+    },
+    {
+      "printed_page": 77,
+      "pdf_page": 79,
+      "audio_path": "audio/glossika/pages/077.png",
+      "sha256": "5e442b58091e89fede18187dfbe632bea0f9ccbf3cca7980c640e0e08c04f4be",
+      "byte_length": 140998
+    },
+    {
+      "printed_page": 78,
+      "pdf_page": 81,
+      "audio_path": "audio/glossika/pages/078.png",
+      "sha256": "e3aebff8ce5142907fb875b92e75b1bf9f8a3077e4e1053d52c47ae229cd5653",
+      "byte_length": 113401
+    },
+    {
+      "printed_page": 79,
+      "pdf_page": 82,
+      "audio_path": "audio/glossika/pages/079.png",
+      "sha256": "47e105de513e6020bf7b2df7c11e1bd6736e4220b8325f770e8846080590d7de",
+      "byte_length": 148791
+    },
+    {
+      "printed_page": 80,
+      "pdf_page": 83,
+      "audio_path": "audio/glossika/pages/080.png",
+      "sha256": "54ab4aef311d8371fd7747898432f19b4b8f1cd78ad00b80e22b620bf8e69e84",
+      "byte_length": 133122
+    },
+    {
+      "printed_page": 81,
+      "pdf_page": 84,
+      "audio_path": "audio/glossika/pages/081.png",
+      "sha256": "05e5c5ba77e4abb46b68654141961292f0b74a18d05acba96ccbd637ab4e5ab9",
+      "byte_length": 157389
+    },
+    {
+      "printed_page": 82,
+      "pdf_page": 85,
+      "audio_path": "audio/glossika/pages/082.png",
+      "sha256": "e515d689f1b538d34ab74fa1b3d0338d78a077238ae94e86fdbaa7e1d2595552",
+      "byte_length": 83784
+    },
+    {
+      "printed_page": 83,
+      "pdf_page": 86,
+      "audio_path": "audio/glossika/pages/083.png",
+      "sha256": "633e05482d99074dc291e59b2847bad5d2697cbe2e9c78f4de09d7b1077517b1",
+      "byte_length": 189521
+    },
+    {
+      "printed_page": 84,
+      "pdf_page": 87,
+      "audio_path": "audio/glossika/pages/084.png",
+      "sha256": "f92941291daa4578731e72891fab5fa12d3eeb62ebf66e8d52907422ee750f68",
+      "byte_length": 170395
+    },
+    {
+      "printed_page": 85,
+      "pdf_page": 88,
+      "audio_path": "audio/glossika/pages/085.png",
+      "sha256": "fcda32d4151d36d9922e331419a9ec3af034af1b0b8bb648380468a939561a8d",
+      "byte_length": 118476
+    },
+    {
+      "printed_page": 86,
+      "pdf_page": 89,
+      "audio_path": "audio/glossika/pages/086.png",
+      "sha256": "f62a56d632277058b4d59a9bd8cea1c61335bf255f988d074517731fd37719ad",
+      "byte_length": 156363
+    },
+    {
+      "printed_page": 87,
+      "pdf_page": 90,
+      "audio_path": "audio/glossika/pages/087.png",
+      "sha256": "29c612742860d4c8d7356bf3c829bbc371fc2b856cd3dbd650f3c125e326b664",
+      "byte_length": 202756
+    },
+    {
+      "printed_page": 88,
+      "pdf_page": 91,
+      "audio_path": "audio/glossika/pages/088.png",
+      "sha256": "6cd708c90035312fa418bf9de9df21ebaf55825d691e539beb185cdb3541cbf5",
+      "byte_length": 74151
+    },
+    {
+      "printed_page": 89,
+      "pdf_page": 92,
+      "audio_path": "audio/glossika/pages/089.png",
+      "sha256": "14085762c328b892f6cfdf2893f593f99763affe4cbb8f23ff53e77e4e1e3076",
+      "byte_length": 183546
+    },
+    {
+      "printed_page": 90,
+      "pdf_page": 93,
+      "audio_path": "audio/glossika/pages/090.png",
+      "sha256": "ca12b862b59a60171351eec2a0e6b653ea798999904bdc83466d7b2c4aaa5777",
+      "byte_length": 219209
+    },
+    {
+      "printed_page": 91,
+      "pdf_page": 94,
+      "audio_path": "audio/glossika/pages/091.png",
+      "sha256": "115b37fd883beec32afbff4258194fce3f86195e80f55a3077d456b958f48a62",
+      "byte_length": 217856
+    },
+    {
+      "printed_page": 92,
+      "pdf_page": 95,
+      "audio_path": "audio/glossika/pages/092.png",
+      "sha256": "44322ecab536ffdfb9d4129da88e42dc79f77097485e3ebdc8d394ffaa5cb5c4",
+      "byte_length": 132644
+    },
+    {
+      "printed_page": 93,
+      "pdf_page": 96,
+      "audio_path": "audio/glossika/pages/093.png",
+      "sha256": "d756704e5e53a35c3a6fe3fa20745caa6ac355fbaf30f7e947df2d165146abd7",
+      "byte_length": 205579
+    },
+    {
+      "printed_page": 94,
+      "pdf_page": 97,
+      "audio_path": "audio/glossika/pages/094.png",
+      "sha256": "b711f73b557f7d88628ca957f7067f23b45829bd953ed1736ee294d40f186bec",
+      "byte_length": 152527
+    },
+    {
+      "printed_page": 95,
+      "pdf_page": 98,
+      "audio_path": "audio/glossika/pages/095.png",
+      "sha256": "0826f0cec43699ac2378fd87439c4f22166ebcb90e717340d0b33c8667a70a22",
+      "byte_length": 146389
+    },
+    {
+      "printed_page": 96,
+      "pdf_page": 99,
+      "audio_path": "audio/glossika/pages/096.png",
+      "sha256": "874b7a2d35398fb4b5079bf3ab52e5018a07c8f1e39586729a6ef2ec9637da91",
+      "byte_length": 174180
+    },
+    {
+      "printed_page": 97,
+      "pdf_page": 100,
+      "audio_path": "audio/glossika/pages/097.png",
+      "sha256": "f85375d042d5c51cf9d42be0eba1d270b8fe07a537f9211b4cdaafc7260d964f",
+      "byte_length": 96672
+    },
+    {
+      "printed_page": 98,
+      "pdf_page": 101,
+      "audio_path": "audio/glossika/pages/098.png",
+      "sha256": "e320d4a36678b63a22564b02209935155303f4458d8ea8f6e98860d580eadde3",
+      "byte_length": 149919
+    },
+    {
+      "printed_page": 99,
+      "pdf_page": 102,
+      "audio_path": "audio/glossika/pages/099.png",
+      "sha256": "4d720bb8294999737d0a6d193f6ff48f06da1a99df6f717c6e97c1bc3a9f4edf",
+      "byte_length": 113583
+    },
+    {
+      "printed_page": 100,
+      "pdf_page": 103,
+      "audio_path": "audio/glossika/pages/100.png",
+      "sha256": "26eaedca3fc7516e8fcebf73f195028a20abb868975ad74acf5217e8bc128d29",
+      "byte_length": 156920
+    },
+    {
+      "printed_page": 101,
+      "pdf_page": 104,
+      "audio_path": "audio/glossika/pages/101.png",
+      "sha256": "2ebca875ef5a629a506440577aed9dbc752bfd5e87c0dadb1945c7abad2b9f07",
+      "byte_length": 223914
+    },
+    {
+      "printed_page": 102,
+      "pdf_page": 105,
+      "audio_path": "audio/glossika/pages/102.png",
+      "sha256": "6579d404949d238d47bc64be75fe5bddf2cc37ca769b1581944e20fb030c444d",
+      "byte_length": 227508
+    },
+    {
+      "printed_page": 103,
+      "pdf_page": 106,
+      "audio_path": "audio/glossika/pages/103.png",
+      "sha256": "d385c999b8c9aa75cfb2b90888604db65645a47136612b93b1398e2be25c1f59",
+      "byte_length": 138770
+    },
+    {
+      "printed_page": 104,
+      "pdf_page": 107,
+      "audio_path": "audio/glossika/pages/104.png",
+      "sha256": "8d86b8144793631711aac7dde0d541dbf3f52d0b2e2b0aa3b7143063e6dba57c",
+      "byte_length": 200815
+    },
+    {
+      "printed_page": 105,
+      "pdf_page": 108,
+      "audio_path": "audio/glossika/pages/105.png",
+      "sha256": "c17d2826663c209dabce39467d4c52650b1f0a49ad663ec5792a939dbde71bc9",
+      "byte_length": 146131
+    },
+    {
+      "printed_page": 106,
+      "pdf_page": 109,
+      "audio_path": "audio/glossika/pages/106.png",
+      "sha256": "13dd89c08ea2a9b6aeb39dc06720a63537b26efb6d1265971b3fc72c23ec0aeb",
+      "byte_length": 110537
+    },
+    {
+      "printed_page": 107,
+      "pdf_page": 110,
+      "audio_path": "audio/glossika/pages/107.png",
+      "sha256": "de5ebea4960241fd86fb40869e3bc1a2e46f91e206be4fb423c9c2714b4960fa",
+      "byte_length": 173713
+    },
+    {
+      "printed_page": 108,
+      "pdf_page": 111,
+      "audio_path": "audio/glossika/pages/108.png",
+      "sha256": "533a26b465f6eaf2072a9cd5170939bdbc531f70bd5d8eaaec7a6d8ca6a8863b",
+      "byte_length": 171277
+    },
+    {
+      "printed_page": 109,
+      "pdf_page": 112,
+      "audio_path": "audio/glossika/pages/109.png",
+      "sha256": "5840627713a0d2096022920350fa7a8a2e265c9d5ed0d7bbf518637fd62d2276",
+      "byte_length": 214076
+    },
+    {
+      "printed_page": 110,
+      "pdf_page": 113,
+      "audio_path": "audio/glossika/pages/110.png",
+      "sha256": "62bf15b9ef311ace096661c3e2f3a7b74d5e7f354807883845ac55f760e1796d",
+      "byte_length": 83516
+    },
+    {
+      "printed_page": 111,
+      "pdf_page": 114,
+      "audio_path": "audio/glossika/pages/111.png",
+      "sha256": "e336fd7af77fd9db407598cec7e38cb4bd7d218cb0d716dd1ce0597c50aff75f",
+      "byte_length": 207143
+    },
+    {
+      "printed_page": 112,
+      "pdf_page": 115,
+      "audio_path": "audio/glossika/pages/112.png",
+      "sha256": "5735c0f2e9adbbe02fd0c2ad6b38e9636f590a0230542230be957140d4fdff5c",
+      "byte_length": 179986
+    },
+    {
+      "printed_page": 113,
+      "pdf_page": 116,
+      "audio_path": "audio/glossika/pages/113.png",
+      "sha256": "52335376588a5222158eff4b4c5827f6270a09862f6d5d6f056089d2c0a60d9d",
+      "byte_length": 180698
+    },
+    {
+      "printed_page": 114,
+      "pdf_page": 117,
+      "audio_path": "audio/glossika/pages/114.png",
+      "sha256": "20418660aa13a4459758ce76be134288b42afab7254223aca5a1fee4f5207031",
+      "byte_length": 126664
+    },
+    {
+      "printed_page": 115,
+      "pdf_page": 118,
+      "audio_path": "audio/glossika/pages/115.png",
+      "sha256": "4f36d11b9a9fd0384889cae8295f478006cc807d0ebe36478dc5ced74bd72f5d",
+      "byte_length": 86189
+    },
+    {
+      "printed_page": 116,
+      "pdf_page": 119,
+      "audio_path": "audio/glossika/pages/116.png",
+      "sha256": "96544491c96955f0c4d59f5528a0402eb27ad3355f86ba046f77d0a7d943ce9e",
+      "byte_length": 218932
+    },
+    {
+      "printed_page": 117,
+      "pdf_page": 120,
+      "audio_path": "audio/glossika/pages/117.png",
+      "sha256": "e3a8a93e05e8ad58ec5b248829d3be43a0c76e6c021486cf67be81aa04eef0dc",
+      "byte_length": 150826
+    },
+    {
+      "printed_page": 118,
+      "pdf_page": 121,
+      "audio_path": "audio/glossika/pages/118.png",
+      "sha256": "cf0a2faca2a53710cb3e2e8f165fe93ad4c7490db3eb20f5578b4c995f985aa9",
+      "byte_length": 201367
+    },
+    {
+      "printed_page": 119,
+      "pdf_page": 122,
+      "audio_path": "audio/glossika/pages/119.png",
+      "sha256": "7e8d3b83576a5205a8fd9aa99c3666b2eaa97bcf20dcc50f788c269b155158fc",
+      "byte_length": 196270
+    },
+    {
+      "printed_page": 120,
+      "pdf_page": 123,
+      "audio_path": "audio/glossika/pages/120.png",
+      "sha256": "b0e3b893d9a801a917fd6471d4303d15f7d15eccc956d9ea20605bab137948f6",
+      "byte_length": 118439
+    },
+    {
+      "printed_page": 121,
+      "pdf_page": 124,
+      "audio_path": "audio/glossika/pages/121.png",
+      "sha256": "e7f942a18409f39ca3c1c40a8c405b5344a43f7911d434979c0bd75cf816d7a2",
+      "byte_length": 204441
+    },
+    {
+      "printed_page": 122,
+      "pdf_page": 125,
+      "audio_path": "audio/glossika/pages/122.png",
+      "sha256": "3b3bb5eaa7aa8779526b07b3cd303c0c3845afdb1ad30482afdf61ecfbc5a090",
+      "byte_length": 147090
+    },
+    {
+      "printed_page": 123,
+      "pdf_page": 126,
+      "audio_path": "audio/glossika/pages/123.png",
+      "sha256": "e895863153e2144940c45298ca50aad810396dd5e3ca76dd1266e6ea2a059885",
+      "byte_length": 91085
+    },
+    {
+      "printed_page": 124,
+      "pdf_page": 127,
+      "audio_path": "audio/glossika/pages/124.png",
+      "sha256": "6a200ce3b0e48ec105deb67dcefeefb218830f9c61ed9f77b50217307cc36306",
+      "byte_length": 155903
+    },
+    {
+      "printed_page": 125,
+      "pdf_page": 128,
+      "audio_path": "audio/glossika/pages/125.png",
+      "sha256": "73f73eedbd4bbd2acb4184577e2ee4d4bec995f4b2aab37c448a4f8930c698a7",
+      "byte_length": 211995
+    },
+    {
+      "printed_page": 126,
+      "pdf_page": 129,
+      "audio_path": "audio/glossika/pages/126.png",
+      "sha256": "a3acde72ede8f4ac4614908e71586fe451b0ed404511ec73f0586401b36de8da",
+      "byte_length": 176391
+    },
+    {
+      "printed_page": 127,
+      "pdf_page": 130,
+      "audio_path": "audio/glossika/pages/127.png",
+      "sha256": "c408241894916b862040290c9cbe263bcb2f2736383d86da8b4661fc17ea1264",
+      "byte_length": 110473
+    },
+    {
+      "printed_page": 128,
+      "pdf_page": 131,
+      "audio_path": "audio/glossika/pages/128.png",
+      "sha256": "5556b6db8b041d981a8070f0af8d79fefec07ede297a01cfe1f8f7d0aeebad82",
+      "byte_length": 140629
+    },
+    {
+      "printed_page": 129,
+      "pdf_page": 132,
+      "audio_path": "audio/glossika/pages/129.png",
+      "sha256": "b50dbc33f6c9d7618ae602565cd4a6c28e5ffff60a166a924ffca942b2be86fc",
+      "byte_length": 203779
+    },
+    {
+      "printed_page": 130,
+      "pdf_page": 133,
+      "audio_path": "audio/glossika/pages/130.png",
+      "sha256": "8044fecbbb8e50c1b671d9dc018ec688e4a7061e01bf0e966f1ad9d0297f9776",
+      "byte_length": 79859
+    },
+    {
+      "printed_page": 131,
+      "pdf_page": 134,
+      "audio_path": "audio/glossika/pages/131.png",
+      "sha256": "cc1169e2d732be91c556c165157298b6022745c2b495dc82c815a5fb96908df2",
+      "byte_length": 141766
+    },
+    {
+      "printed_page": 132,
+      "pdf_page": 135,
+      "audio_path": "audio/glossika/pages/132.png",
+      "sha256": "42552b5175e07007489fee51c152226d08ab0b4742bc687fb0d94d263df35e95",
+      "byte_length": 184412
+    },
+    {
+      "printed_page": 133,
+      "pdf_page": 136,
+      "audio_path": "audio/glossika/pages/133.png",
+      "sha256": "ec40b9eec172ea6af17d23535b13920818da33c2efe0537dba90def0ba061d82",
+      "byte_length": 185251
+    },
+    {
+      "printed_page": 134,
+      "pdf_page": 137,
+      "audio_path": "audio/glossika/pages/134.png",
+      "sha256": "8e00148032c7445a7ccc3e06bb6868081e03e695e1c6ec99461b962a43a40aa6",
+      "byte_length": 154069
+    },
+    {
+      "printed_page": 135,
+      "pdf_page": 138,
+      "audio_path": "audio/glossika/pages/135.png",
+      "sha256": "7fabf2132d7a3f07ca2101184628393db075b763a0b0d407655e7d2a4880a98e",
+      "byte_length": 205695
+    },
+    {
+      "printed_page": 136,
+      "pdf_page": 139,
+      "audio_path": "audio/glossika/pages/136.png",
+      "sha256": "13e9da3895a9eb6ae8de03ed99e4a0ac44970bcd71a8b21f49c7b74b6539e84c",
+      "byte_length": 104479
+    },
+    {
+      "printed_page": 137,
+      "pdf_page": 140,
+      "audio_path": "audio/glossika/pages/137.png",
+      "sha256": "e0654a207f3e05ce95ccc782578c7274e5e4d42c92c338c93678ff1632a25fc5",
+      "byte_length": 157340
+    },
+    {
+      "printed_page": 138,
+      "pdf_page": 141,
+      "audio_path": "audio/glossika/pages/138.png",
+      "sha256": "6c664838ecfcf86b08c1f6d94e6f2ced21b75952efdb62e5969775d6b5189e15",
+      "byte_length": 160979
+    },
+    {
+      "printed_page": 139,
+      "pdf_page": 142,
+      "audio_path": "audio/glossika/pages/139.png",
+      "sha256": "27f81692b249936b672693f2a03030cbc17dc03df187827f61b60be797f8c4cf",
+      "byte_length": 123160
+    },
+    {
+      "printed_page": 140,
+      "pdf_page": 143,
+      "audio_path": "audio/glossika/pages/140.png",
+      "sha256": "7e1f3a34ca370fe8b864dce88c2a944e42e932e2cadefbce56af194344db9c9c",
+      "byte_length": 161394
+    },
+    {
+      "printed_page": 141,
+      "pdf_page": 144,
+      "audio_path": "audio/glossika/pages/141.png",
+      "sha256": "2e1ee07b2fb037b4201651b54d354ee87c77b12353f9668264844c53ca9eba4e",
+      "byte_length": 185550
+    },
+    {
+      "printed_page": 142,
+      "pdf_page": 145,
+      "audio_path": "audio/glossika/pages/142.png",
+      "sha256": "c6c004f5e20b20903586740330062782d147f387fcf8f42a04c67a03b6474f83",
+      "byte_length": 150250
+    },
+    {
+      "printed_page": 143,
+      "pdf_page": 146,
+      "audio_path": "audio/glossika/pages/143.png",
+      "sha256": "6fd2c846c3bdd8f447e05846689b4039a6c357eaf57bfc0b6458b9f7c0b21a72",
+      "byte_length": 126890
+    },
+    {
+      "printed_page": 144,
+      "pdf_page": 147,
+      "audio_path": "audio/glossika/pages/144.png",
+      "sha256": "b7539c947a6112d3f316e9b89035894bae3208f2d6d782b0f0368a1ef0077e05",
+      "byte_length": 153371
+    },
+    {
+      "printed_page": 145,
+      "pdf_page": 148,
+      "audio_path": "audio/glossika/pages/145.png",
+      "sha256": "1fd1010a77b37f7a208265a90992ac3a4da2fdc47dd164636b966f3bb3913bed",
+      "byte_length": 77870
+    },
+    {
+      "printed_page": 146,
+      "pdf_page": 149,
+      "audio_path": "audio/glossika/pages/146.png",
+      "sha256": "e32474b24807df52dc9cec6fd4cace0dd3d218a68a205b67b1280bd40160c2c1",
+      "byte_length": 199173
+    },
+    {
+      "printed_page": 147,
+      "pdf_page": 150,
+      "audio_path": "audio/glossika/pages/147.png",
+      "sha256": "59f377c4280d581dd42caa8f3d6eef9164d2660311fefabefb9eee351ac2d1a0",
+      "byte_length": 197791
+    },
+    {
+      "printed_page": 148,
+      "pdf_page": 151,
+      "audio_path": "audio/glossika/pages/148.png",
+      "sha256": "ea12d65477f12fe31122d0ad936a1a2d116e86ced56fef0ad62e79f0acae8278",
+      "byte_length": 196705
+    },
+    {
+      "printed_page": 149,
+      "pdf_page": 152,
+      "audio_path": "audio/glossika/pages/149.png",
+      "sha256": "b05cf2736389cb9b63d81cb6e17ef216f90c403b607f9bb93fd862d47d7fbc8c",
+      "byte_length": 60055
+    },
+    {
+      "printed_page": 150,
+      "pdf_page": 153,
+      "audio_path": "audio/glossika/pages/150.png",
+      "sha256": "68e7cf1198af6800fb44e7d8ff8bae820d5513a055689d46bf3cf0dfa8939176",
+      "byte_length": 175044
+    },
+    {
+      "printed_page": 151,
+      "pdf_page": 154,
+      "audio_path": "audio/glossika/pages/151.png",
+      "sha256": "7e62ef5f166505852dd5791fb487275817e463af13e7de711a49bf9d5559d810",
+      "byte_length": 177312
+    },
+    {
+      "printed_page": 152,
+      "pdf_page": 155,
+      "audio_path": "audio/glossika/pages/152.png",
+      "sha256": "83f94793bcfb56071776f9574cfff5493c6b30fd2b401d0750805bea014ecb11",
+      "byte_length": 204714
+    },
+    {
+      "printed_page": 153,
+      "pdf_page": 156,
+      "audio_path": "audio/glossika/pages/153.png",
+      "sha256": "8c758e4cb3e122378f40afe6655d762fb5c53fcf95caf0da459fec5d503d33b9",
+      "byte_length": 204826
+    },
+    {
+      "printed_page": 154,
+      "pdf_page": 157,
+      "audio_path": "audio/glossika/pages/154.png",
+      "sha256": "0abd6d8f36d695a030141819a68e541a22727d72be7a7aa1dc769a3335969e2e",
+      "byte_length": 214894
+    },
+    {
+      "printed_page": 155,
+      "pdf_page": 158,
+      "audio_path": "audio/glossika/pages/155.png",
+      "sha256": "a4faab51919633e96d71acd949764b9eb1de2aecaf07be3fb040911c4f671d5c",
+      "byte_length": 154268
+    },
+    {
+      "printed_page": 156,
+      "pdf_page": 159,
+      "audio_path": "audio/glossika/pages/156.png",
+      "sha256": "34c736a3a757d2d0dace83f5287af714cdd938b13fd7868be25f93cb63fe555a",
+      "byte_length": 189769
+    },
+    {
+      "printed_page": 157,
+      "pdf_page": 160,
+      "audio_path": "audio/glossika/pages/157.png",
+      "sha256": "65c5b0b0550a71626520d14af7d0489f6eb3d4d63ce98872a6910f2233a9c17e",
+      "byte_length": 185666
+    },
+    {
+      "printed_page": 158,
+      "pdf_page": 161,
+      "audio_path": "audio/glossika/pages/158.png",
+      "sha256": "9fb85ff13b66e6f8d6c057fd866d8a69f66794aaea16a03420aa0b84dda8be8e",
+      "byte_length": 226015
+    },
+    {
+      "printed_page": 159,
+      "pdf_page": 162,
+      "audio_path": "audio/glossika/pages/159.png",
+      "sha256": "fc1d23ed83a51ab23dc6b6340eab47fd51454cc7b86036c8678ad3400c8065cf",
+      "byte_length": 195972
+    },
+    {
+      "printed_page": 160,
+      "pdf_page": 163,
+      "audio_path": "audio/glossika/pages/160.png",
+      "sha256": "b933d9f569c31956a9145d39e294541283313adb3f45cb4f9435bb925245799f",
+      "byte_length": 195394
+    },
+    {
+      "printed_page": 161,
+      "pdf_page": 164,
+      "audio_path": "audio/glossika/pages/161.png",
+      "sha256": "697d3eb36ec07682a6510d68326ded3474fd4bd9cf0d8744de8848788a2ebd26",
+      "byte_length": 167750
+    },
+    {
+      "printed_page": 162,
+      "pdf_page": 165,
+      "audio_path": "audio/glossika/pages/162.png",
+      "sha256": "64926248e4aada6db297ea70dc909ba53a289d18505b6287c31b9c0d6225dd5b",
+      "byte_length": 105119
+    }
+  ],
+  "lessons": [
+    {
+      "id": "consonant-1",
+      "title": "Consonant 1",
+      "category": "consonants",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Consonant 1.mp3",
+      "audio_path": "audio/glossika/lessons/consonant-1.mp3",
+      "sha256": "c21c5f6b4c2e62d9309a746cfd86d2fcc978bf1dec1ee16d51d424b003c6825a",
+      "byte_length": 1039404,
+      "printed_pages": [
+        4
+      ],
+      "book_heading": "The easy sets",
+      "page_mapping_basis": "sequential alignment: first of exactly two Consonant tracks; PDF does not print track number"
+    },
+    {
+      "id": "consonant-2",
+      "title": "Consonant 2",
+      "category": "consonants",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Consonant 2.mp3",
+      "audio_path": "audio/glossika/lessons/consonant-2.mp3",
+      "sha256": "35eaf3bd1f5b1ca21cc5b7b25e6d866563bcb0c0a355f35b2ef377b65926ce27",
+      "byte_length": 990576,
+      "printed_pages": [
+        5,
+        6
+      ],
+      "book_heading": "The hard sets",
+      "page_mapping_basis": "sequential alignment: second of exactly two Consonant tracks; section continues through page 6; PDF does not print track number"
+    },
+    {
+      "id": "tone-11",
+      "title": "Tone 11",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 11.mp3",
+      "audio_path": "audio/glossika/lessons/tone-11.mp3",
+      "sha256": "d814e592947ecc9e0a3ace4e6af78d2334b6178cdb704a66f058f8707157b7a5",
+      "byte_length": 915737,
+      "printed_pages": [
+        34
+      ],
+      "book_heading": "MANDARIN 1+1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-111",
+      "title": "Tone 111",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 111.mp3",
+      "audio_path": "audio/glossika/lessons/tone-111.mp3",
+      "sha256": "5c407ab7aaf2f934b10fafcef1729a41fb1b8d0cf0e1a322df409bc6c4e41f9d",
+      "byte_length": 627343,
+      "printed_pages": [
+        78
+      ],
+      "book_heading": "MANDARIN 1-1-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-112",
+      "title": "Tone 112",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 112.mp3",
+      "audio_path": "audio/glossika/lessons/tone-112.mp3",
+      "sha256": "0e76ad153f1455afc5dcd885722489eccf8da50e1217fede4f985d513c135483",
+      "byte_length": 490389,
+      "printed_pages": [
+        79
+      ],
+      "book_heading": "MANDARIN 1-1-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-113",
+      "title": "Tone 113",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 113.mp3",
+      "audio_path": "audio/glossika/lessons/tone-113.mp3",
+      "sha256": "8edd8ffe42330f8c68bc9898b41b316231600216b858ab873bebf72c94c06082",
+      "byte_length": 483448,
+      "printed_pages": [
+        79
+      ],
+      "book_heading": "MANDARIN 1-1-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-114",
+      "title": "Tone 114",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 114.mp3",
+      "audio_path": "audio/glossika/lessons/tone-114.mp3",
+      "sha256": "a6a7bbe636e72e5431a2c5f83cf3ad343869a86359f208a5d94fb5ca95cc8a63",
+      "byte_length": 719946,
+      "printed_pages": [
+        80
+      ],
+      "book_heading": "MANDARIN 1-1-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-12",
+      "title": "Tone 12",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 12.mp3",
+      "audio_path": "audio/glossika/lessons/tone-12.mp3",
+      "sha256": "080c0bd4a6e6af8a2f94c6745c6bc876d069e104be45eb1c0dad18c542021d48",
+      "byte_length": 1252957,
+      "printed_pages": [
+        35,
+        36
+      ],
+      "book_heading": "MANDARIN 1+2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-121",
+      "title": "Tone 121",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 121.mp3",
+      "audio_path": "audio/glossika/lessons/tone-121.mp3",
+      "sha256": "f9da11a7dac5ad6a7f5497222df756a094a8d0efb8a401d56f43592b62f1de65",
+      "byte_length": 432075,
+      "printed_pages": [
+        81
+      ],
+      "book_heading": "MANDARIN 1-2-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-122",
+      "title": "Tone 122",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 122.mp3",
+      "audio_path": "audio/glossika/lessons/tone-122.mp3",
+      "sha256": "4ddefd5c9ae9e2024a9759a6e41b56424b812f29c021a07207d120cc2cfeec83",
+      "byte_length": 682440,
+      "printed_pages": [
+        81
+      ],
+      "book_heading": "MANDARIN 1-2-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-123",
+      "title": "Tone 123",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 123.mp3",
+      "audio_path": "audio/glossika/lessons/tone-123.mp3",
+      "sha256": "6543f746b1b27cd6df1b941ba07e36d324d8487a6060f114338dc173eb109b37",
+      "byte_length": 464759,
+      "printed_pages": [
+        82
+      ],
+      "book_heading": "MANDARIN 1-2-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-124",
+      "title": "Tone 124",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 124.mp3",
+      "audio_path": "audio/glossika/lessons/tone-124.mp3",
+      "sha256": "3ff6205d31fe514c449cca60a1bb4d7b36194e35a876d6d9d668f5d3400f9984",
+      "byte_length": 1334692,
+      "printed_pages": [
+        83,
+        84
+      ],
+      "book_heading": "MANDARIN 1-2-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-13",
+      "title": "Tone 13",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 13.mp3",
+      "audio_path": "audio/glossika/lessons/tone-13.mp3",
+      "sha256": "86cc02f4dce66a2ebac65355b526cb3517472d27b12f2afe57c0b0911ffa0a6f",
+      "byte_length": 1409872,
+      "printed_pages": [
+        37,
+        38
+      ],
+      "book_heading": "MANDARIN 1+3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-131",
+      "title": "Tone 131",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 131.mp3",
+      "audio_path": "audio/glossika/lessons/tone-131.mp3",
+      "sha256": "ce8c1eb65eb6b0ef19782a4ebe8e3c5c5c6ce8d6c11144fafc4f75b48cda3a30",
+      "byte_length": 613923,
+      "printed_pages": [
+        84
+      ],
+      "book_heading": "MANDARIN 1-3-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-132",
+      "title": "Tone 132",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 132.mp3",
+      "audio_path": "audio/glossika/lessons/tone-132.mp3",
+      "sha256": "77416b7ff6d420a36d3e304c9330b2f491e2a22bcb38c31213ec5e0817876d5a",
+      "byte_length": 697377,
+      "printed_pages": [
+        85
+      ],
+      "book_heading": "MANDARIN 1-3-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-133",
+      "title": "Tone 133",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 133.mp3",
+      "audio_path": "audio/glossika/lessons/tone-133.mp3",
+      "sha256": "8b463be779f374dbce577f26a4c50eba7e3ec0a2269c88b930709741938c06f7",
+      "byte_length": 823355,
+      "printed_pages": [
+        86
+      ],
+      "book_heading": "MANDARIN 1-3-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-134",
+      "title": "Tone 134",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 134.mp3",
+      "audio_path": "audio/glossika/lessons/tone-134.mp3",
+      "sha256": "e6b6ebf1a48a0a17c132bd5f7df202926df95300807bd79e87c1ebe53eeb9277",
+      "byte_length": 1358538,
+      "printed_pages": [
+        87,
+        88
+      ],
+      "book_heading": "MANDARIN 1-3-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-14",
+      "title": "Tone 14",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 14.mp3",
+      "audio_path": "audio/glossika/lessons/tone-14.mp3",
+      "sha256": "87666748a844baf6e0398887fda4bd347325fa8f2258dbd0a269e9d8d78280ad",
+      "byte_length": 2156080,
+      "printed_pages": [
+        39,
+        40,
+        41
+      ],
+      "book_heading": "MANDARIN 1+4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-141",
+      "title": "Tone 141",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 141.mp3",
+      "audio_path": "audio/glossika/lessons/tone-141.mp3",
+      "sha256": "9291466cd6a95d9423cab0d32a34da31cb2ac14425733f6b601796f2e94f0465",
+      "byte_length": 1084695,
+      "printed_pages": [
+        89
+      ],
+      "book_heading": "MANDARIN 1-4-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-142",
+      "title": "Tone 142",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 142.mp3",
+      "audio_path": "audio/glossika/lessons/tone-142.mp3",
+      "sha256": "a62827e39fbace4abbc23f2641fce64793fea99e92100f9753e25ae6f1dc4e77",
+      "byte_length": 1338514,
+      "printed_pages": [
+        90
+      ],
+      "book_heading": "MANDARIN 1-4-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-143",
+      "title": "Tone 143",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 143.mp3",
+      "audio_path": "audio/glossika/lessons/tone-143.mp3",
+      "sha256": "52c1e6a11eed6585f0ea7a3797a27c9751a37c6ce936f66ef10837064e320e40",
+      "byte_length": 1115792,
+      "printed_pages": [
+        91
+      ],
+      "book_heading": "MANDARIN 1-4-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-144",
+      "title": "Tone 144",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 144.mp3",
+      "audio_path": "audio/glossika/lessons/tone-144.mp3",
+      "sha256": "479ddecbd4c9b607541d5153e71371135dcd10ce8606155734f453efcc9b5211",
+      "byte_length": 2072550,
+      "printed_pages": [
+        92,
+        93,
+        94
+      ],
+      "book_heading": "MANDARIN 1-4-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-21",
+      "title": "Tone 21",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 21.mp3",
+      "audio_path": "audio/glossika/lessons/tone-21.mp3",
+      "sha256": "3e93b5d8b13cc41dc7862206d6f90ea004b85f383f3b6037bdd5fb97de12d307",
+      "byte_length": 1409873,
+      "printed_pages": [
+        42,
+        43
+      ],
+      "book_heading": "MANDARIN 2+1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-211",
+      "title": "Tone 211",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 211.mp3",
+      "audio_path": "audio/glossika/lessons/tone-211.mp3",
+      "sha256": "7525b1366ee3d242fefaa230ddc3aec75e59229a0776f99c24e7779d25dadb0f",
+      "byte_length": 459609,
+      "printed_pages": [
+        94
+      ],
+      "book_heading": "MANDARIN 2-1-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-212",
+      "title": "Tone 212",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 212.mp3",
+      "audio_path": "audio/glossika/lessons/tone-212.mp3",
+      "sha256": "03949f830de74af533cecdac8bf030d0f25cd8ed00f2dc97b883a3cf33a0937b",
+      "byte_length": 560671,
+      "printed_pages": [
+        95
+      ],
+      "book_heading": "MANDARIN 2-1-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-213",
+      "title": "Tone 213",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 213.mp3",
+      "audio_path": "audio/glossika/lessons/tone-213.mp3",
+      "sha256": "40967c3294a2c79371fb15eef30b927efdff1386d3aeaac2590bcb09dcf26180",
+      "byte_length": 448089,
+      "printed_pages": [
+        95
+      ],
+      "book_heading": "MANDARIN 2-1-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-214",
+      "title": "Tone 214",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 214.mp3",
+      "audio_path": "audio/glossika/lessons/tone-214.mp3",
+      "sha256": "7a88d6ed47fef628dd4a063e0d87d745e04e335b5536671cbb886adcec4477ab",
+      "byte_length": 1263054,
+      "printed_pages": [
+        96,
+        97
+      ],
+      "book_heading": "MANDARIN 2-1-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-22",
+      "title": "Tone 22",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 22.mp3",
+      "audio_path": "audio/glossika/lessons/tone-22.mp3",
+      "sha256": "750ef6eca263b06512856589274396c1dbfbd6e5ce0c721bc14915977259fb5b",
+      "byte_length": 1695466,
+      "printed_pages": [
+        44,
+        45
+      ],
+      "book_heading": "MANDARIN 2+2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-221",
+      "title": "Tone 221",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 221.mp3",
+      "audio_path": "audio/glossika/lessons/tone-221.mp3",
+      "sha256": "5babd7a84f741b9e83685a221e988cb4aca600ecfdd42165f872854e618489bf",
+      "byte_length": 868927,
+      "printed_pages": [
+        98
+      ],
+      "book_heading": "MANDARIN 2-2-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-222",
+      "title": "Tone 222",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 222.mp3",
+      "audio_path": "audio/glossika/lessons/tone-222.mp3",
+      "sha256": "410bab60a35b1cb6503abddf1970f24e300ac494cbf63bc92edd01a9895311ed",
+      "byte_length": 733928,
+      "printed_pages": [
+        99
+      ],
+      "book_heading": "MANDARIN 2-2-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-223",
+      "title": "Tone 223",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 223.mp3",
+      "audio_path": "audio/glossika/lessons/tone-223.mp3",
+      "sha256": "5c885b82e483e354824c572f6be0ac69f3028b67e0a96bda03b30b5f577621e2",
+      "byte_length": 787710,
+      "printed_pages": [
+        100
+      ],
+      "book_heading": "MANDARIN 2-2-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-224",
+      "title": "Tone 224",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 224.mp3",
+      "audio_path": "audio/glossika/lessons/tone-224.mp3",
+      "sha256": "d5c64f8c73ccf48d0485c9995362c1fc0ce1772fa3ba601e88fec0b96114e93f",
+      "byte_length": 1540182,
+      "printed_pages": [
+        101,
+        102
+      ],
+      "book_heading": "MANDARIN 2-2-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-23",
+      "title": "Tone 23",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 23.mp3",
+      "audio_path": "audio/glossika/lessons/tone-23.mp3",
+      "sha256": "d17d76beabae13cfb9c164d0fa1f9c03dcf38c8fed1e42951703ddfec2f38134",
+      "byte_length": 1298768,
+      "printed_pages": [
+        46,
+        47
+      ],
+      "book_heading": "MANDARIN 2+3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-231",
+      "title": "Tone 231",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 231.mp3",
+      "audio_path": "audio/glossika/lessons/tone-231.mp3",
+      "sha256": "6a8777f4c5fd36ee2ac25f04a177118c8bc7e683f1e559d16cebac7773c08973",
+      "byte_length": 769668,
+      "printed_pages": [
+        102
+      ],
+      "book_heading": "MANDARIN 2-3-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-232",
+      "title": "Tone 232",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 232.mp3",
+      "audio_path": "audio/glossika/lessons/tone-232.mp3",
+      "sha256": "cdcb30d11a76654d1217d854b05861d51f582b4f5a07b9ce0761bf6425288dd9",
+      "byte_length": 776983,
+      "printed_pages": [
+        103
+      ],
+      "book_heading": "MANDARIN 2-3-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-233",
+      "title": "Tone 233",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 233.mp3",
+      "audio_path": "audio/glossika/lessons/tone-233.mp3",
+      "sha256": "649229b2a87611982c65e46444e7e13d9da7201904cad9bd156e9413edfc1de5",
+      "byte_length": 526855,
+      "printed_pages": [
+        104
+      ],
+      "book_heading": "MANDARIN 2-3-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-234",
+      "title": "Tone 234",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 234.mp3",
+      "audio_path": "audio/glossika/lessons/tone-234.mp3",
+      "sha256": "dc18357057c8bcb8434b0b8d634a434c6c96ab4c8723aa31650752b2d206ba67",
+      "byte_length": 1264383,
+      "printed_pages": [
+        104,
+        105
+      ],
+      "book_heading": "MANDARIN 2-3-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-24",
+      "title": "Tone 24",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 24.mp3",
+      "audio_path": "audio/glossika/lessons/tone-24.mp3",
+      "sha256": "68e754f70f9500d145f00401eb99e71f4dfd85bc72fee65db8845ae3a225867d",
+      "byte_length": 2643633,
+      "printed_pages": [
+        48,
+        49,
+        50,
+        51
+      ],
+      "book_heading": "MANDARIN 2+4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-241",
+      "title": "Tone 241",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 241.mp3",
+      "audio_path": "audio/glossika/lessons/tone-241.mp3",
+      "sha256": "a966a1d986ac03036dde123cb8bae22261978fb70773d120d0c922234224f8df",
+      "byte_length": 648751,
+      "printed_pages": [
+        106
+      ],
+      "book_heading": "MANDARIN 2-4-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-242",
+      "title": "Tone 242",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 242.mp3",
+      "audio_path": "audio/glossika/lessons/tone-242.mp3",
+      "sha256": "f5ba00b1347505c01437d33cb523ce80d7641c3df99d4292fcf997764e7d408b",
+      "byte_length": 1804927,
+      "printed_pages": [
+        107,
+        108
+      ],
+      "book_heading": "MANDARIN 2-4-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-243",
+      "title": "Tone 243",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 243.mp3",
+      "audio_path": "audio/glossika/lessons/tone-243.mp3",
+      "sha256": "ed9ab6da212285c456cfa5553732425b457b2b357fbf4077688cf1d87668fac8",
+      "byte_length": 1353270,
+      "printed_pages": [
+        109,
+        110
+      ],
+      "book_heading": "MANDARIN 2-4-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-244",
+      "title": "Tone 244",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 244.mp3",
+      "audio_path": "audio/glossika/lessons/tone-244.mp3",
+      "sha256": "22fcdd40bc5cfbc9889e4389573ddbb7f84c669b3134964edbd78a2a241341f5",
+      "byte_length": 2397774,
+      "printed_pages": [
+        111,
+        112,
+        113
+      ],
+      "book_heading": "MANDARIN 2-4-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-31",
+      "title": "Tone 31",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 31.mp3",
+      "audio_path": "audio/glossika/lessons/tone-31.mp3",
+      "sha256": "c4fbbfb7fd23471fe5dc0ece1e72ed8d2b9aea79074f976c0e399ed1b3304a84",
+      "byte_length": 1246474,
+      "printed_pages": [
+        52,
+        53
+      ],
+      "book_heading": "MANDARIN 3+1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-311",
+      "title": "Tone 311",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 311.mp3",
+      "audio_path": "audio/glossika/lessons/tone-311.mp3",
+      "sha256": "b43e9f3382cf721c11fe0015a9a0826fea9e6d161bc8b4aba77f48681cc3c1ab",
+      "byte_length": 337140,
+      "printed_pages": [
+        114
+      ],
+      "book_heading": "MANDARIN 3-1-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-312",
+      "title": "Tone 312",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 312.mp3",
+      "audio_path": "audio/glossika/lessons/tone-312.mp3",
+      "sha256": "fb98a26fc4ccc80564d10a81ceacb5e8f9326c6671e307ba7132c00fa2a7a32d",
+      "byte_length": 447612,
+      "printed_pages": [
+        114
+      ],
+      "book_heading": "MANDARIN 3-1-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-313",
+      "title": "Tone 313",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 313.mp3",
+      "audio_path": "audio/glossika/lessons/tone-313.mp3",
+      "sha256": "71781e47172faa203497df35a77356d185e210ee9eff41cbcafea1c0af348323",
+      "byte_length": 452220,
+      "printed_pages": [
+        115
+      ],
+      "book_heading": "MANDARIN 3-1-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-314",
+      "title": "Tone 314",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 314.mp3",
+      "audio_path": "audio/glossika/lessons/tone-314.mp3",
+      "sha256": "3c041274a5d4a36079778d7342a507f86bf49ec7288075f71824bfeda4e8867a",
+      "byte_length": 1035984,
+      "printed_pages": [
+        116,
+        117
+      ],
+      "book_heading": "MANDARIN 3-1-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-32",
+      "title": "Tone 32",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 32.mp3",
+      "audio_path": "audio/glossika/lessons/tone-32.mp3",
+      "sha256": "35e590a000c5c9bd3481dc0cc59d08d57faae86ea4d4b6f5fcf74fa8e786da3d",
+      "byte_length": 1485833,
+      "printed_pages": [
+        54,
+        55
+      ],
+      "book_heading": "MANDARIN 3+2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-321",
+      "title": "Tone 321",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 321.mp3",
+      "audio_path": "audio/glossika/lessons/tone-321.mp3",
+      "sha256": "9c5ac2d78e486db66f7b675a78cf60d0d294a6c772af8102f0e0fc748416abdb",
+      "byte_length": 660225,
+      "printed_pages": [
+        117
+      ],
+      "book_heading": "MANDARIN 3-2-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-322",
+      "title": "Tone 322",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 322.mp3",
+      "audio_path": "audio/glossika/lessons/tone-322.mp3",
+      "sha256": "65522cca900cb7cb7612a581f64575e4720f69abc76c6ae88e904145ac1e12b0",
+      "byte_length": 747550,
+      "printed_pages": [
+        118
+      ],
+      "book_heading": "MANDARIN 3-2-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-323",
+      "title": "Tone 323",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 323.mp3",
+      "audio_path": "audio/glossika/lessons/tone-323.mp3",
+      "sha256": "522302ffe649fa984221742332b8fe7b05c83d6f39bc48cd543d7d96f8ee935a",
+      "byte_length": 506218,
+      "printed_pages": [
+        118
+      ],
+      "book_heading": "MANDARIN 3-2-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-324",
+      "title": "Tone 324",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 324.mp3",
+      "audio_path": "audio/glossika/lessons/tone-324.mp3",
+      "sha256": "c121ac6d95bf72722daefd080c0094b40fab6bdbe1205bfdea01a539b12f35f5",
+      "byte_length": 1102657,
+      "printed_pages": [
+        119,
+        120
+      ],
+      "book_heading": "MANDARIN 3-2-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-33",
+      "title": "Tone 33",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 33.mp3",
+      "audio_path": "audio/glossika/lessons/tone-33.mp3",
+      "sha256": "c6b09b9268579aa99f999968f1ed4e139a510f3268ca556a9ce3d6d633b3cc7a",
+      "byte_length": 1272107,
+      "printed_pages": [
+        56,
+        57
+      ],
+      "book_heading": "MANDARIN 3+3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-331",
+      "title": "Tone 331",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 331.mp3",
+      "audio_path": "audio/glossika/lessons/tone-331.mp3",
+      "sha256": "1081e551aae84ac2505135d3522db7a74065b98b3a40e0ec7ef05330e6ffd15f",
+      "byte_length": 389006,
+      "printed_pages": [
+        120
+      ],
+      "book_heading": "MANDARIN 3-3-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-332",
+      "title": "Tone 332",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 332.mp3",
+      "audio_path": "audio/glossika/lessons/tone-332.mp3",
+      "sha256": "7ca545868f37f2ff257d14dfc94e89945fb800e88ffae20535ee9b89b9507479",
+      "byte_length": 647968,
+      "printed_pages": [
+        121
+      ],
+      "book_heading": "MANDARIN 3-3-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-333",
+      "title": "Tone 333",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 333.mp3",
+      "audio_path": "audio/glossika/lessons/tone-333.mp3",
+      "sha256": "d72e622a235b914f243a74c78544836e171b2974fd4413380623b70b38aaf362",
+      "byte_length": 623166,
+      "printed_pages": [
+        121
+      ],
+      "book_heading": "MANDARIN 3-3-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-334",
+      "title": "Tone 334",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 334.mp3",
+      "audio_path": "audio/glossika/lessons/tone-334.mp3",
+      "sha256": "477b84d4682211b19522578aad740572ffa004a9c50e5b65c99f21d83ffb5e2c",
+      "byte_length": 1004377,
+      "printed_pages": [
+        122,
+        123
+      ],
+      "book_heading": "MANDARIN 3-3-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-34",
+      "title": "Tone 34",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 34.mp3",
+      "audio_path": "audio/glossika/lessons/tone-34.mp3",
+      "sha256": "dc48a7a9eaed9c0a3a218da4ae98b1780aa93d39b6a03e94bdaf2d230620ec11",
+      "byte_length": 2472720,
+      "printed_pages": [
+        58,
+        59,
+        60,
+        61
+      ],
+      "book_heading": "MANDARIN 3+4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-341",
+      "title": "Tone 341",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 341.mp3",
+      "audio_path": "audio/glossika/lessons/tone-341.mp3",
+      "sha256": "cad842758b12bffad5e0c8d89278c1bf2b99de7409336a35fdb655cf0ea0c618",
+      "byte_length": 962166,
+      "printed_pages": [
+        124
+      ],
+      "book_heading": "MANDARIN 3-4-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-342",
+      "title": "Tone 342",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 342.mp3",
+      "audio_path": "audio/glossika/lessons/tone-342.mp3",
+      "sha256": "1485a49eb933929e51a11acb921d0884161b0f2ea140e38c21ffcea2cfa245ce",
+      "byte_length": 1450424,
+      "printed_pages": [
+        125,
+        126
+      ],
+      "book_heading": "MANDARIN 3-4-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-343",
+      "title": "Tone 343",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 343.mp3",
+      "audio_path": "audio/glossika/lessons/tone-343.mp3",
+      "sha256": "fddd835e414f45c7f36e14caae21f582493f5d68e1d2978113b87d15ec828c6b",
+      "byte_length": 1166376,
+      "printed_pages": [
+        126,
+        127
+      ],
+      "book_heading": "MANDARIN 3-4-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-344",
+      "title": "Tone 344",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 344.mp3",
+      "audio_path": "audio/glossika/lessons/tone-344.mp3",
+      "sha256": "98ea044e2a99985e3ba1bed725df75071cf55a1b8abad7a90c5cda3d4466209c",
+      "byte_length": 1784130,
+      "printed_pages": [
+        128,
+        129,
+        130
+      ],
+      "book_heading": "MANDARIN 3-4-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-41",
+      "title": "Tone 41",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 41.mp3",
+      "audio_path": "audio/glossika/lessons/tone-41.mp3",
+      "sha256": "a46ff1150c03edcea61826751b6a015941d813d29529c163376e0b223c4b91ea",
+      "byte_length": 1869029,
+      "printed_pages": [
+        62,
+        63,
+        64
+      ],
+      "book_heading": "MANDARIN 4+1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-411",
+      "title": "Tone 411",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 411.mp3",
+      "audio_path": "audio/glossika/lessons/tone-411.mp3",
+      "sha256": "d801300e802b3fb15c5ebd1b63dcfa037697d27b790bad83d268a09415b2f3d6",
+      "byte_length": 801329,
+      "printed_pages": [
+        131
+      ],
+      "book_heading": "MANDARIN 4-1-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-412",
+      "title": "Tone 412",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 412.mp3",
+      "audio_path": "audio/glossika/lessons/tone-412.mp3",
+      "sha256": "661b427ffc14be7661811f1d9797966a21fff5173b469e9928d0ad1e3c4a546d",
+      "byte_length": 983584,
+      "printed_pages": [
+        132
+      ],
+      "book_heading": "MANDARIN 4-1-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-413",
+      "title": "Tone 413",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 413.mp3",
+      "audio_path": "audio/glossika/lessons/tone-413.mp3",
+      "sha256": "f47066ed86b8587a551e45adf42aa5f0083cf31c86c0e2e3cb3afe6dc34cc94d",
+      "byte_length": 1064058,
+      "printed_pages": [
+        133,
+        134
+      ],
+      "book_heading": "MANDARIN 4-1-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-414",
+      "title": "Tone 414",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 414.mp3",
+      "audio_path": "audio/glossika/lessons/tone-414.mp3",
+      "sha256": "dcf395111e14bd7aeed73d402c74c3640a7d32f7d5419a00e91c57db6f499554",
+      "byte_length": 1508301,
+      "printed_pages": [
+        134,
+        135
+      ],
+      "book_heading": "MANDARIN 4-1-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-42",
+      "title": "Tone 42",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 42.mp3",
+      "audio_path": "audio/glossika/lessons/tone-42.mp3",
+      "sha256": "2a7cb8edc5f29e51b32338a224c99f615e68c6e1e3112e563d22ace9805e267f",
+      "byte_length": 2943689,
+      "printed_pages": [
+        65,
+        66,
+        67
+      ],
+      "book_heading": "MANDARIN 4+2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-421",
+      "title": "Tone 421",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 421.mp3",
+      "audio_path": "audio/glossika/lessons/tone-421.mp3",
+      "sha256": "5004b55a61f9f168ebe8c0c6c1e6af0c15cd3a108370f7cbdddf230fd80de6e9",
+      "byte_length": 553635,
+      "printed_pages": [
+        136
+      ],
+      "book_heading": "MANDARIN 4-2-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-422",
+      "title": "Tone 422",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 422.mp3",
+      "audio_path": "audio/glossika/lessons/tone-422.mp3",
+      "sha256": "cd10d1704977186559b2a3c0d29b3f09a3f6d4d96716c3785219be1d23028852",
+      "byte_length": 1358733,
+      "printed_pages": [
+        137,
+        138
+      ],
+      "book_heading": "MANDARIN 4-2-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-423",
+      "title": "Tone 423",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 423.mp3",
+      "audio_path": "audio/glossika/lessons/tone-423.mp3",
+      "sha256": "0441cb3d1d51f0eedd9281ddf90f8d837be9b7703cc193b1421c62ba765079b4",
+      "byte_length": 950638,
+      "printed_pages": [
+        138,
+        139
+      ],
+      "book_heading": "MANDARIN 4-2-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-424",
+      "title": "Tone 424",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 424.mp3",
+      "audio_path": "audio/glossika/lessons/tone-424.mp3",
+      "sha256": "56c200bc15579dd97f8c0a0f7d0ce23aaa66ea312da68ac44f03006c0d6c463a",
+      "byte_length": 2207418,
+      "printed_pages": [
+        140,
+        141,
+        142
+      ],
+      "book_heading": "MANDARIN 4-2-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-43",
+      "title": "Tone 43",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 43.mp3",
+      "audio_path": "audio/glossika/lessons/tone-43.mp3",
+      "sha256": "60bdb4ce1506c1f798c8b92d1c1be239f32affd5f0712e73a4d1a860f59fadab",
+      "byte_length": 2234549,
+      "printed_pages": [
+        68,
+        69,
+        70
+      ],
+      "book_heading": "MANDARIN 4+3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-431",
+      "title": "Tone 431",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 431.mp3",
+      "audio_path": "audio/glossika/lessons/tone-431.mp3",
+      "sha256": "2d4c3ade2e75f5944eb6dad068033eb1ef85867ca85c34a90a5a05552005905d",
+      "byte_length": 667623,
+      "printed_pages": [
+        143
+      ],
+      "book_heading": "MANDARIN 4-3-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-432",
+      "title": "Tone 432",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 432.mp3",
+      "audio_path": "audio/glossika/lessons/tone-432.mp3",
+      "sha256": "32eadaffc49261ed04df57cfab0d87349598f520ac26963d085449a811755fe9",
+      "byte_length": 1102031,
+      "printed_pages": [
+        144,
+        145
+      ],
+      "book_heading": "MANDARIN 4-3-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-433",
+      "title": "Tone 433",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 433.mp3",
+      "audio_path": "audio/glossika/lessons/tone-433.mp3",
+      "sha256": "44fc17ca85ffe709fe04d94d5ee2775c0c2cbca28b017084d01753417e5dde99",
+      "byte_length": 966065,
+      "printed_pages": [
+        146
+      ],
+      "book_heading": "MANDARIN 4-3-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-434",
+      "title": "Tone 434",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 434.mp3",
+      "audio_path": "audio/glossika/lessons/tone-434.mp3",
+      "sha256": "ea7ab6714ecf0406e3001a6791726f4025a60c004e50a74e036b84ac8c93cf3a",
+      "byte_length": 1955967,
+      "printed_pages": [
+        147,
+        148,
+        149
+      ],
+      "book_heading": "MANDARIN 4-3-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-44",
+      "title": "Tone 44",
+      "category": "two-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 44.mp3",
+      "audio_path": "audio/glossika/lessons/tone-44.mp3",
+      "sha256": "6f83c9fce7b00b322e954e4290e23f402381f6abcd43b2f57557882e8da36731",
+      "byte_length": 5223114,
+      "printed_pages": [
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77
+      ],
+      "book_heading": "MANDARIN 4+4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-441",
+      "title": "Tone 441",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 441.mp3",
+      "audio_path": "audio/glossika/lessons/tone-441.mp3",
+      "sha256": "4596dfa608514cbf7779ce7dd57ae3926608913743c53ec4126ff0c23c792357",
+      "byte_length": 1633193,
+      "printed_pages": [
+        150,
+        151
+      ],
+      "book_heading": "MANDARIN 4-4-1",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-442",
+      "title": "Tone 442",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 442.mp3",
+      "audio_path": "audio/glossika/lessons/tone-442.mp3",
+      "sha256": "84f471bcdfddd697759ce6ae4e67b0b86f26f143d8eb14eaff9e560a43d8d6b5",
+      "byte_length": 2282904,
+      "printed_pages": [
+        152,
+        153,
+        154
+      ],
+      "book_heading": "MANDARIN 4-4-2",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-443",
+      "title": "Tone 443",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 443.mp3",
+      "audio_path": "audio/glossika/lessons/tone-443.mp3",
+      "sha256": "57bf6729889621bc848fe582e41196b96367f1607525a6e897a9f35230409d17",
+      "byte_length": 1939235,
+      "printed_pages": [
+        154,
+        155,
+        156
+      ],
+      "book_heading": "MANDARIN 4-4-3",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "tone-444",
+      "title": "Tone 444",
+      "category": "three-tone",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Tone 444.mp3",
+      "audio_path": "audio/glossika/lessons/tone-444.mp3",
+      "sha256": "a6eea7c602ccd59426db541a9a6ac23ecd16696cc1e723cd64b28e99ebb85b13",
+      "byte_length": 4427314,
+      "printed_pages": [
+        157,
+        158,
+        159,
+        160,
+        161,
+        162
+      ],
+      "book_heading": "MANDARIN 4-4-4",
+      "page_mapping_basis": "exact filename digits match printed MANDARIN tone-combination heading"
+    },
+    {
+      "id": "vowel-part-1",
+      "title": "Vowel Part 1",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 1.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-1.mp3",
+      "sha256": "cbf5aff7d4f1b3e8c10e35137b747ddae42c29ed179996119c8fc54fb39be2e0",
+      "byte_length": 956127,
+      "printed_pages": [
+        8
+      ],
+      "book_heading": "Part 1:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-10",
+      "title": "Vowel Part 10",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 10.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-10.mp3",
+      "sha256": "6a502e637470df655b55b4c30e2824e36625168062bb9cc6ba48c5bfc14fe24b",
+      "byte_length": 993071,
+      "printed_pages": [
+        13
+      ],
+      "book_heading": "Part 10:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-11",
+      "title": "Vowel Part 11",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 11.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-11.mp3",
+      "sha256": "0615b2ccbb0650da03a328832227f1f1f9847023e74bca2e5a86ac9424734d27",
+      "byte_length": 2327007,
+      "printed_pages": [
+        14
+      ],
+      "book_heading": "Part 11:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-12",
+      "title": "Vowel Part 12",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 12.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-12.mp3",
+      "sha256": "11c59c8a3d465207e2683167ba8927eff169d8d937763271362c8a56a66c4e30",
+      "byte_length": 732143,
+      "printed_pages": [
+        14
+      ],
+      "book_heading": "Part 12:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-13",
+      "title": "Vowel Part 13",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 13.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-13.mp3",
+      "sha256": "eb73134acea667ad79e69e1732c1a5892d97c83d70fbdb3d98141634a08ebb6c",
+      "byte_length": 2313343,
+      "printed_pages": [
+        15
+      ],
+      "book_heading": "Part 13:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-14",
+      "title": "Vowel Part 14",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 14.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-14.mp3",
+      "sha256": "9bdf8b23bd4835a0eb1abea1b5cdd2974e95d0848818d1eed045e6beab2808de",
+      "byte_length": 723343,
+      "printed_pages": [
+        15
+      ],
+      "book_heading": "Part 14:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-15",
+      "title": "Vowel Part 15",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 15.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-15.mp3",
+      "sha256": "88fbfd55510854a1121097c4def1b26f06a7e391a70b38ef936e0ea1b363cf78",
+      "byte_length": 1863817,
+      "printed_pages": [
+        16
+      ],
+      "book_heading": "Part 15:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-16",
+      "title": "Vowel Part 16",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 16.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-16.mp3",
+      "sha256": "2c99b257989f9edc2e67f49547fae5d7026b17557fd984cfa051826b3a1c277a",
+      "byte_length": 838127,
+      "printed_pages": [
+        16
+      ],
+      "book_heading": "Part 16:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-17",
+      "title": "Vowel Part 17",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 17.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-17.mp3",
+      "sha256": "1af2633a06da6cfab3d35c92435a4097e2f1b58ebe4f66d6bdbbb6e4439dbd6f",
+      "byte_length": 2271135,
+      "printed_pages": [
+        17
+      ],
+      "book_heading": "Part 17:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-18",
+      "title": "Vowel Part 18",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 18.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-18.mp3",
+      "sha256": "ea28544a53a203495d1e2117839b4ab0ffc60cfb98b2e3c959720f011a5a7a40",
+      "byte_length": 934895,
+      "printed_pages": [
+        17
+      ],
+      "book_heading": "Part 18:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-19",
+      "title": "Vowel Part 19",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 19.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-19.mp3",
+      "sha256": "386fb27fad21b05f2988ede654f6d6d7f4c9418ca4d7913ba7e8143b5e061e1f",
+      "byte_length": 1025900,
+      "printed_pages": [
+        18
+      ],
+      "book_heading": "Part 19:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-2",
+      "title": "Vowel Part 2",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 2.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-2.mp3",
+      "sha256": "185fc680e3e80148a2079d766a7dbb24fe114265369eb52dc70b2251154b9898",
+      "byte_length": 1389199,
+      "printed_pages": [
+        8
+      ],
+      "book_heading": "Part 2:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-20",
+      "title": "Vowel Part 20",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 20.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-20.mp3",
+      "sha256": "00aa43a92f3f23ea70ca94bc4e0d4bd2c6619cc6ed73dfa271a1666ee2a1a8c6",
+      "byte_length": 1863407,
+      "printed_pages": [
+        18
+      ],
+      "book_heading": "Part 20:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-21",
+      "title": "Vowel Part 21",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 21.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-21.mp3",
+      "sha256": "15c800a3294ee5fd03cda6c9a62303323880b53788250bf96be1550a5c477e90",
+      "byte_length": 1376363,
+      "printed_pages": [
+        19
+      ],
+      "book_heading": "Part 21:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-22",
+      "title": "Vowel Part 22",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 22.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-22.mp3",
+      "sha256": "0bcd821b8831db86a55fe0be9e981ead4b3ce0673c8fcc9d922e45138ff2c55a",
+      "byte_length": 2359999,
+      "printed_pages": [
+        20
+      ],
+      "book_heading": "Part 22:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-23",
+      "title": "Vowel Part 23",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 23.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-23.mp3",
+      "sha256": "be0ef4395bd073557483bfead2e80baa248b58171ecb6d7741403a4b5d0d8901",
+      "byte_length": 933743,
+      "printed_pages": [
+        21
+      ],
+      "book_heading": "Part 23:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-24",
+      "title": "Vowel Part 24",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 24.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-24.mp3",
+      "sha256": "83608030536364c7fce0cc00d12731728139c3dbb25a723afded872bc99e45c2",
+      "byte_length": 1558127,
+      "printed_pages": [
+        21
+      ],
+      "book_heading": "Part 24:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-25",
+      "title": "Vowel Part 25",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 25.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-25.mp3",
+      "sha256": "db63cf8b8121ee6e2f3f05dfb05ef30049a6bb35f4a9a6027352bf84041e77c1",
+      "byte_length": 1559855,
+      "printed_pages": [
+        22
+      ],
+      "book_heading": "Part 25:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-26",
+      "title": "Vowel Part 26",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 26.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-26.mp3",
+      "sha256": "64749d5ff32a30ae1cc33f1131dcb9f5e75c85798ea8e61a58cc48ef0e1a5f0b",
+      "byte_length": 2359343,
+      "printed_pages": [
+        23
+      ],
+      "book_heading": "Part 26:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-27",
+      "title": "Vowel Part 27",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 27.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-27.mp3",
+      "sha256": "42c4baa10e1b7552db55205cfd82bb34a4f11fb48bafd6cd7688a9b9368f294c",
+      "byte_length": 1074287,
+      "printed_pages": [
+        24
+      ],
+      "book_heading": "Part 27:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-28",
+      "title": "Vowel Part 28",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 28.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-28.mp3",
+      "sha256": "a69e94f5afe077b6f5a2223dade6974b7efe9d73558a3240fb1e16e890a9f7b8",
+      "byte_length": 2055794,
+      "printed_pages": [
+        24
+      ],
+      "book_heading": "Part 28:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-29",
+      "title": "Vowel Part 29",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 29.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-29.mp3",
+      "sha256": "aa5dc8f4091e3208f09244419bf617c350e8a9e8eea8c61738d970da21c3f41d",
+      "byte_length": 1243055,
+      "printed_pages": [
+        25
+      ],
+      "book_heading": "Part 29:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-3",
+      "title": "Vowel Part 3",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 3.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-3.mp3",
+      "sha256": "6818732e4243da7f4f88a9245679034db30fa16568326e5e80301ba82c6873fe",
+      "byte_length": 2328735,
+      "printed_pages": [
+        9
+      ],
+      "book_heading": "Part 3:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-30",
+      "title": "Vowel Part 30",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 30.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-30.mp3",
+      "sha256": "0f76ead7cd22fb7528c71e188e9c9bce9a2f3f018cb896ce72eb9a80c7bb240e",
+      "byte_length": 1854767,
+      "printed_pages": [
+        26
+      ],
+      "book_heading": "Part 30:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-31",
+      "title": "Vowel Part 31",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 31.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-31.mp3",
+      "sha256": "110d232aa789b72a98ec809f22684a28c0489065954ec0819159a97930ef4ec8",
+      "byte_length": 708527,
+      "printed_pages": [
+        26
+      ],
+      "book_heading": "Part 31:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-32",
+      "title": "Vowel Part 32",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 32.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-32.mp3",
+      "sha256": "2a8796b61c72244e70d1982c078d8b7a43ba54d545351c194625ff55c070b8b3",
+      "byte_length": 2153055,
+      "printed_pages": [
+        27
+      ],
+      "book_heading": "Part 32:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-33",
+      "title": "Vowel Part 33",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 33.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-33.mp3",
+      "sha256": "5dcb611b544baa3d0e7f1e76097d7f53a5625ee523acb14d3200b1726fe48cf9",
+      "byte_length": 1480943,
+      "printed_pages": [
+        28
+      ],
+      "book_heading": "Part 33:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-34",
+      "title": "Vowel Part 34",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 34.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-34.mp3",
+      "sha256": "33889c5cd65e0945ed8771f09f2bd7ebb9487cb097cf67d095d907836fe70330",
+      "byte_length": 2562671,
+      "printed_pages": [
+        29
+      ],
+      "book_heading": "Part 34:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-35",
+      "title": "Vowel Part 35",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 35.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-35.mp3",
+      "sha256": "0e7cdd94e0141e31fcbd9218b3ab938242b69bb0cf1074f01a14d6004202a119",
+      "byte_length": 695852,
+      "printed_pages": [
+        30
+      ],
+      "book_heading": "Part 35:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-4",
+      "title": "Vowel Part 4",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 4.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-4.mp3",
+      "sha256": "7abc503afaaad73ef40ec314faeb9670018dcef1e5bedf3ae4eaa15918b4f927",
+      "byte_length": 675039,
+      "printed_pages": [
+        10
+      ],
+      "book_heading": "Part 4:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-5",
+      "title": "Vowel Part 5",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 5.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-5.mp3",
+      "sha256": "2b55345967ff8cde0965e76f7b1973105007c8587924031f5e342d281fc55580",
+      "byte_length": 2260760,
+      "printed_pages": [
+        10
+      ],
+      "book_heading": "Part 5:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-6",
+      "title": "Vowel Part 6",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 6.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-6.mp3",
+      "sha256": "24b6ab991c55d78bf5c947b92a3fe95c59eb07a8b5b4bf2718e37653a824a28a",
+      "byte_length": 720543,
+      "printed_pages": [
+        11
+      ],
+      "book_heading": "Part 6:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-7",
+      "title": "Vowel Part 7",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 7.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-7.mp3",
+      "sha256": "be20c2d9613ba3de36d08bf593f30a35decf1d8651792364a9328a3be94d4ab9",
+      "byte_length": 875487,
+      "printed_pages": [
+        11
+      ],
+      "book_heading": "Part 7:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-8",
+      "title": "Vowel Part 8",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 8.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-8.mp3",
+      "sha256": "1a3d93466f47aabe9da3a97e9cc2685aca82df36b34f540fe302c2ea8572925c",
+      "byte_length": 2083359,
+      "printed_pages": [
+        12
+      ],
+      "book_heading": "Part 8:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    },
+    {
+      "id": "vowel-part-9",
+      "title": "Vowel Part 9",
+      "category": "syllables",
+      "recording_type": "book_lesson",
+      "quiz_eligible": false,
+      "archive_member": "Vowel Part 9.mp3",
+      "audio_path": "audio/glossika/lessons/vowel-part-9.mp3",
+      "sha256": "db08cc0217b30c0decb8e6c92feae578e8c22bfd44fccdb51103460e2dd2ded0",
+      "byte_length": 340953,
+      "printed_pages": [
+        12
+      ],
+      "book_heading": "Part 9:",
+      "page_mapping_basis": "exact archive Part number matches printed Part heading"
+    }
+  ],
+  "notes": "Publisher-linked personal companion. Complete recordings stay with the unchanged book and rendered book pages; never isolated quiz clips. No redistribution permission or independent pronunciation certification is asserted."
+}

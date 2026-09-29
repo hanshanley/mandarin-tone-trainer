@@ -201,6 +201,7 @@
   }
   function validateApproval(entry){
     if(!entry||!['native','comparison'].includes(entry.kind))throw new Error('Invalid audio review kind');
+    if(entry.audio_path?.startsWith('audio/glossika/'))throw new Error('Complete Glossika lessons cannot be quiz approvals');
     if(!/^audio\/[^?#\\]+$/.test(entry.audio_path||'')||entry.audio_path.split('/').some(part=>!part||part==='.'||part==='..')){
       throw new Error('Audio review must reference a local audio/ file');
     }
@@ -565,17 +566,20 @@
     }
     return null;
   }
+  async function hashBytes(bytes){
+    if(!globalThis.crypto?.subtle)throw new Error('Audio verification requires a secure browser context');
+    const digest=await globalThis.crypto.subtle.digest('SHA-256',bytes);
+    return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
+  }
   async function verifyBytes(bytes,approval){
     if(!approval)throw new Error('Audio has no qualifying assessment');
     if(isSentenceDerived(approval))throw new Error('Sentence-extracted audio is not used for tone practice');
     validateApproval(approval);
-    if(!globalThis.crypto?.subtle)throw new Error('Audio verification requires a secure browser context');
-    const digest=await globalThis.crypto.subtle.digest('SHA-256',bytes);
-    const actual=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
+    const actual=await hashBytes(bytes);
     if(actual!==approval.sha256)throw new Error(`Audio changed since ${approval.assessment==='automated'?'acoustic screening':'listening review'}: ${approval.audio_path}`);
   }
   return {
-    COMPARISON_SOURCES,sinospliceBlockReason,
+    COMPARISON_SOURCES,sinospliceBlockReason,hashBytes,
     isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,applyPracticeSelection,createIndex,
     nativeApproval,comparisonApproval,clearForIsolatedQuiz,hasCompleteToneReferences,neutralSelection,correctionSelection,verifyBytes,
   };

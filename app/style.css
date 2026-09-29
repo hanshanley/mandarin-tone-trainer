@@ -329,3 +329,11 @@ code { padding: 0.1rem 0.2rem; background: #e8eee9; border-radius: 4px; font-siz
   .tone-choice.correct-answer { border: 2px dashed Highlight; }
   .native-button, .primary-button { border: 2px solid ButtonText; }
 }
+/* Original book pages stay readable without widening the practice layout. */
+.lesson-player{display:block;width:100%;margin:12px 0}
+.lesson-page-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0}
+.lesson-page-controls span{flex:1;min-width:120px;text-align:center}
+.lesson-page-viewport{max-width:100%;max-height:70vh;overflow:auto;background:#fff}
+.lesson-page-viewport img{display:block;width:100%;height:auto}
+.lesson-page-viewport img[hidden]{display:none}
+.lesson-page-viewport.zoomed img{width:1000px;max-width:none}

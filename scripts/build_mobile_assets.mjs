@@ -2,14 +2,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {parseArgs} from 'node:util';
-import { loadReviewData, validateLedger, practiceInventory, quizInventory, requireToneCoverage } from './review_audio.mjs';
+import { loadReviewData, validateLedger, practiceInventory, quizInventory, requireToneCoverage, audioHash } from './review_audio.mjs';
 import AudioReview from '../app/audio_review.js';
+import GlossikaLessons from '../app/glossika_lessons.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = path.join(ROOT, 'www');
 const {values}=parseArgs({options:{'local-use':{type:'boolean',default:false}}});
 const localUse=values['local-use'];
-const APP_FILES = ['index.html', 'style.css', 'audio_review.js', 'correction_audio.js', 'app.js'];
+const APP_FILES = ['index.html', 'style.css', 'audio_review.js', 'correction_audio.js', 'glossika_lessons.js', 'app.js'];
 const DATA_FILES = [
   'hsk_words.json',
   'definitions.json',
@@ -21,6 +22,7 @@ const DATA_FILES = [
   'mandarin_native_recordings.json',
   'mandarin_native_words.json',
   'sinosplice_recordings.json',
+  'glossika_recordings.json',
 ];
 
 function readJSON(relativePath) {
@@ -65,9 +67,17 @@ const inventory = practiceInventory(reviewData, reviewIndex);
 const quiz = quizInventory(reviewData, reviewIndex);
 requireToneCoverage(quiz);
 const referencedAudio = inventory.audio;
+const companion=localUse?GlossikaLessons.validateCatalog(readJSON('data/glossika_recordings.json')):GlossikaLessons.excludedCatalog();
+const companionAssets=GlossikaLessons.assetsFor(companion);
+for(const asset of companionAssets){
+  if(requireFile(asset.audio_path,'companion asset')!==asset.byte_length||audioHash(asset.audio_path)!==asset.sha256){
+    throw new Error(`Companion asset changed: ${asset.audio_path}`);
+  }
+}
+const referencedAssets=new Set([...referencedAudio,...companionAssets.map(asset=>asset.audio_path)]);
 
 let referencedBytes = 0;
-for (const relativePath of referencedAudio) {
+for (const relativePath of referencedAssets) {
   referencedBytes += requireFile(relativePath, 'referenced audio');
 }
 
@@ -84,6 +94,8 @@ for (const file of DATA_FILES) {
         (localUse||entry.distribution_scope !== 'local_only') && !AudioReview.isSentenceDerived(entry)),
     };
     fs.writeFileSync(path.join(OUTPUT, 'data', file), JSON.stringify(distributable, null, 2) + '\n');
+  } else if(file==='glossika_recordings.json'){
+    fs.writeFileSync(path.join(OUTPUT,'data',file),JSON.stringify(companion,null,2)+'\n');
   } else {
     fs.copyFileSync(path.join(ROOT, 'data', file), path.join(OUTPUT, 'data', file));
   }
@@ -91,8 +103,9 @@ for (const file of DATA_FILES) {
 fs.writeFileSync(path.join(OUTPUT,'data/build_scope.json'),JSON.stringify({
   version:1,scope:localUse?'local_use_only':'redistributable',
   includes_unverified_reuse_rights:localUse,
+  includes_personal_companion_lessons:companion.available,
 },null,2)+'\n');
-for (const relativePath of referencedAudio) {
+for (const relativePath of referencedAssets) {
   if(AudioReview.isSentenceDerived({audio_path:relativePath}))throw new Error('Sentence audio cannot be packaged for practice');
   const targetPath = path.join(OUTPUT, relativePath);
   fs.mkdirSync(path.dirname(targetPath), { recursive: true });
@@ -115,7 +128,9 @@ console.log(
     `  ${words.length.toLocaleString()} vocabulary entries`,
     `  ${inventory.eligibleWords.length.toLocaleString()} retained library entries`,
     `  ${quiz.eligibleWords.length.toLocaleString()} quiz entries with all four comparisons`,
-    `  ${referencedAudio.size.toLocaleString()} referenced audio files (${(referencedBytes / 1024 / 1024).toFixed(1)} MiB)`,
+    `  ${referencedAudio.size.toLocaleString()} quiz/library audio files`,
+    `  ${companion.lessons.length} complete personal-use book lessons with accompanying pages`,
+    `  ${(referencedBytes / 1024 / 1024).toFixed(1)} MiB referenced media`,
     `  ${(totalBytes / 1024 / 1024).toFixed(1)} MiB total`,
   ].join('\n'),
 );

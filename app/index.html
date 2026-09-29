@@ -99,6 +99,36 @@
       </div>
     </details>
 
+    <details class="tool-panel" id="glossikaLessons" hidden>
+      <summary><span>Glossika book lessons <small>Complete recordings with the original book</small></span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
+      <p class="muted">Separate listening practice, not graded quiz items. These are full lessons, not individual word clips. Follow the accompanying pages; recordings are never cut into quiz prompts.</p>
+      <div class="controls">
+        <label class="select-control" for="lessonCategory"><span>Lesson group</span>
+          <select id="lessonCategory">
+            <option value="consonants">Consonants (2)</option>
+            <option value="syllables">Syllables &amp; vowels (35)</option>
+            <option value="two-tone" selected>Two-tone lessons (16)</option>
+            <option value="three-tone">Three-tone lessons (64)</option>
+          </select>
+        </label>
+        <label class="select-control" for="lessonChoice"><span>Complete lesson</span><select id="lessonChoice"></select></label>
+        <button id="openLesson" type="button">Open lesson</button>
+      </div>
+      <p id="lessonStatus" class="muted" role="status" aria-live="polite"></p>
+      <audio id="lessonPlayer" class="lesson-player" controls preload="metadata" aria-label="Complete Glossika lesson"></audio>
+      <div class="lesson-page-controls">
+        <button id="previousLessonPage" type="button" disabled>Previous page</button>
+        <span id="lessonPageNumber" aria-live="polite"></span>
+        <button id="nextLessonPage" type="button" disabled>Next page</button>
+        <button id="zoomLessonPage" type="button" aria-pressed="false">Zoom page</button>
+      </div>
+      <div id="lessonPageViewport" class="lesson-page-viewport"><img id="lessonPage" alt="" hidden></div>
+      <p class="muted">Michael Campbell / Glossika, <em>Chinese Pronunciation &amp; Tone Training</em>.
+        Copyright 2018 Glossika. All rights reserved. Personal companion use only.
+        <a href="../audio/glossika/book.pdf" target="_blank" rel="noreferrer noopener">Original accompanying PDF</a>.
+        Full lessons and rendered original pages are kept together; they are not independently certified tone-quiz answers.</p>
+    </details>
+
     <section class="session-footer" aria-label="Progress controls">
       <p>One word at a time. Results stay in this session.</p>
       <button id="resetProgress" class="quiet-button" type="button">Reset results</button>
@@ -127,6 +157,7 @@
   </main>
   <script src="audio_review.js"></script>
   <script src="correction_audio.js"></script>
+  <script src="glossika_lessons.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

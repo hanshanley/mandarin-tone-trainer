@@ -257,8 +257,10 @@ process.stdout.write(JSON.stringify(result));
         function = source.split('async function playPinyinSequence', 1)[1].split(
             'async function playCorrection', 1
         )[0]
-        self.assertLess(function.index('stopNative();'), function.index('await pinyinSequenceBuffer'))
-        self.assertLess(function.index('stopCorrection();'), function.index('await pinyinSequenceBuffer'))
+        self.assertLess(function.index('stopAllAudio();'), function.index('await pinyinSequenceBuffer'))
+        stop_all = source.split('function stopAllAudio', 1)[1].split('async function approvedAudioBytes', 1)[0]
+        for stop in ('stopNative();', 'stopCorrection();', 'stopPersonalAudio();', 'lessonPlayer?.stop();'):
+            self.assertIn(stop, stop_all)
         correction = source.split('async function playCorrection', 1)[1].split(
             "$('play').onclick", 1
         )[0]
@@ -266,7 +268,7 @@ process.stdout.write(JSON.stringify(result));
         native = source.split('function playNative', 1)[1].split(
             'function correctionKey', 1
         )[0]
-        self.assertLess(native.index('stopCorrection();'), native.index('new Audio'))
+        self.assertLess(native.index('stopAllAudio();'), native.index('new Audio'))
         self.assertIn('isPlaybackInterruption(error)', native)
         self.assertIn('isPlaybackInterruption(error)', source.split("$('playMine').onclick", 1)[1])
         next_word = source.split('function next', 1)[1].split('function grade', 1)[0]

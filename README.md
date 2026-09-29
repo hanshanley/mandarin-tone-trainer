@@ -289,3 +289,30 @@ under [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/).
 changing source audio or granting new approvals. Qualified files use the same
 phonetic, tone, citation-clarity, and complete-comparison gates as other sources.
 They are available only in local-use builds, not generic redistributable bundles.
+
+### Glossika companion lessons
+
+Local-use builds include **117 complete Glossika book lessons**: 2 consonant
+lessons, 35 syllable/vowel lessons, 16 two-tone lessons, and 64 three-tone lessons.
+Open **Glossika book lessons** below the practice settings, choose a lesson,
+and press **Open lesson**. The player stays with the corresponding original
+book pages; page navigation and zoom are available on phones.
+
+These are continuous lessons, **not 117 new quiz words or thousands of standalone
+recordings**. No sentence cuts or synthesized word clips are added to the quiz.
+Lessons pause when the panel closes or quiz/personal-recording playback starts.
+The original audio and PDF remain unchanged, with hash verification and
+attenuation-only playback protection.
+
+`npm run download:glossika` restores the publisher-linked
+[companion archive](https://glossika-saas.s3-ap-northeast-1.amazonaws.com/free-download/Glossika+Tone+Training.zip)
+and [original PDF](https://d310pm6npapqqb.cloudfront.net/free-download/Glossika%20Chinese%20Pronunciation%20%26%20Tone%20Training.pdf).
+Install the pinned `requirements.txt` dependencies first for exact book-page
+rendering. The original PDF's printed page 4 links to this archive; a
+print-to-PDF copy can lose that hyperlink.
+
+Michael Campbell / Glossika, *Chinese Pronunciation & Tone Training*, copyright
+2018 Glossika, all rights reserved. This is a **personal-use companion**, not a
+redistribution license. Full recordings, the original PDF, and book pages remain
+together and are excluded from generic redistributable builds. Neither source
+publication nor these integrity checks certify every pronunciation independently.
