@@ -4,6 +4,16 @@
   else root.AudioReview=api;
 })(typeof globalThis!=='undefined'?globalThis:this,()=>{
   const nonempty=value=>typeof value==='string'&&value.trim().length>0;
+  const COMPARISON_SOURCES=Object.freeze(['pinyin_public','audio_cmn','mandarin_native','sinosplice']);
+  function sinospliceBlockReason(recording){
+    if(recording?.source!=='sinosplice'||recording.license!=='CC-BY-NC-SA-2.5'
+      ||recording.rights_status!=='noncommercial_permitted'||recording.distribution_scope!=='local_only'){
+      return 'Sinosplice recordings require their noncommercial license and local-only scope';
+    }
+    if(recording.review_status==='rejected')return recording.notes||'Explicitly rejected recording';
+    if(!['word_candidate','isolated_tone'].includes(recording.recording_type))return 'Unidentified Sinosplice audio';
+    return null;
+  }
   function isSentenceDerived(recording){
     return Boolean(recording?.source_segment||recording?.recording_type==='aligned_word'
       ||recording?.recording_type==='context_sentence'
@@ -27,8 +37,8 @@
     const candidates=[];
     for(const recording of recordings){
       if(isSentenceDerived(recording))continue;
-      if(!['audio_cmn','mandarin_native'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
-      if(recording.source==='mandarin_native'&&!['word_candidate','aligned_word'].includes(recording.recording_type))continue;
+      if(!['audio_cmn','mandarin_native','sinosplice'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
+      if(recording.source!=='audio_cmn'&&!['word_candidate','aligned_word'].includes(recording.recording_type))continue;
       const targets=Array.isArray(recording.candidate_hsk_ids)
         ?[...new Set(recording.candidate_hsk_ids)].map(id=>byId.get(id)).filter(Boolean)
         :byText.get(recording.word)||[];
@@ -42,9 +52,10 @@
     if(isSentenceDerived(recording)||isSentenceDerived(assessment))return 'Sentence-extracted audio is not used for tone practice';
     if(recording.review_status==='rejected')return recording.notes||'Explicitly rejected recording';
     if((recording.language_code||'zh')!=='zh')return 'Recording is not indexed as Mandarin';
-    if(recording.source==='mandarin_native'&&!['word_candidate','aligned_word'].includes(recording.recording_type)){
+    if(['mandarin_native','sinosplice'].includes(recording.source)&&!['word_candidate','aligned_word'].includes(recording.recording_type)){
       return 'Contextual or unidentified imported audio is not an isolated-word quiz prompt';
     }
+    if(recording.source==='sinosplice'&&sinospliceBlockReason(recording))return sinospliceBlockReason(recording);
     if(recording.recording_type==='aligned_word'&&(!validSourceSegment(recording.source_segment)
       ||recording.alignment_method!=='exact-unprompted-transcript-fa-zh-1')){
       return 'Word excerpt lacks valid source alignment';
@@ -74,6 +85,7 @@
   function sourceForPath(path){
     if(path.startsWith('audio/audio_cmn/'))return 'audio_cmn';
     if(path.startsWith('audio/pinyin_public/'))return 'pinyin_public';
+    if(path.startsWith('audio/sinosplice/'))return 'sinosplice';
     if(path.startsWith('audio/mandarin_native/')&&!isSentenceDerived({audio_path:path}))return 'mandarin_native';
     return null;
   }
@@ -198,6 +210,10 @@
     }
     if((!nonempty(entry.license)&&!(automated&&entry.distribution_scope==='local_only'))||!/^https?:\/\/\S+$/.test(entry.source_url||'')){
       throw new Error(`Missing provenance: ${entry.audio_path}`);
+    }
+    if(sourceForPath(entry.audio_path)==='sinosplice'
+      &&(entry.license!=='CC-BY-NC-SA-2.5'||entry.distribution_scope!=='local_only')){
+      throw new Error(`Sinosplice audio must retain its noncommercial license and local-only scope: ${entry.audio_path}`);
     }
     if(entry.kind==='comparison'&&!/^[a-zv]+[1-4]$/.test(entry.key||'')){
       throw new Error(`Invalid comparison label: ${entry.audio_path}`);
@@ -379,6 +395,7 @@
       if(entry.assessment==='automated')throw new Error('Automated results must use the acoustic ledger, not human attestations');
       validateApproval(entry);
       if(isSentenceDerived(entry))continue;
+      if(!allowLocalOnly&&entry.distribution_scope==='local_only')continue;
       const key=identity(entry);
       if(index.has(key))throw new Error(`Duplicate audio approval: ${entry.audio_path}`);
       index.set(key,entry);
@@ -512,15 +529,19 @@
     const allowed=approval=>{
       if(!clearForIsolatedQuiz(approval,quality))return false;
       const recording=index.sourceRecordings?.get(approval.audio_path);
+      if(approval.audio_path.startsWith('audio/sinosplice/')){
+        return !sinospliceBlockReason(recording)&&recording.comparison_key===key
+          &&(recording.recording_type==='isolated_tone'||!nativeBlockReason(recording,approval));
+      }
       if(approval.audio_path.startsWith('audio/mandarin_native/')){
         return recording?.recording_type==='word_candidate'&&!nativeBlockReason(recording,approval);
       }
       return !recording||!nativeBlockReason(recording,approval);
     };
-    if(preferredSource==='mandarin_native'){
+    if(['mandarin_native','sinosplice'].includes(preferredSource)){
       for(const approval of index.comparisonAlternatives?.get(key)||[]){
-        if(approval.audio_path.startsWith('audio/mandarin_native/')&&allowed(approval)){
-          return {audio_path:approval.audio_path,source:'mandarin_native',enhanced:false,approval};
+        if(sourceForPath(approval.audio_path)===preferredSource&&allowed(approval)){
+          return {audio_path:approval.audio_path,source:preferredSource,enhanced:false,approval};
         }
       }
       preferredSource='pinyin_public';
@@ -537,8 +558,7 @@
       `audio/audio_cmn/syllabs/cmn-${key==='ju4'?'jv4':key}.mp3`,
     ]);
     for(const approval of index.comparisonAlternatives?.get(key)||[]){
-      const source=approval.audio_path.startsWith('audio/audio_cmn/')?'audio_cmn'
-        :index.sourceRecordings?.get(approval.audio_path)?.recording_type==='word_candidate'?'mandarin_native':null;
+      const source=sourceForPath(approval.audio_path);
       if(!excluded.has(approval.audio_path)&&source&&allowed(approval)){
         return {audio_path:approval.audio_path,source,enhanced:false,approval};
       }
@@ -555,6 +575,7 @@
     if(actual!==approval.sha256)throw new Error(`Audio changed since ${approval.assessment==='automated'?'acoustic screening':'listening review'}: ${approval.audio_path}`);
   }
   return {
+    COMPARISON_SOURCES,sinospliceBlockReason,
     isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,applyPracticeSelection,createIndex,
     nativeApproval,comparisonApproval,clearForIsolatedQuiz,hasCompleteToneReferences,neutralSelection,correctionSelection,verifyBytes,
   };

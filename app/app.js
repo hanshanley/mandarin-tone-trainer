@@ -55,6 +55,7 @@ function updateProgress(){
 function sourceName(source){
   if(source==='audio_cmn')return 'audio-cmn';
   if(source==='mandarin_native')return 'Mandarin Native';
+  if(source==='sinosplice')return 'Sinosplice';
   if(source==='mp3_chinese_pinyin_sound')return 'public pinyin';
   return source;
 }
@@ -95,6 +96,11 @@ async function load(){
   if(imported.version!==1||!Array.isArray(imported.recordings))throw new Error('Invalid Mandarin Native recording index');
   if(imported.explore_vocabulary!==undefined&&!Array.isArray(imported.explore_vocabulary))throw new Error('Invalid Mandarin Native vocabulary index');
   recordings.push(...imported.recordings.filter(recording=>recording.recording_type==='word_candidate'));
+  const sinospliceResponse=await fetch('../data/sinosplice_recordings.json');
+  if(!sinospliceResponse.ok)throw new Error(`Sinosplice index failed: HTTP ${sinospliceResponse.status}`);
+  const sinosplice=await sinospliceResponse.json();
+  if(sinosplice.version!==1||!Array.isArray(sinosplice.recordings))throw new Error('Invalid Sinosplice recording index');
+  recordings.push(...sinosplice.recordings);
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
@@ -120,10 +126,12 @@ function updatePracticeSettings(){
     option.disabled=!available;
   }
   if($('wordSource').selectedOptions?.[0]?.disabled)$('wordSource').value='all';
-  const importedComparisons=Array.from(audioReviews.comparisonAlternatives.values()).some(entries=>
-    entries.some(entry=>entry.audio_path.startsWith('audio/mandarin_native/')));
   for(const option of Array.from($('correctionSource').options||[])){
-    if(option.value!=='mandarin_native')continue;
+    if(!['mandarin_native','sinosplice'].includes(option.value))continue;
+    const importedComparisons=Array.from(audioReviews.comparisonAlternatives.keys()).some(key=>{
+      const selected=AudioReview.correctionSelection(CorrectionAudio,key,correctionQuality,correctionRecordings,audioReviews,option.value);
+      return selected?.source===option.value;
+    });
     option.hidden=!importedComparisons;option.disabled=!importedComparisons;
   }
   if($('correctionSource').selectedOptions?.[0]?.disabled)$('correctionSource').value='pinyin_public';
@@ -311,7 +319,7 @@ async function next(play=false,remember=true){
     $('prompt').innerHTML=eligible.length
       ?'<div class="muted">No exercises match these filters.</div><p>Try another syllable setting or turn off Sandhi only.</p>'
       :($('wordSource').value&&$('wordSource').value!=='all'
-        ?'<div class="muted">No complete-comparison exercises are available from this source with the current settings.</div><p>Choose Both sources to continue.</p>'
+        ?'<div class="muted">No complete-comparison exercises are available from this source with the current settings.</div><p>Choose All sources to continue.</p>'
         :'<div class="muted">No exercises are available right now.</div><p>Testing requires clear word audio and all four tone comparisons.</p>');
     $('play').disabled=true; $('record').disabled=true;
     $('answers').innerHTML=''; $('answerHint').textContent='Change your settings to continue.';
@@ -675,7 +683,7 @@ $('correctionSource').onchange=async()=>{
   }else{
     await next(false,false);
   }
-  const voice={audio_cmn:'human',pinyin_public:'reference',mandarin_native:'Mandarin Native'}[$('correctionSource').value];
+  const voice={audio_cmn:'human',pinyin_public:'reference',mandarin_native:'Mandarin Native',sinosplice:'Sinosplice'}[$('correctionSource').value];
   setAudioStatus(`Comparison voice preference: ${voice}. Individual tones may use another available voice.`);
 };
 $('sandhiOnly').onchange=async()=>{quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})};

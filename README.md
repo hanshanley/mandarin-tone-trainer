@@ -47,8 +47,8 @@ answer area back into view. Grading reveals feedback below the choices without
 scrolling them away. On phones, **Previous** and **Next word** remain at the
 bottom of the screen.
 
-Open **Practice settings** and use **Word recordings** to practice with **Both sources**, the **Original
-library**, or **Mandarin Native** specifically. This chooses the complete-word
+Open **Practice settings** and use **Word recordings** to practice with **All sources**, the **Original
+library**, **Mandarin Native**, or **Sinosplice** specifically. This chooses the complete-word
 audio; **Comparison voice** separately controls the isolated tone examples.
 
 ### Compare tones directly
@@ -71,7 +71,7 @@ agreeing pitch tracks and an appropriate level, rising, dipping, or falling
 contour. A low or mostly falling third tone is not automatically a source error,
 but unclear citation forms are withheld from isolated teaching roles. Original
 labels and downloaded files remain intact.
-The retained library currently has **2,265 entries**; **659 entries** meet the
+The retained library currently has **2,273 entries**; **666 entries** meet the
 complete-comparison and clarity requirements for testing.
 The per-file [pronunciation review](data/quiz_pronunciation_review.json) covers
 every active native, comparison, and contextual-neutral recording. It records
@@ -281,3 +281,11 @@ permission is unverified, so they are not included in distributable audio
 bundles. Acoustically screened standalone clips can be used for local browser
 practice. Sentence recordings and extracted fragments are not used for initial
 playback or tone-button examples.
+
+Sinosplice Tone Pair Drills are credited to
+[John Pasden and Sinosplice.com](https://www.sinosplice.com/learn-chinese/tone-pair-drills)
+under [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/).
+`npm run download:sinosplice` restores the pinned 90-file archive without
+changing source audio or granting new approvals. Qualified files use the same
+phonetic, tone, citation-clarity, and complete-comparison gates as other sources.
+They are available only in local-use builds, not generic redistributable bundles.

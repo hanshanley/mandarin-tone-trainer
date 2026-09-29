@@ -16,6 +16,7 @@ export function loadReviewData() {
     recordings: [
       ...readJSON('data/recordings.json'),
       ...imported.recordings.filter(recording => recording.recording_type === 'word_candidate'),
+      ...readJSON('data/sinosplice_recordings.json').recordings,
     ],
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
@@ -50,13 +51,20 @@ export function candidatesFor(data) {
         ...comparison,
         source_url: recording.source_url,
         license: recording.license,
-        blocked_reason: recording.source === 'mandarin_native' && ['pending','acoustic_screened','source_corroborated'].includes(recording.review_status)
+        blocked_reason: ['mandarin_native','sinosplice'].includes(recording.source) && ['pending','acoustic_screened','source_corroborated'].includes(recording.review_status)
           ? null : AudioReview.nativeBlockReason(recording),
       });
     }
   }
   for (const recording of data.recordings) {
-    if (recording.source !== 'mandarin_native' || mapped.has(recording.audio_path)) continue;
+    if(recording.source==='sinosplice'&&/^[a-zv]+[1-4]$/.test(recording.comparison_key||'')){
+      const descriptor=AudioReview.comparisonDescriptor(recording.comparison_key,recording);
+      candidates.set(AudioReview.identity(descriptor),{
+        ...descriptor,source_url:recording.source_url,license:recording.license,
+        blocked_reason:AudioReview.sinospliceBlockReason(recording),
+      });
+    }
+    if (!['mandarin_native','sinosplice'].includes(recording.source) || mapped.has(recording.audio_path)) continue;
     const contextual = recording.recording_type === 'context_sentence';
     const excerpt=AudioReview.isSentenceDerived(recording)&&!contextual;
     const descriptor = {
@@ -124,7 +132,7 @@ export function audioHash(relativePath, root = ROOT) {
 
 export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}) {
   for(const [audioPath,review] of Object.entries(data.quality.isolated_clarity||{})){
-    if(!/^audio\/(?:audio_cmn|pinyin_public|mandarin_native)\//.test(audioPath)
+    if(!/^audio\/(?:audio_cmn|pinyin_public|mandarin_native|sinosplice)\//.test(audioPath)
       ||!['clear_citation_tone','needs_clearer_citation'].includes(review.status)
       ||!/^[a-f0-9]{64}$/.test(review.sha256||'')||review.method!=='all-source-isolated-clarity-1'
       ||audioHash(audioPath,root)!==review.sha256)throw new Error(`Stale or invalid all-source clarity evidence: ${audioPath}`);
@@ -176,10 +184,11 @@ export function recordingReplacement(data,index,inventory,pair){
     sha256:replacement.sha256,surface_pattern:replacement.surface_pattern,reason:replacement.reason};
 }
 
-export function validateAudioUpdate({ledger,imported},before=loadReviewData(),root=ROOT){
+export function validateAudioUpdate({ledger,imported,sinosplice},before=loadReviewData(),root=ROOT){
   const data={...before,acousticLedger:ledger,recordings:[
-    ...before.recordings.filter(row=>row.source!=='mandarin_native'),
+    ...before.recordings.filter(row=>row.source!=='mandarin_native'&&(!sinosplice||row.source!=='sinosplice')),
     ...imported.recordings.filter(row=>row.recording_type==='word_candidate'),
+    ...(sinosplice?.recordings||[]),
   ]};
   const impact={};
   for(const allowLocalOnly of [true,false]){
@@ -224,17 +233,17 @@ export function practiceInventory(data, index, {completeComparisons=false}={}) {
     const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
       AudioReview.nativeApproval(index, word, recording)
       && (!completeComparisons||AudioReview.clearForIsolatedQuiz(AudioReview.nativeApproval(index,word,recording),quality))
-      && (completeComparisons?['pinyin_public','audio_cmn','mandarin_native'].every(mode=>
+      && (completeComparisons?AudioReview.COMPARISON_SOURCES.every(mode=>
         AudioReview.hasCompleteToneReferences(CorrectionAudio,word.pinyin_syllables,quality,data.publicRecordings,index,mode)
       ):word.pinyin_syllables.every((base, position) => {
         const tone = (recording.surface_pattern || word.default_surface_pattern || word.lexical_pattern).split('-')[position];
-        return tone === 'N' || ['pinyin_public', 'audio_cmn', 'mandarin_native'].every(mode =>
+        return tone === 'N' || AudioReview.COMPARISON_SOURCES.every(mode =>
           AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
             quality, data.publicRecordings, index, mode));
       })));
     if (!natives.length) continue;
     const comparisons = (word.pinyin_syllables || []).flatMap(base =>
-      ['1', '2', '3', '4'].flatMap(tone => ['pinyin_public', 'audio_cmn', 'mandarin_native'].map(mode =>
+      ['1', '2', '3', '4'].flatMap(tone => AudioReview.COMPARISON_SOURCES.map(mode =>
         AudioReview.correctionSelection(CorrectionAudio, CorrectionAudio.correctionKey(base, tone),
           quality, data.publicRecordings, index, mode))));
     eligibleWords.push(word.id);

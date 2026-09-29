@@ -13,7 +13,7 @@ from build_acoustic_reviews import syllable_intervals
 from collect_acoustic_evidence import ALIGNMENT_VERSION, PROFILE_VERSION, read_jsonl
 from native_tone_labels import verify_inventory
 from review_imported_third_clarity import clarity as third_clarity
-from runtime_data import ROOT
+from runtime_data import ROOT, read_recordings
 
 METHOD = 'all-source-isolated-clarity-1'
 
@@ -61,7 +61,7 @@ for(const pair of quiz.recordingLabelPairs){
   selected.set(R.identity(approval),approval);
 }
 for(const id of quiz.eligibleWords)for(const base of words.get(id).pinyin_syllables){
-  for(const tone of ['1','2','3','4'])for(const mode of ['pinyin_public','audio_cmn','mandarin_native']){
+  for(const tone of ['1','2','3','4'])for(const mode of R.COMPARISON_SOURCES){
     const clip=R.correctionSelection(C,C.correctionKey(base,tone),data.quality,data.publicRecordings,index,mode);
     if(!clip)throw new Error('Incomplete quiz reference family');
     selected.set(R.identity(clip.approval),clip.approval);
@@ -127,6 +127,13 @@ def main():
     for row in inventory['records']:
         if len(row['syllables']) == 1 and row['weak_training_label'] in ('1', '2', '3', '4'):
             candidates[row['audio_path']].append(row)
+    for recording in read_recordings():
+        key = recording.get('comparison_key')
+        if recording['source'] == 'sinosplice' and key and key[-1] in ('1', '2', '3', '4'):
+            candidates[recording['audio_path']].append({
+                'audio_path': recording['audio_path'], 'sha256': recording['sha256'],
+                'syllables': [key[:-1]], 'weak_training_label': key[-1],
+            })
     reviews = {}
     for path, rows in candidates.items():
         row = rows[0]
@@ -178,6 +185,7 @@ def main():
         'version': 1, 'method': 'all-active-quiz-pronunciation-review-1',
         'pipeline_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'inventory_sha256': inventory['inventory_sha256'],
+        'sinosplice_index_sha256': hashlib.sha256((ROOT / 'data/sinosplice_recordings.json').read_bytes()).hexdigest(),
         'scope': 'Every initial, comparison, and neutral-context file used before or after all-source citation clarity',
         'before': {'entries': len(before['entries']), 'initial_examples': len(before['initial_examples']), 'files': len(before_paths)},
         'after': {'entries': len(after['entries']), 'initial_examples': len(after['initial_examples']), 'files': len(after_paths)},

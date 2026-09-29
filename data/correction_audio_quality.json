@@ -446310,6 +446310,2863 @@
       "linguistic_error_established": false,
       "key": "zuo4",
       "sha256": "3ea3785356185b16a161407dbcb624941e99a6502af30b160e9ab98beb41978c"
+    },
+    "audio/sinosplice/adjectives-1/chang2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.18,
+        "end": 0.59,
+        "voiced_seconds": 0.42,
+        "curves": {
+          "praat": [
+            226.887,
+            224.421,
+            226.937,
+            231.24,
+            236.933,
+            241.385,
+            247.669,
+            256.05,
+            261.01,
+            265.068,
+            270.066,
+            278.998,
+            286.431,
+            296.726,
+            312.78,
+            327.35,
+            343.912
+          ],
+          "world": [
+            229.11,
+            223.656,
+            227.045,
+            231.166,
+            236.845,
+            240.54,
+            246.869,
+            256.414,
+            261.468,
+            264.815,
+            269.826,
+            278.957,
+            285.92,
+            296.732,
+            313.567,
+            329.766,
+            342.666
+          ]
+        },
+        "median_hz": 262.415,
+        "high_hz": 336.344
+      },
+      "features": {
+        "praat": {
+          "delta": 6.346320359989887,
+          "range": 6.450686453983672,
+          "dip": 0.0945976063773788,
+          "rebound": 6.440917966367266,
+          "trough": 0.0,
+          "median_hz": 261.01,
+          "start_hz": 226.887
+        },
+        "world": {
+          "delta": 6.4615727240911465,
+          "range": 6.538366763378235,
+          "dip": 0.05180784302660557,
+          "rebound": 6.513380567117752,
+          "trough": 0.0,
+          "median_hz": 261.468,
+          "start_hz": 227.045
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "chang2",
+      "sha256": "a256a19840c58b411f94677c1336fca008eaa873ba5084fe33eef59d2b1476e6"
+    },
+    "audio/sinosplice/adjectives-1/da4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.27,
+        "voiced_seconds": 0.23,
+        "curves": {
+          "praat": [
+            403.649,
+            400.798,
+            397.63,
+            395.4,
+            387.585,
+            381.295,
+            375.097,
+            369.972,
+            358.953,
+            351.868,
+            344.504,
+            337.669,
+            329.726,
+            310.699,
+            299.57,
+            288.264,
+            277.326
+          ],
+          "world": [
+            399.006,
+            399.006,
+            397.56,
+            395.875,
+            388.348,
+            378.568,
+            373.285,
+            369.914,
+            358.602,
+            350.141,
+            342.563,
+            338.865,
+            328.483,
+            308.362,
+            297.405,
+            287.544,
+            275.356
+          ]
+        },
+        "median_hz": 358.777,
+        "high_hz": 398.719
+      },
+      "features": {
+        "praat": {
+          "delta": -5.705815596942058,
+          "range": 5.7850561635878615,
+          "dip": 6.040662381371712,
+          "rebound": 0.33484678442965343,
+          "trough": 1.0,
+          "median_hz": 358.953,
+          "start_hz": 400.798
+        },
+        "world": {
+          "delta": -5.671532480598392,
+          "range": 5.74651410753272,
+          "dip": 6.046440615270028,
+          "rebound": 0.37490813467163564,
+          "trough": 1.0,
+          "median_hz": 358.602,
+          "start_hz": 399.006
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "da4",
+      "sha256": "21de5dcf39fe9d70edef1a4915fd6701274e40c2643a0abb34167812d8de77eb"
+    },
+    "audio/sinosplice/adjectives-1/duan3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.61,
+        "voiced_seconds": 0.53,
+        "curves": {
+          "praat": [
+            207.44,
+            199.001,
+            193.449,
+            186.438,
+            177.977,
+            166.77,
+            156.553,
+            151.829,
+            149.594,
+            146.115,
+            137.487,
+            135.085,
+            156.508,
+            170.365,
+            182.155,
+            192.543,
+            214.368
+          ],
+          "world": [
+            206.716,
+            197.493,
+            192.968,
+            184.449,
+            177.387,
+            163.871,
+            154.44,
+            150.852,
+            149.058,
+            145.007,
+            137.724,
+            137.969,
+            155.07,
+            171.384,
+            182.652,
+            197.349,
+            217.971
+          ]
+        },
+        "median_hz": 177.049,
+        "high_hz": 209.016
+      },
+      "features": {
+        "praat": {
+          "delta": -0.5711400756959888,
+          "range": 6.760318341080531,
+          "dip": 6.401765622528781,
+          "rebound": 5.830625546832792,
+          "trough": 0.625,
+          "median_hz": 170.365,
+          "start_hz": 199.001
+        },
+        "world": {
+          "delta": -0.01262772015735436,
+          "range": 6.695100306030174,
+          "dip": 6.209488463517014,
+          "rebound": 6.196860743359659,
+          "trough": 0.625,
+          "median_hz": 171.384,
+          "start_hz": 197.493
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "duan3",
+      "sha256": "2bed572d9e868d881442f3c91648865390b8e8242059c819a6c168a8f347cbfc"
+    },
+    "audio/sinosplice/adjectives-1/e4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "e4",
+      "sha256": "b895d5a83356f9747858ee205891466aa91ac988b4b45d87faa523e0264c02a2"
+    },
+    "audio/sinosplice/adjectives-1/gan1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.06,
+        "end": 0.49,
+        "voiced_seconds": 0.44,
+        "curves": {
+          "pyin": [
+            349.357,
+            349.357,
+            351.381,
+            349.357,
+            346.345,
+            343.355,
+            339.411,
+            339.411,
+            339.411,
+            342.366,
+            343.355,
+            343.355,
+            343.355,
+            341.377,
+            344.35,
+            347.345,
+            349.357
+          ],
+          "praat": [
+            348.663,
+            349.01,
+            351.395,
+            350.748,
+            346.384,
+            342.512,
+            340.541,
+            337.992,
+            339.986,
+            342.615,
+            343.399,
+            344.074,
+            342.255,
+            338.355,
+            344.812,
+            349.161,
+            349.186
+          ],
+          "world": [
+            348.604,
+            348.968,
+            352.02,
+            350.648,
+            345.571,
+            342.345,
+            339.83,
+            338.048,
+            340.325,
+            342.554,
+            343.137,
+            344.394,
+            340.502,
+            338.157,
+            345.994,
+            349.332,
+            349.632
+          ]
+        },
+        "median_hz": 344.274,
+        "high_hz": 351.209
+      },
+      "features": {
+        "pyin": {
+          "delta": -0.0999926106166539,
+          "range": 0.5000247060237042,
+          "dip": 0.5000247060237042,
+          "rebound": 0.4000320954070503,
+          "trough": 0.375,
+          "median_hz": 343.355,
+          "start_hz": 349.357
+        },
+        "praat": {
+          "delta": 0.007488605097752343,
+          "range": 0.5395144491355164,
+          "dip": 0.45351640511416313,
+          "rebound": 0.4610050102119155,
+          "trough": 0.4375,
+          "median_hz": 344.074,
+          "start_hz": 349.01
+        },
+        "world": {
+          "delta": 0.01804866822100748,
+          "range": 0.5425233702257357,
+          "dip": 0.45937836517005154,
+          "rebound": 0.477427033391059,
+          "trough": 0.375,
+          "median_hz": 344.394,
+          "start_hz": 348.968
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "gan1",
+      "sha256": "f83cf0246c64f7374768f60e7647ceff20917b8df5a4e4e8bbbfc9ab554fd4d1"
+    },
+    "audio/sinosplice/adjectives-1/gui4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.28,
+        "voiced_seconds": 0.22,
+        "curves": {
+          "praat": [
+            412.651,
+            407.759,
+            407.759,
+            410.474,
+            410.759,
+            408.088,
+            403.673,
+            398.018,
+            391.211,
+            385.233,
+            379.783,
+            359.962,
+            348.715,
+            344.059,
+            338.423,
+            320.941,
+            315.213
+          ],
+          "world": [
+            423.029,
+            408.927,
+            408.927,
+            411.624,
+            411.624,
+            406.467,
+            402.008,
+            396.8,
+            391.756,
+            383.702,
+            377.065,
+            356.566,
+            346.054,
+            339.811,
+            330.505,
+            317.182,
+            310.042
+          ]
+        },
+        "median_hz": 387.975,
+        "high_hz": 411.566
+      },
+      "features": {
+        "praat": {
+          "delta": -4.14490338629929,
+          "range": 4.290970137025089,
+          "dip": 4.300789801166851,
+          "rebound": 0.15588641486756183,
+          "trough": 1.0,
+          "median_hz": 391.211,
+          "start_hz": 407.759
+        },
+        "world": {
+          "delta": -4.398389055231976,
+          "range": 4.5875459214157415,
+          "dip": 4.595472474891417,
+          "rebound": 0.1970834196594411,
+          "trough": 1.0,
+          "median_hz": 391.756,
+          "start_hz": 408.927
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "gui4",
+      "sha256": "4cdf67c712dedb2a8a7cdded0d43e570fe5f9b2c2e2ab3944826d5416f680860"
+    },
+    "audio/sinosplice/adjectives-1/hao3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.16,
+        "end": 0.74,
+        "voiced_seconds": 0.59,
+        "curves": {
+          "praat": [
+            233.269,
+            221.207,
+            207.96,
+            200.068,
+            190.3,
+            184.128,
+            181.297,
+            178.299,
+            178.242,
+            182.262,
+            186.534,
+            191.18,
+            199.488,
+            208.39,
+            222.366,
+            233.231,
+            252.866
+          ],
+          "world": [
+            231.014,
+            219.294,
+            206.852,
+            198.122,
+            188.254,
+            183.348,
+            180.983,
+            177.884,
+            178.87,
+            183.65,
+            186.939,
+            192.212,
+            201.37,
+            209.65,
+            223.851,
+            236.153,
+            256.117
+          ]
+        },
+        "median_hz": 200.878,
+        "high_hz": 251.947
+      },
+      "features": {
+        "praat": {
+          "delta": 0.916350215600066,
+          "range": 4.789467565622704,
+          "dip": 3.7331811384903677,
+          "rebound": 4.649531354090434,
+          "trough": 0.4375,
+          "median_hz": 199.488,
+          "start_hz": 221.207
+        },
+        "world": {
+          "delta": 1.282266280990351,
+          "range": 4.95022246690594,
+          "dip": 3.5274588020168895,
+          "rebound": 4.80972508300724,
+          "trough": 0.4375,
+          "median_hz": 198.122,
+          "start_hz": 219.294
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hao3",
+      "sha256": "5a1024926582516180c87dd7f0cf49fcfd43309260a35f4bb2b56a5a2b7c0770"
+    },
+    "audio/sinosplice/adjectives-1/hei1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.15,
+        "end": 0.59,
+        "voiced_seconds": 0.45,
+        "curves": {
+          "pyin": [
+            359.594,
+            355.463,
+            351.381,
+            349.357,
+            349.357,
+            351.381,
+            351.381,
+            349.357,
+            349.357,
+            349.357,
+            349.357,
+            349.357,
+            351.381,
+            353.416,
+            355.463,
+            355.463,
+            351.381
+          ],
+          "praat": [
+            361.626,
+            356.679,
+            350.884,
+            349.752,
+            349.864,
+            352.058,
+            351.124,
+            349.906,
+            349.871,
+            349.893,
+            349.477,
+            349.622,
+            351.541,
+            354.027,
+            355.896,
+            353.628,
+            349.384
+          ],
+          "world": [
+            364.409,
+            358.12,
+            351.066,
+            349.37,
+            350.348,
+            350.348,
+            349.498,
+            349.85,
+            349.346,
+            350.247,
+            349.739,
+            349.863,
+            351.021,
+            353.538,
+            355.194,
+            351.416,
+            348.71
+          ]
+        },
+        "median_hz": 350.104,
+        "high_hz": 356.188
+      },
+      "features": {
+        "pyin": {
+          "delta": 0.0,
+          "range": 0.3199716676382402,
+          "dip": 0.29996820659195267,
+          "rebound": 0.29996820659195267,
+          "trough": 0.1875,
+          "median_hz": 351.381,
+          "start_hz": 355.463
+        },
+        "praat": {
+          "delta": -0.14872520101933218,
+          "range": 0.36981025319290894,
+          "dip": 0.34596369705864033,
+          "rebound": 0.19723849603930813,
+          "trough": 0.625,
+          "median_hz": 350.884,
+          "start_hz": 356.679
+        },
+        "world": {
+          "delta": -0.3271585502605164,
+          "range": 0.4424982648998357,
+          "dip": 0.421906698939777,
+          "rebound": 0.09474814867926061,
+          "trough": 0.4375,
+          "median_hz": 350.348,
+          "start_hz": 358.12
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hei1",
+      "sha256": "3148083f3df42f02e18f8aea3d0819f19b720717757f500cbd9b90f5fe3f27c7"
+    },
+    "audio/sinosplice/adjectives-1/hong2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.18,
+        "end": 0.61,
+        "voiced_seconds": 0.44,
+        "curves": {
+          "pyin": [
+            208.932,
+            207.729,
+            207.729,
+            210.142,
+            213.2,
+            217.553,
+            220.081,
+            221.997,
+            227.842,
+            233.171,
+            240.0,
+            242.789,
+            247.037,
+            261.722,
+            274.903,
+            288.726,
+            297.186
+          ],
+          "praat": [
+            212.386,
+            208.351,
+            207.514,
+            209.271,
+            213.35,
+            217.35,
+            219.279,
+            221.933,
+            226.418,
+            232.94,
+            239.253,
+            243.137,
+            251.226,
+            262.103,
+            275.501,
+            292.321,
+            301.029
+          ],
+          "world": [
+            211.826,
+            208.79,
+            207.57,
+            210.101,
+            213.724,
+            217.662,
+            219.832,
+            221.898,
+            226.266,
+            233.43,
+            240.159,
+            243.503,
+            254.284,
+            263.773,
+            277.744,
+            295.188,
+            302.758
+          ]
+        },
+        "median_hz": 229.146,
+        "high_hz": 297.68
+      },
+      "features": {
+        "pyin": {
+          "delta": 5.69998069914123,
+          "range": 5.749978849121227,
+          "dip": 0.0,
+          "rebound": 5.69998069914123,
+          "trough": 0.0625,
+          "median_hz": 227.842,
+          "start_hz": 207.729
+        },
+        "praat": {
+          "delta": 5.862449399896445,
+          "range": 5.913268203602883,
+          "dip": 0.0,
+          "rebound": 5.862449399896445,
+          "trough": 0.0625,
+          "median_hz": 226.418,
+          "start_hz": 208.351
+        },
+        "world": {
+          "delta": 5.9949775008397035,
+          "range": 6.038814710153903,
+          "dip": 0.0,
+          "rebound": 5.9949775008397035,
+          "trough": 0.0625,
+          "median_hz": 226.266,
+          "start_hz": 208.79
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hong2",
+      "sha256": "b538e6e7f871335668bd0fb3823c29b48a05a001a53287b3c0860d6abd9b48cc"
+    },
+    "audio/sinosplice/adjectives-1/huai4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.16,
+        "end": 0.41,
+        "voiced_seconds": 0.25,
+        "curves": {
+          "praat": [
+            416.614,
+            416.614,
+            413.768,
+            412.175,
+            410.242,
+            402.858,
+            395.003,
+            376.268,
+            370.188,
+            364.09,
+            348.118,
+            338.587,
+            318.857,
+            308.563,
+            298.059,
+            272.185,
+            254.224
+          ],
+          "world": [
+            398.255,
+            415.181,
+            413.416,
+            412.253,
+            410.261,
+            403.648,
+            394.662,
+            376.111,
+            369.545,
+            362.422,
+            346.775,
+            335.689,
+            317.244,
+            307.313,
+            294.42,
+            269.454,
+            258.035
+          ]
+        },
+        "median_hz": 369.866,
+        "high_hz": 414.635
+      },
+      "features": {
+        "praat": {
+          "delta": -7.369485097850175,
+          "range": 7.487669891951439,
+          "dip": 7.960409068356497,
+          "rebound": 0.5909239705063216,
+          "trough": 1.0,
+          "median_hz": 370.188,
+          "start_hz": 416.614
+        },
+        "world": {
+          "delta": -7.410662657771157,
+          "range": 7.485629341736149,
+          "dip": 7.785496077596118,
+          "rebound": 0.3748334198249612,
+          "trough": 1.0,
+          "median_hz": 369.545,
+          "start_hz": 413.416
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "huai4",
+      "sha256": "98d80c68b356ccbd024a7b02bfca7ccc4fbeb8dad020bd60cb3d8b568a64df3a"
+    },
+    "audio/sinosplice/adjectives-1/kuai4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.16,
+        "end": 0.37,
+        "voiced_seconds": 0.22,
+        "curves": {
+          "praat": [
+            410.92,
+            413.684,
+            415.81,
+            418.956,
+            421.505,
+            416.779,
+            410.483,
+            404.051,
+            397.41,
+            390.135,
+            381.526,
+            361.102,
+            352.54,
+            342.067,
+            332.291,
+            322.213,
+            312.336
+          ],
+          "world": [
+            401.714,
+            409.504,
+            413.655,
+            418.835,
+            421.623,
+            416.191,
+            408.529,
+            402.298,
+            395.718,
+            389.883,
+            382.741,
+            359.703,
+            351.749,
+            343.632,
+            331.016,
+            320.564,
+            311.268
+          ]
+        },
+        "median_hz": 392.536,
+        "high_hz": 418.654
+      },
+      "features": {
+        "praat": {
+          "delta": -4.326173490770321,
+          "range": 4.599307408269693,
+          "dip": 4.595668515707646,
+          "rebound": 0.2694950249373247,
+          "trough": 1.0,
+          "median_hz": 397.41,
+          "start_hz": 413.684
+        },
+        "world": {
+          "delta": -4.239181525241858,
+          "range": 4.68018125123212,
+          "dip": 4.493912420554113,
+          "rebound": 0.25473089531225446,
+          "trough": 1.0,
+          "median_hz": 395.718,
+          "start_hz": 409.504
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "kuai4",
+      "sha256": "eb4353318ce1850955ee77b04ab3a6dac36ed727a7cd999da2bda6617cdeaf3b"
+    },
+    "audio/sinosplice/adjectives-1/leng3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.66,
+        "voiced_seconds": 0.62,
+        "curves": {
+          "pyin": [
+            215.054,
+            215.054,
+            204.436,
+            193.818,
+            193.818,
+            183.854,
+            173.889,
+            163.925,
+            162.981,
+            165.352,
+            169.709,
+            173.172,
+            191.673,
+            210.174,
+            229.196,
+            251.368,
+            269.391
+          ],
+          "praat": [
+            211.119,
+            214.333,
+            211.88,
+            197.86,
+            190.605,
+            181.164,
+            172.084,
+            164.85,
+            162.093,
+            165.237,
+            169.978,
+            173.671,
+            186.638,
+            204.357,
+            221.804,
+            246.922,
+            275.882
+          ],
+          "world": [
+            216.471,
+            214.032,
+            211.57,
+            197.875,
+            190.213,
+            180.605,
+            171.108,
+            164.034,
+            162.943,
+            165.539,
+            170.446,
+            173.65,
+            188.138,
+            204.131,
+            222.708,
+            248.332,
+            271.469
+          ]
+        },
+        "median_hz": 195.145,
+        "high_hz": 250.951
+      },
+      "features": {
+        "pyin": {
+          "delta": 2.70122443007397,
+          "range": 7.521062061198576,
+          "dip": 4.6999568492210955,
+          "rebound": 7.4011812792950655,
+          "trough": 0.4375,
+          "median_hz": 193.818,
+          "start_hz": 215.054
+        },
+        "praat": {
+          "delta": 2.649695618451445,
+          "range": 7.1868130778378445,
+          "dip": 4.345122320875632,
+          "rebound": 6.994817939327077,
+          "trough": 0.4375,
+          "median_hz": 190.605,
+          "start_hz": 211.88
+        },
+        "world": {
+          "delta": 2.573324018651484,
+          "range": 7.333524334577657,
+          "dip": 4.605979577292397,
+          "rebound": 7.17930359594388,
+          "trough": 0.4375,
+          "median_hz": 190.213,
+          "start_hz": 214.032
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "leng3",
+      "sha256": "e820b51ebd94b08786de300d0e36da31144d279ef124d0b36d64ea5305e10688"
+    },
+    "audio/sinosplice/adjectives-1/man4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.06,
+        "end": 0.33,
+        "voiced_seconds": 0.27,
+        "curves": {
+          "praat": [
+            354.378,
+            361.8,
+            365.066,
+            397.267,
+            397.267,
+            388.303,
+            384.171,
+            376.529,
+            372.837,
+            364.883,
+            359.513,
+            345.161,
+            335.194,
+            313.782,
+            300.615,
+            282.112,
+            265.792
+          ],
+          "world": [
+            354.396,
+            362.47,
+            364.938,
+            395.266,
+            395.266,
+            387.294,
+            381.647,
+            375.511,
+            371.865,
+            363.899,
+            358.258,
+            343.231,
+            331.67,
+            307.821,
+            295.166,
+            272.389,
+            259.735
+          ]
+        },
+        "median_hz": 358.885,
+        "high_hz": 389.231
+      },
+      "features": {
+        "praat": {
+          "delta": -4.307092485897696,
+          "range": 6.029255499934967,
+          "dip": 4.822914598775872,
+          "rebound": 0.5158221128781761,
+          "trough": 1.0,
+          "median_hz": 361.8,
+          "start_hz": 361.8
+        },
+        "world": {
+          "delta": -4.946317814061531,
+          "range": 6.528218641091264,
+          "dip": 5.358085870184933,
+          "rebound": 0.4117680561234023,
+          "trough": 1.0,
+          "median_hz": 362.47,
+          "start_hz": 362.47
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "man4",
+      "sha256": "93f0a98f1423127afdad0312bb836fc272c8804451944ae6ac6fd4cb74bd120a"
+    },
+    "audio/sinosplice/adjectives-1/mang2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.52,
+        "voiced_seconds": 0.48,
+        "curves": {
+          "praat": [
+            215.874,
+            213.333,
+            213.601,
+            212.189,
+            213.85,
+            218.425,
+            221.764,
+            227.036,
+            233.496,
+            241.512,
+            249.99,
+            259.889,
+            271.417,
+            283.639,
+            301.175,
+            322.944,
+            351.892
+          ],
+          "world": [
+            214.23,
+            213.594,
+            212.296,
+            212.101,
+            214.616,
+            218.746,
+            222.454,
+            227.976,
+            235.373,
+            242.878,
+            251.157,
+            262.031,
+            274.212,
+            288.326,
+            305.55,
+            327.806,
+            357.57
+          ]
+        },
+        "median_hz": 238.915,
+        "high_hz": 330.388
+      },
+      "features": {
+        "praat": {
+          "delta": 7.15638738407479,
+          "range": 7.309352825726538,
+          "dip": 0.021735012254448405,
+          "rebound": 7.178122396329239,
+          "trough": 0.125,
+          "median_hz": 233.496,
+          "start_hz": 213.601
+        },
+        "world": {
+          "delta": 7.415653676948474,
+          "range": 7.671640993932138,
+          "dip": 0.10552719027897961,
+          "rebound": 7.521180867227454,
+          "trough": 0.125,
+          "median_hz": 235.373,
+          "start_hz": 213.594
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "mang2",
+      "sha256": "941b47cf24180c6f7b39b8472be895dcf63dc2bf8f482cebd8eb481d1b65096d"
+    },
+    "audio/sinosplice/adjectives-1/mei3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "pitch trackers disagree",
+      "measurement": {
+        "status": "review",
+        "reason": "pitch trackers disagree",
+        "deviation": 5.754
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "mei3",
+      "sha256": "54c521d9e73ae82b1d01c13db5325644f042322e37eac9757093f5a875e3e7ba"
+    },
+    "audio/sinosplice/adjectives-1/qiang2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.21,
+        "end": 0.66,
+        "voiced_seconds": 0.46,
+        "curves": {
+          "praat": [
+            261.761,
+            246.102,
+            242.527,
+            241.527,
+            243.838,
+            247.276,
+            248.439,
+            250.528,
+            256.496,
+            267.144,
+            276.066,
+            283.959,
+            294.314,
+            306.15,
+            314.863,
+            325.664,
+            330.3
+          ],
+          "world": [
+            259.592,
+            247.072,
+            242.958,
+            242.892,
+            245.188,
+            247.998,
+            249.405,
+            251.31,
+            257.215,
+            268.386,
+            276.758,
+            284.736,
+            296.947,
+            307.816,
+            317.829,
+            326.416,
+            330.169
+          ]
+        },
+        "median_hz": 267.764,
+        "high_hz": 326.472
+      },
+      "features": {
+        "praat": {
+          "delta": 4.849534391380095,
+          "range": 5.127337823804662,
+          "dip": 0.2533321666668895,
+          "rebound": 5.102866558046984,
+          "trough": 0.125,
+          "median_hz": 261.761,
+          "start_hz": 246.102
+        },
+        "world": {
+          "delta": 4.821363032509081,
+          "range": 5.131849533076647,
+          "dip": 0.2906950275743855,
+          "rebound": 5.112058060083466,
+          "trough": 0.125,
+          "median_hz": 259.592,
+          "start_hz": 247.072
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "qiang2",
+      "sha256": "f6bf3f94a8b3deb55129dbea76a96b4f97b2280537eedb4d6b79ca90b4787715"
+    },
+    "audio/sinosplice/adjectives-1/qing1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.17,
+        "end": 0.56,
+        "voiced_seconds": 0.4,
+        "curves": {
+          "praat": [
+            343.85,
+            338.255,
+            332.896,
+            327.945,
+            323.689,
+            323.221,
+            320.713,
+            319.765,
+            317.75,
+            315.595,
+            314.086,
+            313.73,
+            315.491,
+            316.446,
+            313.397,
+            307.583,
+            300.537
+          ],
+          "world": [
+            344.413,
+            338.143,
+            330.572,
+            327.397,
+            323.204,
+            323.491,
+            321.015,
+            319.68,
+            317.332,
+            315.282,
+            313.645,
+            313.278,
+            316.502,
+            316.424,
+            312.91,
+            306.271,
+            299.805
+          ]
+        },
+        "median_hz": 317.295,
+        "high_hz": 338.35
+      },
+      "features": {
+        "praat": {
+          "delta": -1.645625899652602,
+          "range": 1.7141473848039692,
+          "dip": 1.8462248113306914,
+          "rebound": 0.2005989116780894,
+          "trough": 1.0,
+          "median_hz": 317.75,
+          "start_hz": 338.255
+        },
+        "world": {
+          "delta": -1.7138966402671274,
+          "range": 1.7826451619929196,
+          "dip": 1.8986025863094358,
+          "rebound": 0.18470594604230828,
+          "trough": 1.0,
+          "median_hz": 317.332,
+          "start_hz": 338.143
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "qing1",
+      "sha256": "09398295099befebc014857a036e0e6ad608f42c56f266489724ac420f12da57"
+    },
+    "audio/sinosplice/adjectives-1/re4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "fewer than two usable time-aligned pitch tracks",
+      "measurement": {
+        "status": "review",
+        "reason": "fewer than two usable time-aligned pitch tracks"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "re4",
+      "sha256": "2f5d17af121f32dd024c3a7ac7e4afbe9f2a84d9be292d1df384856b2b7df8a2"
+    },
+    "audio/sinosplice/adjectives-1/suan1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.27,
+        "end": 0.69,
+        "voiced_seconds": 0.43,
+        "curves": {
+          "pyin": [
+            349.357,
+            349.357,
+            349.357,
+            347.345,
+            347.345,
+            348.351,
+            349.357,
+            349.357,
+            349.357,
+            349.357,
+            347.345,
+            347.345,
+            345.344,
+            345.344,
+            345.344,
+            347.345,
+            347.345
+          ],
+          "praat": [
+            349.855,
+            348.404,
+            349.006,
+            348.259,
+            345.788,
+            347.914,
+            350.741,
+            350.542,
+            349.625,
+            348.199,
+            347.861,
+            346.107,
+            345.394,
+            344.752,
+            346.394,
+            346.932,
+            348.329
+          ],
+          "world": [
+            349.422,
+            348.725,
+            349.494,
+            347.692,
+            346.424,
+            347.965,
+            350.76,
+            351.752,
+            350.15,
+            347.599,
+            348.399,
+            345.682,
+            345.659,
+            344.505,
+            345.054,
+            343.382,
+            349.494
+          ]
+        },
+        "median_hz": 347.899,
+        "high_hz": 350.601
+      },
+      "features": {
+        "pyin": {
+          "delta": -0.09999261061665007,
+          "range": 0.2000146686624589,
+          "dip": 0.2000146686624589,
+          "rebound": 0.10002205804580883,
+          "trough": 0.75,
+          "median_hz": 347.345,
+          "start_hz": 349.357
+        },
+        "praat": {
+          "delta": -0.10318706687919443,
+          "range": 0.2561314675236731,
+          "dip": 0.18010581173522522,
+          "rebound": 0.0769187448560308,
+          "trough": 0.75,
+          "median_hz": 348.199,
+          "start_hz": 349.006
+        },
+        "world": {
+          "delta": -0.20049554597490754,
+          "range": 0.28945829690989394,
+          "dip": 0.22806237328797235,
+          "rebound": 0.027566827313064812,
+          "trough": 0.875,
+          "median_hz": 347.965,
+          "start_hz": 349.422
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "suan1",
+      "sha256": "81db3946f56ff62068d7e8f9bb8496cbd82426887294552a131b63babea7646f"
+    },
+    "audio/sinosplice/adjectives-1/wan3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.05,
+        "end": 0.6,
+        "voiced_seconds": 0.56,
+        "curves": {
+          "praat": [
+            204.576,
+            204.404,
+            199.831,
+            194.874,
+            188.587,
+            179.324,
+            173.772,
+            168.227,
+            167.405,
+            165.868,
+            162.767,
+            166.561,
+            171.5,
+            183.272,
+            194.566,
+            204.812,
+            230.254
+          ],
+          "world": [
+            204.783,
+            204.548,
+            199.432,
+            194.691,
+            188.522,
+            178.966,
+            173.148,
+            167.734,
+            167.327,
+            165.974,
+            162.559,
+            166.486,
+            171.688,
+            183.686,
+            194.805,
+            205.44,
+            231.674
+          ]
+        },
+        "median_hz": 186.071,
+        "high_hz": 211.461
+      },
+      "features": {
+        "praat": {
+          "delta": 0.03452180394071003,
+          "range": 3.8538871342720915,
+          "dip": 3.6166541622142683,
+          "rebound": 3.651175966154978,
+          "trough": 0.5625,
+          "median_hz": 183.272,
+          "start_hz": 204.404
+        },
+        "world": {
+          "delta": 0.07533211744679336,
+          "range": 3.9011730200207175,
+          "dip": 3.617786058337357,
+          "rebound": 3.69311817578415,
+          "trough": 0.5625,
+          "median_hz": 183.686,
+          "start_hz": 204.548
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "wan3",
+      "sha256": "f6c2a5a0af3eec10d67972b520c86802ee04e109e41b09fef9f97cdf9c1662f5"
+    },
+    "audio/sinosplice/adjectives-1/xiao3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.22,
+        "end": 0.73,
+        "voiced_seconds": 0.51,
+        "curves": {
+          "praat": [
+            226.464,
+            213.462,
+            203.555,
+            195.131,
+            183.437,
+            168.332,
+            158.224,
+            157.092,
+            163.251,
+            169.511,
+            176.767,
+            177.279,
+            181.099,
+            189.951,
+            201.395,
+            218.964,
+            238.088
+          ],
+          "world": [
+            226.236,
+            210.52,
+            202.926,
+            191.502,
+            178.56,
+            168.656,
+            157.228,
+            158.43,
+            164.388,
+            170.228,
+            176.564,
+            177.226,
+            181.998,
+            191.302,
+            204.894,
+            223.314,
+            242.94
+          ]
+        },
+        "median_hz": 186.486,
+        "high_hz": 235.125
+      },
+      "features": {
+        "praat": {
+          "delta": 0.44057312923961245,
+          "range": 5.826657713416743,
+          "dip": 5.18412981397605,
+          "rebound": 5.624702943215663,
+          "trough": 0.375,
+          "median_hz": 183.437,
+          "start_hz": 213.462
+        },
+        "world": {
+          "delta": 1.0213967937775825,
+          "range": 6.088569445487781,
+          "dip": 4.9213410324021485,
+          "rebound": 5.942737826179731,
+          "trough": 0.375,
+          "median_hz": 181.998,
+          "start_hz": 210.52
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xiao3",
+      "sha256": "65d05563ff58c1338d8caf0e560c30c6a6d941b3c6e67cd3f39ae3b37b1c0b2a"
+    },
+    "audio/sinosplice/adjectives-1/xin1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.26,
+        "end": 0.63,
+        "voiced_seconds": 0.38,
+        "curves": {
+          "pyin": [
+            371.203,
+            374.431,
+            376.6,
+            380.976,
+            380.976,
+            383.183,
+            383.183,
+            383.183,
+            385.403,
+            385.403,
+            383.183,
+            383.183,
+            383.183,
+            383.183,
+            385.403,
+            383.183,
+            383.183
+          ],
+          "praat": [
+            361.647,
+            370.739,
+            376.737,
+            378.369,
+            382.055,
+            383.904,
+            383.088,
+            384.042,
+            385.333,
+            385.048,
+            382.812,
+            382.699,
+            383.381,
+            383.381,
+            383.962,
+            384.958,
+            383.714
+          ],
+          "world": [
+            364.155,
+            372.076,
+            376.083,
+            378.443,
+            383.611,
+            383.611,
+            382.607,
+            383.777,
+            384.808,
+            384.417,
+            381.275,
+            381.444,
+            382.722,
+            383.518,
+            384.56,
+            384.929,
+            384.405
+          ]
+        },
+        "median_hz": 383.16,
+        "high_hz": 385.028
+      },
+      "features": {
+        "pyin": {
+          "delta": 0.4000040773349354,
+          "range": 0.5150048302255966,
+          "dip": 0.07494908257270222,
+          "rebound": 0.47495315990763765,
+          "trough": 0.0,
+          "median_hz": 383.183,
+          "start_hz": 374.431
+        },
+        "praat": {
+          "delta": 0.6067157917052791,
+          "range": 0.6985990269507028,
+          "dip": 0.2149302232298661,
+          "rebound": 0.8216460149351452,
+          "trough": 0.0,
+          "median_hz": 383.381,
+          "start_hz": 370.739
+        },
+        "world": {
+          "delta": 0.5713364785340855,
+          "range": 0.6095525562964733,
+          "dip": 0.1862680877319265,
+          "rebound": 0.757604566266012,
+          "trough": 0.0,
+          "median_hz": 383.518,
+          "start_hz": 372.076
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "xin1",
+      "sha256": "28667246d5cda88c08a6f0bec13e1e8395c2c6a300898b3b0d554420c37564d1"
+    },
+    "audio/sinosplice/adjectives-1/you2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.56,
+        "voiced_seconds": 0.5,
+        "curves": {
+          "pyin": [
+            221.356,
+            223.283,
+            223.283,
+            225.225,
+            225.225,
+            225.878,
+            229.162,
+            232.496,
+            235.877,
+            242.792,
+            249.183,
+            254.271,
+            274.579,
+            294.886,
+            315.194,
+            335.513,
+            345.35
+          ],
+          "praat": [
+            221.668,
+            221.615,
+            223.29,
+            223.62,
+            225.278,
+            225.461,
+            229.034,
+            232.008,
+            235.43,
+            242.284,
+            248.902,
+            257.326,
+            269.385,
+            289.788,
+            320.352,
+            340.395,
+            346.97
+          ],
+          "world": [
+            223.79,
+            224.32,
+            223.92,
+            224.43,
+            224.977,
+            225.014,
+            229.278,
+            232.008,
+            236.175,
+            242.302,
+            249.339,
+            258.7,
+            270.411,
+            292.452,
+            323.621,
+            342.793,
+            346.726
+          ]
+        },
+        "median_hz": 240.05,
+        "high_hz": 344.695
+      },
+      "features": {
+        "pyin": {
+          "delta": 7.049943043039568,
+          "range": 7.114977632118343,
+          "dip": 0.07502960602272957,
+          "rebound": 7.124972649062298,
+          "trough": 0.0,
+          "median_hz": 235.877,
+          "start_hz": 223.283
+        },
+        "praat": {
+          "delta": 7.425711935568103,
+          "range": 7.4592472163727805,
+          "dip": 0.0020699057946678145,
+          "rebound": 7.42778184136277,
+          "trough": 0.0,
+          "median_hz": 235.43,
+          "start_hz": 221.668
+        },
+        "world": {
+          "delta": 7.361828836091484,
+          "range": 7.383663336126927,
+          "dip": 0.010422250217506535,
+          "rebound": 7.3722510863089905,
+          "trough": 0.0625,
+          "median_hz": 236.175,
+          "start_hz": 223.92
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "you2",
+      "sha256": "10811c2c0b27e09a02fd70e2d66f8f560b44a23e2c311a776be729f94652dcb6"
+    },
+    "audio/sinosplice/adjectives-1/zao3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.09,
+        "end": 0.57,
+        "voiced_seconds": 0.37,
+        "curves": {
+          "praat": [
+            227.966,
+            205.037,
+            183.404,
+            174.94,
+            168.144,
+            162.972,
+            157.929,
+            154.999,
+            138.459,
+            126.012,
+            130.0,
+            134.412,
+            177.375,
+            177.242,
+            174.762,
+            205.854,
+            219.013
+          ],
+          "world": [
+            220.245,
+            205.388,
+            183.96,
+            173.625,
+            167.282,
+            161.804,
+            157.886,
+            152.073,
+            134.29,
+            126.547,
+            131.466,
+            150.06,
+            172.469,
+            177.562,
+            178.531,
+            204.863,
+            223.864
+          ]
+        },
+        "median_hz": 176.082,
+        "high_hz": 229.008
+      },
+      "features": {
+        "praat": {
+          "delta": 0.06884648639656676,
+          "range": 8.556166401864875,
+          "dip": 7.888471822108202,
+          "rebound": 7.957318308504769,
+          "trough": 0.5625,
+          "median_hz": 174.762,
+          "start_hz": 205.037
+        },
+        "world": {
+          "delta": -0.044309379960597806,
+          "range": 8.3522751373237,
+          "dip": 7.723945897615161,
+          "rebound": 7.679636517654563,
+          "trough": 0.5625,
+          "median_hz": 172.469,
+          "start_hz": 205.388
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zao3",
+      "sha256": "f6faa33a8e3f244191857e8fc6f3c9fa5cd798b80ad30549191b7ebf35a9e6d8"
+    },
+    "audio/sinosplice/modifiers/bu2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.11,
+        "end": 0.57,
+        "voiced_seconds": 0.47,
+        "curves": {
+          "pyin": [
+            247.033,
+            247.748,
+            249.903,
+            250.627,
+            253.539,
+            257.226,
+            260.968,
+            266.297,
+            272.526,
+            278.891,
+            287.904,
+            298.908,
+            311.246,
+            325.034,
+            331.659,
+            334.546,
+            337.456
+          ],
+          "praat": [
+            241.684,
+            248.933,
+            249.22,
+            249.752,
+            252.959,
+            255.81,
+            260.055,
+            265.596,
+            270.504,
+            277.982,
+            285.694,
+            297.342,
+            307.963,
+            323.019,
+            333.115,
+            334.498,
+            331.194
+          ],
+          "world": [
+            239.915,
+            249.37,
+            248.765,
+            249.785,
+            253.555,
+            256.245,
+            260.72,
+            266.359,
+            271.151,
+            278.3,
+            287.393,
+            299.06,
+            309.724,
+            324.648,
+            335.657,
+            333.926,
+            327.706
+          ]
+        },
+        "median_hz": 271.856,
+        "high_hz": 334.331
+      },
+      "features": {
+        "pyin": {
+          "delta": 5.199974205162999,
+          "range": 5.219971537706607,
+          "dip": 0.025017799930178608,
+          "rebound": 5.224992005093177,
+          "trough": 0.0,
+          "median_hz": 272.526,
+          "start_hz": 247.748
+        },
+        "praat": {
+          "delta": 5.043153891567863,
+          "range": 5.094316525470197,
+          "dip": 0.25581316951166766,
+          "rebound": 5.298967061079532,
+          "trough": 0.0,
+          "median_hz": 270.504,
+          "start_hz": 248.933
+        },
+        "world": {
+          "delta": 5.096938902536271,
+          "range": 5.155445819063431,
+          "dip": 0.292534582635797,
+          "rebound": 5.389473485172068,
+          "trough": 0.0,
+          "median_hz": 271.151,
+          "start_hz": 248.765
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bu2",
+      "sha256": "938542b195fbd9b675b41f1d2eb6e68dfd4f1cc831bd82ff9a0efa72d4b1a542"
+    },
+    "audio/sinosplice/modifiers/bu4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.3,
+        "voiced_seconds": 0.24,
+        "curves": {
+          "praat": [
+            352.63,
+            363.917,
+            371.058,
+            373.557,
+            371.805,
+            368.956,
+            363.852,
+            349.172,
+            342.255,
+            335.746,
+            311.23,
+            294.311,
+            278.242,
+            264.225,
+            238.295,
+            225.212,
+            211.776
+          ],
+          "world": [
+            356.181,
+            356.181,
+            369.871,
+            373.425,
+            369.693,
+            369.476,
+            362.532,
+            347.397,
+            341.583,
+            333.44,
+            309.503,
+            294.036,
+            279.935,
+            266.834,
+            238.893,
+            219.765,
+            206.723
+          ]
+        },
+        "median_hz": 338.255,
+        "high_hz": 370.298
+      },
+      "features": {
+        "praat": {
+          "delta": -8.307908951565063,
+          "range": 8.785643168855888,
+          "dip": 8.840376544941792,
+          "rebound": 0.5324675933767296,
+          "trough": 1.0,
+          "median_hz": 342.255,
+          "start_hz": 363.917
+        },
+        "world": {
+          "delta": -8.359787044390549,
+          "range": 9.118641871566583,
+          "dip": 8.889363409679628,
+          "rebound": 0.5295763652890795,
+          "trough": 1.0,
+          "median_hz": 341.583,
+          "start_hz": 356.181
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "bu4",
+      "sha256": "093af4ab5a16db210d09a459595378cca4eb122c5335b5005d17cf5d75330308"
+    },
+    "audio/sinosplice/modifiers/hen2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.19,
+        "end": 0.52,
+        "voiced_seconds": 0.34,
+        "curves": {
+          "pyin": [
+            227.186,
+            229.162,
+            230.49,
+            231.825,
+            235.877,
+            240.0,
+            242.789,
+            248.464,
+            254.271,
+            258.716,
+            264.763,
+            277.285,
+            283.766,
+            295.475,
+            305.895,
+            313.044,
+            316.682
+          ],
+          "praat": [
+            224.976,
+            227.078,
+            228.837,
+            231.006,
+            234.922,
+            239.327,
+            241.083,
+            246.502,
+            253.533,
+            260.543,
+            265.764,
+            275.491,
+            280.936,
+            292.007,
+            307.593,
+            318.928,
+            305.974
+          ],
+          "world": [
+            225.058,
+            229.335,
+            229.359,
+            231.977,
+            236.955,
+            239.0,
+            241.485,
+            247.707,
+            254.983,
+            263.577,
+            267.674,
+            277.403,
+            283.861,
+            295.311,
+            312.991,
+            323.495,
+            293.454
+          ]
+        },
+        "median_hz": 255.487,
+        "high_hz": 309.92
+      },
+      "features": {
+        "pyin": {
+          "delta": 5.399971390654249,
+          "range": 5.43496737263148,
+          "dip": 0.07496340207401775,
+          "rebound": 5.474934792728267,
+          "trough": 0.0,
+          "median_hz": 254.271,
+          "start_hz": 229.162
+        },
+        "praat": {
+          "delta": 5.254016779039583,
+          "range": 5.323630362969617,
+          "dip": 0.08050100648782865,
+          "rebound": 5.334517785527411,
+          "trough": 0.0,
+          "median_hz": 253.533,
+          "start_hz": 227.078
+        },
+        "world": {
+          "delta": 5.383975493364476,
+          "range": 5.4165671341220945,
+          "dip": 0.16295820378809367,
+          "rebound": 5.54693369715257,
+          "trough": 0.0,
+          "median_hz": 254.983,
+          "start_hz": 229.335
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hen2",
+      "sha256": "cb7832c9a1d01c8d192e911fbd2539740adf70673bdd57806555e349a2456f42"
+    },
+    "audio/sinosplice/modifiers/hen3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.12,
+        "end": 0.66,
+        "voiced_seconds": 0.55,
+        "curves": {
+          "praat": [
+            227.072,
+            204.868,
+            199.749,
+            194.724,
+            189.445,
+            179.906,
+            173.8,
+            168.602,
+            165.034,
+            167.432,
+            172.142,
+            178.411,
+            190.192,
+            207.279,
+            230.324,
+            246.158,
+            254.591
+          ],
+          "world": [
+            224.592,
+            203.538,
+            199.112,
+            194.09,
+            188.164,
+            178.01,
+            172.432,
+            168.136,
+            164.856,
+            167.573,
+            173.383,
+            180.068,
+            193.283,
+            210.638,
+            231.766,
+            248.066,
+            254.41
+          ]
+        },
+        "median_hz": 194.277,
+        "high_hz": 250.853
+      },
+      "features": {
+        "praat": {
+          "delta": 3.1786796575653726,
+          "range": 6.730428250291638,
+          "dip": 3.4934324416552602,
+          "rebound": 6.672112099220634,
+          "trough": 0.5,
+          "median_hz": 190.192,
+          "start_hz": 204.868
+        },
+        "world": {
+          "delta": 3.4251101475032337,
+          "range": 6.834929207879755,
+          "dip": 3.366101420394898,
+          "rebound": 6.791211567898132,
+          "trough": 0.5,
+          "median_hz": 193.283,
+          "start_hz": 203.538
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "hen3",
+      "sha256": "d6d319011294d795a7c1c3a377870a8b89c951af6d801632da26a4053a604cb6"
+    },
+    "audio/sinosplice/modifiers/man2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.07,
+        "end": 0.58,
+        "voiced_seconds": 0.52,
+        "curves": {
+          "praat": [
+            221.166,
+            222.718,
+            222.098,
+            219.323,
+            222.101,
+            223.114,
+            226.437,
+            228.72,
+            233.188,
+            241.414,
+            251.392,
+            263.018,
+            276.892,
+            291.138,
+            299.779,
+            304.898,
+            320.169
+          ],
+          "world": [
+            219.86,
+            221.589,
+            222.382,
+            218.961,
+            222.204,
+            222.835,
+            226.81,
+            228.196,
+            233.491,
+            241.562,
+            251.764,
+            263.032,
+            279.003,
+            292.29,
+            297.818,
+            305.134,
+            320.657
+          ]
+        },
+        "median_hz": 234.895,
+        "high_hz": 311.557
+      },
+      "features": {
+        "praat": {
+          "delta": 5.485563425913099,
+          "range": 5.572625785242652,
+          "dip": 0.012270154319642623,
+          "rebound": 5.497833580232743,
+          "trough": 0.0,
+          "median_hz": 233.188,
+          "start_hz": 222.098
+        },
+        "world": {
+          "delta": 5.538680130980405,
+          "range": 5.638147016639343,
+          "dip": 0.06780667703091214,
+          "rebound": 5.606486808011317,
+          "trough": 0.0,
+          "median_hz": 233.491,
+          "start_hz": 221.589
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "man2",
+      "sha256": "84a2220239e1d1abb284bf381a08807a84d639d655605418a52402c58dbf5d19"
+    },
+    "audio/sinosplice/modifiers/tai4.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "needs_clearer_citation",
+      "reason": "insufficient continuous pitch evidence",
+      "measurement": {
+        "status": "review",
+        "reason": "insufficient continuous pitch evidence"
+      },
+      "features": {},
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "tai4",
+      "sha256": "fda58aee44b3f6980d7329ab5e07a95524296f09e14be12885fa71b7dc82f657"
+    },
+    "audio/sinosplice/modifiers/ting2.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.15,
+        "end": 0.48,
+        "voiced_seconds": 0.34,
+        "curves": {
+          "pyin": [
+            241.39,
+            238.618,
+            237.243,
+            237.243,
+            241.39,
+            248.464,
+            251.351,
+            255.744,
+            261.722,
+            267.839,
+            274.1,
+            287.063,
+            295.475,
+            316.682,
+            329.749,
+            357.523,
+            357.523
+          ],
+          "praat": [
+            248.554,
+            239.479,
+            237.155,
+            235.231,
+            237.613,
+            245.045,
+            247.785,
+            252.616,
+            260.587,
+            266.669,
+            277.588,
+            288.895,
+            296.904,
+            312.551,
+            335.403,
+            357.334,
+            360.01
+          ],
+          "world": [
+            249.158,
+            238.925,
+            236.539,
+            235.299,
+            238.857,
+            247.191,
+            249.322,
+            254.495,
+            262.911,
+            269.09,
+            281.47,
+            292.524,
+            299.906,
+            317.75,
+            341.945,
+            360.608,
+            352.057
+          ]
+        },
+        "median_hz": 262.416,
+        "high_hz": 345.186
+      },
+      "features": {
+        "pyin": {
+          "delta": 6.99999815652829,
+          "range": 7.100046424507671,
+          "dip": 0.10004826797938127,
+          "rebound": 7.100046424507671,
+          "trough": 0.125,
+          "median_hz": 261.722,
+          "start_hz": 238.618
+        },
+        "praat": {
+          "delta": 6.928488485949352,
+          "range": 7.11023142042802,
+          "dip": 0.16882638731146216,
+          "rebound": 7.097314873260814,
+          "trough": 0.125,
+          "median_hz": 260.587,
+          "start_hz": 239.479
+        },
+        "world": {
+          "delta": 6.7110145151223515,
+          "range": 6.926318331364018,
+          "dip": 0.1737569665053984,
+          "rebound": 6.88477148162775,
+          "trough": 0.125,
+          "median_hz": 262.911,
+          "start_hz": 238.925
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ting2",
+      "sha256": "c7c232c6a1de1db3aa525fffb1ead6490345229cbd1858a49047541fd397ed87"
+    },
+    "audio/sinosplice/modifiers/ting3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.14,
+        "end": 0.68,
+        "voiced_seconds": 0.55,
+        "curves": {
+          "praat": [
+            227.21,
+            213.888,
+            202.219,
+            194.308,
+            187.108,
+            184.76,
+            179.443,
+            177.404,
+            180.758,
+            184.156,
+            188.685,
+            196.71,
+            205.441,
+            221.637,
+            241.119,
+            256.232,
+            246.616
+          ],
+          "world": [
+            226.491,
+            211.965,
+            201.144,
+            192.328,
+            186.933,
+            183.426,
+            178.191,
+            177.95,
+            181.636,
+            184.704,
+            189.497,
+            197.644,
+            207.116,
+            223.835,
+            245.306,
+            254.888,
+            244.474
+          ]
+        },
+        "median_hz": 201.056,
+        "high_hz": 246.135
+      },
+      "features": {
+        "praat": {
+          "delta": 2.464930303169867,
+          "range": 5.571110193121907,
+          "dip": 3.039958779983553,
+          "rebound": 5.504889083153419,
+          "trough": 0.375,
+          "median_hz": 196.71,
+          "start_hz": 213.888
+        },
+        "world": {
+          "delta": 2.5290774866526227,
+          "range": 5.594351941610622,
+          "dip": 3.0048191124746775,
+          "rebound": 5.5338965991273,
+          "trough": 0.375,
+          "median_hz": 197.644,
+          "start_hz": 211.965
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ting3",
+      "sha256": "1930f3a4f3e374b9de47c2bcb4c70ed78c6c480f0ac5a497afd4440f04e1ddfb"
+    },
+    "audio/sinosplice/modifiers/zhen1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.1,
+        "end": 0.53,
+        "voiced_seconds": 0.44,
+        "curves": {
+          "pyin": [
+            365.879,
+            365.879,
+            365.879,
+            363.772,
+            363.772,
+            363.772,
+            363.772,
+            363.772,
+            363.772,
+            364.826,
+            365.879,
+            365.879,
+            365.879,
+            365.879,
+            364.826,
+            357.523,
+            355.463
+          ],
+          "praat": [
+            366.852,
+            366.479,
+            365.42,
+            364.384,
+            362.376,
+            363.319,
+            364.396,
+            364.694,
+            363.235,
+            364.545,
+            367.06,
+            366.695,
+            366.476,
+            366.484,
+            363.639,
+            357.591,
+            354.69
+          ],
+          "world": [
+            366.411,
+            366.411,
+            365.097,
+            363.938,
+            361.913,
+            363.743,
+            364.24,
+            364.295,
+            362.772,
+            364.442,
+            366.687,
+            366.211,
+            365.866,
+            366.366,
+            361.234,
+            356.98,
+            354.079
+          ]
+        },
+        "median_hz": 364.63,
+        "high_hz": 366.354
+      },
+      "features": {
+        "pyin": {
+          "delta": -0.39996668933030954,
+          "range": 0.40997067837031864,
+          "dip": 0.44998663453035515,
+          "rebound": 0.0500199452000456,
+          "trough": 1.0,
+          "median_hz": 364.826,
+          "start_hz": 365.879
+        },
+        "praat": {
+          "delta": -0.42504125653064406,
+          "range": 0.44934414028417613,
+          "dip": 0.495551880098627,
+          "rebound": 0.07051062356798293,
+          "trough": 1.0,
+          "median_hz": 364.545,
+          "start_hz": 366.479
+        },
+        "world": {
+          "delta": -0.45143479676503967,
+          "range": 0.4655611571432794,
+          "dip": 0.5220665986562384,
+          "rebound": 0.07063180189119872,
+          "trough": 1.0,
+          "median_hz": 364.295,
+          "start_hz": 366.411
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "zhen1",
+      "sha256": "6b79d5002e01d45d6533b41d68b6c683c0930498e98569de49e30db529fc6e91"
+    },
+    "audio/sinosplice/pronouns/ni3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.06,
+        "end": 0.69,
+        "voiced_seconds": 0.62,
+        "curves": {
+          "praat": [
+            216.761,
+            220.884,
+            220.881,
+            220.158,
+            212.534,
+            202.726,
+            191.007,
+            179.833,
+            169.912,
+            157.147,
+            152.305,
+            154.214,
+            164.151,
+            173.275,
+            192.032,
+            205.12,
+            232.357
+          ],
+          "world": [
+            216.604,
+            221.116,
+            221.801,
+            219.449,
+            211.412,
+            201.544,
+            188.575,
+            178.526,
+            167.789,
+            156.438,
+            151.174,
+            154.628,
+            163.443,
+            173.036,
+            190.622,
+            207.218,
+            227.751
+          ]
+        },
+        "median_hz": 195.691,
+        "high_hz": 223.506
+      },
+      "features": {
+        "praat": {
+          "delta": -1.2816138903955268,
+          "range": 6.220026975713835,
+          "dip": 6.220026975713835,
+          "rebound": 4.938413085318308,
+          "trough": 0.625,
+          "median_hz": 192.032,
+          "start_hz": 220.881
+        },
+        "world": {
+          "delta": -1.1238491329799971,
+          "range": 6.192022042397037,
+          "dip": 6.192022042397037,
+          "rebound": 5.06817290941704,
+          "trough": 0.625,
+          "median_hz": 190.622,
+          "start_hz": 221.116
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ni3",
+      "sha256": "ccc21d81f4eeb5d0970ea419066f44cccdd33f03a52552fe0302088daa4da2d5"
+    },
+    "audio/sinosplice/pronouns/ta1.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous citation contour agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.16,
+        "end": 0.55,
+        "voiced_seconds": 0.4,
+        "curves": {
+          "pyin": [
+            314.858,
+            314.858,
+            314.858,
+            314.858,
+            314.858,
+            313.951,
+            313.044,
+            311.241,
+            309.449,
+            309.449,
+            309.449,
+            309.449,
+            309.449,
+            307.667,
+            307.667,
+            307.667,
+            307.667
+          ],
+          "praat": [
+            316.054,
+            313.869,
+            314.003,
+            314.952,
+            315.868,
+            315.112,
+            312.044,
+            311.307,
+            311.185,
+            309.204,
+            308.625,
+            309.254,
+            308.813,
+            308.63,
+            308.141,
+            307.631,
+            307.427
+          ],
+          "world": [
+            316.689,
+            313.427,
+            314.094,
+            315.695,
+            315.965,
+            314.834,
+            311.388,
+            311.541,
+            310.662,
+            309.309,
+            308.626,
+            308.379,
+            308.93,
+            308.541,
+            307.859,
+            306.967,
+            308.909
+          ]
+        },
+        "median_hz": 310.26,
+        "high_hz": 316.044
+      },
+      "features": {
+        "pyin": {
+          "delta": -0.39997936819820573,
+          "range": 0.39997936819820573,
+          "dip": 0.39997936819820573,
+          "rebound": 0.0,
+          "trough": 0.8125,
+          "median_hz": 309.449,
+          "start_hz": 314.858
+        },
+        "praat": {
+          "delta": -0.3549294197276699,
+          "range": 0.4171140724675383,
+          "dip": 0.3606715084243495,
+          "rebound": 0.005742088696679526,
+          "trough": 1.0,
+          "median_hz": 311.185,
+          "start_hz": 314.003
+        },
+        "world": {
+          "delta": -0.3471196671782787,
+          "range": 0.43513999408727927,
+          "dip": 0.3471196671782787,
+          "rebound": 0.0,
+          "trough": 0.875,
+          "median_hz": 310.662,
+          "start_hz": 314.094
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "ta1",
+      "sha256": "0ee3faf14c0a5cb93d47c470c8d486b3669c0382630559435b9441e8ef30abbc"
+    },
+    "audio/sinosplice/pronouns/wo3.mp3": {
+      "method": "all-source-isolated-clarity-1",
+      "status": "clear_citation_tone",
+      "reason": "Continuous fall-rise agrees across usable trackers.",
+      "measurement": {
+        "status": "measured",
+        "start": 0.08,
+        "end": 0.66,
+        "voiced_seconds": 0.59,
+        "curves": {
+          "praat": [
+            205.599,
+            212.913,
+            206.757,
+            200.605,
+            193.758,
+            189.368,
+            182.442,
+            172.775,
+            167.663,
+            164.816,
+            167.86,
+            172.434,
+            179.476,
+            190.25,
+            211.837,
+            233.096,
+            252.19
+          ],
+          "world": [
+            208.778,
+            212.357,
+            206.033,
+            199.618,
+            193.017,
+            188.584,
+            179.928,
+            172.096,
+            167.251,
+            164.666,
+            168.625,
+            172.834,
+            180.541,
+            192.138,
+            215.716,
+            235.261,
+            254.588
+          ]
+        },
+        "median_hz": 191.898,
+        "high_hz": 240.145
+      },
+      "features": {
+        "praat": {
+          "delta": 2.0758568787806277,
+          "range": 5.840622970363659,
+          "dip": 3.6284619045273536,
+          "rebound": 5.704318783307981,
+          "trough": 0.5,
+          "median_hz": 190.25,
+          "start_hz": 206.757
+        },
+        "world": {
+          "delta": 2.067509810608911,
+          "range": 6.0436508056851626,
+          "dip": 3.8394583077684112,
+          "rebound": 5.906968118377322,
+          "trough": 0.5,
+          "median_hz": 192.138,
+          "start_hz": 208.778
+        }
+      },
+      "source_label_changed": false,
+      "linguistic_error_established": false,
+      "key": "wo3",
+      "sha256": "892d9ec516497a6a901121ce32e9d2ab67577f7e11223489bc63b30010bf2df1"
     }
   }
 }

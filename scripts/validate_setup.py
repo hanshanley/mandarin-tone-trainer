@@ -50,6 +50,7 @@ def main():
     recordings = read_json('data/recordings.json')
     public = read_json('data/pinyin_public_recordings.json')
     mandarin_native = read_json('data/mandarin_native_recordings.json')
+    sinosplice = read_json('data/sinosplice_recordings.json')
     errors = []
     require(
         mandarin_native.get('version') == 1 and isinstance(mandarin_native.get('recordings'), list),
@@ -60,6 +61,11 @@ def main():
         recording for recording in mandarin_native.get('recordings', [])
         if recording.get('recording_type') == 'word_candidate'
     ]
+    require(
+        sinosplice.get('version') == 1 and isinstance(sinosplice.get('recordings'), list),
+        'invalid Sinosplice recording index', errors,
+    )
+    imported_recordings += sinosplice.get('recordings', [])
     for recording in imported_recordings:
         path = ROOT / recording['audio_path']
         valid_import = False
@@ -175,6 +181,7 @@ def main():
             'data/build_scope.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
+            'data/sinosplice_recordings.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
@@ -188,7 +195,7 @@ def main():
                     )
             for relative in ['hsk_words.json', 'definitions.json', 'recordings.json', 'pinyin_public_recordings.json',
                              'audio_reviews.json', 'correction_audio_quality.json', 'mandarin_native_recordings.json',
-                             'mandarin_native_words.json']:
+                             'mandarin_native_words.json', 'sinosplice_recordings.json']:
                 target = bundle / 'data' / relative
                 if target.is_file():
                     require(

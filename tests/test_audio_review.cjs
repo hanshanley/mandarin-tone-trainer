@@ -167,7 +167,7 @@ function selectedPractice(approvals){
     }),
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},quality={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
+async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},quality={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],sinospliceRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -189,6 +189,7 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     '../data/recordings.json':recording?[recording]:[],'../data/pinyin_public_recordings.json':publicRecordings,
     '../data/correction_audio_quality.json':quality,'../data/audio_reviews.json':{version:1,approvals},
     '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
+    '../data/sinosplice_recordings.json':{version:1,recordings:sinospliceRecordings},
     '../data/context_word_recordings.json':{version:1,recordings:excerpts},
     '../data/acoustic_reviews.json':{
       version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
@@ -242,6 +243,78 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
 function allApprovals(){
   return [approve(Review.nativeDescriptor(word,native)),...['1','2','3','4'].map(t=>comparison(`ma${t}`))];
 }
+
+function sinospliceRecord(key='ma1',type='word_candidate'){
+  return {...native,word:null,source:'sinosplice',recording_type:type,candidate_hsk_ids:[word.id],
+    audio_path:`audio/sinosplice/adjectives-1/${key}.mp3`,comparison_key:key,
+    license:'CC-BY-NC-SA-2.5',rights_status:'noncommercial_permitted',distribution_scope:'local_only',
+    quiz_eligible:type==='word_candidate',review_status:'acoustic_screened'};
+}
+function sinospliceApproval(descriptor){
+  return {...approve(descriptor),license:'CC-BY-NC-SA-2.5',distribution_scope:'local_only'};
+}
+
+test('Sinosplice word prompts require matching assessments and noncommercial source metadata',async()=>{
+  const recording=sinospliceRecord(),approval=sinospliceApproval(Review.nativeDescriptor(word,recording));
+  const options={recording:null,sinospliceRecordings:[recording],
+    approvals:[approval,...allApprovals().filter(entry=>entry.kind==='comparison')]};
+  const app=await appHarness(options);
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.run('currentRec.source'),'sinosplice');
+  app.get('wordSource').value='sinosplice';
+  await app.get('wordSource').onchange();
+  assert.equal(app.run('currentRec.audio_path'),recording.audio_path);
+  assert.equal(app.run("correctionSelection('ma1').audio_path"),'audio/pinyin_public/ma1.mp3');
+  for(const edit of [
+    row=>row.quiz_eligible=false,row=>row.review_status='rejected',
+    row=>row.rights_status='unverified',row=>row.license=null,row=>row.distribution_scope='redistributable',
+  ]){
+    const changed={...recording};edit(changed);
+    const rejected=await appHarness({...options,sinospliceRecordings:[changed]});
+    assert.equal(rejected.run('current'),null);
+  }
+});
+
+test('Sinosplice sandhi demonstrations are comparison-only and excluded from release scopes',()=>{
+  const recording=sinospliceRecord('bu2','isolated_tone');
+  const approval=sinospliceApproval(Review.comparisonDescriptor('bu2',recording));
+  const ledger={version:1,approvals:[approval]};
+  assert.deepEqual(Review.nativeCandidates([word],[recording]),[]);
+  const reviewed=Review.createIndex(ledger,null,{sourceRecordings:[recording]});
+  for(const mode of Review.COMPARISON_SOURCES){
+    assert.equal(Review.correctionSelection(Policy,'bu2',{}, {},reviewed,mode).source,'sinosplice');
+  }
+  const release=Review.createIndex(ledger,null,{allowLocalOnly:false,sourceRecordings:[recording]});
+  assert.equal(release.size,0);
+  assert.equal(Review.correctionSelection(Policy,'bu2',{}, {},release,'sinosplice'),null);
+  assert.throws(()=>Review.createIndex({version:1,approvals:[{...approval,distribution_scope:'redistributable'}]}),
+    /noncommercial license and local-only/);
+  const quality={isolated_clarity:{[recording.audio_path]:{sha256:hash,key:'bu2',status:'needs_clearer_citation'}}};
+  assert.equal(Review.correctionSelection(Policy,'bu2',quality,{},reviewed,'sinosplice'),null);
+  const rejected=Review.createIndex(ledger,null,{sourceRecordings:[{...recording,review_status:'rejected'}]});
+  assert.equal(Review.correctionSelection(Policy,'bu2',{}, {},rejected,'sinosplice'),null);
+});
+
+test('Sinosplice fourth-tone comparison remains replayable after an incorrect answer',async()=>{
+  const recording=sinospliceRecord('ma4');
+  const approval=sinospliceApproval(Review.comparisonDescriptor('ma4',recording));
+  const app=await appHarness({sinospliceRecordings:[recording],
+    approvals:[...allApprovals().filter(entry=>entry.key!=='ma4'),approval]});
+  assert.equal(app.run('questionVerified'),true);
+  assert.ok(app.requests.includes(`../${recording.audio_path}`));
+  for(const mode of Review.COMPARISON_SOURCES){
+    app.get('correctionSource').value=mode;
+    assert.equal(app.run("correctionSelection('ma4').audio_path"),recording.audio_path);
+  }
+  app.run('globalThis.comparisonPlays=[];playPinyinSequence=async keys=>comparisonPlays.push(keys)');
+  const button=app.get('answers').children[0].querySelector('[data-tone="4"]');
+  await button.onclick();
+  await button.onclick();
+  assert.equal(button.disabled,false);
+  assert.equal(app.run('comparisonPlays.length'),2);
+  assert.equal(app.run('results.length'),1);
+  assert.equal(app.run('results[0].correct'),false);
+});
 
 function acousticApproval(descriptor,scope='redistributable'){
   const nativeEntry=descriptor.kind==='native';
@@ -320,7 +393,7 @@ test('missing imported source never silently plays an original recording instead
   app.get('wordSource').value='mandarin_native';
   await app.run('next(false,false)');
   assert.equal(app.run('current'),null);
-  assert.match(app.get('prompt').innerHTML,/Choose Both sources/);
+  assert.match(app.get('prompt').innerHTML,/Choose All sources/);
   assert.equal(app.get('play').disabled,true);
   app.get('wordSource').value='all';
   await app.run('next(false,false)');
@@ -1237,7 +1310,7 @@ test('unclear isolated imported third tones cannot override a clearer comparison
 });
 
 test('all-source clarity applies equally to original, public and imported clips for every full tone',()=>{
-  for(const source of ['audio_cmn','pinyin_public','mandarin_native'])for(const tone of ['1','2','3','4']){
+  for(const source of Review.COMPARISON_SOURCES)for(const tone of ['1','2','3','4']){
     const path=`audio/${source}/ma${tone}.mp3`;
     const approval=approve(Review.comparisonDescriptor(`ma${tone}`,{audio_path:path}));
     const quality={isolated_clarity:{[path]:{sha256:approval.sha256,key:`ma${tone}`,status:'clear_citation_tone'}}};
@@ -1279,7 +1352,7 @@ test('every actual quiz word has four playable comparisons in all voice preferen
     assert.ok(quiz.eligibleWords.length>0);
     assert.ok(quiz.eligibleWords.includes('L2-0213'),'Clear original han3 must remain in testing');
     const words=new Map(data.words.map(word=>[word.id,word]));
-    for(const id of quiz.eligibleWords)for(const mode of ['pinyin_public','audio_cmn','mandarin_native']){
+    for(const id of quiz.eligibleWords)for(const mode of Review.COMPARISON_SOURCES){
       assert.equal(Review.hasCompleteToneReferences(Policy,words.get(id).pinyin_syllables,
         data.quality,data.publicRecordings,reviewed,mode),true,`${id}/${mode}`);
     }
@@ -1325,7 +1398,7 @@ test('new-source comparison voice fills a tone independently of the initial word
   const app=await appHarness({acousticApprovals:acoustic,importedRecordings:[imported],supplementalPipelines:mixedPipeline()});
   assert.equal(app.run('questionVerified'),true);
   assert.equal(app.run('currentRec.source'),'audio_cmn');
-  for(const source of ['pinyin_public','audio_cmn','mandarin_native']){
+  for(const source of Review.COMPARISON_SOURCES){
     app.get('correctionSource').value=source;
     assert.equal(app.run("correctionSelection('ma3').audio_path"),comparison.audio_path);
   }

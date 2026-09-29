@@ -8,7 +8,7 @@ import AudioReview from '../app/audio_review.js';
 import CorrectionAudio from '../app/correction_audio.js';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const MODES=['pinyin_public','audio_cmn','mandarin_native'];
+const MODES=AudioReview.COMPARISON_SOURCES;
 const read=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 
 export function comparisonCoverage(data,index,bases){
@@ -115,6 +115,18 @@ function main(){
           outcome?.reason||(!assessment?'no_qualifying_assessment':null),
     });
   }
+  for(const recording of data.recordings.filter(row=>row.source==='sinosplice'&&row.comparison_key)){
+    const key=recording.comparison_key;
+    if(!byKey.has(key))byKey.set(key,new Map());
+    const assessment=index.get(AudioReview.identity(AudioReview.comparisonDescriptor(key,recording)));
+    byKey.get(key).set(recording.audio_path,{
+      audio_path:recording.audio_path,sha256:recording.sha256,source:recording.source,
+      source_url:recording.source_url,source_label:key.slice(-1),
+      known_quarantine:recording.review_status==='rejected',assessed_for_comparison:Boolean(assessment),
+      diagnostic_status:'outside_frozen_cross_fit_inventory',
+      unresolved_reason:assessment?null:'no_qualifying_assessment',
+    });
+  }
   for(const family of covered.families)for(const slot of family.slots){
     slot.candidates=[...(byKey.get(slot.key)?.values()||[])];
     if(!slot.available){
@@ -156,6 +168,20 @@ function main(){
     };
   });
   const previous=fs.existsSync(values.output)?read(values.output):{};
+  const quizInitialPaths=new Set(quiz.recordingLabelPairs.map(pair=>pair.audio_path));
+  const sinosplice=data.recordings.filter(row=>row.source==='sinosplice').map(recording=>({
+    audio_path:recording.audio_path,sha256:recording.sha256,source_key:recording.source_audio_key,
+    source_pattern:recording.source_tone_pattern,surface_pattern:recording.surface_pattern,
+    comparison_key:recording.comparison_key,candidate_word_ids:recording.candidate_hsk_ids,
+    assessments:[...index.values()].filter(entry=>entry.audio_path===recording.audio_path).map(entry=>({
+      kind:entry.kind,key:entry.key,word_id:entry.word_id,distribution_scope:entry.distribution_scope,
+    })),
+    used_for_library_initial:initialPaths.has(recording.audio_path),
+    used_for_quiz_initial:quizInitialPaths.has(recording.audio_path),used_in_quiz:quiz.audio.has(recording.audio_path),
+    isolated_clarity:data.quality.isolated_clarity?.[recording.audio_path]?.status||null,
+    unresolved_reasons:[...new Set((originalDecisions?.findings||[])
+      .filter(row=>row.audio_path===recording.audio_path).map(row=>row.reason))],
+  }));
   const report={
     ...previous,version:1,inventory_sha256:inventory.inventory_sha256,
     acoustic_ledger_sha256:createHash('sha256').update(fs.readFileSync(path.join(ROOT,'data/acoustic_reviews.json'))).digest('hex'),
@@ -167,6 +193,7 @@ function main(){
     current:{entries:practice.eligibleWords.length,initial_examples:practice.recordingLabelPairs.length,
       original_examples:practice.recordingLabelPairs.filter(pair=>records.get(pair.audio_path).source==='audio_cmn').length,
       imported_examples:practice.recordingLabelPairs.filter(pair=>records.get(pair.audio_path).source==='mandarin_native').length,
+      sinosplice_examples:practice.recordingLabelPairs.filter(pair=>records.get(pair.audio_path).source==='sinosplice').length,
       initial_imported_files:imports.filter(row=>row.used_for_initial).length,
       comparison_imported_files:imports.filter(row=>row.used_for_comparison).length,
       reachable_audio:practice.audio.size,tone_coverage:practice.toneCoverage},
@@ -178,6 +205,13 @@ function main(){
     comparison_coverage:covered,unresolved_keys:covered.families.flatMap(family=>family.slots.filter(slot=>!slot.available).map(slot=>slot.key)),
     imported_single_syllable_audit:importedSingleAudit(inventory,outcomes.outcomes,imports),
     imported_standalone_files:imports,independent_accuracy_verified:false,
+    sinosplice_source:{
+      files:sinosplice.length,single_syllable_files:sinosplice.filter(row=>row.comparison_key).length,
+      two_syllable_files:sinosplice.filter(row=>row.surface_pattern.split('-').length===2).length,
+      assessed_files:sinosplice.filter(row=>row.assessments.length).length,
+      quiz_files:sinosplice.filter(row=>row.used_in_quiz).length,
+      license:'CC-BY-NC-SA-2.5',distribution_scope:'local_only',recordings:sinosplice,
+    },
   };
   fs.mkdirSync(path.dirname(path.resolve(values.output)),{recursive:true});
   fs.writeFileSync(values.output+'.part',JSON.stringify(report,null,2)+'\n');

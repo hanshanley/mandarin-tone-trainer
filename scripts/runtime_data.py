@@ -19,4 +19,5 @@ def read_recordings():
     recordings = json.loads((ROOT / 'data/recordings.json').read_text(encoding='utf-8'))
     imported = json.loads((ROOT / 'data/mandarin_native_recordings.json').read_text(encoding='utf-8'))['recordings']
     recordings += [recording for recording in imported if recording['recording_type'] == 'word_candidate']
+    recordings += json.loads((ROOT / 'data/sinosplice_recordings.json').read_text(encoding='utf-8'))['recordings']
     return recordings

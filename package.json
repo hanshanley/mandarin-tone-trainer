@@ -38,6 +38,7 @@
     "audio:review-all": "python3 scripts/review_quiz_pronunciation.py",
     "audit:agreement-selection": "node scripts/build_agreement_practice.mjs",
     "download:mandarin-native": "python3 scripts/download_mandarin_native.py --standalone-only",
+    "download:sinosplice": "python3 scripts/download_sinosplice.py",
     "test": "python3 -m unittest discover -s tests -q"
   },
   "dependencies": {

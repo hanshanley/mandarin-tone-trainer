@@ -20,6 +20,7 @@ const DATA_FILES = [
   'acoustic_reviews.json',
   'mandarin_native_recordings.json',
   'mandarin_native_words.json',
+  'sinosplice_recordings.json',
 ];
 
 function readJSON(relativePath) {

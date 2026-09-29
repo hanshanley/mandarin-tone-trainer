@@ -49,6 +49,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/acoustic_reviews.json',
             'data/mandarin_native_recordings.json',
             'data/mandarin_native_words.json',
+            'data/sinosplice_recordings.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
@@ -75,6 +76,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         self.assertFalse((self.bundle / 'data/context_word_recordings.json').exists())
         self.assertFalse((self.bundle / 'data/practice_selection.json').exists())
         self.assertFalse(any('mandarin_native/excerpts/' in path.as_posix() for path in bundled))
+        self.assertFalse(any(path.as_posix().startswith('audio/sinosplice/') for path in bundled))
         ledger = json.loads((ROOT / 'data/audio_reviews.json').read_text())
         acoustic = json.loads((ROOT / 'data/acoustic_reviews.json').read_text())
         if not ledger['approvals'] and not acoustic['approvals']:

@@ -3,28 +3,28 @@
   "verification_date": "2026-09-29",
   "scope": "Retained library decoding and all-source citation-screened complete-comparison quiz; not independent human linguistic certification",
   "player_sha256": {
-    "app/app.js": "570be360d49f5281078971d2ffd0d501586ff9edc600decfd1da6d4df2ca2cd1",
+    "app/app.js": "1323677d8c95cc40de8c77d10a68a3fcdf194560927eca4cc9c7498b6f780b4a",
     "app/correction_audio.js": "5d7d1d9fbc9a879748cc6efeb739e082cb719f2429166e813ca5571b93af8cba",
-    "app/audio_review.js": "c5956b1511fed0fc91c9c94fefd2bbcfa5b27fc72f95abb721d1dc633a20805f"
+    "app/audio_review.js": "441fd222356885feb5b02f3937aa111a7ffecdbe22863569c985588f4b15eecd"
   },
-  "inventory_sha256": "fa1c7e4522ecbee694eafd648f8b271fe1ac1c46671ad72069f012dccea0d693",
+  "inventory_sha256": "57c670c01805c06c19bc943e6a3f40461b67e13be64855ae9145b053c2a4e095",
   "practice": {
-    "entries": 659,
-    "initial_examples": 719,
+    "entries": 666,
+    "initial_examples": 728,
     "auditCountersPresent": false
   },
-  "decoded_files": 3537,
-  "native_files": 2200,
+  "decoded_files": 3574,
+  "native_files": 2231,
   "browser_files_above_full_scale_before_gain": 2,
   "mono_fold_down_files_above_full_scale_before_gain": 12,
-  "native_files_attenuated": 67,
+  "native_files_attenuated": 83,
   "maximum_native_output_peak": 0.9000000000000001,
-  "distinct_comparison_processing_paths": 519,
+  "distinct_comparison_processing_paths": 530,
   "rendered_sample_rates_hz": [
     44100,
     48000
   ],
-  "rendered_comparison_graphs": 1038,
+  "rendered_comparison_graphs": 1060,
   "maximum_comparison_output_peak": 0.8441486954689026,
   "clipped_comparison_outputs": 0,
   "maximum_peak_in_final_10ms": 1.1353929891558998e-17,
@@ -46,9 +46,9 @@
     "Does not repair pre-existing microphone distortion or certify external audio hardware."
   ],
   "quiz_tone_checks": {
-    "quiz_entries": 659,
-    "verified_syllable_tone_voice_slots": 1056,
-    "unique_comparison_files": 519,
+    "quiz_entries": 666,
+    "verified_syllable_tone_voice_slots": 1424,
+    "unique_comparison_files": 530,
     "missing_comparisons": 0,
     "original_speech_samples_preserved": true,
     "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
@@ -128,6 +128,31 @@
         "mode": "mandarin_native",
         "tone": "4",
         "path": "audio/pinyin_public/han4.mp3"
+      },
+      {
+        "mode": "sinosplice",
+        "tone": "4",
+        "path": "audio/pinyin_public/han4.mp3"
+      },
+      {
+        "mode": "sinosplice",
+        "tone": "1",
+        "path": "audio/audio_cmn/syllabs/cmn-han1.mp3"
+      },
+      {
+        "mode": "sinosplice",
+        "tone": "2",
+        "path": "audio/pinyin_public/han2.mp3"
+      },
+      {
+        "mode": "sinosplice",
+        "tone": "3",
+        "path": "audio/pinyin_public/han3.mp3"
+      },
+      {
+        "mode": "sinosplice",
+        "tone": "4",
+        "path": "audio/pinyin_public/han4.mp3"
       }
     ],
     "incorrect_guess_preserved": true,
@@ -137,9 +162,10 @@
     "date": "2026-09-29",
     "device": "Pixel 10",
     "installed_apk_hash_verified": true,
-    "quiz_entries": 856,
-    "verified_syllable_tone_voice_slots": 1224,
-    "unique_comparison_files": 659,
+    "quiz_entries": 659,
+    "verified_syllable_tone_voice_slots": 1056,
+    "unique_comparison_files": 519,
+    "active_files_decoded_on_device": 1104,
     "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
     "han_button_plays": 15,
     "wrong_guess_preserved": true,
@@ -153,19 +179,5 @@
     "candidate_isolated_files": 5107,
     "all_sources_and_tones": true,
     "independent_accuracy_certified": false
-  },
-  "on_device_verification": {
-    "date": "2026-09-29",
-    "device": "Pixel 10",
-    "installed_apk_hash_verified": true,
-    "quiz_entries": 659,
-    "verified_syllable_tone_voice_slots": 1056,
-    "unique_comparison_files": 519,
-    "active_files_decoded_on_device": 1104,
-    "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
-    "han_button_plays": 15,
-    "wrong_guess_preserved": true,
-    "playback_finished": true,
-    "test_attempts_restored_after_verification": true
   }
 }

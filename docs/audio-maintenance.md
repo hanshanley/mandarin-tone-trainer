@@ -55,14 +55,14 @@ playable references for **all four full tones**, in every comparison voice
 preference. The browser verifies every selected file before showing choices.
 An incorrect answer never disables subsequent comparison playback.
 
-Current local-use counts are **2,265 retained library entries** and **659 quiz
-entries / 719 initial choices**. The quiz contains 88 syllable bases, with
-352 of 352 full-tone slots playable. Neutral is still demonstrated in whole-word
+Current local-use counts are **2,273 retained library entries** and **666 quiz
+entries / 728 initial choices**. Every quiz base has all four full-tone slots
+playable under all comparison preferences. Neutral is still demonstrated in whole-word
 context where a qualifying example exists, not synthesized as an isolated tone.
 The smaller quiz pool is an explicit completeness rule, not deletion of recordings.
 
 `audio:review-all -- --inventory .audit/native-tone-inventory.json` applies
-source-independent citation checks to all 5,107 mapped isolated candidates.
+source-independent citation checks to all 5,143 mapped isolated candidates.
 `data/correction_audio_quality.json` stores their hashes, continuous tracker
 measurements and clarity decisions. Every isolated quiz prompt and comparison
 must have a matching, clear review, regardless of source. Two or more usable
@@ -78,9 +78,10 @@ hashes and decisions. All active multi-syllable words are rechecked using their
 exact alignments and existing spectral/contextual evidence, rather than applying
 isolated-tone shapes to connected speech. The report also covers whole-word
 corroboration routes and explicitly disclaims independent linguistic certification.
-Of the 1,437 files in the expanded pre-review pool, 190 required clearer citation
-evidence. The final 1,104-file active pool has no unresolved findings under these
-checks; the underlying library and unselected files remain preserved.
+The original review found 190 unclear citation files in a 1,437-file expanded
+pool. After adding Sinosplice, the 1,121-file active pool has no unresolved
+findings under these checks; the underlying library and unselected files remain
+preserved.
 
 The reported imported `han3` prompt is explicitly retired in favor of the
 original whole-word 喊 recording. A replacement must match the same vocabulary
@@ -99,10 +100,18 @@ source labels, expected spoken sandhi, exact file hashes, and vocabulary matches
 The two `te4bie2` takes remain separate recordings. Sandhi-only `bu2`, `hen2`,
 and `ting2` demonstrations are not dictionary-tone quiz prompts.
 
-These recordings are currently **pending candidates, not active app audio**.
-Indexing/restoration grants no pronunciation approvals. Raw and prepared ASR
+Qualifying recordings are integrated as a separate **local-only source** for
+native words and mixed-source comparisons. Indexing/restoration grants no
+pronunciation approvals. Raw and prepared ASR
 collection must use `--batch-size 1`, because separate source groups contain
 different recordings with identical basenames.
+
+All 90 recordings have acoustic/recognition evidence; the admitted subset passes
+the unchanged screening rules. Every isolated source file also receives the
+same citation-clarity check as existing sources. The frozen experimental
+native-model inventory is not regenerated to add this source.
+`data/mixed_audio_coverage.json` reports each file's actual admission and use;
+unselected files and original source labels remain preserved.
 
 Attribution: **Mandarin Chinese Tone Pair Drills by John Pasden,
 [Sinosplice.com](https://www.sinosplice.com/learn-chinese/tone-pair-drills)**,
@@ -116,9 +125,9 @@ any integration must preserve attribution and the applicable ShareAlike terms.
 
 The runtime comparison index combines all eligible direct sources per
 `base + tone`. **Word recordings** chooses intact native-word audio;
-**Comparison voice** independently prefers reference, original human, or
-Mandarin Native syllables. Missing preferred-source clips fall back across the
-same mixed bank. Rights-filtered builds omit the imported-voice option.
+**Comparison voice** independently prefers reference, original human, Mandarin
+Native, or Sinosplice syllables. Missing preferred-source clips fall back across
+the same mixed bank. Rights-filtered builds omit unavailable imported voices.
 
 `cross-source-native-reference-v1` is an additional evidence route in the
 existing `data/acoustic_reviews.json`, not a competing allowlist:

@@ -34,6 +34,8 @@ def source_group(path):
         return 'audio_cmn_syllables'
     if path.startswith('audio/mandarin_native/'):
         return 'mandarin_native'
+    if path.startswith('audio/sinosplice/'):
+        return 'sinosplice'
     return 'audio_cmn_words'
 
 
@@ -143,7 +145,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
         elif kind == 'native' and (
             recording.get('review_status') == 'rejected'
             or (recording.get('quiz_eligible') is False and not (
-                recording.get('source') == 'mandarin_native'
+                recording.get('source') in ('mandarin_native', 'sinosplice')
                 and recording.get('recording_type') in ('word_candidate', 'aligned_word')
                 and recording.get('review_status') == 'pending'
             ))
@@ -269,7 +271,7 @@ def compile_reviews(candidates, profiles, recognitions, recordings, alignments, 
             'sha256': row['sha256'],
             'source_url': row['source_url'],
             'license': row.get('license'),
-            'distribution_scope': 'local_only' if local_reference or (
+            'distribution_scope': 'local_only' if local_reference or group == 'sinosplice' or (
                 group.startswith('mandarin_native') and recording.get('rights_status') != 'cleared'
             ) else 'redistributable',
             'evidence': {
@@ -393,10 +395,12 @@ validateLedger(loadReviewData());
     ledger['approvals'] = list(combined.values())
     imported_path = ROOT / 'data/mandarin_native_recordings.json'
     imported = json.loads(imported_path.read_text(encoding='utf-8'))
+    sinosplice_path = ROOT / 'data/sinosplice_recordings.json'
+    sinosplice = json.loads(sinosplice_path.read_text(encoding='utf-8'))
     if args.activate_imported:
         eligible = {entry['audio_path'] for entry in ledger['approvals']}
         corroborated = {entry['audio_path'] for entry in ledger['approvals'] if entry['evidence']['method'] != VERSION}
-        for recording in imported['recordings']:
+        for recording in imported['recordings'] + sinosplice['recordings']:
             if recording['recording_type'] != 'word_candidate' or recording.get('review_status') not in (
                 'pending', 'acoustic_screened', 'source_corroborated',
             ):
@@ -409,7 +413,7 @@ validateLedger(loadReviewData());
     impact = None
     if runtime_output:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', encoding='utf-8') as staged:
-            json.dump({'ledger': ledger, 'imported': imported}, staged, ensure_ascii=False)
+            json.dump({'ledger': ledger, 'imported': imported, 'sinosplice': sinosplice}, staged, ensure_ascii=False)
             staged.flush()
             impact = json.loads(subprocess.check_output(['node', '--input-type=module', '-e', """
 import fs from 'node:fs';
@@ -417,9 +421,10 @@ import {validateAudioUpdate} from './scripts/review_audio.mjs';
 process.stdout.write(JSON.stringify(validateAudioUpdate(JSON.parse(fs.readFileSync(process.argv[1],'utf8')))));
 """, staged.name], cwd=ROOT, text=True))
     if args.activate_imported:
-        temporary = imported_path.with_suffix('.json.part')
-        temporary.write_text(json.dumps(imported, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        temporary.replace(imported_path)
+        for path, value in [(imported_path, imported), (sinosplice_path, sinosplice)]:
+            temporary = path.with_suffix('.json.part')
+            temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+            temporary.replace(path)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary = args.output.with_suffix('.json.part')
     temporary.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
