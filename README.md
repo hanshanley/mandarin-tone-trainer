@@ -2,7 +2,7 @@
   <img src="resources/logo.svg" width="120" alt="Mandarin Tone Trainer logo">
   <h1>Mandarin Tone Trainer</h1>
   <p><strong>Hear the word. Identify the tones. Compare your voice.</strong></p>
-  <p>An offline Mandarin listening trainer for HSK 1–9 vocabulary.</p>
+  <p>An offline Mandarin listening trainer for HSK 1–9 vocabulary and publisher pronunciation drills.</p>
   <p>
     <a href="#quickstart">Quickstart</a> ·
     <a href="docs/android.md">Android guide</a> ·
@@ -14,9 +14,11 @@
 
 ## Learn tones from real words
 
-**Practice uses the acoustically checked direct-recording library.**
-Test items require matching syllable identity, usable spoken-tone evidence,
-and playable **tones 1, 2, 3, and 4 for every syllable**. The app checks all four
+**Practice combines the checked direct-recording library with source-linked publisher drills.**
+Original sources retain their acoustic/listening gates. Glossika examples use
+explicit publisher labels and verified complete-utterance mappings, not invented
+human reviews or acoustic certificates. All quiz items require playable
+**tones 1, 2, 3, and 4 for every syllable**. The app checks all four
 recordings before presenting the question, and all four buttons remain usable
 after an incorrect guess. Entries without complete comparisons remain in the
 library but are not shown in testing. Neutral comparisons use genuine whole-word
@@ -48,7 +50,7 @@ scrolling them away. On phones, **Previous** and **Next word** remain at the
 bottom of the screen.
 
 Open **Practice settings** and use **Word recordings** to practice with **All sources**, the **Original
-library**, **Mandarin Native**, or **Sinosplice** specifically. This chooses the complete-word
+library**, **Mandarin Native**, **Sinosplice**, or **Glossika** specifically. This chooses the complete-word
 audio; **Comparison voice** separately controls the isolated tone examples.
 
 ### Compare tones directly
@@ -59,23 +61,28 @@ Tone buttons use screened isolated-syllable examples when available. Switch
 selects its own suitable syllable/tone recording; if that voice lacks a checked
 clip, the app uses an available recording from another source. This never
 changes the initial whole-word recording or stitches syllables together.
-Only recordings with qualifying acoustic evidence or explicit listening
-approval can play. Clear single-syllable word recordings can supply a fallback;
+Recordings need a qualifying acoustic/listening assessment or an explicit
+publisher-source mapping. Suitable single-syllable recordings can supply a fallback;
 testing excludes words that would leave any of the four comparison buttons silent.
 Neutral tone is demonstrated in a checked whole word, with the relevant
 syllable identified, rather than an invented isolated fifth-tone clip.
 
-All isolated quiz prompts and comparisons undergo the **same citation-clarity
-checks across every source and all four tones**. These require continuous,
+Legacy isolated quiz prompts and comparisons undergo the **same citation-clarity
+checks across their sources and all four tones**. These require continuous,
 agreeing pitch tracks and an appropriate level, rising, dipping, or falling
 contour. A low or mostly falling third tone is not automatically a source error,
 but unclear citation forms are withheld from isolated teaching roles. Original
 labels and downloaded files remain intact.
-The retained library currently has **2,273 entries**; **666 entries** meet the
-complete-comparison and clarity requirements for testing.
+Glossika's separately identified source-label route retains the publisher's
+five-tone row order and original audio, rather than treating uncertain
+recognition as evidence of a wrong source label.
+The retained library currently has **6,166 entries**; **5,465 catalog entries**
+meet the complete-comparison requirements for testing. These include **3,577
+Glossika entries** and original-source items unlocked by the added references.
 The per-file [pronunciation review](data/quiz_pronunciation_review.json) covers
 every active native, comparison, and contextual-neutral recording. It records
-automated evidence, not a claim of independently certified linguistic accuracy.
+the applicable acoustic or publisher-mapping evidence, not a claim of
+independently certified linguistic accuracy.
 
 ### Practice your pronunciation
 
@@ -290,16 +297,27 @@ changing source audio or granting new approvals. Qualified files use the same
 phonetic, tone, citation-clarity, and complete-comparison gates as other sources.
 They are available only in local-use builds, not generic redistributable bundles.
 
-### Glossika companion lessons
+### Individual Glossika examples and companion lessons
 
 Local-use builds include **117 complete Glossika book lessons**: 2 consonant
 lessons, 35 syllable/vowel lessons, 16 two-tone lessons, and 64 three-tone lessons.
 Open **Glossika book lessons** below the practice settings, choose a lesson,
-and press **Open lesson**. The player stays with the corresponding original
-book pages; page navigation and zoom are available on phones.
+and choose either the full lesson or an individual example. The player stays
+with the corresponding original book page. **Practice this example** selects
+that exact eligible item in the main quiz, with all four tone comparisons.
 
-These are continuous lessons, **not 117 new quiz words or thousands of standalone
-recordings**. No sentence cuts or synthesized word clips are added to the quiz.
+The pinned book contains **4,570 identifiable examples**: 1,915 single-tone
+exercises, 977 two-syllable entries and 1,678 three-syllable entries. This differs
+from the advertised 5,055; the discrepancy is recorded, not filled with invented
+items. **4,526 examples have individual playback mappings**. The remaining 44
+stay indexed with explicit unresolved reasons and full-lesson access.
+
+Individual playback uses sample-accurate intervals containing complete spoken
+drill utterances and silence margins. Original MP3s are unchanged; no physical
+per-item recording files, sentence-word crops or synthesized syllable sequences
+are created. Solo neutral drills, unresolved source conflicts and unverified
+connected-speech tone changes remain listening-only rather than receiving guessed
+quiz answers. Entries also need complete comparison families before grading.
 Lessons pause when the panel closes or quiz/personal-recording playback starts.
 The original audio and PDF remain unchanged, with hash verification and
 attenuation-only playback protection.
@@ -310,6 +328,13 @@ and [original PDF](https://d310pm6npapqqb.cloudfront.net/free-download/Glossika%
 Install the pinned `requirements.txt` dependencies first for exact book-page
 rendering. The original PDF's printed page 4 links to this archive; a
 print-to-PDF copy can lose that hyperlink.
+
+`npm run audio:glossika-examples` reconstructs the individual catalog from the
+original PDF and committed utterance mappings; it does not need speech models.
+Normal setup runs this automatically. The full extracted index and
+`data/glossika_practice.json` are generated personal-use data, deliberately
+excluded from Git and generic redistributable builds. Detailed counts are in
+`data/glossika_example_coverage.json`.
 
 Michael Campbell / Glossika, *Chinese Pronunciation & Tone Training*, copyright
 2018 Glossika, all rights reserved. This is a **personal-use companion**, not a

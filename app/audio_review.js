@@ -480,10 +480,18 @@
           ||entry.quiz_eligible!==example.quiz_eligible)){
         throw new Error(`Invalid Glossika native labels: ${entry.audio_path}`);
       }
-    }else if(!/^[a-zv]+[1-4]$/.test(entry.key||'')
-      ||!example||example.kind!=='syllable_drill'||example.quiz_eligible!==true
-      ||entry.key!==`${example.pinyin_syllables[0]}${example.lexical_pattern}`){
-      throw new Error(`Invalid Glossika comparison label: ${entry.audio_path}`);
+    }else{
+      if(!/^[a-zv]+[1-4]$/.test(entry.key||'')
+        ||entry.source_item_kind!=='syllable_drill'||entry.quiz_eligible!==true
+        ||!Array.isArray(entry.pinyin_syllables)||entry.pinyin_syllables.length!==1
+        ||!/^[a-zv]+$/.test(entry.pinyin_syllables[0]||'')
+        ||!/^[1-4]$/.test(entry.lexical_pattern||'')
+        ||entry.key!==`${entry.pinyin_syllables[0]}${entry.lexical_pattern}`
+        ||example&&(example.kind!==entry.source_item_kind||example.quiz_eligible!==entry.quiz_eligible
+          ||example.lexical_pattern!==entry.lexical_pattern
+          ||JSON.stringify(example.pinyin_syllables)!==JSON.stringify(entry.pinyin_syllables))){
+        throw new Error(`Invalid Glossika comparison label: ${entry.audio_path}`);
+      }
     }
   }
   function addPublisherAssessments(index,publisherCatalog,publisherLedger,{allowLocalOnly}){

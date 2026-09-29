@@ -70,7 +70,9 @@ for(const id of quiz.eligibleWords)for(const base of words.get(id).pinyin_syllab
   if(neutral)selected.set(R.identity(neutral),neutral);
 }
 process.stdout.write(JSON.stringify({entries:quiz.eligibleWords,initial_examples:quiz.recordingLabelPairs,
-  library_entries:library.eligibleWords.length,assessments:[...selected.values()],tone_coverage:quiz.toneCoverage}));
+  library_entries:library.eligibleWords.length,assessments:[...selected.values()].map(entry=>({
+    ...entry,media_path:R.mediaPath(entry),
+  })),tone_coverage:quiz.toneCoverage}));
 """
     with tempfile.NamedTemporaryFile(mode='w', suffix='.json', encoding='utf-8') as staged:
         if quality is not None:
@@ -157,16 +159,35 @@ def main():
         all_assessments[key] = assessment
     grouped = defaultdict(list)
     for assessment in all_assessments.values():
-        grouped[assessment['audio_path']].append(assessment)
-    before_paths = {item['audio_path'] for item in before['assessments']}
-    after_paths = {item['audio_path'] for item in after['assessments']}
+        grouped[assessment['media_path']].append(assessment)
+    before_paths = {item['media_path'] for item in before['assessments']}
+    after_paths = {item['media_path'] for item in after['assessments']}
     files = []
+    publisher_items = set()
     for path, assessments in sorted(grouped.items()):
-        profile = profiles[path]
-        if profile.get('evidence_version') != PROFILE_VERSION or profile['sha256'] != assessments[0]['sha256']:
-            raise ValueError(f'Stale active-file profile: {path}')
+        publisher = all(item.get('assessment') == 'publisher_source' for item in assessments)
+        if publisher:
+            current_hash = hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+            if any(item['sha256'] != current_hash or item['drill_source']['audio_path'] != path for item in assessments):
+                raise ValueError(f'Stale publisher parent recording: {path}')
+        else:
+            profile = profiles[path]
+            current_hash = profile['sha256']
+            if profile.get('evidence_version') != PROFILE_VERSION or current_hash != assessments[0]['sha256']:
+                raise ValueError(f'Stale active-file profile: {path}')
         checks = []
         for assessment in assessments:
+            if publisher:
+                source = assessment['drill_source']
+                publisher_items.add(source['item_id'])
+                checks.append({
+                    'source_item_id': source['item_id'], 'logical_audio_path': assessment['audio_path'],
+                    'status': 'publisher_source_mapping_verified', 'route': 'publisher-isolated-drills-v1',
+                    'sample_rate': source['sample_rate'], 'start_sample': source['start_sample'],
+                    'end_sample': source['end_sample'], 'hash_scope': 'parent_file',
+                    'independent_pronunciation_certification': False,
+                })
+                continue
             isolated = assessment['kind'] == 'comparison' or len(assessment['pinyin_syllables']) == 1
             if isolated:
                 review = reviews[path]
@@ -174,10 +195,12 @@ def main():
                                'route': assessment['evidence']['method']})
             else:
                 checks.append(check_word(assessment, profile, alignments.get(path)))
-        if path in after_paths and any(check['status'] not in ('clear_citation_tone', 'existing_evidence_reproduced') for check in checks):
+        if path in after_paths and any(check['status'] not in (
+            'clear_citation_tone', 'existing_evidence_reproduced', 'publisher_source_mapping_verified',
+        ) for check in checks):
             raise ValueError(f'Active pronunciation evidence remains unresolved: {path}')
         files.append({
-            'audio_path': path, 'sha256': profile['sha256'], 'used_before': path in before_paths,
+            'audio_path': path, 'sha256': current_hash, 'used_before': path in before_paths,
             'used_after': path in after_paths, 'roles': sorted({entry['kind'] for entry in assessments}),
             'checks': checks,
         })
@@ -186,15 +209,16 @@ def main():
         'pipeline_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'inventory_sha256': inventory['inventory_sha256'],
         'sinosplice_index_sha256': hashlib.sha256((ROOT / 'data/sinosplice_recordings.json').read_bytes()).hexdigest(),
-        'scope': 'Every initial, comparison, and neutral-context file used before or after all-source citation clarity',
+        'scope': 'Every active physical media file: legacy acoustic/citation evidence and separately identified publisher-source utterance mappings',
         'before': {'entries': len(before['entries']), 'initial_examples': len(before['initial_examples']), 'files': len(before_paths)},
         'after': {'entries': len(after['entries']), 'initial_examples': len(after['initial_examples']), 'files': len(after_paths)},
         'retained_library_entries': after['library_entries'],
         'isolated_candidate_files_reviewed': len(reviews),
+        'publisher_items_reviewed': len(publisher_items),
         'active_file_source_counts': dict(Counter(path.split('/')[1] for path in after_paths)),
         'all_active_files_reviewed': True, 'missing_files': [],
         'independent_linguistic_accuracy_certified': False,
-        'limitations': 'Automated file, phonetic, contour and evidence checks are not independent human tone judgments. Unclear citation contours do not establish source-label errors.',
+        'limitations': 'Legacy acoustic/contour checks and publisher-source mapping checks are different evidence routes, neither an independent human pronunciation certificate. Publisher labels are retained; source/utterance provenance is not a newly measured tone decision. Unclear contours or recognition do not establish source-label errors.',
         'files': files,
     }
     for path, value in [(quality_path, quality), (ROOT / 'data/quiz_pronunciation_review.json', report)]:

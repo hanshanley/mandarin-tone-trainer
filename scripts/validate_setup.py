@@ -172,6 +172,7 @@ def main():
             'correction_audio.js',
             'audio_review.js',
             'glossika_lessons.js',
+            'glossika_examples.js',
             'data/hsk_words.json',
             'data/definitions.json',
             'data/recordings.json',
@@ -184,10 +185,12 @@ def main():
             'data/mandarin_native_words.json',
             'data/sinosplice_recordings.json',
             'data/glossika_recordings.json',
+            'data/glossika_practice.json',
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
-            for relative in ['index.html', 'style.css', 'app.js', 'audio_review.js', 'correction_audio.js', 'glossika_lessons.js']:
+            for relative in ['index.html', 'style.css', 'app.js', 'audio_review.js', 'correction_audio.js',
+                             'glossika_lessons.js', 'glossika_examples.js']:
                 target = bundle / relative
                 if target.is_file():
                     require(
@@ -232,11 +235,17 @@ def main():
                 'experimental agreement selection must not be packaged as a runtime gate',
                 errors,
             )
+            require(
+                not (bundle / 'audio/glossika/example_index.json').exists(),
+                'the private source-text audit index must not be packaged as app media',
+                errors,
+            )
 
     node_script = """
 import {loadReviewData,validateLedger,practiceInventory,quizInventory,requireToneCoverage} from './scripts/review_audio.mjs';
 import fs from 'node:fs';
 import GlossikaLessons from './app/glossika_lessons.js';
+import GlossikaExamples from './app/glossika_examples.js';
 const data=loadReviewData();
 const companion=GlossikaLessons.validateCatalog(JSON.parse(fs.readFileSync('data/glossika_recordings.json','utf8')));
 const index=validateLedger(data);
@@ -254,6 +263,8 @@ process.stdout.write(JSON.stringify({
   toneCoverage:inventory.toneCoverage,packagedToneCoverage:packaged.toneCoverage,
   quizEntries:quiz.eligibleWords.length,packagedQuizEntries:packagedQuiz.eligibleWords.length,
   companionAssets:GlossikaLessons.assetsFor(companion),
+  publisherCatalog:data.publisherCatalog,
+  publisherExcluded:GlossikaExamples.excludedCatalog(),
 }));
 """
     try:
@@ -269,6 +280,16 @@ process.stdout.write(JSON.stringify({
                     f"missing or changed original companion asset: {asset['audio_path']}", errors)
         print(f"Retained library: {selections['eligible']} local / {selections['packagedEligible']} redistributable entries; complete-comparison quiz: {selections['quizEntries']} local / {selections['packagedQuizEntries']} redistributable")
         if not args.skip_mobile:
+            publisher_path = bundle / 'data/glossika_practice.json'
+            if publisher_path.is_file():
+                packaged_publisher = json.loads(publisher_path.read_text())
+                if local_bundle:
+                    require(packaged_publisher == selections['publisherCatalog'],
+                            'local publisher example catalog is stale', errors)
+                else:
+                    require(packaged_publisher.get('available') is False
+                            and packaged_publisher.get('examples') == [],
+                            'redistributable bundle exposes personal publisher examples', errors)
             expected_audio=selections['audio'] if local_bundle else selections['packagedAudio']
             if local_bundle:
                 expected_audio += [asset['audio_path'] for asset in selections['companionAssets']]

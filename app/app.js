@@ -311,8 +311,7 @@ async function verifyCurrentQuestion(){
         approvals.push(selected.approval);
       }
     }
-    await Promise.all(approvals.map(approval=>
-      approval.drill_source?recordingBuffer(approval):approvedAudioBytes(approval)));
+    await Promise.all(approvals.map(prepareApprovalPlayback));
     if(loadId!==questionLoadId)return false;
     questionVerified=true;
     $('play').disabled=false;
@@ -577,6 +576,15 @@ async function safePlaybackGain(bytes,key){
     if(playbackGains.get(key)===promise)playbackGains.delete(key);
     throw error;
   }
+}
+async function prepareApprovalPlayback(approval){
+  if(!approval)throw new Error('No qualifying assessment for this audio');
+  if(approval.kind==='native'||approval.drill_source){
+    const bytes=await playableAudioBytes(approval);
+    await safePlaybackGain(bytes,AudioReview.mediaIdentity(approval));
+    return;
+  }
+  await approvedAudioBytes(approval);
 }
 async function playAssessedRecording(approval,message){
   stopAllAudio();

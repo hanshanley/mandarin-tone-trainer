@@ -1,4 +1,4 @@
-"""Canonical vocabulary and all indexed recording sources used by practice."""
+"""Legacy acoustic-audit inputs; publisher drills use their separate source index."""
 import json
 from pathlib import Path
 

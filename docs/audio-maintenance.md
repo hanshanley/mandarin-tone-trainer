@@ -8,6 +8,10 @@ audio snapshots; it does not fabricate new assessments.
 
 `data/acoustic_reviews.json` contains explicit **machine-screened** decisions.
 `data/audio_reviews.json` is reserved for optional human listening attestations.
+Glossika uses a separate `publisher_source` / `source_attested` route: exact
+source labels and independently checked complete-utterance mappings, not
+fabricated acoustic decisions or human approvals. Its generated vocabulary is
+personal-only and never added to the frozen legacy model-training inventory.
 The current app uses these established acoustic/listening routes without adding
 the experimental native-agreement filter on top. Hashes, exact recording-specific
 labels, direct-only audio, known quarantines and correct-tone reference checks
@@ -55,8 +59,8 @@ playable references for **all four full tones**, in every comparison voice
 preference. The browser verifies every selected file before showing choices.
 An incorrect answer never disables subsequent comparison playback.
 
-Current local-use counts are **2,273 retained library entries** and **666 quiz
-entries / 728 initial choices**. Every quiz base has all four full-tone slots
+Current local-use counts are **6,166 retained library entries** and **5,465 quiz
+entries / 5,592 initial choices**. Every quiz base has all four full-tone slots
 playable under all comparison preferences. Neutral is still demonstrated in whole-word
 context where a qualifying example exists, not synthesized as an isolated tone.
 The smaller quiz pool is an explicit completeness rule, not deletion of recordings.
@@ -79,9 +83,10 @@ exact alignments and existing spectral/contextual evidence, rather than applying
 isolated-tone shapes to connected speech. The report also covers whole-word
 corroboration routes and explicitly disclaims independent linguistic certification.
 The original review found 190 unclear citation files in a 1,437-file expanded
-pool. After adding Sinosplice, the 1,121-file active pool has no unresolved
-findings under these checks; the underlying library and unselected files remain
-preserved.
+pool. The current report covers 3,164 active physical media files. It preserves
+legacy acoustic/citation checks and separately records each selected publisher
+interval as `publisher_source_mapping_verified`; that is a provenance/boundary
+check, not a new acoustic or independent linguistic certificate.
 
 The reported imported `han3` prompt is explicitly retired in favor of the
 original whole-word 喊 recording. A replacement must match the same vocabulary
@@ -126,21 +131,67 @@ any integration must preserve attribution and the applicable ShareAlike terms.
 The runtime comparison index combines all eligible direct sources per
 `base + tone`. **Word recordings** chooses intact native-word audio;
 **Comparison voice** independently prefers reference, original human, Mandarin
-Native, or Sinosplice syllables. Missing preferred-source clips fall back across
+Native, Sinosplice, or source-linked Glossika syllables. Missing preferred-source clips fall back across
 the same mixed bank. Rights-filtered builds omit unavailable imported voices.
 
-Glossika is deliberately outside this comparison bank. Its 117 archive members
-are complete lessons, not isolated word takes. `download_glossika.py` verifies
+Glossika's 117 archive members remain complete lessons. `download_glossika.py` verifies
 the publisher-linked ZIP and original PDF against pinned hashes, preserves the
 MP3s unchanged, and renders exact book pages using pinned PyMuPDF 1.26.5.
 `data/glossika_recordings.json` records original page numbers, physical PDF page
 indexes, hashes, and the basis for each lesson/page association. Consonant
 associations are explicitly identified as sequential rather than exact numbered
 matches. Duplicate front-matter page 3 and unnumbered promotional pages do not
-shift the lesson mappings. The app verifies each loaded recording and book page,
-keeps the accompanying book accessible, and never grades these lessons.
-Both quiz-approval validation and redistributable packaging reject their use as
-quiz clips or public app media.
+shift the lesson mappings. Whole lessons cannot be quiz approvals. Individually
+mapped, complete spoken drill examples can participate in the quiz and comparison
+bank, with the accompanying original book accessible.
+
+### Individual publisher examples
+
+The pinned PDF contains 4,570 identifiable examples, not the advertised 5,055.
+The source index records the discrepancy and source annotations explicitly.
+`build_glossika_example_index.py` writes the full text/pinyin index only under
+ignored `audio/glossika/`; the committed summary contains counts and fingerprints.
+`map_glossika_examples.py` independently recognizes the English announcements,
+finds stable speech/silence boundaries, and aligns recorded words using phonetic
+anchors. Syllable grids follow the publisher's explicit five-column order and
+recorded five-tone cadence; the preceding vowel demonstration is not a quiz item.
+Missing or malformed rows never shift later labels.
+
+`data/glossika_example_audio.json` stores source hashes, integer sample ranges
+and mapping decisions without redistributing the whole textbook word list.
+There are 4,526 mapped examples and 44 explicitly unresolved mappings. The
+generated, ignored `data/glossika_practice.json` joins those mappings to the
+original source text. Normal setup reconstructs it without running speech models:
+
+```bash
+npm run audio:glossika-examples
+npm run audio:glossika-coverage
+```
+
+To deliberately reassess mappings, install the optional audio-audit dependencies
+and required cached speech models, then run `map_glossika_examples.py` with
+`--phase scan`, `--phase intros`, `--phase recognition`, and `--phase publish`.
+The final publish step records source disagreements and unresolved mappings;
+it never fabricates missing advertised entries or human judgments.
+
+Grading additionally requires complete 1–4 references. Solo neutral drills,
+source-heading conflicts and unverified connected-speech tone changes are
+listening-only. Source confidence and uncertainty are not reported as a count
+of pronunciation errors.
+
+Logical paths such as `audio/glossika/examples/<id>.wav` are **not files**.
+`AudioReview.mediaPath()` resolves the unchanged parent MP3; its hash scope is
+explicitly `parent_file`. Canonical offsets retain the original 44.1 or 48 kHz
+sample units. Browser playback converts the time bounds to the decoder's rate,
+preserves the selected PCM samples, and produces an in-memory float WAV where
+needed. No per-item audio files or stitched syllable sequences are created.
+Source metadata, interval identity, hashes, and complete reference families are
+validated before question choices appear.
+
+Generic builds include an explicit unavailable publisher catalog, not the
+private vocabulary or media. Original recordings, PDF and book pages remain
+together in personal builds. Publisher provenance does not grant redistribution
+permission or independently certify every pronunciation.
 
 `cross-source-native-reference-v1` is an additional evidence route in the
 existing `data/acoustic_reviews.json`, not a competing allowlist:
@@ -232,9 +283,9 @@ that a source annotation is incorrect. The imported-singles recognition scope
 does not lower the identity, tone or signal thresholds; it fixes the earlier
 gap-only selection that skipped alternative voices for already covered keys.
 
-Measured against commit `61e4066`, the local-use expansion preserves all 1,736
+Measured against commit `61e4066`, the legacy-source expansion preserves all 1,736
 previously usable entries and 1,814 initial examples in the library. It retains
-2,273 entries and 2,494 initial examples; Mandarin Native contributes 416 of
+2,273 entries and 2,494 initial examples before adding publisher intervals; Mandarin Native contributes 416 of
 those examples using 187 distinct files, and Sinosplice contributes 30 examples.
 Mandarin Native additionally provides 94 selected comparison files. These
 file-role counts overlap and must not be added. The coverage report separates

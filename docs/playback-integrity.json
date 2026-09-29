@@ -1,34 +1,35 @@
 {
   "version": 1,
   "verification_date": "2026-09-29",
-  "scope": "Retained library decoding and all-source citation-screened complete-comparison quiz; not independent human linguistic certification",
+  "scope": "Full physical-media decoding, all active comparison modes, and exact source-preserving publisher intervals; not independent human linguistic certification",
   "player_sha256": {
-    "app/app.js": "b1172b09193c8e59a458b9aedc6f21704a5ad3bac2b1385b1d59ee91d4f5c319",
+    "app/app.js": "0d8586b7a8803a5baeca60bd431681cfebaaa7d8afd75b9148d133931ef24ae9",
     "app/correction_audio.js": "5d7d1d9fbc9a879748cc6efeb739e082cb719f2429166e813ca5571b93af8cba",
-    "app/audio_review.js": "764a68df87698f424584c69c4853717430c95f565bb89201bede0392b754d884",
-    "app/glossika_lessons.js": "9dfb6654dc0745513ee27cf6cb8da03cd7b8e6ca51beb77ae618785dd3673e6c"
+    "app/audio_review.js": "2b7540cca37382561ff03e6819e55cc3b670655d719b4294778d2e7243523994",
+    "app/glossika_lessons.js": "409ae003e3cf15fb85048dbd0bc0bc2c2aaa753c5b56752dfc0227c5fdd68a4c",
+    "app/glossika_examples.js": "7b9345134616143111a9fcb43513600e2519f9a126354f1a5eef614f0477ee18"
   },
-  "inventory_sha256": "57c670c01805c06c19bc943e6a3f40461b67e13be64855ae9145b053c2a4e095",
+  "inventory_sha256": "b7006517962bcce37894257847bfe621dcb29bb0aa588ff5ba35a717b9cf5739",
   "practice": {
-    "entries": 666,
-    "initial_examples": 728,
+    "entries": 5465,
+    "initial_examples": 5592,
     "auditCountersPresent": false
   },
-  "decoded_files": 3574,
-  "native_files": 2231,
+  "decoded_files": 3774,
+  "native_files": 2337,
   "browser_files_above_full_scale_before_gain": 2,
-  "mono_fold_down_files_above_full_scale_before_gain": 12,
-  "native_files_attenuated": 83,
-  "maximum_native_output_peak": 0.9000000000000001,
-  "distinct_comparison_processing_paths": 530,
+  "mono_fold_down_files_above_full_scale_before_gain": 116,
+  "native_files_attenuated": 189,
+  "maximum_native_output_peak": 0.9000000000000002,
+  "distinct_comparison_processing_paths": 1330,
   "rendered_sample_rates_hz": [
     44100,
     48000
   ],
-  "rendered_comparison_graphs": 1060,
-  "maximum_comparison_output_peak": 0.8441486954689026,
+  "rendered_comparison_graphs": 2660,
+  "maximum_comparison_output_peak": 0.9000000000000002,
   "clipped_comparison_outputs": 0,
-  "maximum_peak_in_final_10ms": 1.1353929891558998e-17,
+  "maximum_peak_in_final_10ms": 1.415556663803834e-17,
   "all_normalized_source_samples_preserved": true,
   "comparison_lead_ms": 120,
   "comparison_tail_ms": 200,
@@ -47,9 +48,9 @@
     "Does not repair pre-existing microphone distortion or certify external audio hardware."
   ],
   "quiz_tone_checks": {
-    "quiz_entries": 666,
-    "verified_syllable_tone_voice_slots": 1424,
-    "unique_comparison_files": 530,
+    "quiz_entries": 5465,
+    "verified_syllable_tone_voice_slots": 7560,
+    "unique_comparison_files": 2830,
     "missing_comparisons": 0,
     "original_speech_samples_preserved": true,
     "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
@@ -154,6 +155,36 @@
         "mode": "sinosplice",
         "tone": "4",
         "path": "audio/pinyin_public/han4.mp3"
+      },
+      {
+        "mode": "glossika",
+        "tone": "4",
+        "path": "audio/glossika/examples/vowel-part-13-0054.wav",
+        "processing": "publisher_original_interval"
+      },
+      {
+        "mode": "glossika",
+        "tone": "1",
+        "path": "audio/glossika/examples/vowel-part-13-0051.wav",
+        "processing": "publisher_original_interval"
+      },
+      {
+        "mode": "glossika",
+        "tone": "2",
+        "path": "audio/glossika/examples/vowel-part-13-0052.wav",
+        "processing": "publisher_original_interval"
+      },
+      {
+        "mode": "glossika",
+        "tone": "3",
+        "path": "audio/glossika/examples/vowel-part-13-0053.wav",
+        "processing": "publisher_original_interval"
+      },
+      {
+        "mode": "glossika",
+        "tone": "4",
+        "path": "audio/glossika/examples/vowel-part-13-0054.wav",
+        "processing": "publisher_original_interval"
       }
     ],
     "incorrect_guess_preserved": true,
@@ -163,15 +194,51 @@
     "date": "2026-09-29",
     "device": "Pixel 10",
     "installed_apk_hash_verified": true,
-    "quiz_entries": 659,
-    "verified_syllable_tone_voice_slots": 1056,
-    "unique_comparison_files": 519,
-    "active_files_decoded_on_device": 1104,
+    "installed_apk_sha256": "379e59e49b87a2d7bd5b395f5d4ec7bbec4e982c6f5fbc2dbb2b47c167e50acd",
+    "quiz_entries": 666,
+    "decoded_quiz_files": 1121,
+    "verified_syllable_tone_voice_slots": 1424,
+    "unique_comparison_files": 530,
     "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
-    "han_button_plays": 15,
+    "han_button_plays": 20,
     "wrong_guess_preserved": true,
     "playback_finished": true,
-    "test_attempts_restored_after_verification": true
+    "test_attempts_restored_after_verification": true,
+    "glossika_companion": {
+      "device": "Pixel 10",
+      "lessons_decoded": 117,
+      "maximum_output_peak": 0.9000000000000002,
+      "original_encoded_recordings_preserved": true,
+      "book_pages_displayed": true,
+      "exclusive_playback": true,
+      "quiz_results_unchanged": true,
+      "plays": [
+        {
+          "id": "tone-12",
+          "duration": 51.005333,
+          "page": "Book page 35 (1 of 2)",
+          "volume": 0.6363961030678928
+        },
+        {
+          "id": "tone-444",
+          "duration": 181.037333,
+          "page": "Book page 157 (1 of 6)",
+          "volume": 0.6372075570932387
+        },
+        {
+          "id": "vowel-part-1",
+          "duration": 39.461333,
+          "page": "Book page 8 (1 of 1)",
+          "volume": 0.6607109942927684
+        },
+        {
+          "id": "consonant-1",
+          "duration": 43.0375,
+          "page": "Book page 4 (1 of 1)",
+          "volume": 1
+        }
+      ]
+    }
   },
   "pronunciation_review": {
     "path": "data/quiz_pronunciation_review.json",
@@ -241,54 +308,96 @@
     "independent_pronunciation_certification": false,
     "catalog_sha256": "47195b3134e263fbbb2f843657e8c6d498b1d227821526c163f148bfd8a62cd3"
   },
-  "on_device_verification": {
-    "date": "2026-09-29",
-    "device": "Pixel 10",
-    "installed_apk_hash_verified": true,
-    "installed_apk_sha256": "379e59e49b87a2d7bd5b395f5d4ec7bbec4e982c6f5fbc2dbb2b47c167e50acd",
-    "quiz_entries": 666,
-    "decoded_quiz_files": 1121,
-    "verified_syllable_tone_voice_slots": 1424,
-    "unique_comparison_files": 530,
-    "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
-    "han_button_plays": 20,
-    "wrong_guess_preserved": true,
-    "playback_finished": true,
-    "test_attempts_restored_after_verification": true,
-    "glossika_companion": {
-      "device": "Pixel 10",
-      "lessons_decoded": 117,
-      "maximum_output_peak": 0.9000000000000002,
-      "original_encoded_recordings_preserved": true,
-      "book_pages_displayed": true,
-      "exclusive_playback": true,
-      "quiz_results_unchanged": true,
-      "plays": [
-        {
-          "id": "tone-12",
-          "duration": 51.005333,
-          "page": "Book page 35 (1 of 2)",
-          "volume": 0.6363961030678928
+  "publisher_comparison_intervals": 1500,
+  "publisher_individual_examples": {
+    "version": 1,
+    "method": "real-browser-publisher-example-verification-1",
+    "catalog_hashes": {
+      "book": "598fb985ed52628ec1a5d27e0a9e41347d49244f81abcd713d6aa233dacf49ba",
+      "archive": "3363ef0452006ad5422a6335906a8856c242c912d2c8c4b8cb31b738c14bd81b",
+      "index": "1818fae4228813fec39ebd726585d94c2b1bea37d91e7fbe970ed5cab4efa5ec",
+      "boundaries": "553dd09643f70d1c61577ce64965d11cb6de5079cc8e74fb720b2d4f414d7a7f"
+    },
+    "counts": {
+      "total": 4570,
+      "mapped": 4526,
+      "unmapped": 44,
+      "quizEligible": 3962,
+      "listenOnly": 564,
+      "one": 1895,
+      "two": 956,
+      "threePlus": 1675,
+      "neutralListenOnly": 379,
+      "ambiguousListenOnly": 13
+    },
+    "pcm": {
+      "intervals_verified": 4526,
+      "parent_files_verified": 115,
+      "exact_channel_sample_comparison": true,
+      "float_wav_round_trip": true,
+      "canonical_time_offsets_recomputed": true,
+      "source_endpoints_checked": true,
+      "publisher_comparison_slices_verified": 8,
+      "publisher_comparison_normalization_applied": false,
+      "publisher_comparison_lead_seconds": 0.12,
+      "publisher_comparison_tail_seconds": 0.2,
+      "legacy_normalization_scope": "unchanged application path; covered by the host acoustic audit"
+    },
+    "requests": {
+      "total": 236,
+      "logical_virtual_wav_requests": 0
+    },
+    "independent_accuracy_certified": false,
+    "original_capture_certified": false,
+    "interpretation": "This audit verifies pinned parent bytes, declared interval routing, PCM preservation, safe playback, UI behavior, and book-page association. It does not independently certify the publisher recording, linguistic label, speaker, or original capture.",
+    "parents_verified": 115,
+    "minimum_leading_margin_seconds": 0.19,
+    "minimum_trailing_margin_seconds": 0.19,
+    "visual_checks": [
+      {
+        "name": "compact-320",
+        "width": 320,
+        "height": 720,
+        "normal": {
+          "documentWidth": 336,
+          "viewportWidth": 336,
+          "pageClientWidth": 298,
+          "pageScrollWidth": 298
         },
-        {
-          "id": "tone-444",
-          "duration": 181.037333,
-          "page": "Book page 157 (1 of 6)",
-          "volume": 0.6372075570932387
+        "zoom": {
+          "documentWidth": 320,
+          "viewportWidth": 320,
+          "pageClientWidth": 298,
+          "pageScrollWidth": 1000,
+          "zoomed": true
         },
-        {
-          "id": "vowel-part-1",
-          "duration": 39.461333,
-          "page": "Book page 8 (1 of 1)",
-          "volume": 0.6607109942927684
+        "screenshots": [
+          ".audit/glossika-example-browser-visuals/compact-320-normal.png",
+          ".audit/glossika-example-browser-visuals/compact-320-zoom.png"
+        ]
+      },
+      {
+        "name": "pixel-393",
+        "width": 393,
+        "height": 852,
+        "normal": {
+          "documentWidth": 393,
+          "viewportWidth": 393,
+          "pageClientWidth": 363,
+          "pageScrollWidth": 363
         },
-        {
-          "id": "consonant-1",
-          "duration": 43.0375,
-          "page": "Book page 4 (1 of 1)",
-          "volume": 1
-        }
-      ]
-    }
+        "zoom": {
+          "documentWidth": 393,
+          "viewportWidth": 393,
+          "pageClientWidth": 363,
+          "pageScrollWidth": 1000,
+          "zoomed": true
+        },
+        "screenshots": [
+          ".audit/glossika-example-browser-visuals/pixel-393-normal.png",
+          ".audit/glossika-example-browser-visuals/pixel-393-zoom.png"
+        ]
+      }
+    ]
   }
 }

@@ -204,7 +204,9 @@
             kind:'comparison',audio_path,key:example.pinyin_syllables[0]+example.lexical_pattern,
             drill_source:source,source:'glossika',source_item_id:example.id,assessment:'publisher_source',
             status:'source_attested',sha256:source.sha256,hash_scope:'parent_file',
-            quiz_eligible:true,distribution_scope:'local_only',rights_status:'personal_companion_only',
+            source_item_kind:example.kind,pinyin_syllables:[...example.pinyin_syllables],
+            lexical_pattern:example.lexical_pattern,quiz_eligible:true,
+            distribution_scope:'local_only',rights_status:'personal_companion_only',
           });
         }
       }

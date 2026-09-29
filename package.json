@@ -40,6 +40,8 @@
     "download:mandarin-native": "python3 scripts/download_mandarin_native.py --standalone-only",
     "download:sinosplice": "python3 scripts/download_sinosplice.py",
     "download:glossika": "python3 scripts/download_glossika.py",
+    "audio:glossika-examples": "python3 scripts/build_glossika_example_index.py && python3 scripts/map_glossika_examples.py --phase restore",
+    "audio:glossika-coverage": "node scripts/report_glossika_examples.mjs",
     "test": "python3 -m unittest discover -s tests -q"
   },
   "dependencies": {

@@ -158,6 +158,10 @@ test('Glossika practice expands into local publisher-attested words and virtual 
   assert.equal(runtime.publisherLedger.assessments[0].hash_scope,'parent_file');
   assert.equal(runtime.examplesById.get(unresolved.id).recording,null);
   assert.equal(runtime.examplesById.get(unresolved.id).nativeApproval,null);
+  const comparisonApproval=runtime.publisherLedger.assessments.find(entry=>entry.kind==='comparison');
+  assert.equal(comparisonApproval.source_item_kind,'syllable_drill');
+  assert.deepEqual(comparisonApproval.pinyin_syllables,['ma']);
+  assert.equal(comparisonApproval.lexical_pattern,'1');
 
   const reviewed=Review.createIndex({version:1,approvals:[]},null,{
     sourceWords:runtime.words,sourceRecordings:runtime.recordings,
@@ -174,6 +178,18 @@ test('Glossika practice expands into local publisher-attested words and virtual 
     reviewed,runtime.words[4],runtime.recordings[4],
   ),null,'single neutral drill remains outside graded practice');
   await Review.verifyBytes(bytes,runtime.publisherLedger.assessments[0]);
+  await Review.verifyBytes(bytes,comparisonApproval);
+  await Review.verifyBytes(bytes,runtime.examplesById.get(neutral.id).nativeApproval);
+  for(const edit of [
+    approval=>approval.key='ma2',
+    approval=>approval.source_item_kind='word_drill',
+    approval=>approval.pinyin_syllables=['ba'],
+    approval=>approval.lexical_pattern='2',
+    approval=>approval.quiz_eligible=false,
+  ]){
+    const changed=structuredClone(comparisonApproval);edit(changed);
+    await assert.rejects(Review.verifyBytes(bytes,changed),/comparison label/);
+  }
   await assert.rejects(
     Review.verifyBytes(Uint8Array.from([9]),runtime.publisherLedger.assessments[0]),
     /publisher indexing/,
@@ -203,6 +219,41 @@ test('Glossika practice expands into local publisher-attested words and virtual 
   assert.deepEqual([...inventory.audio],['audio/glossika/lessons/vowel-part-1.mp3']);
   assert.equal([...candidatesFor(data).values()].some(candidate=>
     candidate.audio_path.startsWith('audio/glossika/examples/')),false);
+});
+
+const REAL_GLOSSIKA_PRACTICE=path.join(ROOT,'data/glossika_practice.json');
+test('real Glossika publisher approvals validate standalone and against their catalog bindings',{
+  skip:fs.existsSync(REAL_GLOSSIKA_PRACTICE)?false:'Generated local Glossika practice data is unavailable.',
+},async()=>{
+  const catalog=GlossikaExamples.validateCatalog(JSON.parse(
+    fs.readFileSync(REAL_GLOSSIKA_PRACTICE,'utf8'),
+  ));
+  const runtime=GlossikaExamples.runtimeData(catalog);
+  const examples=new Map(catalog.examples.map(example=>[example.id,example]));
+  for(const approval of runtime.publisherLedger.assessments){
+    Review.validatePublisherApproval(approval);
+    Review.validatePublisherApproval(approval,examples.get(approval.source_item_id));
+  }
+
+  const comparison=runtime.publisherLedger.assessments.find(entry=>
+    entry.kind==='comparison'&&entry.source_item_id==='vowel-part-5-0003');
+  assert.ok(comparison);
+  const quizNative=runtime.examplesById.get('vowel-part-5-0003').nativeApproval;
+  const listenOnly=catalog.examples.find(example=>
+    example.mapping.status==='mapped'&&!example.quiz_eligible
+    &&runtime.examplesById.get(example.id).nativeApproval);
+  const unresolved=catalog.examples.find(example=>example.mapping.status==='unresolved');
+  assert.ok(quizNative);
+  assert.ok(listenOnly);
+  assert.ok(unresolved);
+  assert.equal(runtime.examplesById.get(unresolved.id).nativeApproval,null);
+
+  for(const approval of [
+    comparison,quizNative,runtime.examplesById.get(listenOnly.id).nativeApproval,
+  ]){
+    const parent=fs.readFileSync(path.join(ROOT,Review.mediaPath(approval)));
+    await Review.verifyBytes(parent,approval);
+  }
 });
 
 test('Glossika publisher segments preserve observed 44.1 and 48 kHz source units',()=>{

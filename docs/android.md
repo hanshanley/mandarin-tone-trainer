@@ -38,10 +38,14 @@ practice options.
 
 Local-use builds also include **Glossika book lessons**: 117 complete recordings
 with their original accompanying PDF and book pages, restored by
-`npm run download:glossika`. These are a separate listening section, not chopped
-word clips or additional graded quiz items. All companion audio, PDF, and page
+`npm run download:glossika`. Run `npm run audio:glossika-examples` to restore
+individual example mappings (normal setup does both). Eligible complete spoken
+examples participate in the main quiz, and the book panel can select an exact
+example or play the original full lesson. These are timed original-media
+intervals, not sentence-word crops or synthesized clips. All companion audio, PDF, and page
 images are excluded from redistributable builds; public availability does not
 grant permission to redistribute the book or its audio.
+The generated publisher vocabulary/index is also excluded from release builds.
 
 Every word shown in testing has playable tones 1–4 for each syllable, including
 after an incorrect answer. The APK retains the larger assessed library, but

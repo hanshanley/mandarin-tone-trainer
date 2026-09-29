@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "method": "publisher-example-coverage-v1",
+  "book_sha256": "598fb985ed52628ec1a5d27e0a9e41347d49244f81abcd713d6aa233dacf49ba",
+  "index_sha256": "1818fae4228813fec39ebd726585d94c2b1bea37d91e7fbe970ed5cab4efa5ec",
+  "boundaries_sha256": "553dd09643f70d1c61577ce64965d11cb6de5079cc8e74fb720b2d4f414d7a7f",
+  "private_catalog_sha256": "f679f722631d2065fea430bd9639c0773775a4c0085e8253c7a493bf94b32917",
+  "source_counts": {
+    "excluded_lessons": 2,
+    "indexed_lessons": 115,
+    "syllable_bases": 383,
+    "syllable_items": 1915,
+    "three_tone_items": 1678,
+    "total_items": 4570,
+    "two_tone_items": 977,
+    "unresolved": 9
+  },
+  "advertised_counts": {
+    "syllable_bases": 385,
+    "syllable_items": 1925,
+    "three_tone_items": 2048,
+    "total_items": 5055,
+    "two_tone_items": 1082
+  },
+  "count_discrepancies": [
+    {
+      "advertised": 385,
+      "difference": -2,
+      "extracted": 383,
+      "name": "syllable_bases",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 1925,
+      "difference": -10,
+      "extracted": 1915,
+      "name": "syllable_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 1082,
+      "difference": -105,
+      "extracted": 977,
+      "name": "two_tone_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 2048,
+      "difference": -370,
+      "extracted": 1678,
+      "name": "three_tone_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 5055,
+      "difference": -485,
+      "extracted": 4570,
+      "name": "total_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    }
+  ],
+  "mapping": {
+    "indexed_examples": 4570,
+    "mapped_examples": 4526,
+    "quiz_candidates_before_complete_references": 3962,
+    "by_kind": {
+      "word_drill": 2655,
+      "syllable_drill": 1915
+    },
+    "unresolved_mapping_reasons": {
+      "Insufficient original silence around a complete example": 12,
+      "No unique correspondence between the printed item and recorded utterances": 27,
+      "Individual example order lacks sufficient independent phonetic anchors": 5
+    }
+  },
+  "quiz": {
+    "entries": 5465,
+    "initial_examples": 5592,
+    "unique_word_readings": 5322,
+    "by_syllables": {
+      "1": 2239,
+      "2": 1943,
+      "3": 1274,
+      "4": 9
+    },
+    "physical_media_files": 3164,
+    "all_four_comparisons_required": true
+  },
+  "publisher_quiz": {
+    "entries": 3577,
+    "unique_word_readings": 3559,
+    "by_syllables": {
+      "1": 1516,
+      "2": 807,
+      "3": 1254
+    },
+    "physical_parent_files": 106
+  },
+  "retained_library": {
+    "entries": 6166,
+    "initial_examples": 6387,
+    "physical_media_files": 3774
+  },
+  "previous_quiz": {
+    "entries": 666,
+    "initial_examples": 728,
+    "entries_removed": 0,
+    "initial_examples_removed": 0
+  },
+  "existing_entries_unlocked": 1222,
+  "distribution_scope": "local_only",
+  "independent_pronunciation_certification": false,
+  "interpretation": "Counts distinguish printed examples, mapped original-media intervals, graded catalog entries, word/reading labels and physical files. Phonetic drills are not necessarily dictionary words. Publisher assessments establish source labels and complete-utterance mappings, not independent human pronunciation certification."
+}
