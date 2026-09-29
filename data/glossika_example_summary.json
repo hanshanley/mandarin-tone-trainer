@@ -1,0 +1,917 @@
+{
+  "advertised_counts": {
+    "syllable_bases": 385,
+    "syllable_items": 1925,
+    "three_tone_items": 2048,
+    "total_items": 5055,
+    "two_tone_items": 1082
+  },
+  "annotation_complete": false,
+  "book_sha256": "598fb985ed52628ec1a5d27e0a9e41347d49244f81abcd713d6aa233dacf49ba",
+  "catalog_sha256": "47195b3134e263fbbb2f843657e8c6d498b1d227821526c163f148bfd8a62cd3",
+  "conventions": {
+    "audio_order": "Lesson order follows data/glossika_recordings.json; item order is printed-page order, then geometric top-to-bottom row order, with tones 1,2,3,4,neutral across syllable rows.",
+    "source_corrections": "none; source text is retained and inconsistencies are explicit",
+    "source_tone_notation": "per syllable: diacritic, middle_dot, or unmarked",
+    "strict_segmentation": "source separators are mandatory; internal a/e/o onsets require a source separator",
+    "syllable_normalization": "bare lowercase pinyin with ü normalized to v",
+    "tone_values": "1..4, neutral=0; lexical_pattern uses N for neutral",
+    "word_authority": "simplified/traditional/pinyin are transcribed from the source row; MC digits are preserved only as historical_category"
+  },
+  "count_discrepancies": [
+    {
+      "advertised": 385,
+      "difference": -2,
+      "extracted": 383,
+      "name": "syllable_bases",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 1925,
+      "difference": -10,
+      "extracted": 1915,
+      "name": "syllable_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 1082,
+      "difference": -105,
+      "extracted": 977,
+      "name": "two_tone_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 2048,
+      "difference": -370,
+      "extracted": 1678,
+      "name": "three_tone_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    },
+    {
+      "advertised": 5055,
+      "difference": -485,
+      "extracted": 4570,
+      "name": "total_items",
+      "reason": "The pinned PDF contains fewer geometrically identifiable source rows; no entries were fabricated."
+    }
+  ],
+  "counts": {
+    "excluded_lessons": 2,
+    "indexed_lessons": 115,
+    "syllable_bases": 383,
+    "syllable_items": 1915,
+    "three_tone_items": 1678,
+    "total_items": 4570,
+    "two_tone_items": 977,
+    "unresolved": 9
+  },
+  "excluded_lessons": [
+    {
+      "lesson_id": "consonant-1",
+      "reason": "Consonant overview track has no individually tone-graded example rows."
+    },
+    {
+      "lesson_id": "consonant-2",
+      "reason": "Consonant overview track has no individually tone-graded example rows."
+    }
+  ],
+  "extraction_complete": true,
+  "index_path": "audio/glossika/example_index.json",
+  "index_sha256": "1818fae4228813fec39ebd726585d94c2b1bea37d91e7fbe970ed5cab4efa5ec",
+  "method": "pymupdf-indesign-geometry-v1",
+  "method_version": 1,
+  "per_lesson_counts": [
+    {
+      "category": "two-tone",
+      "item_count": 24,
+      "lesson_id": "tone-11"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 12,
+      "lesson_id": "tone-111"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 8,
+      "lesson_id": "tone-112"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 9,
+      "lesson_id": "tone-113"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 16,
+      "lesson_id": "tone-114"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 34,
+      "lesson_id": "tone-12"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 7,
+      "lesson_id": "tone-121"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 13,
+      "lesson_id": "tone-122"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 9,
+      "lesson_id": "tone-123"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 34,
+      "lesson_id": "tone-124"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 41,
+      "lesson_id": "tone-13"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 12,
+      "lesson_id": "tone-131"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 14,
+      "lesson_id": "tone-132"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 19,
+      "lesson_id": "tone-133"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 34,
+      "lesson_id": "tone-134"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 69,
+      "lesson_id": "tone-14"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 24,
+      "lesson_id": "tone-141"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 30,
+      "lesson_id": "tone-142"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 28,
+      "lesson_id": "tone-143"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 54,
+      "lesson_id": "tone-144"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 41,
+      "lesson_id": "tone-21"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 8,
+      "lesson_id": "tone-211"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 10,
+      "lesson_id": "tone-212"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 8,
+      "lesson_id": "tone-213"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 32,
+      "lesson_id": "tone-214"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 49,
+      "lesson_id": "tone-22"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 19,
+      "lesson_id": "tone-221"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 14,
+      "lesson_id": "tone-222"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 19,
+      "lesson_id": "tone-223"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 40,
+      "lesson_id": "tone-224"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 39,
+      "lesson_id": "tone-23"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 16,
+      "lesson_id": "tone-231"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 16,
+      "lesson_id": "tone-232"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 10,
+      "lesson_id": "tone-233"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 33,
+      "lesson_id": "tone-234"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 87,
+      "lesson_id": "tone-24"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 13,
+      "lesson_id": "tone-241"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 43,
+      "lesson_id": "tone-242"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 36,
+      "lesson_id": "tone-243"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 73,
+      "lesson_id": "tone-244"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 36,
+      "lesson_id": "tone-31"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 5,
+      "lesson_id": "tone-311"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 9,
+      "lesson_id": "tone-312"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 9,
+      "lesson_id": "tone-313"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 29,
+      "lesson_id": "tone-314"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 42,
+      "lesson_id": "tone-32"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 16,
+      "lesson_id": "tone-321"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 14,
+      "lesson_id": "tone-322"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 11,
+      "lesson_id": "tone-323"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 30,
+      "lesson_id": "tone-324"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 40,
+      "lesson_id": "tone-33"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 7,
+      "lesson_id": "tone-331"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 12,
+      "lesson_id": "tone-332"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 13,
+      "lesson_id": "tone-333"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 27,
+      "lesson_id": "tone-334"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 87,
+      "lesson_id": "tone-34"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 20,
+      "lesson_id": "tone-341"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 32,
+      "lesson_id": "tone-342"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 28,
+      "lesson_id": "tone-343"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 50,
+      "lesson_id": "tone-344"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 56,
+      "lesson_id": "tone-41"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 18,
+      "lesson_id": "tone-411"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 23,
+      "lesson_id": "tone-412"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 28,
+      "lesson_id": "tone-413"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 41,
+      "lesson_id": "tone-414"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 82,
+      "lesson_id": "tone-42"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 12,
+      "lesson_id": "tone-421"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 30,
+      "lesson_id": "tone-422"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 24,
+      "lesson_id": "tone-423"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 62,
+      "lesson_id": "tone-424"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 74,
+      "lesson_id": "tone-43"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 15,
+      "lesson_id": "tone-431"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 27,
+      "lesson_id": "tone-432"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 25,
+      "lesson_id": "tone-433"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 55,
+      "lesson_id": "tone-434"
+    },
+    {
+      "category": "two-tone",
+      "item_count": 176,
+      "lesson_id": "tone-44"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 43,
+      "lesson_id": "tone-441"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 61,
+      "lesson_id": "tone-442"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 56,
+      "lesson_id": "tone-443"
+    },
+    {
+      "category": "three-tone",
+      "item_count": 133,
+      "lesson_id": "tone-444"
+    },
+    {
+      "category": "syllables",
+      "item_count": 35,
+      "lesson_id": "vowel-part-1"
+    },
+    {
+      "category": "syllables",
+      "item_count": 35,
+      "lesson_id": "vowel-part-10"
+    },
+    {
+      "category": "syllables",
+      "item_count": 90,
+      "lesson_id": "vowel-part-11"
+    },
+    {
+      "category": "syllables",
+      "item_count": 20,
+      "lesson_id": "vowel-part-12"
+    },
+    {
+      "category": "syllables",
+      "item_count": 90,
+      "lesson_id": "vowel-part-13"
+    },
+    {
+      "category": "syllables",
+      "item_count": 20,
+      "lesson_id": "vowel-part-14"
+    },
+    {
+      "category": "syllables",
+      "item_count": 70,
+      "lesson_id": "vowel-part-15"
+    },
+    {
+      "category": "syllables",
+      "item_count": 25,
+      "lesson_id": "vowel-part-16"
+    },
+    {
+      "category": "syllables",
+      "item_count": 90,
+      "lesson_id": "vowel-part-17"
+    },
+    {
+      "category": "syllables",
+      "item_count": 30,
+      "lesson_id": "vowel-part-18"
+    },
+    {
+      "category": "syllables",
+      "item_count": 35,
+      "lesson_id": "vowel-part-19"
+    },
+    {
+      "category": "syllables",
+      "item_count": 55,
+      "lesson_id": "vowel-part-2"
+    },
+    {
+      "category": "syllables",
+      "item_count": 75,
+      "lesson_id": "vowel-part-20"
+    },
+    {
+      "category": "syllables",
+      "item_count": 50,
+      "lesson_id": "vowel-part-21"
+    },
+    {
+      "category": "syllables",
+      "item_count": 95,
+      "lesson_id": "vowel-part-22"
+    },
+    {
+      "category": "syllables",
+      "item_count": 30,
+      "lesson_id": "vowel-part-23"
+    },
+    {
+      "category": "syllables",
+      "item_count": 60,
+      "lesson_id": "vowel-part-24"
+    },
+    {
+      "category": "syllables",
+      "item_count": 65,
+      "lesson_id": "vowel-part-25"
+    },
+    {
+      "category": "syllables",
+      "item_count": 95,
+      "lesson_id": "vowel-part-26"
+    },
+    {
+      "category": "syllables",
+      "item_count": 35,
+      "lesson_id": "vowel-part-27"
+    },
+    {
+      "category": "syllables",
+      "item_count": 80,
+      "lesson_id": "vowel-part-28"
+    },
+    {
+      "category": "syllables",
+      "item_count": 45,
+      "lesson_id": "vowel-part-29"
+    },
+    {
+      "category": "syllables",
+      "item_count": 95,
+      "lesson_id": "vowel-part-3"
+    },
+    {
+      "category": "syllables",
+      "item_count": 70,
+      "lesson_id": "vowel-part-30"
+    },
+    {
+      "category": "syllables",
+      "item_count": 20,
+      "lesson_id": "vowel-part-31"
+    },
+    {
+      "category": "syllables",
+      "item_count": 85,
+      "lesson_id": "vowel-part-32"
+    },
+    {
+      "category": "syllables",
+      "item_count": 55,
+      "lesson_id": "vowel-part-33"
+    },
+    {
+      "category": "syllables",
+      "item_count": 95,
+      "lesson_id": "vowel-part-34"
+    },
+    {
+      "category": "syllables",
+      "item_count": 20,
+      "lesson_id": "vowel-part-35"
+    },
+    {
+      "category": "syllables",
+      "item_count": 20,
+      "lesson_id": "vowel-part-4"
+    },
+    {
+      "category": "syllables",
+      "item_count": 90,
+      "lesson_id": "vowel-part-5"
+    },
+    {
+      "category": "syllables",
+      "item_count": 20,
+      "lesson_id": "vowel-part-6"
+    },
+    {
+      "category": "syllables",
+      "item_count": 30,
+      "lesson_id": "vowel-part-7"
+    },
+    {
+      "category": "syllables",
+      "item_count": 85,
+      "lesson_id": "vowel-part-8"
+    },
+    {
+      "category": "syllables",
+      "item_count": 5,
+      "lesson_id": "vowel-part-9"
+    }
+  ],
+  "pinyin_inventory_sha256": "b24ad76c29a81ba31a6f2b64942aa013430a35b3cb1f172aabb0bd371921b476",
+  "pymupdf_version": "1.26.5",
+  "source_syllable_inventory": {
+    "distinct_bases": 379,
+    "segmentation_inventory": "data/hsk_words.json pinyin_syllables"
+  },
+  "unresolved": [
+    {
+      "bounds": [
+        124.517,
+        150.274,
+        435.773,
+        172.589
+      ],
+      "item_id": "tone-224-0031",
+      "lesson_id": "tone-224",
+      "lexical_pattern": "2-2-4",
+      "pdf_page": 105,
+      "pinyin": "shúédàn",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "shu",
+        "e",
+        "dan"
+      ],
+      "printed_page": 102,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 2-2-4",
+      "source_row": 3,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "熟鹅蛋"
+    },
+    {
+      "bounds": [
+        147.253,
+        193.693,
+        422.938,
+        217.055
+      ],
+      "item_id": "tone-24-0056",
+      "lesson_id": "tone-24",
+      "lexical_pattern": "2-4",
+      "pdf_page": 52,
+      "pinyin": "bóài",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "bo",
+        "ai"
+      ],
+      "printed_page": 50,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 2+4",
+      "source_row": 5,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "博爱"
+    },
+    {
+      "bounds": [
+        120.938,
+        369.519,
+        449.081,
+        392.024
+      ],
+      "item_id": "tone-242-0011",
+      "lesson_id": "tone-242",
+      "lexical_pattern": "4-4-2",
+      "pdf_page": 110,
+      "pinyin": "pìngùnóng",
+      "printed_page": 107,
+      "reason": "source_heading_inconsistency",
+      "source_note": "The exact source pinyin diacritics disagree with the printed lesson heading; neither value was repaired.",
+      "source_pattern": "MANDARIN 2-4-2",
+      "source_row": 11,
+      "word": "聘雇农"
+    },
+    {
+      "bounds": [
+        112.538,
+        134.745,
+        430.895,
+        158.107
+      ],
+      "item_id": "tone-242-0023",
+      "lesson_id": "tone-242",
+      "lexical_pattern": "2-4-2",
+      "pdf_page": 111,
+      "pinyin": "yíngyèé",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "ying",
+        "ye",
+        "e"
+      ],
+      "printed_page": 108,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 2-4-2",
+      "source_row": 1,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "营业额"
+    },
+    {
+      "bounds": [
+        120.938,
+        630.959,
+        431.791,
+        653.464
+      ],
+      "item_id": "tone-344-0039",
+      "lesson_id": "tone-344",
+      "lexical_pattern": "3-4-4",
+      "pdf_page": 132,
+      "pinyin": "lǐbàièr",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "li",
+        "bai",
+        "er"
+      ],
+      "printed_page": 129,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 3-4-4",
+      "source_row": 24,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "礼拜二"
+    },
+    {
+      "bounds": [
+        120.938,
+        382.261,
+        433.892,
+        405.623
+      ],
+      "item_id": "tone-423-0022",
+      "lesson_id": "tone-423",
+      "lexical_pattern": "2-2-3",
+      "pdf_page": 142,
+      "pinyin": "jíshíyǔ",
+      "printed_page": 139,
+      "reason": "source_heading_inconsistency",
+      "source_note": "The exact source pinyin diacritics disagree with the printed lesson heading; neither value was repaired.",
+      "source_pattern": "MANDARIN 4-2-3",
+      "source_row": 13,
+      "word": "及时雨"
+    },
+    {
+      "bounds": [
+        151.453,
+        568.521,
+        432.346,
+        591.883
+      ],
+      "item_id": "tone-43-0073",
+      "lesson_id": "tone-43",
+      "lexical_pattern": "4-3",
+      "pdf_page": 72,
+      "pinyin": "mùǒu",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "mu",
+        "ou"
+      ],
+      "printed_page": 70,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 4+3",
+      "source_row": 21,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "木偶"
+    },
+    {
+      "bounds": [
+        120.938,
+        231.045,
+        455.792,
+        253.55
+      ],
+      "item_id": "tone-434-0005",
+      "lesson_id": "tone-434",
+      "lexical_pattern": "4-3-4",
+      "pdf_page": 150,
+      "pinyin": "shòuchǒngài",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "shou",
+        "chong",
+        "ai"
+      ],
+      "printed_page": 147,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 4-3-4",
+      "source_row": 5,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "受宠爱"
+    },
+    {
+      "bounds": [
+        120.149,
+        117.986,
+        443.95,
+        141.348
+      ],
+      "item_id": "tone-444-0125",
+      "lesson_id": "tone-444",
+      "lexical_pattern": "4-4-4",
+      "pdf_page": 165,
+      "pinyin": "shèànjiàn",
+      "pinyin_syllable_candidates": null,
+      "pinyin_syllables": [
+        "she",
+        "an",
+        "jian"
+      ],
+      "printed_page": 162,
+      "reason": "source_missing_pinyin_separator",
+      "source_note": "The exact source pinyin omits a separator before an internal a/e/o-initial syllable; segmentation is recorded without altering the source text.",
+      "source_pattern": "MANDARIN 4-4-4",
+      "source_row": 1,
+      "source_tone_notation": [
+        "diacritic",
+        "diacritic",
+        "diacritic"
+      ],
+      "word": "射暗箭"
+    }
+  ],
+  "unresolved_counts": {
+    "source_heading_inconsistency": 2,
+    "source_missing_pinyin_separator": 7
+  },
+  "version": 1
+}

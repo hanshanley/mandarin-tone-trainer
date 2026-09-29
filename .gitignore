@@ -2,6 +2,8 @@
 /audio/
 /imports/
 /data/pinyin_public_recordings.json
+# Personal-only publisher vocabulary, reconstructed from the original book.
+/data/glossika_practice.json
 /www/
 /.audit/
 
