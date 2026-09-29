@@ -38,7 +38,7 @@ practice options.
 
 Every word shown in testing has playable tones 1–4 for each syllable, including
 after an incorrect answer. The APK retains the larger assessed library, but
-incomplete comparison families and unclear imported isolated third tones are
+incomplete comparison families and unclear isolated tones from any source are
 not selected for quizzes. Neutral examples remain whole-word contextual audio.
 
 Adding or revoking decisions requires rebuilding and reinstalling; rebuilding

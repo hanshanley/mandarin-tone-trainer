@@ -482,6 +482,12 @@
   }
   function clearForIsolatedQuiz(approval,quality){
     if(!approval)return false;
+    const isolated=approval.kind==='comparison'||approval.pinyin_syllables.length===1;
+    if(isolated&&quality.isolated_clarity){
+      const review=quality.isolated_clarity[approval.audio_path];
+      const key=approval.kind==='comparison'?approval.key:approval.pinyin_syllables[0].replace(/ü/g,'v')+approval.surface_pattern;
+      return Boolean(review&&review.sha256===approval.sha256&&review.key===key&&review.status==='clear_citation_tone');
+    }
     const third=approval.kind==='comparison'?approval.key.endsWith('3'):
       approval.pinyin_syllables.length===1&&approval.surface_pattern==='3';
     if(!third)return true;

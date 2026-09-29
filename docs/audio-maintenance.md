@@ -55,21 +55,32 @@ playable references for **all four full tones**, in every comparison voice
 preference. The browser verifies every selected file before showing choices.
 An incorrect answer never disables subsequent comparison playback.
 
-Current local-use counts are **2,263 retained library entries** and **856 quiz
-entries / 951 initial choices**. The quiz contains 102 syllable bases, with
-408 of 408 full-tone slots playable. Neutral is still demonstrated in whole-word
+Current local-use counts are **2,265 retained library entries** and **659 quiz
+entries / 719 initial choices**. The quiz contains 88 syllable bases, with
+352 of 352 full-tone slots playable. Neutral is still demonstrated in whole-word
 context where a qualifying example exists, not synthesized as an isolated tone.
 The smaller quiz pool is an explicit completeness rule, not deletion of recordings.
 
-`audio:third-clarity -- --inventory .audit/native-tone-inventory.json` reviews
-all mapped imported isolated third-tone files. `data/correction_audio_quality.json`
-stores the file hash, continuous tracker measurements and clarity decision.
-For isolated teaching examples, two or more usable tracks must consistently
-show a dip and rebound of at least 2.5 semitones, with the trough inside the
-central 25–80% of the contour. Files that do not meet this citation-form criterion
-are withheld from isolated prompts and comparison buttons. This does **not**
-declare a low/falling third tone linguistically incorrect and does not rewrite
-its original label. Multi-syllable connected-speech rules are unchanged.
+`audio:review-all -- --inventory .audit/native-tone-inventory.json` applies
+source-independent citation checks to all 5,107 mapped isolated candidates.
+`data/correction_audio_quality.json` stores their hashes, continuous tracker
+measurements and clarity decisions. Every isolated quiz prompt and comparison
+must have a matching, clear review, regardless of source. Two or more usable
+tracks must agree continuously; all usable contours must satisfy the same
+level/rising/falling rules used by the spectral checks. For a dipping citation
+third, the dip and rebound must each reach 2.5 semitones, with the trough in the
+central 25–80% of the contour. These teaching-clarity criteria do **not** establish
+linguistic errors in natural low/falling thirds or rewrite source labels.
+
+`data/quiz_pronunciation_review.json` reports every file used before or after
+the review, including initial words and neutral-context examples, with per-file
+hashes and decisions. All active multi-syllable words are rechecked using their
+exact alignments and existing spectral/contextual evidence, rather than applying
+isolated-tone shapes to connected speech. The report also covers whole-word
+corroboration routes and explicitly disclaims independent linguistic certification.
+Of the 1,437 files in the expanded pre-review pool, 190 required clearer citation
+evidence. The final 1,104-file active pool has no unresolved findings under these
+checks; the underlying library and unselected files remain preserved.
 
 The reported imported `han3` prompt is explicitly retired in favor of the
 original whole-word 喊 recording. A replacement must match the same vocabulary
@@ -179,13 +190,14 @@ gap-only selection that skipped alternative voices for already covered keys.
 
 Measured against commit `61e4066`, the local-use expansion preserves all 1,736
 previously usable entries and 1,814 initial examples in the library. It retains
-2,263 entries and 2,460 initial examples; Mandarin Native contributes 415 of
-those examples using 186 distinct files, plus 113 files selected for comparisons across the
+2,265 entries and 2,463 initial examples; Mandarin Native contributes 415 of
+those examples using 186 distinct files, plus 94 files selected for comparisons across the
 three voice preferences. These file-role counts overlap and must not be added.
-Of the original 1,192 comparison slots, 882 are playable (46 more than before);
-103 original families now have all four tones, versus 74 before. The original
-library still has 310 unresolved slots. Including newly usable syllables, the
-library has 925 playable slots out of 1,276 and 351 unresolved slots. None of
+With all-source citation clarity enforced, 861 of the original 1,192 comparison
+slots are playable; 89 original families have all four tones, versus 74 in the
+original baseline. The original library has 331 unresolved slots. Including
+newly usable syllables, the library has 901 playable slots out of 1,276 and
+375 unresolved slots. None of
 these missing slots belongs to a word currently shown in the quiz.
 All 869 imported standalone files are accounted for.
 
@@ -259,8 +271,8 @@ join the endpoints to silence **inside those added buffers**, not inside the
 speech. Post-processing also reserves output headroom. Nothing is cut,
 time-stretched, pitch-shifted, or synthesized to replace a missing syllable.
 
-The current audit in `docs/playback-integrity.json` covers 3,534 retained local-use
-files and all 659 distinct comparison processing paths selected by the complete
+The current audit in `docs/playback-integrity.json` covers 3,537 retained local-use
+files and all 519 distinct comparison processing paths selected by the complete
 quiz, rendered at both 44.1 and 48 kHz. It checks hashes, complete decoding, peak levels, exact retention
 of normalized source samples, full buffer lengths, and settled output tails.
 The peak check found two over-full-scale files in browser decoding and twelve
@@ -286,6 +298,7 @@ python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candid
 python3 scripts/collect_acoustic_evidence.py --candidates .audit/acoustic-candidates.json --phase alignment
 python3 scripts/build_acoustic_reviews.py --candidates .audit/acoustic-candidates.json --activate-imported
 npm run audio:mix -- --inventory .audit/native-tone-inventory.json
+npm run audio:review-all -- --inventory .audit/native-tone-inventory.json
 npm run audio:coverage -- --inventory .audit/native-tone-inventory.json \
   --baseline .audit/mixed-audio-original-baseline.json
 npm run audit:listening

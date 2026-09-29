@@ -1,31 +1,31 @@
 {
   "version": 1,
   "verification_date": "2026-09-29",
-  "scope": "Retained local-use library decoding and complete-comparison quiz playback; not a human linguistic certificate",
+  "scope": "Retained library decoding and all-source citation-screened complete-comparison quiz; not independent human linguistic certification",
   "player_sha256": {
     "app/app.js": "570be360d49f5281078971d2ffd0d501586ff9edc600decfd1da6d4df2ca2cd1",
     "app/correction_audio.js": "5d7d1d9fbc9a879748cc6efeb739e082cb719f2429166e813ca5571b93af8cba",
-    "app/audio_review.js": "8218d77aeb4877d2bffd3752d021ae12c4b3c9a3491e221c3fe5e5ddf49db3ce"
+    "app/audio_review.js": "c5956b1511fed0fc91c9c94fefd2bbcfa5b27fc72f95abb721d1dc633a20805f"
   },
-  "inventory_sha256": "c96ad5f2ed8d3d22932683fbd541e10a26b15eacffc4e4dc24d512aed57f0bdc",
+  "inventory_sha256": "fa1c7e4522ecbee694eafd648f8b271fe1ac1c46671ad72069f012dccea0d693",
   "practice": {
-    "entries": 856,
-    "initial_examples": 951,
+    "entries": 659,
+    "initial_examples": 719,
     "auditCountersPresent": false
   },
-  "decoded_files": 3534,
-  "native_files": 2197,
+  "decoded_files": 3537,
+  "native_files": 2200,
   "browser_files_above_full_scale_before_gain": 2,
   "mono_fold_down_files_above_full_scale_before_gain": 12,
   "native_files_attenuated": 67,
   "maximum_native_output_peak": 0.9000000000000001,
-  "distinct_comparison_processing_paths": 659,
+  "distinct_comparison_processing_paths": 519,
   "rendered_sample_rates_hz": [
     44100,
     48000
   ],
-  "rendered_comparison_graphs": 1318,
-  "maximum_comparison_output_peak": 0.8443604707717896,
+  "rendered_comparison_graphs": 1038,
+  "maximum_comparison_output_peak": 0.8441486954689026,
   "clipped_comparison_outputs": 0,
   "maximum_peak_in_final_10ms": 1.1353929891558998e-17,
   "all_normalized_source_samples_preserved": true,
@@ -46,9 +46,9 @@
     "Does not repair pre-existing microphone distortion or certify external audio hardware."
   ],
   "quiz_tone_checks": {
-    "quiz_entries": 856,
-    "verified_syllable_tone_voice_slots": 1224,
-    "unique_comparison_files": 659,
+    "quiz_entries": 659,
+    "verified_syllable_tone_voice_slots": 1056,
+    "unique_comparison_files": 519,
     "missing_comparisons": 0,
     "original_speech_samples_preserved": true,
     "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
@@ -82,7 +82,7 @@
       {
         "mode": "audio_cmn",
         "tone": "4",
-        "path": "audio/audio_cmn/syllabs/cmn-han4.mp3"
+        "path": "audio/pinyin_public/han4.mp3"
       },
       {
         "mode": "audio_cmn",
@@ -92,17 +92,17 @@
       {
         "mode": "audio_cmn",
         "tone": "2",
-        "path": "audio/audio_cmn/syllabs/cmn-han2.mp3"
+        "path": "audio/pinyin_public/han2.mp3"
       },
       {
         "mode": "audio_cmn",
         "tone": "3",
-        "path": "audio/audio_cmn/syllabs/cmn-han3.mp3"
+        "path": "audio/pinyin_public/han3.mp3"
       },
       {
         "mode": "audio_cmn",
         "tone": "4",
-        "path": "audio/audio_cmn/syllabs/cmn-han4.mp3"
+        "path": "audio/pinyin_public/han4.mp3"
       },
       {
         "mode": "mandarin_native",
@@ -133,13 +133,35 @@
     "incorrect_guess_preserved": true,
     "post_grading_replay": true
   },
-  "on_device_verification": {
+  "previous_on_device_verification": {
     "date": "2026-09-29",
     "device": "Pixel 10",
     "installed_apk_hash_verified": true,
     "quiz_entries": 856,
     "verified_syllable_tone_voice_slots": 1224,
     "unique_comparison_files": 659,
+    "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
+    "han_button_plays": 15,
+    "wrong_guess_preserved": true,
+    "playback_finished": true,
+    "test_attempts_restored_after_verification": true
+  },
+  "pronunciation_review": {
+    "path": "data/quiz_pronunciation_review.json",
+    "sha256": "f70e1d30e70a1a57ea7d9afbf3a169e7c0ccfaf30d66dc0456034bcb9e4854dc",
+    "active_files": 1104,
+    "candidate_isolated_files": 5107,
+    "all_sources_and_tones": true,
+    "independent_accuracy_certified": false
+  },
+  "on_device_verification": {
+    "date": "2026-09-29",
+    "device": "Pixel 10",
+    "installed_apk_hash_verified": true,
+    "quiz_entries": 659,
+    "verified_syllable_tone_voice_slots": 1056,
+    "unique_comparison_files": 519,
+    "active_files_decoded_on_device": 1104,
     "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
     "han_button_plays": 15,
     "wrong_guess_preserved": true,

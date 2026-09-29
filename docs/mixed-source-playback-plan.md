@@ -5,28 +5,30 @@ Status: implemented as an additive mixed-source bank. See
 for exact current results and unresolved candidates. Existing examples are
 preserved in the library; this document's baseline describes the pre-change state.
 The September 29 follow-up makes complete four-tone coverage mandatory for
-testing and excludes unclear imported isolated third-tone examples from that role.
-The current quiz has **856 entries / 951 recording choices**, distinct from the
+testing. Its follow-up applies the same citation-clarity checks to every source
+and full tone, including all original/native prompts and comparisons.
+The current quiz has **659 entries / 719 recording choices**, distinct from the
 larger retained library below.
 
 ## Delivered local-use expansion
 
 | Measure | Before | After |
 |---|---:|---:|
-| Retained library vocabulary entries | 1,736 | 2,263 |
-| Library word/recording examples | 1,814 | 2,460 |
+| Retained library vocabulary entries | 1,736 | 2,265 |
+| Library word/recording examples | 1,814 | 2,463 |
 | Imported library initial-playback files | 119 | 186 |
-| Imported comparison files across voice preferences | 3 | 113 |
-| Playable slots for the original 298 syllables | 836 / 1,192 | 882 / 1,192 |
-| Original syllables with all four comparison tones | 74 | 103 |
+| Imported comparison files across voice preferences | 3 | 94 |
+| Playable slots for the original 298 syllables | 836 / 1,192 | 861 / 1,192 |
+| Original syllables with all four comparison tones | 74 | 89 |
 
 No entry or initial pair from the original baseline was removed. The subsequently
 added imported han3 prompt was explicitly replaced with a clearer same-reading
-original whole word. Forty-six original gaps were filled; the remaining 310
-are explicit in the library candidate report.
+original whole word. Source-independent clarity screening now reports 331
+unresolved original-library slots explicitly rather than using uncertain
+examples to make comparison coverage look complete.
 Newly usable entries introduce another 21 syllables, so expanded-pool coverage
-is reported separately: 925 of 1,276 slots, with 351 unresolved. The active quiz
-uses only complete families: 408 of 408 full-tone slots across 102 bases.
+is reported separately: 901 of 1,276 slots, with 375 unresolved. The active quiz
+uses only complete families: 352 of 352 full-tone slots across 88 bases.
 
 Whole-word screening now consumes the same validated mixed comparison bank
 as playback and retains the supplemental assessments when rebuilt. This

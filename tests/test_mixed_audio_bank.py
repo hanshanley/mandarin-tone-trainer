@@ -17,11 +17,31 @@ if AVAILABLE:
         import build_mixed_audio_bank as mixed
         from verify_comparison_identity import identity_candidates, latin_only_primary_conflict, no_primary_contradiction, StableWhisperFeatures
         import review_imported_third_clarity as third_clarity
+        import review_quiz_pronunciation as quiz_review
     import numpy as np
 
 
 @unittest.skipUnless(AVAILABLE, 'optional audio audit dependencies unavailable')
 class MixedAudioBankTests(unittest.TestCase):
+    def test_all_source_clarity_requires_continuous_matching_contours_for_each_full_tone(self):
+        curves = {
+            '1': [300.] * 17,
+            '2': np.geomspace(180, 320, 17).tolist(),
+            '3': np.concatenate([np.geomspace(260, 120, 9), np.geomspace(130, 280, 8)]).tolist(),
+            '4': np.geomspace(320, 140, 17).tolist(),
+        }
+        for expected, curve in curves.items():
+            for tone in ['1', '2', '3', '4']:
+                module = third_clarity if tone == '3' else quiz_review
+                with patch.object(module, 'segment', return_value={
+                    'status': 'measured', 'curves': {'praat': curve, 'world': curve},
+                }):
+                    result = quiz_review.isolated_clarity({}, tone)
+                    self.assertEqual(result['status'], 'clear_citation_tone' if tone == expected else 'needs_clearer_citation')
+                    self.assertFalse(result['linguistic_error_established'])
+        with patch.object(quiz_review, 'segment', return_value={'status': 'review', 'reason': 'pitch trackers disagree'}):
+            self.assertEqual(quiz_review.isolated_clarity({}, '4')['status'], 'needs_clearer_citation')
+
     def test_isolated_clarity_distinguishes_teaching_suitability_from_claimed_tone_errors(self):
         clear = np.concatenate([np.geomspace(260, 120, 9), np.geomspace(130, 280, 8)]).tolist()
         falling = np.geomspace(260, 120, 17).tolist()

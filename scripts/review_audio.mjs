@@ -123,6 +123,12 @@ export function audioHash(relativePath, root = ROOT) {
 }
 
 export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}) {
+  for(const [audioPath,review] of Object.entries(data.quality.isolated_clarity||{})){
+    if(!/^audio\/(?:audio_cmn|pinyin_public|mandarin_native)\//.test(audioPath)
+      ||!['clear_citation_tone','needs_clearer_citation'].includes(review.status)
+      ||!/^[a-f0-9]{64}$/.test(review.sha256||'')||review.method!=='all-source-isolated-clarity-1'
+      ||audioHash(audioPath,root)!==review.sha256)throw new Error(`Stale or invalid all-source clarity evidence: ${audioPath}`);
+  }
   for(const [audioPath,review] of Object.entries(data.quality.native_clarity||{})){
     if(!audioPath.startsWith('audio/mandarin_native/')||!['clear_citation_third','needs_clearer_citation'].includes(review.status)
       ||!/^[a-f0-9]{64}$/.test(review.sha256||'')||review.method!=='isolated-third-clarity-1'
@@ -213,7 +219,7 @@ export function practiceInventory(data, index, {completeComparisons=false}={}) {
   const eligibleWords = [];
   const recordingLabelPairs = [];
   const toneCoverage = Object.fromEntries(['1','2','3','4','N'].map(tone=>[tone,0]));
-  const quality=completeComparisons?data.quality:{...data.quality,native_clarity:{}};
+  const quality=completeComparisons?data.quality:{...data.quality,native_clarity:{},isolated_clarity:null};
   for (const word of data.words) {
     const natives = (recordingsByWord.get(word.id) || []).filter(recording =>
       AudioReview.nativeApproval(index, word, recording)
@@ -443,7 +449,8 @@ function main() {
     console.log(`Exported ${candidates.length} recording/label candidates to ${output}. This is analysis input, not a mandatory human-listening queue.`);
   }
   const inventory = practiceInventory(data, index);
-  console.log(`Audio assessment: ${index.size} qualifying checks; ${inventory.eligibleWords.length}/${data.words.length} practice entries eligible; ${inventory.audio.size} reachable audio files.`);
+  const quiz=quizInventory(data,index);
+  console.log(`Audio assessment: ${index.size} qualifying checks; ${inventory.eligibleWords.length}/${data.words.length} retained library entries; ${quiz.eligibleWords.length} complete-comparison quiz entries; ${inventory.audio.size} library audio files.`);
   if (!inventory.eligibleWords.length) console.log('No sufficiently screened practice items are available. Automated screening is not an accuracy certificate.');
 }
 

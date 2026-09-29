@@ -65,12 +65,17 @@ testing excludes words that would leave any of the four comparison buttons silen
 Neutral tone is demonstrated in a checked whole word, with the relevant
 syllable identified, rather than an invented isolated fifth-tone clip.
 
-Imported isolated third tones also undergo a citation-clarity check. A low or
-mostly falling third tone is not automatically a source error, but a recording
-without a clear, consistently tracked fall-rise is withheld from isolated quiz
-prompts and comparison buttons. Original labels and downloaded files remain intact.
-The retained library currently has **2,263 entries**; **856 entries** meet the
+All isolated quiz prompts and comparisons undergo the **same citation-clarity
+checks across every source and all four tones**. These require continuous,
+agreeing pitch tracks and an appropriate level, rising, dipping, or falling
+contour. A low or mostly falling third tone is not automatically a source error,
+but unclear citation forms are withheld from isolated teaching roles. Original
+labels and downloaded files remain intact.
+The retained library currently has **2,265 entries**; **659 entries** meet the
 complete-comparison and clarity requirements for testing.
+The per-file [pronunciation review](data/quiz_pronunciation_review.json) covers
+every active native, comparison, and contextual-neutral recording. It records
+automated evidence, not a claim of independently certified linguistic accuracy.
 
 ### Practice your pronunciation
 

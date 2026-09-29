@@ -1236,6 +1236,41 @@ test('unclear isolated imported third tones cannot override a clearer comparison
   assert.equal(Review.clearForIsolatedQuiz(assessment,quality),false);
 });
 
+test('all-source clarity applies equally to original, public and imported clips for every full tone',()=>{
+  for(const source of ['audio_cmn','pinyin_public','mandarin_native'])for(const tone of ['1','2','3','4']){
+    const path=`audio/${source}/ma${tone}.mp3`;
+    const approval=approve(Review.comparisonDescriptor(`ma${tone}`,{audio_path:path}));
+    const quality={isolated_clarity:{[path]:{sha256:approval.sha256,key:`ma${tone}`,status:'clear_citation_tone'}}};
+    assert.equal(Review.clearForIsolatedQuiz(approval,quality),true,`${source}/${tone}`);
+    quality.isolated_clarity[path].status='needs_clearer_citation';
+    assert.equal(Review.clearForIsolatedQuiz(approval,quality),false);
+    quality.isolated_clarity[path].status='clear_citation_tone';
+    quality.isolated_clarity[path].key='wrong1';
+    assert.equal(Review.clearForIsolatedQuiz(approval,quality),false);
+    assert.equal(Review.clearForIsolatedQuiz(approval,{isolated_clarity:{}}),false);
+  }
+});
+
+test('the published comprehensive review covers every active native, comparison and neutral file',async()=>{
+  const {loadReviewData,validateLedger,quizInventory}=await import('../scripts/review_audio.mjs');
+  const data=loadReviewData(),index=validateLedger(data),quiz=quizInventory(data,index);
+  const report=JSON.parse(fs.readFileSync(path.join(ROOT,'data/quiz_pronunciation_review.json'),'utf8'));
+  assert.equal(report.all_active_files_reviewed,true);
+  assert.equal(report.independent_linguistic_accuracy_certified,false);
+  const active=report.files.filter(file=>file.used_after);
+  assert.deepEqual(active.map(file=>file.audio_path).sort(),[...quiz.audio].sort());
+  const reviewedPaths=new Set(active.map(file=>file.audio_path));
+  const redistributable=quizInventory(data,validateLedger(data,undefined,{allowLocalOnly:false}));
+  assert.ok([...redistributable.audio].every(audioPath=>reviewedPaths.has(audioPath)));
+  assert.equal(report.after.entries,quiz.eligibleWords.length);
+  assert.equal(report.after.initial_examples,quiz.recordingLabelPairs.length);
+  for(const file of active){
+    assert.ok(file.checks.length);
+    assert.ok(file.checks.every(check=>['clear_citation_tone','existing_evidence_reproduced'].includes(check.status)),file.audio_path);
+    assert.equal(createHash('sha256').update(fs.readFileSync(path.join(ROOT,file.audio_path))).digest('hex'),file.sha256);
+  }
+});
+
 test('every actual quiz word has four playable comparisons in all voice preferences',async()=>{
   const {loadReviewData,validateLedger,quizInventory,practiceInventory}=await import('../scripts/review_audio.mjs');
   const data=loadReviewData();
