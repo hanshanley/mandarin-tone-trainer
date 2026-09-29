@@ -1,10 +1,13 @@
 let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineBlob=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
 let lessonPlayer=null;
+let glossikaPractice=GlossikaExamples.excludedCatalog('Glossika individual practice data has not loaded.');
+let glossikaRuntime=GlossikaExamples.runtimeData(glossikaPractice);
 let audioReviews=new Map(), nativePlayId=0, overlayPlayId=0, nativeObjectURL=null, overlayObjectURL=null, questionLoadId=0, questionVerified=false;
 const reviewedAudioBytes=new Map();
 const playbackGains=new Map();
-const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, CORRECTION_EDGE_RAMP_SECONDS=.005, NATIVE_SYLLABLE_GAP_SECONDS=.06;
+const decodedMediaBuffers=new Map(),recordingBuffers=new Map(),playableAudioCache=new Map();
+const rawPinyinBuffers=new Map(), correctionBuffers=new Map(), RAW_BUFFER_CACHE_LIMIT=64, PUBLISHER_PARENT_CACHE_LIMIT=4, DECODED_PARENT_CACHE_LIMIT=4, RECORDING_BUFFER_CACHE_LIMIT=64, CORRECTION_BUFFER_CACHE_LIMIT=32, QUIZ_HISTORY_LIMIT=50, CORRECTION_LEAD_SECONDS=.12, CORRECTION_TAIL_SECONDS=.20, CORRECTION_EDGE_RAMP_SECONDS=.005, NATIVE_SYLLABLE_GAP_SECONDS=.06;
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const TONE_LABELS={1:'1st tone',2:'2nd tone',3:'3rd tone',4:'4th tone',N:'Neutral tone'};
@@ -57,6 +60,7 @@ function sourceName(source){
   if(source==='audio_cmn')return 'audio-cmn';
   if(source==='mandarin_native')return 'Mandarin Native';
   if(source==='sinosplice')return 'Sinosplice';
+  if(source==='glossika')return 'Glossika';
   if(source==='mp3_chinese_pinyin_sound')return 'public pinyin';
   return source;
 }
@@ -83,6 +87,15 @@ async function load(){
   const importedWords=await importedWordResponse.json();
   if(importedWords.version!==1||!Array.isArray(importedWords.words))throw new Error('Invalid imported vocabulary');
   words.push(...importedWords.words);
+  const glossikaResponse=await fetch('../data/glossika_practice.json',{cache:'no-store'});
+  if(glossikaResponse.ok)glossikaPractice=GlossikaExamples.validateCatalog(await glossikaResponse.json());
+  else if(glossikaResponse.status===404){
+    glossikaPractice=GlossikaExamples.excludedCatalog('Generated local Glossika practice data is unavailable.');
+  }else{
+    throw new Error(`Glossika practice catalog failed: HTTP ${glossikaResponse.status}`);
+  }
+  glossikaRuntime=GlossikaExamples.runtimeData(glossikaPractice);
+  words.push(...glossikaRuntime.words);
   if(new Set(words.map(word=>word.id)).size!==words.length)throw new Error('Duplicate vocabulary identifiers');
   const definitionResponse=await fetch('../data/definitions.json');
   if(!definitionResponse.ok)throw new Error(`definitions failed: HTTP ${definitionResponse.status}`);
@@ -102,6 +115,7 @@ async function load(){
   const sinosplice=await sinospliceResponse.json();
   if(sinosplice.version!==1||!Array.isArray(sinosplice.recordings))throw new Error('Invalid Sinosplice recording index');
   recordings.push(...sinosplice.recordings);
+  recordings.push(...glossikaRuntime.recordings);
   const correctionResponse=await fetch('../data/pinyin_public_recordings.json');
   if(correctionResponse.ok)correctionRecordings=await correctionResponse.json();
   else if(correctionResponse.status!==404)throw new Error(`Pinyin corrections failed: HTTP ${correctionResponse.status}`);
@@ -114,12 +128,21 @@ async function load(){
   if(!acousticResponse.ok)throw new Error(`Acoustic screening data failed: HTTP ${acousticResponse.status}`);
   audioReviews=AudioReview.createIndex(await reviewResponse.json(),await acousticResponse.json(),{
     sourceRecordings:recordings,sourceWords:words,
+    publisherCatalog:glossikaPractice,publisherLedger:glossikaRuntime.publisherLedger,
   });
   rebuildIndex();
   updatePracticeSettings();
   lessonPlayer=GlossikaLessons.createController({
     get:$,fetch,hashBytes:AudioReview.hashBytes,playbackGain:safePlaybackGain,
     stopOthers:()=>stopAllAudio(true),canPlay:()=>!recordingStarting&&!mediaStream,
+    practiceCatalog:glossikaPractice,examplesById:glossikaRuntime.examplesById,
+    createElement:tag=>document.createElement(tag),
+    playExample:(runtime,example)=>playAssessedRecording(
+      runtime.nativeApproval,
+      `Playing Glossika example ${example.ordinal} from ${example.lesson_id}.`,
+    ),
+    canPracticeExample:example=>canPracticeGlossikaExample(example),
+    practiceExample:runtime=>practiceGlossikaExample(runtime),
   });
   await lessonPlayer.initialize();
 }
@@ -133,7 +156,7 @@ function updatePracticeSettings(){
   }
   if($('wordSource').selectedOptions?.[0]?.disabled)$('wordSource').value='all';
   for(const option of Array.from($('correctionSource').options||[])){
-    if(!['mandarin_native','sinosplice'].includes(option.value))continue;
+    if(!['mandarin_native','sinosplice','glossika'].includes(option.value))continue;
     const importedComparisons=Array.from(audioReviews.comparisonAlternatives.keys()).some(key=>{
       const selected=AudioReview.correctionSelection(CorrectionAudio,key,correctionQuality,correctionRecordings,audioReviews,option.value);
       return selected?.source===option.value;
@@ -185,6 +208,26 @@ function hasVerifiedCorrections(w,pattern=expectedPattern(w)){
       correctionRecordings,audioReviews,$('correctionSource')?.value||'pinyin_public');
 }
 function practiceWords(){return words.filter(w=>recordingsFor(w).length&&hasAlignedCorrections(w))}
+function canPracticeGlossikaExample(example){
+  const runtime=glossikaRuntime.examplesById.get(example?.id);
+  return Boolean(example?.quiz_eligible&&runtime?.word&&runtime.recording
+    &&qualifyingRecordingsFor(runtime.word).includes(runtime.recording)
+    &&hasAlignedCorrections(runtime.word));
+}
+async function practiceGlossikaExample(runtime){
+  if(!runtime?.example?.quiz_eligible||!runtime.word||!runtime.recording
+    ||!qualifyingRecordingsFor(runtime.word).includes(runtime.recording)){
+    setAudioStatus('This Glossika example is available for listening only.',true);
+    return false;
+  }
+  $('wordSource').value='glossika';
+  $('syllables').value='all';
+  $('sandhiOnly').checked=false;
+  updatePracticeSettings();
+  const selected=await next(true,true,{word:runtime.word,recording:runtime.recording});
+  if(selected)scrollToPractice({focus:true});
+  return selected;
+}
 function filtered(eligible=practiceWords()){return eligible.filter(w=>{
   const syllables=$('syllables').value; const count=(w.lexical_tones||[]).length;
   if(syllables==='one' && count!==1)return false;
@@ -268,7 +311,8 @@ async function verifyCurrentQuestion(){
         approvals.push(selected.approval);
       }
     }
-    await Promise.all(approvals.map(approvedAudioBytes));
+    await Promise.all(approvals.map(approval=>
+      approval.drill_source?recordingBuffer(approval):approvedAudioBytes(approval)));
     if(loadId!==questionLoadId)return false;
     questionVerified=true;
     $('play').disabled=false;
@@ -305,7 +349,7 @@ async function back(play=false){
   if(currentNative?.playable&&play)playNative();
   return true;
 }
-async function next(play=false,remember=true){
+async function next(play=false,remember=true,requested=null){
   if(remember){
     const snapshot=currentSnapshot();
     if(snapshot){
@@ -331,7 +375,20 @@ async function next(play=false,remember=true){
     $('answers').innerHTML=''; $('answerHint').textContent='Change your settings to continue.';
     $('reveal').classList.add('hidden'); updateBackButton(); return false;
   }
-  current=choose(pool); const rs=recordingsFor(current); currentRec=rs.length?choose(rs):null; currentNative=nativePlayback(current,currentRec);
+  if(requested){
+    const available=qualifyingRecordingsFor(requested.word);
+    if(!eligible.includes(requested.word)||!available.includes(requested.recording)){
+      setAudioStatus('This exact Glossika example is not eligible for graded practice.',true);
+      return false;
+    }
+    current=requested.word;
+    currentRec=requested.recording;
+  }else{
+    current=choose(pool);
+    const rs=recordingsFor(current);
+    currentRec=rs.length?choose(rs):null;
+  }
+  currentNative=nativePlayback(current,currentRec);
   current._graded=false;
   const correct=patternFor(current,currentRec);
   current._correct=correct;
@@ -353,22 +410,33 @@ function grade(p,correct){
   }
   current._graded=true;
   updateAnswerState();
-  results.push({timestamp:new Date().toISOString(),word:current.word,pinyin:current.pinyin,selected_pattern:p,correct_pattern:correct,correct:p===correct,source:currentNative?.source||null,recording:currentNative?.filename||null});
+  results.push({timestamp:new Date().toISOString(),word_id:current.id,
+    source_item_id:current.source_item_id||null,word:current.word,pinyin:current.pinyin,
+    selected_pattern:p,correct_pattern:correct,correct:p===correct,
+    source:currentNative?.source||null,recording:currentNative?.filename||null});
   saveResults();
   const tags=current.sandhi_tags.map(x=>`<span class="tag">${x}</span>`).join('');
   const definition=current.definition?`<p class="definition"><strong>Definition:</strong> ${escapeHTML(current.definition)}</p>`:'';
+  const practiceLabel=current.practice_label?`<p class="muted">${escapeHTML(current.practice_label)}</p>`:'';
   const heard=CorrectionAudio.spokenPinyin(current.pinyin_syllables,correct);
   const compact=pinyin=>pinyin.toLowerCase().normalize('NFC').replace(/[\s'’\-]/g,'');
   const listed=compact(current.pinyin)!==compact(heard)
     ?`<p class="muted">Listed pinyin: ${escapeHTML(current.pinyin)}. This recording uses the spoken form shown above.</p>`:'';
-  $('reveal').innerHTML=`<div class="result-label${p===correct?'':' retry'}">${p===correct?'That’s right.':'Listen once more.'} <span class="muted">Correct tone pattern: ${escapeHTML(correct)}</span></div><div class="reveal-reading"><div class="word">${escapeHTML(current.word)}</div><div><div class="muted reading-label">Heard here</div><div class="pinyin">${escapeHTML(heard)}</div></div></div>${listed}${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
+  $('reveal').innerHTML=`<div class="result-label${p===correct?'':' retry'}">${p===correct?'That’s right.':'Listen once more.'} <span class="muted">Correct tone pattern: ${escapeHTML(correct)}</span></div><div class="reveal-reading"><div class="word">${escapeHTML(current.word)}</div><div><div class="muted reading-label">Heard here</div><div class="pinyin">${escapeHTML(heard)}</div></div></div>${listed}${practiceLabel}${definition}<div>${tags}</div>${current.surface_label_needs_clip_review?'<p class="muted">This word may vary with prosodic grouping.</p>':''}`;
   $('reveal').classList.remove('hidden');
-  const reference=document.createElement('a');
-  reference.href=`https://mandarin-native.com/#${encodeURIComponent(`word/${current.word}`)}`;
-  reference.target='_blank';
-  reference.rel='noreferrer noopener';
-  reference.textContent='Explore this word in Mandarin Native (online)';
-  $('reveal').appendChild(reference);
+  if(current.source==='glossika'){
+    const source=document.createElement('p');
+    source.className='muted';
+    source.textContent=`Glossika publisher-source drill · ${current.source_pattern} · printed page ${current.printed_page}.`;
+    $('reveal').appendChild(source);
+  }else{
+    const reference=document.createElement('a');
+    reference.href=`https://mandarin-native.com/#${encodeURIComponent(`word/${current.word}`)}`;
+    reference.target='_blank';
+    reference.rel='noreferrer noopener';
+    reference.textContent='Explore this word in Mandarin Native (online)';
+    $('reveal').appendChild(reference);
+  }
 }
 function scrollToPractice({focus=false}={}){
   const first=$('answers').children[0];
@@ -381,7 +449,11 @@ function scrollToPractice({focus=false}={}){
   }
   if(focus)first.querySelector('button').focus({preventScroll:true});
 }
-function audioURL(r){if(!r)return null;let p=r.audio_path||''; if(p.startsWith('audio/'))return '../'+p; return p}
+function audioURL(r){
+  if(!r)return null;
+  const path=AudioReview.mediaPath(r);
+  return path?.startsWith('audio/')?`../${path}`:path;
+}
 function stopNative(message='Playback stopped.'){
   nativePlayId++;
   $('play').classList.remove('is-playing');
@@ -425,19 +497,65 @@ function stopAllAudio(keepLesson=false){
 }
 async function approvedAudioBytes(approval){
   if(!approval)throw new Error('No qualifying assessment for this audio');
-  const key=`${approval.audio_path}:${approval.sha256}`;
+  const path=AudioReview.mediaPath(approval);
+  const key=`${path}:${approval.sha256}`;
   const cached=cachedValue(reviewedAudioBytes,key);
   if(cached)return cached;
   const promise=(async()=>{
-    const response=await fetch(`../${approval.audio_path}`,{cache:'no-store'});
+    const response=await fetch(`../${path}`,{cache:'no-store'});
     if(!response.ok)throw new Error(`Reviewed audio failed: HTTP ${response.status}`);
     const bytes=await response.arrayBuffer();
     await AudioReview.verifyBytes(bytes,approval);
     return bytes;
   })();
-  cacheValue(reviewedAudioBytes,key,promise,RAW_BUFFER_CACHE_LIMIT);
+  cacheValue(reviewedAudioBytes,key,promise,
+    approval.drill_source?PUBLISHER_PARENT_CACHE_LIMIT:RAW_BUFFER_CACHE_LIMIT);
   try{return await promise}catch(error){
     if(reviewedAudioBytes.get(key)===promise)reviewedAudioBytes.delete(key);
+    throw error;
+  }
+}
+async function decodedParentBuffer(approval){
+  const path=AudioReview.mediaPath(approval);
+  const key=`${path}:${approval.sha256}`;
+  const cached=cachedValue(decodedMediaBuffers,key);
+  if(cached)return cached;
+  const promise=(async()=>{
+    const bytes=await approvedAudioBytes(approval);
+    return getCorrectionContext().decodeAudioData(bytes.slice(0));
+  })();
+  cacheValue(decodedMediaBuffers,key,promise,DECODED_PARENT_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(decodedMediaBuffers.get(key)===promise)decodedMediaBuffers.delete(key);
+    throw error;
+  }
+}
+async function recordingBuffer(approval){
+  if(!approval)throw new Error('No qualifying assessment for this audio');
+  const key=AudioReview.mediaIdentity(approval);
+  const cached=cachedValue(recordingBuffers,key);
+  if(cached)return cached;
+  const promise=(async()=>{
+    const decoded=await decodedParentBuffer(approval);
+    return approval.drill_source
+      ?GlossikaExamples.sliceAudioBuffer(getCorrectionContext(),decoded,approval.drill_source)
+      :decoded;
+  })();
+  cacheValue(recordingBuffers,key,promise,RECORDING_BUFFER_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(recordingBuffers.get(key)===promise)recordingBuffers.delete(key);
+    throw error;
+  }
+}
+async function playableAudioBytes(approval){
+  if(!approval?.drill_source)return approvedAudioBytes(approval);
+  const key=AudioReview.mediaIdentity(approval);
+  const cached=cachedValue(playableAudioCache,key);
+  if(cached)return cached;
+  const promise=recordingBuffer(approval).then(GlossikaExamples.encodeFloatWav);
+  cacheValue(playableAudioCache,key,promise,RECORDING_BUFFER_CACHE_LIMIT);
+  try{return await promise}catch(error){
+    if(playableAudioCache.get(key)===promise)playableAudioCache.delete(key);
     throw error;
   }
 }
@@ -464,9 +582,9 @@ async function playAssessedRecording(approval,message){
   stopAllAudio();
   const playId=nativePlayId;
   try{
-    const bytes=await approvedAudioBytes(approval);
+    const bytes=await playableAudioBytes(approval);
     if(playId!==nativePlayId)return;
-    const gain=await safePlaybackGain(bytes,`${approval.audio_path}:${approval.sha256}`);
+    const gain=await safePlaybackGain(bytes,AudioReview.mediaIdentity(approval));
     if(playId!==nativePlayId)return;
     nativeObjectURL=URL.createObjectURL(new Blob([bytes]));
     const audio=new Audio(nativeObjectURL);
@@ -510,9 +628,7 @@ async function rawPinyinBuffer(key){
   const promise=(async()=>{
     const selected=correctionSelection(key);
     if(!selected)throw new Error(`No verified correction recording for ${key}`);
-    const bytes=await approvedAudioBytes(selected.approval);
-    const context=getCorrectionContext();
-    return context.decodeAudioData(bytes.slice(0));
+    return recordingBuffer(selected.approval);
   })();
   cacheValue(rawPinyinBuffers,key,promise,RAW_BUFFER_CACHE_LIMIT);
   try{return await promise}catch(error){
@@ -525,6 +641,25 @@ async function pinyinSequenceBuffer(keys){
   const cached=cachedValue(correctionBuffers,cacheKey);
   if(cached)return cached;
   const promise=(async()=>{
+    const selections=keys.map(correctionSelection);
+    if(selections.some(selection=>selection?.approval?.drill_source)){
+      if(keys.length!==1||!selections[0]?.approval?.drill_source){
+        throw new Error('Publisher drill slices cannot be concatenated');
+      }
+      const context=getCorrectionContext();
+      const selected=await recordingBuffer(selections[0].approval);
+      const lead=Math.round(selected.sampleRate*CORRECTION_LEAD_SECONDS);
+      const tail=Math.round(selected.sampleRate*CORRECTION_TAIL_SECONDS);
+      const padded=context.createBuffer(
+        selected.numberOfChannels,lead+selected.length+tail,selected.sampleRate,
+      );
+      for(let channel=0;channel<selected.numberOfChannels;channel++){
+        const samples=selected.getChannelData(channel);
+        if(typeof padded.copyToChannel==='function')padded.copyToChannel(samples,channel,lead);
+        else padded.getChannelData(channel).set(samples,lead);
+      }
+      return padded;
+    }
     const context=getCorrectionContext();
     const decoded=await Promise.all(keys.map(rawPinyinBuffer));
     const sampleRate=decoded[0].sampleRate;
@@ -608,6 +743,13 @@ function connectPinyinSource(source,context,key){
   }
 }
 async function playPinyinKey(key){
+  const selected=correctionSelection(key);
+  if(selected?.approval?.drill_source){
+    return playAssessedRecording(
+      selected.approval,
+      `Playing tone ${key.slice(-1)} (${sourceName(selected.source)}).`,
+    );
+  }
   return playPinyinSequence([key]);
 }
 async function playPinyinSequence(keys){
@@ -686,7 +828,9 @@ $('correctionSource').onchange=async()=>{
   }else{
     await next(false,false);
   }
-  const voice={audio_cmn:'human',pinyin_public:'reference',mandarin_native:'Mandarin Native',sinosplice:'Sinosplice'}[$('correctionSource').value];
+  lessonPlayer?.refreshExample();
+  const voice={audio_cmn:'human',pinyin_public:'reference',mandarin_native:'Mandarin Native',
+    sinosplice:'Sinosplice',glossika:'Glossika'}[$('correctionSource').value];
   setAudioStatus(`Comparison voice preference: ${voice}. Individual tones may use another available voice.`);
 };
 $('sandhiOnly').onchange=async()=>{quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})};
@@ -818,10 +962,10 @@ $('overlay').onclick=async()=>{
   stopAllAudio();
   const playId=overlayPlayId,url=mineUrl,blob=mineBlob,approval=currentNative.approval;
   try{
-    const bytes=await approvedAudioBytes(approval);
+    const bytes=await playableAudioBytes(approval);
     if(playId!==overlayPlayId||url!==mineUrl)return;
     const [nativeGain,mineGain]=await Promise.all([
-      safePlaybackGain(bytes,`${approval.audio_path}:${approval.sha256}`),
+      safePlaybackGain(bytes,AudioReview.mediaIdentity(approval)),
       blob.arrayBuffer().then(bytes=>safePlaybackGain(bytes,url)),
     ]);
     if(playId!==overlayPlayId||url!==mineUrl)return;

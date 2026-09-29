@@ -6,6 +6,7 @@ const path=require('node:path');
 const vm=require('node:vm');
 const Review=require('../app/audio_review.js');
 const Policy=require('../app/correction_audio.js');
+const GlossikaExamples=require('../app/glossika_examples.js');
 const GlossikaLessons=require('../app/glossika_lessons.js');
 const ROOT=path.resolve(__dirname,'..');
 const bytes=Uint8Array.from([1,2,3,4]);
@@ -35,6 +36,73 @@ const comparison=(key,source='pinyin_public')=>approve(Review.comparisonDescript
   audio_path:source==='pinyin_public'?`audio/pinyin_public/${key}.mp3`:`audio/audio_cmn/syllabs/cmn-${key}.mp3`,
 }));
 const index=approvals=>Review.createIndex({version:1,approvals});
+function glossikaExample({
+  id='vowel-part-1-0001',lesson_id='vowel-part-1',ordinal=1,word='ma',pinyin='mā',
+  pinyin_syllables=['ma'],lexical_tones=[1],lexical_pattern='1',surface_pattern=lexical_pattern,
+  kind='syllable_drill',quiz_eligible=true,segment=true,block_reason=null,
+  printed_page=8,pdf_page=9,source_pattern='Part 1: -a',sandhi_tags=[],
+  sample_rate=48000,segment_overrides={},
+}={}){
+  return {
+    id,lesson_id,ordinal,printed_page,pdf_page,word,traditional:null,pinyin,
+    pinyin_syllables,lexical_tones,lexical_pattern,source_pattern,
+    source_pattern_matches_lexical:true,source_row:ordinal,bounds:[10,20,30,40],kind,
+    source_audio_path:`audio/glossika/lessons/${lesson_id}.mp3`,
+    source_audio_sha256:hash,
+    segment:segment?{
+      sample_rate,start_sample:1,end_sample:3,speech_start_sample:1,
+      speech_end_sample:3,source_frames:4,channels:2,...segment_overrides,
+    }:null,
+    mapping:{
+      status:segment?'mapped':'unresolved',intro_verified:Boolean(segment),
+      boundary_stable:Boolean(segment),full_utterance:Boolean(segment),
+      reason:segment?null:'No stable source interval',
+    },
+    surface_pattern,sandhi_tags,quiz_eligible,
+    block_reason:quiz_eligible?null:(block_reason||'Listen-only source example'),
+  };
+}
+function glossikaCatalog(examples){
+  return {
+    version:1,source:'glossika',available:true,method:GlossikaExamples.METHOD,
+    distribution_scope:'local_only',book_sha256:'a'.repeat(64),archive_sha256:'b'.repeat(64),
+    index_sha256:'c'.repeat(64),boundaries_sha256:'d'.repeat(64),examples,
+    counts:{total:examples.length},
+  };
+}
+function glossikaQuizCatalog(){
+  const tones=[
+    ['0001','mā',1],['0002','má',2],['0003','mǎ',3],['0004','mà',4],
+  ].map(([suffix,pinyin,tone],index)=>glossikaExample({
+    id:`vowel-part-1-${suffix}`,ordinal:index+1,pinyin,
+    lexical_tones:[tone],lexical_pattern:String(tone),
+  }));
+  const prompt=glossikaExample({
+    id:'tone-11-0001',lesson_id:'tone-11',ordinal:1,word:'妈妈',traditional:'媽媽',
+    pinyin:'māmā',pinyin_syllables:['ma','ma'],lexical_tones:[1,1],
+    lexical_pattern:'1-1',surface_pattern:'1-1',kind:'word_drill',
+    printed_page:34,pdf_page:36,source_pattern:'MANDARIN 1+1',
+  });
+  const ambiguous=glossikaExample({
+    id:'tone-11-0002',lesson_id:'tone-11',ordinal:2,word:'你好可',pinyin:'nǐhǎokě',
+    pinyin_syllables:['ni','hao','ke'],lexical_tones:[3,3,3],lexical_pattern:'3-3-3',
+    surface_pattern:'2-2-3',kind:'word_drill',quiz_eligible:false,
+    block_reason:'Ambiguous third-tone grouping; listen only',
+    printed_page:34,pdf_page:36,source_pattern:'MANDARIN 3-3-3',
+    sandhi_tags:['third_tone_grouping_ambiguous'],
+  });
+  return glossikaCatalog([...tones,prompt,ambiguous]);
+}
+function localCompanion(){
+  const catalog=structuredClone(JSON.parse(
+    fs.readFileSync(path.join(ROOT,'data/glossika_recordings.json'),'utf8'),
+  ));
+  for(const asset of [catalog.book,...catalog.pages,...catalog.lessons]){
+    asset.sha256=hash;
+    asset.byte_length=bytes.length;
+  }
+  return catalog;
+}
 
 test('Glossika companion schema preserves complete lessons, accompanying pages, and personal scope',()=>{
   const catalog=JSON.parse(fs.readFileSync(path.join(ROOT,'data/glossika_recordings.json'),'utf8'));
@@ -58,7 +126,327 @@ test('Glossika companion schema preserves complete lessons, accompanying pages, 
   const lesson={...native,source:'glossika',recording_type:'book_lesson',
     audio_path:catalog.lessons[0].audio_path,candidate_hsk_ids:[word.id],quiz_eligible:true};
   assert.deepEqual(Review.nativeCandidates([word],[lesson]),[]);
-  assert.throws(()=>Review.validateApproval(approve(Review.nativeDescriptor(word,lesson))),/cannot be quiz approvals/);
+  assert.throws(()=>Review.validateApproval(approve(Review.nativeDescriptor(word,lesson))),/publisher-source ledger/);
+});
+
+test('Glossika practice expands into local publisher-attested words and virtual recordings',async()=>{
+  const tones=[
+    glossikaExample({id:'vowel-part-1-0001',ordinal:1,pinyin:'mā',lexical_tones:[1],lexical_pattern:'1'}),
+    glossikaExample({id:'vowel-part-1-0002',ordinal:2,pinyin:'má',lexical_tones:[2],lexical_pattern:'2'}),
+    glossikaExample({id:'vowel-part-1-0003',ordinal:3,pinyin:'mǎ',lexical_tones:[3],lexical_pattern:'3'}),
+    glossikaExample({id:'vowel-part-1-0004',ordinal:4,pinyin:'mà',lexical_tones:[4],lexical_pattern:'4'}),
+  ];
+  const neutral=glossikaExample({
+    id:'vowel-part-1-0005',ordinal:5,pinyin:'ma·',lexical_tones:[0],
+    lexical_pattern:'N',surface_pattern:'N',quiz_eligible:false,
+    block_reason:'Single neutral drill is listen-only',
+  });
+  const unresolved=glossikaExample({
+    id:'vowel-part-1-0006',ordinal:6,segment:false,quiz_eligible:false,
+    block_reason:'No stable source interval',
+  });
+  const catalog=glossikaCatalog([...tones,neutral,unresolved]);
+  const runtime=GlossikaExamples.runtimeData(catalog);
+  assert.equal(runtime.words.length,6);
+  assert.equal(runtime.recordings.length,5);
+  assert.equal(runtime.publisherLedger.assessments.length,9);
+  assert.equal(runtime.words[0].practice_label,'Pronunciation exercise');
+  assert.equal(runtime.recordings[0].audio_path,'audio/glossika/examples/vowel-part-1-0001.wav');
+  assert.equal(Review.mediaPath(runtime.recordings[0]),'audio/glossika/lessons/vowel-part-1.mp3');
+  assert.equal(runtime.publisherLedger.assessments[0].assessment,'publisher_source');
+  assert.equal(runtime.publisherLedger.assessments[0].status,'source_attested');
+  assert.equal(runtime.publisherLedger.assessments[0].hash_scope,'parent_file');
+  assert.equal(runtime.examplesById.get(unresolved.id).recording,null);
+  assert.equal(runtime.examplesById.get(unresolved.id).nativeApproval,null);
+
+  const reviewed=Review.createIndex({version:1,approvals:[]},null,{
+    sourceWords:runtime.words,sourceRecordings:runtime.recordings,
+    publisherCatalog:catalog,publisherLedger:runtime.publisherLedger,
+  });
+  assert.equal(Review.hasCompleteToneReferences(Policy,['ma'],{}, {},reviewed,'glossika'),true);
+  assert.equal(Review.correctionSelection(Policy,'ma1',{}, {},reviewed,'glossika').source,'glossika');
+  assert.equal(Review.nativeApproval(
+    reviewed,runtime.words[0],
+    {...runtime.recordings[0],drill_source:{...runtime.recordings[0].drill_source,start_sample:0}},
+  ),null);
+  assert.equal(Review.comparisonApproval(reviewed,'ma5',runtime.recordings[4]),null);
+  assert.equal(Review.nativeApproval(
+    reviewed,runtime.words[4],runtime.recordings[4],
+  ),null,'single neutral drill remains outside graded practice');
+  await Review.verifyBytes(bytes,runtime.publisherLedger.assessments[0]);
+  await assert.rejects(
+    Review.verifyBytes(Uint8Array.from([9]),runtime.publisherLedger.assessments[0]),
+    /publisher indexing/,
+  );
+
+  const release=Review.createIndex({version:1,approvals:[]},null,{
+    allowLocalOnly:false,sourceWords:runtime.words,sourceRecordings:runtime.recordings,
+    publisherCatalog:catalog,publisherLedger:runtime.publisherLedger,
+  });
+  assert.equal(release.size,0);
+
+  const incompleteCatalog=glossikaCatalog([...tones.slice(0,3),neutral]);
+  const incomplete=GlossikaExamples.runtimeData(incompleteCatalog);
+  const incompleteIndex=Review.createIndex({version:1,approvals:[]},null,{
+    sourceWords:incomplete.words,sourceRecordings:incomplete.recordings,
+    publisherCatalog:incompleteCatalog,publisherLedger:incomplete.publisherLedger,
+  });
+
+  assert.equal(Review.hasCompleteToneReferences(Policy,['ma'],{}, {},incompleteIndex,'glossika'),false);
+
+  const {practiceInventory,candidatesFor}=await import('../scripts/review_audio.mjs');
+  const data={words:runtime.words,recordings:runtime.recordings,quality:{},publicRecordings:{},
+    publisherCatalog:catalog,publisherLedger:runtime.publisherLedger,
+    snapshots:{audio_cmn:{repository:'https://example.com',revision:'a'.repeat(40),syllable_quality:'64k'}}};
+  const inventory=practiceInventory(data,reviewed,{completeComparisons:true});
+  assert.equal(inventory.eligibleWords.length,4);
+  assert.deepEqual([...inventory.audio],['audio/glossika/lessons/vowel-part-1.mp3']);
+  assert.equal([...candidatesFor(data).values()].some(candidate=>
+    candidate.audio_path.startsWith('audio/glossika/examples/')),false);
+});
+
+test('Glossika publisher segments preserve observed 44.1 and 48 kHz source units',()=>{
+  const observed=glossikaExample({
+    id:'vowel-part-5-0001',lesson_id:'vowel-part-5',sample_rate:44100,
+    segment_overrides:{
+      start_sample:428536,end_sample:470352,speech_start_sample:439120,
+      speech_end_sample:460680,source_frames:4142592,
+    },
+  });
+  const standard=glossikaExample({id:'vowel-part-1-0001',sample_rate:48000});
+  const catalog=glossikaCatalog([observed,standard]);
+  const runtime=GlossikaExamples.runtimeData(catalog);
+  for(const example of [observed,standard]){
+    const entry=runtime.examplesById.get(example.id);
+    assert.equal(entry.recording.drill_source.sample_rate,example.segment.sample_rate);
+    assert.equal(entry.nativeApproval.drill_source.start_sample,example.segment.start_sample);
+    assert.equal(Review.mediaPath(entry.nativeApproval),example.source_audio_path);
+  }
+  const unsupported=structuredClone(observed);
+  unsupported.segment.sample_rate=32000;
+  assert.throws(()=>GlossikaExamples.validateCatalog(glossikaCatalog([unsupported])));
+  assert.equal(Review.validDrillSource(runtime.examplesById.get(observed.id).nativeApproval.drill_source),true);
+  assert.equal(Review.validDrillSource({
+    ...runtime.examplesById.get(observed.id).nativeApproval.drill_source,sample_rate:32000,
+  }),false);
+});
+
+test('Glossika publisher validation rejects unsafe mappings and old-ledger injection',()=>{
+  const good=glossikaExample(),catalog=glossikaCatalog([good]);
+  const runtime=GlossikaExamples.runtimeData(catalog);
+  assert.throws(()=>Review.createIndex({
+    version:1,approvals:[runtime.publisherLedger.assessments[0]],
+  }),/publisher-source ledger/);
+  for(const edit of [
+    example=>example.segment.end_sample=example.segment.start_sample,
+    example=>example.segment.channels=1,
+    example=>example.source_audio_path='audio/glossika/lessons/other.mp3',
+    example=>example.quiz_eligible=false,
+  ]){
+    const changed=structuredClone(catalog);
+    edit(changed.examples[0]);
+    assert.throws(()=>GlossikaExamples.validateCatalog(changed));
+  }
+  const changedLedger=structuredClone(runtime.publisherLedger);
+  changedLedger.assessments[0].drill_source.start_sample=0;
+  assert.throws(()=>Review.createIndex({version:1,approvals:[]},null,{
+    sourceWords:runtime.words,sourceRecordings:runtime.recordings,
+    publisherCatalog:catalog,publisherLedger:changedLedger,
+  }),/differs from its source catalog|exactly cover/);
+  const first=runtime.publisherLedger.assessments[0];
+  const shifted=structuredClone(first);
+  shifted.drill_source.start_sample=0;
+  assert.notEqual(Review.identity(first),Review.identity(shifted));
+  assert.notEqual(Review.mediaIdentity(first),Review.mediaIdentity(shifted));
+});
+
+test('validateLedger hashes each publisher parent once per validation call',async()=>{
+  const {validateLedger}=await import('../scripts/review_audio.mjs');
+  const os=require('node:os');
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'glossika-parent-hash-'));
+  const examples=['1','2','3','4'].map((tone,index)=>glossikaExample({
+    id:`vowel-part-1-000${tone}`,ordinal:index+1,
+    pinyin:{1:'mā',2:'má',3:'mǎ',4:'mà'}[tone],
+    lexical_tones:[Number(tone)],lexical_pattern:tone,
+  }));
+  const catalog=glossikaCatalog(examples),runtime=GlossikaExamples.runtimeData(catalog);
+  const parent=path.join(root,'audio/glossika/lessons/vowel-part-1.mp3');
+  fs.mkdirSync(path.dirname(parent),{recursive:true});
+  fs.writeFileSync(parent,bytes);
+  const data={
+    words:runtime.words,recordings:runtime.recordings,quality:{},publicRecordings:{},
+    ledger:{version:1,approvals:[]},acousticLedger:null,
+    publisherCatalog:catalog,publisherLedger:runtime.publisherLedger,
+    snapshots:{audio_cmn:{repository:'https://example.com',revision:'a'.repeat(40),syllable_quality:'64k'}},
+  };
+  const original=fs.readFileSync;
+  let parentReads=0;
+  fs.readFileSync=(file,...args)=>{
+    if(path.resolve(file)===parent)parentReads++;
+    return original(file,...args);
+  };
+  try{
+    validateLedger(data,root);
+    assert.equal(parentReads,1);
+    validateLedger(data,root);
+    assert.equal(parentReads,2,'memoization must be per validation call, not global');
+  }finally{
+    fs.readFileSync=original;
+    fs.rmSync(root,{recursive:true,force:true});
+  }
+});
+
+test('Glossika sample slicing preserves native units across source and decoded rates',()=>{
+  const context={createBuffer(channelCount,length,sampleRate){
+    const output=Array.from({length:channelCount},()=>new Float32Array(length));
+    return {
+      numberOfChannels:channelCount,length,sampleRate,
+      getChannelData:channel=>output[channel],
+      copyToChannel:(source,channel,offset=0)=>output[channel].set(source,offset),
+    };
+  }};
+  for(const sourceRate of [44100,48000])for(const decodedRate of [44100,48000]){
+    const decodedLength=Math.round(8/sourceRate*decodedRate);
+    const channels=[
+      Float32Array.from({length:decodedLength},(_,index)=>index+.125),
+      Float32Array.from({length:decodedLength},(_,index)=>100+index+.25),
+    ];
+    const decoded={
+      numberOfChannels:2,length:decodedLength,sampleRate:decodedRate,
+      getChannelData:channel=>channels[channel],
+    };
+    const source={
+      audio_path:'audio/glossika/lessons/vowel-part-5.mp3',sha256:hash,
+      hash_scope:'parent_file',sample_rate:sourceRate,start_sample:2,end_sample:6,
+      speech_start_sample:2,speech_end_sample:6,source_frames:8,channels:2,
+      item_id:'vowel-part-5-0001',lesson_id:'vowel-part-5',
+    };
+    const start=Math.round(2/sourceRate*decodedRate);
+    const end=Math.round(6/sourceRate*decodedRate);
+    const sliced=GlossikaExamples.sliceAudioBuffer(context,decoded,source);
+    assert.equal(sliced.sampleRate,decodedRate);
+    assert.equal(sliced.length,end-start);
+    assert.deepEqual(Array.from(sliced.getChannelData(0)),Array.from(channels[0].slice(start,end)));
+    assert.deepEqual(Array.from(sliced.getChannelData(1)),Array.from(channels[1].slice(start,end)));
+  }
+});
+
+test('Glossika IEEE float WAV preserves selected channel samples exactly',()=>{
+  const channels=[
+    Float32Array.from([0,.1,.2,.3,.4,.5,.6,.7]),
+    Float32Array.from([1,.9,.8,.7,.6,.5,.4,.3]),
+  ];
+  const context={createBuffer(channelCount,length,sampleRate){
+    const output=Array.from({length:channelCount},()=>new Float32Array(length));
+    return {
+      numberOfChannels:channelCount,length,sampleRate,
+      getChannelData:channel=>output[channel],
+      copyToChannel:(source,channel,offset=0)=>output[channel].set(source,offset),
+    };
+  }};
+  const decoded={
+    numberOfChannels:2,length:8,sampleRate:48000,
+    getChannelData:channel=>channels[channel],
+  };
+  const source={
+    audio_path:'audio/glossika/lessons/vowel-part-1.mp3',sha256:hash,
+    hash_scope:'parent_file',sample_rate:48000,start_sample:2,end_sample:6,
+    speech_start_sample:2,speech_end_sample:6,source_frames:8,channels:2,
+    item_id:'vowel-part-1-0001',lesson_id:'vowel-part-1',
+  };
+  const sliced=GlossikaExamples.sliceAudioBuffer(context,decoded,source);
+  const wav=GlossikaExamples.encodeFloatWav(sliced),view=new DataView(wav);
+  const text=(offset,length)=>String.fromCharCode(...new Uint8Array(wav,offset,length));
+  assert.equal(text(0,4),'RIFF');
+  assert.equal(text(8,4),'WAVE');
+  assert.equal(view.getUint16(20,true),3);
+  assert.equal(view.getUint16(22,true),2);
+  assert.equal(view.getUint32(24,true),48000);
+  assert.equal(view.getUint16(34,true),32);
+  assert.equal(text(36,4),'data');
+  assert.equal(view.getUint32(40,true),32);
+  assert.equal(view.getFloat32(44,true),channels[0][2]);
+  assert.equal(view.getFloat32(48,true),channels[1][2]);
+  assert.equal(view.getFloat32(52,true),channels[0][3]);
+  assert.throws(()=>GlossikaExamples.sliceAudioBuffer(context,decoded,{...source,end_sample:9}),/Invalid/);
+  assert.throws(()=>GlossikaExamples.sliceAudioBuffer(context,{...decoded,numberOfChannels:1},source),/channel/);
+});
+
+test('Glossika lesson action selects the exact graded item and keeps comparison replay available',async()=>{
+  const catalog=glossikaQuizCatalog();
+  const decodeControl={};
+  const channels=[
+    Float32Array.from([0,.1,.2,0]),
+    Float32Array.from([0,-.1,-.2,0]),
+  ];
+  const decodedAudio={
+    sampleRate:48000,numberOfChannels:2,length:4,duration:4/48000,
+    getChannelData:channel=>channels[channel],
+  };
+  const app=await appHarness({
+    approvals:[],recording:null,glossikaPractice:catalog,
+    glossikaCompanion:localCompanion(),decodedAudio,decodeControl,random:()=>0,
+  });
+  assert.equal(app.get('lessonChoice').value,'tone-11');
+  assert.equal(app.get('lessonExampleChoice').value,'tone-11-0001');
+  assert.equal(app.get('playLessonExample').disabled,false);
+  assert.equal(app.get('practiceLessonExample').disabled,false);
+  app.get('lessonExampleChoice').value='tone-11-0002';
+  await app.get('lessonExampleChoice').onchange();
+  assert.match(app.get('lessonExampleDetails').textContent,/Source\/lexical pattern 3-3-3/);
+  assert.match(app.get('lessonExampleDetails').textContent,/Ambiguous third-tone grouping/);
+  assert.doesNotMatch(app.get('lessonExampleDetails').textContent,/heard here|2-2-3/);
+  assert.equal(app.get('practiceLessonExample').disabled,true);
+  app.get('lessonExampleChoice').value='tone-11-0001';
+  assert.equal(await app.get('lessonExampleChoice').onchange(),true);
+  const previous=app.run('current.id');
+  let releaseDecode,markDecodeStarted;
+  decodeControl.gate=new Promise(resolve=>releaseDecode=resolve);
+  const decodeStarted=new Promise(resolve=>markDecodeStarted=resolve);
+  decodeControl.started=markDecodeStarted;
+  let practiceSettled=false;
+  const practice=app.get('practiceLessonExample').onclick().then(result=>{
+    practiceSettled=true;
+    return result;
+  });
+  await decodeStarted;
+  assert.equal(practiceSettled,false);
+  assert.equal(app.run('current.id'),'tone-11-0001');
+  assert.equal(app.run('questionVerified'),false);
+  releaseDecode();
+  assert.equal(await practice,true);
+  assert.equal(app.run('current.id'),'tone-11-0001');
+  assert.equal(app.run('currentRec.audio_path'),'audio/glossika/examples/tone-11-0001.wav');
+  assert.equal(app.get('wordSource').value,'glossika');
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.run('quizHistory.length'),1);
+  assert.equal(app.run('quizHistory[0].word.id'),previous);
+  assert.ok(app.requests.includes('../audio/glossika/lessons/tone-11.mp3'));
+  assert.equal(app.requests.some(url=>url.includes('/examples/')),false);
+  assert.match(app.get('lessonPageNumber').textContent,/Book page 34/);
+  assert.equal((await app.run('approvedAudioBytes(currentNative.approval)')).byteLength,bytes.length);
+  assert.equal((await app.run('playableAudioBytes(currentNative.approval)')).byteLength,60);
+  app.get('correctionSource').value='glossika';
+  const comparisonBuffer=await app.run("pinyinSequenceBuffer(['ma1'])");
+  const comparisonLead=Math.round(comparisonBuffer.sampleRate*.12);
+  const comparisonTail=Math.round(comparisonBuffer.sampleRate*.20);
+  assert.equal(comparisonBuffer.length,comparisonLead+2+comparisonTail);
+  assert.equal(comparisonBuffer.getChannelData(0)[comparisonLead-1],0);
+  assert.ok(Math.abs(comparisonBuffer.getChannelData(0)[comparisonLead]-.1)<1e-7);
+  assert.ok(Math.abs(comparisonBuffer.getChannelData(0)[comparisonLead+1]-.2)<1e-7);
+  assert.ok(Math.abs(comparisonBuffer.getChannelData(1)[comparisonLead]+.1)<1e-7);
+  assert.ok(Math.abs(comparisonBuffer.getChannelData(1)[comparisonLead+1]+.2)<1e-7);
+  assert.equal(comparisonBuffer.getChannelData(0)[comparisonLead+2],0);
+  assert.equal(comparisonBuffer.length-comparisonLead-2,comparisonTail);
+
+  app.run('globalThis.comparisonPlays=[];playAssessedRecording=async approval=>comparisonPlays.push(approval.source_item_id)');
+  const first=app.get('answers').children[0],second=app.get('answers').children[1];
+  await first.querySelector('[data-tone="4"]').onclick();
+  await second.querySelector('[data-tone="1"]').onclick();
+  assert.equal(app.run('results.at(-1).correct'),false);
+  assert.equal(app.run('results.at(-1).source_item_id'),'tone-11-0001');
+  await first.querySelector('[data-tone="4"]').onclick();
+  assert.equal(app.run('comparisonPlays.length'),3);
 });
 
 test('missing, malformed, automated, conflicting and single-review approvals fail closed',()=>{
@@ -166,8 +554,11 @@ function element(){
     set innerHTML(value){this.html=value;this.children=[]},
     get innerHTML(){return this.html||''},
     setAttribute(name,value){this.attributes[name]=String(value)},
+    removeAttribute(name){delete this.attributes[name]},
     getAttribute(name){return this.attributes[name]??null},
     getBoundingClientRect(){return this.bounds},
+    pause(){},
+    load(){},
     focus(options){this.focusCalls.push(options)},
     querySelectorAll(){return this.children.filter(child=>child.dataset.tone)},
     querySelector(selector){
@@ -193,7 +584,7 @@ function selectedPractice(approvals){
     }),
   };
 }
-async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},quality={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],sinospliceRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false}={}){
+async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelines={},quality={},practiceSelection,tamper=null,ledgerFailure=false,recording=native,importedRecordings=[],sinospliceRecordings=[],importedWords=[],excerpts=[],blockedAutoplay=false,glossikaPractice=GlossikaExamples.excludedCatalog('Test catalog unavailable.'),glossikaCompanion=GlossikaLessons.excludedCatalog(),decodedAudio=null,decodeControl=null,random=null}={}){
   const elements=new Map();
   const html=fs.readFileSync(path.join(ROOT,'app/index.html'),'utf8');
   const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
@@ -216,7 +607,8 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
     '../data/correction_audio_quality.json':quality,'../data/audio_reviews.json':{version:1,approvals},
     '../data/mandarin_native_recordings.json':{version:1,recordings:importedRecordings},
     '../data/sinosplice_recordings.json':{version:1,recordings:sinospliceRecordings},
-    '../data/glossika_recordings.json':GlossikaLessons.excludedCatalog(),
+    '../data/glossika_recordings.json':glossikaCompanion,
+    '../data/glossika_practice.json':glossikaPractice,
     '../data/context_word_recordings.json':{version:1,recordings:excerpts},
     '../data/acoustic_reviews.json':{
       version:1,method:'spectral-consensus-1',pipeline_sha256:'a'.repeat(64),
@@ -228,15 +620,28 @@ async function appHarness({approvals=[],acousticApprovals=[],supplementalPipelin
   data['../data/practice_selection.json']=practiceSelection===undefined
     ?selectedPractice([...approvals,...acousticApprovals]):practiceSelection;
   const requests=[],played=[],errors=[];
+  const contextMath=Object.create(Math);
+  if(random)contextMath.random=random;
   const context=vm.createContext({
-    AudioReview:Review,CorrectionAudio:Policy,GlossikaLessons,crypto:webcrypto,Blob,
+    AudioReview:Review,CorrectionAudio:Policy,GlossikaExamples,GlossikaLessons,crypto:webcrypto,Blob,
+    Math:contextMath,
     URL:{createObjectURL:()=>`blob:verified-${played.length}`,revokeObjectURL(){}},
     console:{error:(...args)=>errors.push(args)},navigator:{},
     window:{addEventListener(){},matchMedia:()=>({matches:false}),innerHeight:900,
       AudioContext:class{
         async decodeAudioData(){
-          return {sampleRate:48000,numberOfChannels:1,length:4,duration:4/48000,
+          if(decodeControl?.gate){
+            decodeControl.started?.();
+            await decodeControl.gate;
+          }
+          return decodedAudio||{sampleRate:48000,numberOfChannels:1,length:4,duration:4/48000,
             getChannelData:()=>Float32Array.from([0,.5,-.5,0])};
+        }
+        createBuffer(channels,length,sampleRate){
+          const data=Array.from({length:channels},()=>new Float32Array(length));
+          return {sampleRate,numberOfChannels:channels,length,duration:length/sampleRate,
+            getChannelData:channel=>data[channel],
+            copyToChannel:(source,channel,offset=0)=>data[channel].set(source,offset)};
         }
       }},
     document:{getElementById:get,createElement:element,addEventListener(){},querySelectorAll:()=>[]},
@@ -1364,10 +1769,80 @@ test('the published comprehensive review covers every active native, comparison 
   assert.ok([...redistributable.audio].every(audioPath=>reviewedPaths.has(audioPath)));
   assert.equal(report.after.entries,quiz.eligibleWords.length);
   assert.equal(report.after.initial_examples,quiz.recordingLabelPairs.length);
+  assert.equal(report.after.files,quiz.audio.size);
+  assert.deepEqual(report.before,{entries:5465,initial_examples:5592,files:3164});
+  assert.deepEqual(report.after,{entries:5465,initial_examples:5592,files:3164});
+
+  const selectedPairs=new Set(quiz.recordingLabelPairs.map(pair=>
+    JSON.stringify([pair.word_id,pair.audio_path])));
+  const selectedPublisher=new Map();
+  const publisherKey=(physical,sourceItem,logical,start,end,sampleRate)=>
+    JSON.stringify([physical,sourceItem,logical,start,end,sampleRate]);
+  const addPublisher=approval=>{
+    if(approval?.assessment!=='publisher_source')return;
+    const source=approval.drill_source,physical=Review.mediaPath(approval);
+    const key=publisherKey(
+      physical,approval.source_item_id,approval.audio_path,
+      source.start_sample,source.end_sample,source.sample_rate,
+    );
+    selectedPublisher.set(key,{
+      physical,source_item_id:approval.source_item_id,
+      logical_audio_path:approval.audio_path,start_sample:source.start_sample,
+      end_sample:source.end_sample,sample_rate:source.sample_rate,
+      hash_scope:source.hash_scope,sha256:approval.sha256,
+    });
+  };
+  for(const {word,recording} of Review.nativeCandidates(data.words,data.recordings)){
+    if(selectedPairs.has(JSON.stringify([word.id,recording.audio_path]))){
+      addPublisher(Review.nativeApproval(index,word,recording));
+    }
+  }
+  const words=new Map(data.words.map(word=>[word.id,word]));
+  for(const id of quiz.eligibleWords){
+    const word=words.get(id);
+    for(const base of word.pinyin_syllables)for(const tone of ['1','2','3','4']){
+      const key=Policy.correctionKey(base,tone);
+      for(const mode of Review.COMPARISON_SOURCES){
+        addPublisher(Review.correctionSelection(
+          Policy,key,data.quality,data.publicRecordings,index,mode,
+        )?.approval);
+      }
+    }
+    for(const base of word.pinyin_syllables)addPublisher(Review.neutralSelection(index,base));
+  }
+
+  const reviewedPublisher=new Map();
   for(const file of active){
     assert.ok(file.checks.length);
-    assert.ok(file.checks.every(check=>['clear_citation_tone','existing_evidence_reproduced'].includes(check.status)),file.audio_path);
     assert.equal(createHash('sha256').update(fs.readFileSync(path.join(ROOT,file.audio_path))).digest('hex'),file.sha256);
+    for(const check of file.checks){
+      if(check.status!=='publisher_source_mapping_verified'){
+        assert.ok(['clear_citation_tone','existing_evidence_reproduced'].includes(check.status),file.audio_path);
+        continue;
+      }
+      assert.equal(check.hash_scope,'parent_file');
+      assert.equal(check.independent_pronunciation_certification,false);
+      assert.equal(check.route,GlossikaExamples.METHOD);
+      const key=publisherKey(
+        file.audio_path,check.source_item_id,check.logical_audio_path,
+        check.start_sample,check.end_sample,check.sample_rate,
+      );
+      reviewedPublisher.set(key,{file,check});
+    }
+  }
+  assert.equal(report.publisher_items_reviewed,selectedPublisher.size);
+  assert.equal(report.publisher_items_reviewed,3577);
+  assert.deepEqual([...reviewedPublisher.keys()].sort(),[...selectedPublisher.keys()].sort());
+  for(const [key,expected] of selectedPublisher){
+    const {file,check}=reviewedPublisher.get(key);
+    assert.equal(file.audio_path,expected.physical);
+    assert.equal(file.sha256,expected.sha256);
+    assert.equal(check.source_item_id,expected.source_item_id);
+    assert.equal(check.logical_audio_path,expected.logical_audio_path);
+    assert.equal(check.start_sample,expected.start_sample);
+    assert.equal(check.end_sample,expected.end_sample);
+    assert.equal(check.sample_rate,expected.sample_rate);
+    assert.equal(check.hash_scope,expected.hash_scope);
   }
 });
 

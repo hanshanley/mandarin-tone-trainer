@@ -81,6 +81,7 @@
             <option value="audio_cmn">Original library</option>
             <option value="mandarin_native">Mandarin Native</option>
             <option value="sinosplice">Sinosplice</option>
+            <option value="glossika">Glossika drills</option>
           </select>
         </label>
         <label class="select-control" for="correctionSource">
@@ -90,6 +91,7 @@
             <option value="audio_cmn">Human voice</option>
             <option value="mandarin_native">Mandarin Native</option>
             <option value="sinosplice">Sinosplice</option>
+            <option value="glossika">Glossika drills</option>
           </select>
         </label>
         <label class="checkbox-control" for="sandhiOnly">
@@ -101,7 +103,7 @@
 
     <details class="tool-panel" id="glossikaLessons" hidden>
       <summary><span>Glossika book lessons <small>Complete recordings with the original book</small></span><span class="disclosure-icon" aria-hidden="true">+</span></summary>
-      <p class="muted">Separate listening practice, not graded quiz items. These are full lessons, not individual word clips. Follow the accompanying pages; recordings are never cut into quiz prompts.</p>
+      <p class="muted">Play each unchanged complete lesson or choose a mapped drill item from that lesson. Individual playback uses the original MP3 and its verified sample interval.</p>
       <div class="controls">
         <label class="select-control" for="lessonCategory"><span>Lesson group</span>
           <select id="lessonCategory">
@@ -113,6 +115,16 @@
         </label>
         <label class="select-control" for="lessonChoice"><span>Complete lesson</span><select id="lessonChoice"></select></label>
         <button id="openLesson" type="button">Open lesson</button>
+      </div>
+      <div class="lesson-example-panel">
+        <label class="select-control" for="lessonExampleChoice"><span>Individual example</span>
+          <select id="lessonExampleChoice" disabled><option value="">No indexed examples</option></select>
+        </label>
+        <div class="audio-row">
+          <button id="playLessonExample" type="button" disabled>Play example</button>
+          <button id="practiceLessonExample" class="primary-button" type="button" disabled>Practice this example</button>
+        </div>
+        <div id="lessonExampleDetails" class="lesson-example-details muted"></div>
       </div>
       <p id="lessonStatus" class="muted" role="status" aria-live="polite"></p>
       <audio id="lessonPlayer" class="lesson-player" controls preload="metadata" aria-label="Complete Glossika lesson"></audio>
@@ -126,7 +138,8 @@
       <p class="muted">Michael Campbell / Glossika, <em>Chinese Pronunciation &amp; Tone Training</em>.
         Copyright 2018 Glossika. All rights reserved. Personal companion use only.
         <a href="../audio/glossika/book.pdf" target="_blank" rel="noreferrer noopener">Original accompanying PDF</a>.
-        Full lessons and rendered original pages are kept together; they are not independently certified tone-quiz answers.</p>
+        Full lessons and rendered original pages are kept together. Mapped drills carry publisher-source provenance,
+        not independent pronunciation certification.</p>
     </details>
 
     <section class="session-footer" aria-label="Progress controls">
@@ -157,6 +170,7 @@
   </main>
   <script src="audio_review.js"></script>
   <script src="correction_audio.js"></script>
+  <script src="glossika_examples.js"></script>
   <script src="glossika_lessons.js"></script>
   <script src="app.js"></script>
 </body>

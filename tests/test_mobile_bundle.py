@@ -25,7 +25,7 @@ class MobileBundleTests(unittest.TestCase):
             for relative in json.loads(subprocess.check_output(
                 ['node', '--input-type=module', '-e', """
 import {loadReviewData,validateLedger,practiceInventory} from './scripts/review_audio.mjs';
-const data=loadReviewData();
+const data=loadReviewData({includePublisher:false});
 process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(data,undefined,{allowLocalOnly:false})).audio]));
 """],
                 cwd=ROOT,
@@ -39,6 +39,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'style.css',
             'correction_audio.js',
             'audio_review.js',
+            'glossika_examples.js',
             'glossika_lessons.js',
             'app.js',
             'data/hsk_words.json',
@@ -52,11 +53,16 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
             'data/mandarin_native_words.json',
             'data/sinosplice_recordings.json',
             'data/glossika_recordings.json',
+            'data/glossika_practice.json',
         ]:
             path = self.bundle / relative_path
             self.assertTrue(path.is_file(), relative_path)
             self.assertGreater(path.stat().st_size, 0, relative_path)
-            if relative_path in ('data/acoustic_reviews.json', 'data/glossika_recordings.json'):
+            if relative_path in (
+                'data/acoustic_reviews.json',
+                'data/glossika_recordings.json',
+                'data/glossika_practice.json',
+            ):
                 continue
             source = ROOT / relative_path if relative_path.startswith('data/') else ROOT / 'app' / relative_path
             self.assertEqual(path.read_bytes(), source.read_bytes(), f'stale bundled {relative_path}')
@@ -77,6 +83,8 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         self.assertEqual(bundled, self.expected_audio)
         self.assertFalse((self.bundle / 'data/context_word_recordings.json').exists())
         self.assertFalse((self.bundle / 'data/practice_selection.json').exists())
+        self.assertFalse((self.bundle / 'data/glossika_example_summary.json').exists())
+        self.assertFalse((self.bundle / 'audio/glossika/example_index.json').exists())
         self.assertFalse(any('mandarin_native/excerpts/' in path.as_posix() for path in bundled))
         self.assertFalse(any(path.as_posix().startswith('audio/sinosplice/') for path in bundled))
         self.assertFalse(any(path.as_posix().startswith('audio/glossika/') for path in bundled))
@@ -131,6 +139,45 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(companion['lessons'],[])
         self.assertEqual(companion['pages'],[])
         self.assertIsNone(companion['book'])
+        practice=json.loads((self.bundle/'data/glossika_practice.json').read_text())
+        self.assertIs(practice['available'],False)
+        self.assertEqual(practice['method'],'publisher-isolated-drills-v1')
+        self.assertEqual(practice['distribution_scope'],'excluded')
+        self.assertEqual(practice['examples'],[])
+        self.assertTrue(practice['unavailable_reason'])
+        self.assertFalse(scope['includes_glossika_individual_examples'])
+        self.assertEqual(scope['glossika_individual_example_count'],0)
+
+    @unittest.skipUnless(
+        (ROOT / 'data/glossika_practice.json').is_file(),
+        'generated local Glossika practice catalog is unavailable',
+    )
+    def test_local_bundle_keeps_catalog_and_parent_media_without_virtual_files(self):
+        try:
+            subprocess.run(
+                ['node', 'scripts/build_mobile_assets.mjs', '--local-use'],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            source=json.loads((ROOT/'data/glossika_practice.json').read_text())
+            bundled=json.loads((self.bundle/'data/glossika_practice.json').read_text())
+            self.assertEqual(bundled,source)
+            self.assertTrue(bundled['available'])
+            parent_paths={example['source_audio_path'] for example in bundled['examples']
+                          if example['mapping']['status']=='mapped'}
+            self.assertTrue(parent_paths)
+            self.assertTrue(all((self.bundle/path).is_file() for path in parent_paths))
+            self.assertFalse((self.bundle/'audio/glossika/examples').exists())
+        finally:
+            subprocess.run(
+                ['node', 'scripts/build_mobile_assets.mjs'],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
 
 
 if __name__ == '__main__':

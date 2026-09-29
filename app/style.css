@@ -337,3 +337,6 @@ code { padding: 0.1rem 0.2rem; background: #e8eee9; border-radius: 4px; font-siz
 .lesson-page-viewport img{display:block;width:100%;height:auto}
 .lesson-page-viewport img[hidden]{display:none}
 .lesson-page-viewport.zoomed img{width:1000px;max-width:none}
+.lesson-example-panel{display:grid;gap:10px;margin:12px 1.25rem;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--soft)}
+.lesson-example-details{min-height:1.5em;font-size:.82rem;overflow-wrap:anywhere}
+.lesson-example-panel .audio-row{align-items:center}

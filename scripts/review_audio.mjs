@@ -5,23 +5,41 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import AudioReview from '../app/audio_review.js';
 import CorrectionAudio from '../app/correction_audio.js';
+import GlossikaExamples from '../app/glossika_examples.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readJSON = relative => JSON.parse(fs.readFileSync(path.join(ROOT, relative), 'utf8'));
+const readGlossikaPractice = () => {
+  const relative = 'data/glossika_practice.json';
+  return fs.existsSync(path.join(ROOT, relative))
+    ? GlossikaExamples.validateCatalog(readJSON(relative))
+    : GlossikaExamples.excludedCatalog('Generated local Glossika practice data is unavailable.');
+};
 
-export function loadReviewData() {
+export function loadReviewData({includePublisher=true}={}) {
   const imported = readJSON('data/mandarin_native_recordings.json');
+  const publisherCatalog = includePublisher
+    ?readGlossikaPractice()
+    :GlossikaExamples.excludedCatalog('Glossika individual practice is excluded from this data scope.');
+  const publisher = GlossikaExamples.runtimeData(publisherCatalog);
   return {
-    words: [...readJSON('data/hsk_words.json'), ...readJSON('data/mandarin_native_words.json').words],
+    words: [
+      ...readJSON('data/hsk_words.json'),
+      ...readJSON('data/mandarin_native_words.json').words,
+      ...publisher.words,
+    ],
     recordings: [
       ...readJSON('data/recordings.json'),
       ...imported.recordings.filter(recording => recording.recording_type === 'word_candidate'),
       ...readJSON('data/sinosplice_recordings.json').recordings,
+      ...publisher.recordings,
     ],
     publicRecordings: readJSON('data/pinyin_public_recordings.json'),
     quality: readJSON('data/correction_audio_quality.json'),
     ledger: readJSON('data/audio_reviews.json'),
     acousticLedger: readJSON('data/acoustic_reviews.json'),
+    publisherCatalog,
+    publisherLedger: publisher.publisherLedger,
     snapshots: readJSON('config/source_snapshots.json'),
     exploreVocabularyCount: imported.explore_vocabulary?.length || 0,
     archivedContextCount: imported.recordings.filter(recording => recording.recording_type === 'context_sentence').length,
@@ -32,6 +50,7 @@ export function candidatesFor(data) {
   const candidates = new Map();
   const mapped = new Set();
   for (const {word, recording} of AudioReview.nativeCandidates(data.words, data.recordings)) {
+    if(recording.source==='glossika')continue;
     mapped.add(recording.audio_path);
     const descriptor = AudioReview.nativeDescriptor(word, recording);
     candidates.set(AudioReview.identity(descriptor), {
@@ -81,7 +100,7 @@ export function candidatesFor(data) {
       ...(contextual ? { context_words: recording.context_words, source_entry_ids: recording.source_entry_ids } : {}),
     });
   }
-  const keys = new Set(data.words.flatMap(word =>
+  const keys = new Set(data.words.filter(word=>word.source!=='glossika').flatMap(word =>
     (word.pinyin_syllables || []).flatMap(base => ['1', '2', '3', '4'].map(tone =>
       CorrectionAudio.correctionKey(base, tone)))));
   for (const key of keys) {
@@ -144,10 +163,20 @@ export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}
   }
   const index = AudioReview.createIndex(data.ledger, data.acousticLedger || null, {
     allowLocalOnly, sourceRecordings: data.recordings, sourceWords: data.words,
+    publisherCatalog:data.publisherCatalog||null,publisherLedger:data.publisherLedger||null,
   });
   const candidates = candidatesFor(data);
   const recordingsByPath = new Map(data.recordings.map(recording => [recording.audio_path, recording]));
+  const publisherHashes=new Map();
   for (const approval of index.values()) {
+    if(approval.assessment==='publisher_source'){
+      const media=AudioReview.mediaPath(approval);
+      if(!publisherHashes.has(media))publisherHashes.set(media,audioHash(media,root));
+      if(publisherHashes.get(media)!==approval.sha256){
+        throw new Error(`Glossika parent audio changed: ${media}`);
+      }
+      continue;
+    }
     const candidate = candidates.get(AudioReview.identity(approval));
     if (!candidate) throw new Error(`Approval labels do not match the current corpus: ${approval.audio_path}`);
     const blocked = approval.kind === 'native'
@@ -162,7 +191,7 @@ export function validateLedger(data, root = ROOT, { allowLocalOnly = true } = {}
         throw new Error(`Word excerpt source changed: ${approval.source_segment.audio_path}`);
       }
     }
-    if (audioHash(approval.audio_path, root) !== approval.sha256) {
+    if (audioHash(AudioReview.mediaPath(approval), root) !== approval.sha256) {
       throw new Error(`Audio changed since listening review: ${approval.audio_path}`);
     }
   }
@@ -252,10 +281,12 @@ export function practiceInventory(data, index, {completeComparisons=false}={}) {
       const pattern=recording.surface_pattern||word.default_surface_pattern||word.lexical_pattern;
       for(const tone of new Set(pattern.split('-')))toneCoverage[tone]++;
     }
-    for (const recording of [...natives, ...comparisons.filter(Boolean)]) audio.add(recording.audio_path);
+    for (const recording of [...natives, ...comparisons.filter(Boolean)]){
+      audio.add(AudioReview.mediaPath(recording.approval||recording));
+    }
     for(const base of word.pinyin_syllables||[]){
       const neutral=AudioReview.neutralSelection(index,base);
-      if(neutral)audio.add(neutral.audio_path);
+      if(neutral)audio.add(AudioReview.mediaPath(neutral));
     }
   }
   return { eligibleWords, recordingLabelPairs, audio, toneCoverage };

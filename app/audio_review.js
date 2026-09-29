@@ -4,7 +4,8 @@
   else root.AudioReview=api;
 })(typeof globalThis!=='undefined'?globalThis:this,()=>{
   const nonempty=value=>typeof value==='string'&&value.trim().length>0;
-  const COMPARISON_SOURCES=Object.freeze(['pinyin_public','audio_cmn','mandarin_native','sinosplice']);
+  const COMPARISON_SOURCES=Object.freeze(['pinyin_public','audio_cmn','mandarin_native','sinosplice','glossika']);
+  const PUBLISHER_SAMPLE_RATES=new Set([44100,48000]);
   function sinospliceBlockReason(recording){
     if(recording?.source!=='sinosplice'||recording.license!=='CC-BY-NC-SA-2.5'
       ||recording.rights_status!=='noncommercial_permitted'||recording.distribution_scope!=='local_only'){
@@ -27,6 +28,41 @@
       &&Number.isInteger(segment.start_sample)&&Number.isInteger(segment.end_sample)
       &&segment.start_sample>=0&&segment.end_sample>segment.start_sample;
   }
+  function validDrillSource(source){
+    return Boolean(source
+      &&/^audio\/glossika\/lessons\/[a-z0-9-]+\.mp3$/.test(source.audio_path||'')
+      &&/^[a-f0-9]{64}$/.test(source.sha256||'')
+      &&source.hash_scope==='parent_file'
+      &&PUBLISHER_SAMPLE_RATES.has(source.sample_rate)&&source.channels===2
+      &&Number.isInteger(source.start_sample)&&Number.isInteger(source.end_sample)
+      &&Number.isInteger(source.speech_start_sample)&&Number.isInteger(source.speech_end_sample)
+      &&Number.isInteger(source.source_frames)&&source.source_frames>0
+      &&source.start_sample>=0&&source.start_sample<=source.speech_start_sample
+      &&source.speech_start_sample<source.speech_end_sample
+      &&source.speech_end_sample<=source.end_sample&&source.end_sample<=source.source_frames
+      &&nonempty(source.item_id)&&nonempty(source.lesson_id));
+  }
+  function mediaPath(recording){
+    if(recording?.drill_source){
+      if(!validDrillSource(recording.drill_source))throw new Error('Invalid publisher drill source');
+      return recording.drill_source.audio_path;
+    }
+    return recording?.audio_path||null;
+  }
+  function mediaIdentity(recording){
+    const source=recording?.drill_source;
+    return source
+      ?JSON.stringify(drillIdentityValues(source))
+      :JSON.stringify([recording?.audio_path,recording?.sha256]);
+  }
+  function drillIdentityValues(source){
+    return [
+      source.audio_path,source.sha256,source.hash_scope,source.sample_rate,
+      source.start_sample,source.end_sample,source.speech_start_sample,
+      source.speech_end_sample,source.source_frames,source.channels,
+      source.item_id,source.lesson_id,
+    ];
+  }
   function nativeCandidates(words,recordings){
     const byId=new Map(words.map(word=>[word.id,word]));
     const byText=new Map();
@@ -37,8 +73,9 @@
     const candidates=[];
     for(const recording of recordings){
       if(isSentenceDerived(recording))continue;
-      if(!['audio_cmn','mandarin_native','sinosplice'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
-      if(recording.source!=='audio_cmn'&&!['word_candidate','aligned_word'].includes(recording.recording_type))continue;
+      if(!['audio_cmn','mandarin_native','sinosplice','glossika'].includes(recording.source)||(recording.language_code||'zh')!=='zh')continue;
+      if(recording.source==='glossika'&&recording.recording_type!=='publisher_drill')continue;
+      if(!['audio_cmn','glossika'].includes(recording.source)&&!['word_candidate','aligned_word'].includes(recording.recording_type))continue;
       const targets=Array.isArray(recording.candidate_hsk_ids)
         ?[...new Set(recording.candidate_hsk_ids)].map(id=>byId.get(id)).filter(Boolean)
         :byText.get(recording.word)||[];
@@ -50,6 +87,15 @@
   }
   function nativeBlockReason(recording,assessment=null){
     if(isSentenceDerived(recording)||isSentenceDerived(assessment))return 'Sentence-extracted audio is not used for tone practice';
+    if(recording?.source==='glossika'){
+      if(recording.recording_type!=='publisher_drill'||!validDrillSource(recording.drill_source)
+        ||recording.distribution_scope!=='local_only'||recording.rights_status!=='personal_companion_only'){
+        return 'Glossika example lacks a valid local-only publisher segment';
+      }
+      return recording.quiz_eligible===false
+        ?recording.block_reason||'Publisher example is available for listening only'
+        :null;
+    }
     if(recording.review_status==='rejected')return recording.notes||'Explicitly rejected recording';
     if((recording.language_code||'zh')!=='zh')return 'Recording is not indexed as Mandarin';
     if(['mandarin_native','sinosplice'].includes(recording.source)&&!['word_candidate','aligned_word'].includes(recording.recording_type)){
@@ -77,16 +123,21 @@
       lexical_pattern:word.lexical_pattern,
       surface_pattern:recording.surface_pattern||word.default_surface_pattern||word.lexical_pattern,
       ...(recording.source_segment?{source_segment:recording.source_segment}:{}),
+      ...(recording.drill_source?{drill_source:recording.drill_source}:{}),
     };
   }
   function comparisonDescriptor(key,recording){
-    return {kind:'comparison',audio_path:recording.audio_path,key};
+    return {
+      kind:'comparison',audio_path:recording.audio_path,key,
+      ...(recording.drill_source?{drill_source:recording.drill_source}:{}),
+    };
   }
   function sourceForPath(path){
     if(path.startsWith('audio/audio_cmn/'))return 'audio_cmn';
     if(path.startsWith('audio/pinyin_public/'))return 'pinyin_public';
     if(path.startsWith('audio/sinosplice/'))return 'sinosplice';
     if(path.startsWith('audio/mandarin_native/')&&!isSentenceDerived({audio_path:path}))return 'mandarin_native';
+    if(path.startsWith('audio/glossika/examples/'))return 'glossika';
     return null;
   }
   function validateCrossSourceWord(entry){
@@ -195,13 +246,18 @@
         entry.pinyin_syllables,entry.lexical_pattern,entry.surface_pattern,
       ];
       if(entry.source_segment)values.push(entry.source_segment);
+      if(entry.drill_source)values.push(drillIdentityValues(entry.drill_source));
       return JSON.stringify(values);
     }
-    return JSON.stringify([entry.kind,entry.audio_path,entry.key]);
+    const values=[entry.kind,entry.audio_path,entry.key];
+    if(entry.drill_source)values.push(drillIdentityValues(entry.drill_source));
+    return JSON.stringify(values);
   }
   function validateApproval(entry){
     if(!entry||!['native','comparison'].includes(entry.kind))throw new Error('Invalid audio review kind');
-    if(entry.audio_path?.startsWith('audio/glossika/'))throw new Error('Complete Glossika lessons cannot be quiz approvals');
+    if(entry.audio_path?.startsWith('audio/glossika/')||entry.drill_source){
+      throw new Error('Glossika audio must use the separate publisher-source ledger');
+    }
     if(!/^audio\/[^?#\\]+$/.test(entry.audio_path||'')||entry.audio_path.split('/').some(part=>!part||part==='.'||part==='..')){
       throw new Error('Audio review must reference a local audio/ file');
     }
@@ -389,7 +445,111 @@
     }
     for(const key of index.keys())if(!allowed.has(key))index.delete(key);
   }
-  function createIndex(ledger,acousticLedger=null,{allowLocalOnly=true,sourceRecordings=[],sourceWords=[],practiceSelection=null}={}){
+  function validatePublisherApproval(entry,example=null){
+    if(!entry||!['native','comparison'].includes(entry.kind)
+      ||entry.source!=='glossika'||entry.assessment!=='publisher_source'||entry.status!=='source_attested'
+      ||entry.distribution_scope!=='local_only'||entry.rights_status!=='personal_companion_only'
+      ||entry.hash_scope!=='parent_file'||!/^[a-f0-9]{64}$/.test(entry.sha256||'')
+      ||!/^audio\/glossika\/examples\/[a-z0-9-]+\.wav$/.test(entry.audio_path||'')
+      ||!nonempty(entry.source_item_id)||!validDrillSource(entry.drill_source)
+      ||entry.drill_source.sha256!==entry.sha256
+      ||entry.drill_source.item_id!==entry.source_item_id
+      ||entry.audio_path!==`audio/glossika/examples/${entry.source_item_id}.wav`){
+      throw new Error('Invalid Glossika publisher assessment');
+    }
+    if(example){
+      if(example.id!==entry.source_item_id||example.lesson_id!==entry.drill_source.lesson_id
+        ||example.source_audio_path!==entry.drill_source.audio_path
+        ||example.source_audio_sha256!==entry.sha256
+        ||!['sample_rate','start_sample','end_sample','speech_start_sample','speech_end_sample',
+          'source_frames','channels'].every(key=>example.segment?.[key]===entry.drill_source[key])
+        ||example.segment?.item_id!==undefined&&example.segment.item_id!==entry.drill_source.item_id
+        ||example.segment?.lesson_id!==undefined&&example.segment.lesson_id!==entry.drill_source.lesson_id){
+        throw new Error(`Glossika assessment differs from its source catalog: ${entry.source_item_id}`);
+      }
+    }
+    if(entry.kind==='native'){
+      if(![entry.word_id,entry.word,entry.pinyin].every(nonempty)
+        ||!Array.isArray(entry.pinyin_syllables)||!entry.pinyin_syllables.length
+        ||![entry.lexical_pattern,entry.surface_pattern].every(pattern=>
+          typeof pattern==='string'&&/^[1-4N](?:-[1-4N])*$/.test(pattern)
+          &&pattern.split('-').length===entry.pinyin_syllables.length)
+        ||example&&(entry.word_id!==example.id||entry.word!==example.word||entry.pinyin!==example.pinyin
+          ||entry.lexical_pattern!==example.lexical_pattern||entry.surface_pattern!==example.surface_pattern
+          ||JSON.stringify(entry.pinyin_syllables)!==JSON.stringify(example.pinyin_syllables)
+          ||entry.quiz_eligible!==example.quiz_eligible)){
+        throw new Error(`Invalid Glossika native labels: ${entry.audio_path}`);
+      }
+    }else if(!/^[a-zv]+[1-4]$/.test(entry.key||'')
+      ||!example||example.kind!=='syllable_drill'||example.quiz_eligible!==true
+      ||entry.key!==`${example.pinyin_syllables[0]}${example.lexical_pattern}`){
+      throw new Error(`Invalid Glossika comparison label: ${entry.audio_path}`);
+    }
+  }
+  function addPublisherAssessments(index,publisherCatalog,publisherLedger,{allowLocalOnly}){
+    if(publisherCatalog===null&&publisherLedger===null)return;
+    if(!publisherCatalog||!publisherLedger
+      ||publisherCatalog.version!==1||publisherCatalog.source!=='glossika'
+      ||publisherCatalog.method!=='publisher-isolated-drills-v1'
+      ||publisherLedger.version!==1||publisherLedger.source!=='glossika'
+      ||publisherLedger.method!=='publisher-isolated-drills-v1'
+      ||!Array.isArray(publisherCatalog.examples)||!Array.isArray(publisherLedger.assessments)){
+      throw new Error('Invalid Glossika publisher catalog or ledger');
+    }
+    if(publisherCatalog.available===false){
+      if(publisherCatalog.examples.length||publisherLedger.assessments.length
+        ||!nonempty(publisherCatalog.unavailable_reason)){
+        throw new Error('Invalid excluded Glossika publisher catalog');
+      }
+      return;
+    }
+    if(publisherCatalog.available!==true||publisherCatalog.distribution_scope!=='local_only'){
+      throw new Error('Glossika publisher catalog must be local-only');
+    }
+    const examples=new Map(publisherCatalog.examples.map(example=>[example.id,example]));
+    if(examples.size!==publisherCatalog.examples.length)throw new Error('Duplicate Glossika source item');
+    const seen=new Set(),parentHashes=new Map();
+    for(const entry of publisherLedger.assessments){
+      const example=examples.get(entry.source_item_id);
+      validatePublisherApproval(entry,example);
+      const parent=entry.drill_source.audio_path,knownHash=parentHashes.get(parent);
+      if(knownHash&&knownHash!==entry.sha256)throw new Error(`Conflicting Glossika parent hash: ${parent}`);
+      parentHashes.set(parent,entry.sha256);
+      const key=identity(entry);
+      if(seen.has(key)||index.has(key))throw new Error(`Duplicate Glossika publisher assessment: ${entry.audio_path}`);
+      seen.add(key);
+      if(allowLocalOnly)index.set(key,entry);
+    }
+    const expected=new Set();
+    for(const example of publisherCatalog.examples){
+      const mapped=example.segment&&example.mapping?.status==='mapped'
+        &&example.mapping.intro_verified===true&&example.mapping.boundary_stable===true
+        &&example.mapping.full_utterance===true;
+      if(!mapped)continue;
+      const path=`audio/glossika/examples/${example.id}.wav`;
+      const source={...example.segment,audio_path:example.source_audio_path,
+        sha256:example.source_audio_sha256,hash_scope:'parent_file',
+        item_id:example.id,lesson_id:example.lesson_id};
+      expected.add(identity({
+        kind:'native',audio_path:path,word_id:example.id,word:example.word,pinyin:example.pinyin,
+        pinyin_syllables:example.pinyin_syllables,lexical_pattern:example.lexical_pattern,
+        surface_pattern:example.surface_pattern,drill_source:source,
+      }));
+      if(example.quiz_eligible&&example.kind==='syllable_drill'&&/^[1-4]$/.test(example.lexical_pattern)){
+        expected.add(identity({
+          kind:'comparison',audio_path:path,
+          key:example.pinyin_syllables[0]+example.lexical_pattern,drill_source:source,
+        }));
+      }
+    }
+    if(seen.size!==expected.size||[...seen].some(key=>!expected.has(key))){
+      throw new Error('Glossika publisher ledger does not exactly cover mapped catalog examples');
+    }
+  }
+  function createIndex(ledger,acousticLedger=null,{
+    allowLocalOnly=true,sourceRecordings=[],sourceWords=[],practiceSelection=null,
+    publisherCatalog=null,publisherLedger=null,
+  }={}){
     if(ledger?.version!==1||!Array.isArray(ledger.approvals))throw new Error('Invalid audio review ledger');
     const index=new Map();
     for(const entry of ledger.approvals){
@@ -465,6 +625,7 @@
       }
     }
     if(practiceSelection!==null)applyPracticeSelection(index,practiceSelection,acousticLedger,{allowLocalOnly});
+    addPublisherAssessments(index,publisherCatalog,publisherLedger,{allowLocalOnly});
     const alternatives=new Map();
     for(const entry of index.values()){
       if(entry.kind!=='comparison')continue;
@@ -500,6 +661,10 @@
   }
   function clearForIsolatedQuiz(approval,quality){
     if(!approval)return false;
+    if(approval.assessment==='publisher_source'){
+      return approval.status==='source_attested'&&approval.quiz_eligible===true
+        &&validDrillSource(approval.drill_source);
+    }
     const isolated=approval.kind==='comparison'||approval.pinyin_syllables.length===1;
     if(isolated&&quality.isolated_clarity){
       const review=quality.isolated_clarity[approval.audio_path];
@@ -539,7 +704,7 @@
       }
       return !recording||!nativeBlockReason(recording,approval);
     };
-    if(['mandarin_native','sinosplice'].includes(preferredSource)){
+    if(['mandarin_native','sinosplice','glossika'].includes(preferredSource)){
       for(const approval of index.comparisonAlternatives?.get(key)||[]){
         if(sourceForPath(approval.audio_path)===preferredSource&&allowed(approval)){
           return {audio_path:approval.audio_path,source:preferredSource,enhanced:false,approval};
@@ -574,13 +739,19 @@
   async function verifyBytes(bytes,approval){
     if(!approval)throw new Error('Audio has no qualifying assessment');
     if(isSentenceDerived(approval))throw new Error('Sentence-extracted audio is not used for tone practice');
-    validateApproval(approval);
+    if(approval.assessment==='publisher_source')validatePublisherApproval(approval);
+    else validateApproval(approval);
     const actual=await hashBytes(bytes);
-    if(actual!==approval.sha256)throw new Error(`Audio changed since ${approval.assessment==='automated'?'acoustic screening':'listening review'}: ${approval.audio_path}`);
+    if(actual!==approval.sha256)throw new Error(`Audio changed since ${
+      approval.assessment==='publisher_source'?'publisher indexing':
+      approval.assessment==='automated'?'acoustic screening':'listening review'
+    }: ${mediaPath(approval)}`);
   }
   return {
     COMPARISON_SOURCES,sinospliceBlockReason,hashBytes,
-    isSentenceDerived,validSourceSegment,nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,validateApproval,applyPracticeSelection,createIndex,
+    isSentenceDerived,validSourceSegment,validDrillSource,mediaPath,mediaIdentity,
+    nativeCandidates,nativeBlockReason,nativeDescriptor,comparisonDescriptor,identity,
+    validateApproval,validatePublisherApproval,applyPracticeSelection,createIndex,
     nativeApproval,comparisonApproval,clearForIsolatedQuiz,hasCompleteToneReferences,neutralSelection,correctionSelection,verifyBytes,
   };
 });
