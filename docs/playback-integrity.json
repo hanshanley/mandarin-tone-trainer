@@ -399,5 +399,21 @@
         ]
       }
     ]
+  },
+  "on_device_verification": {
+    "date": "2026-09-29",
+    "device": "Pixel 10",
+    "installed_apk_hash_verified": true,
+    "installed_apk_sha256": "641bf592ca8986f8cc6065e829606160f4e82ad9775be11d373622328271cbcc",
+    "quiz_entries": 5465,
+    "decoded_active_recording_intervals": 6635,
+    "verified_syllable_tone_voice_slots": 7560,
+    "unique_comparison_intervals": 2830,
+    "han3_native": "audio/audio_cmn/喊/cmn-喊.mp3",
+    "han_button_plays": 25,
+    "wrong_guess_preserved": true,
+    "playback_finished": true,
+    "test_attempts_restored_after_verification": true,
+    "additional_full_publisher_device_audit": "Not completed: the app process restarted after active quiz/tone verification passed. The stale diagnostic connection was stopped; complete publisher PCM and UI verification passed in the desktop browser."
   }
 }
