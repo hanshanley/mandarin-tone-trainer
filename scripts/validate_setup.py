@@ -168,6 +168,7 @@ def main():
         for relative_path in [
             'index.html',
             'style.css',
+            'logo.svg',
             'app.js',
             'correction_audio.js',
             'audio_review.js',
@@ -189,7 +190,7 @@ def main():
         ]:
             require((bundle / relative_path).is_file(), f'missing mobile asset: www/{relative_path}', errors)
         if bundle.is_dir():
-            for relative in ['index.html', 'style.css', 'app.js', 'audio_review.js', 'correction_audio.js',
+            for relative in ['index.html', 'style.css', 'logo.svg', 'app.js', 'audio_review.js', 'correction_audio.js',
                              'glossika_lessons.js', 'glossika_examples.js']:
                 target = bundle / relative
                 if target.is_file():

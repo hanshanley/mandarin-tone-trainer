@@ -139,5 +139,19 @@ and quiz features work without it. The panel stays open until recording and
 finalization finish, keeping **Stop** reachable. Playback status changes when
 audio ends, and native/personal playback and Overlay reserve clipping headroom.
 
-If `resources/logo.svg` changes, regenerate launcher and splash resources with
-Android Studio's Image Asset tools.
+The app icon uses four tone contours on the same forest-green background as the
+practice controls. `resources/logo.svg` is the source for the in-app logo,
+browser favicon, Android launcher icons, themed monochrome icon, and light/dark
+splash screens.
+
+After editing the SVG, use the pinned renderer from `requirements.txt`:
+
+```bash
+npm run assets:icons
+npm run assets:icons:check
+```
+
+Commit the generated assets together with the source. Adaptive icons use a
+full-bleed background and centered vector artwork; legacy and round launchers
+have density-specific PNGs. Rebuild and install the APK to update the phone's
+launcher icon; changing only the web bundle does not replace it.

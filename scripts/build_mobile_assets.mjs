@@ -12,7 +12,7 @@ const OUTPUT = path.join(ROOT, 'www');
 const {values}=parseArgs({options:{'local-use':{type:'boolean',default:false}}});
 const localUse=values['local-use'];
 const APP_FILES = [
-  'index.html','style.css','audio_review.js','correction_audio.js',
+  'index.html','style.css','logo.svg','audio_review.js','correction_audio.js',
   'glossika_examples.js','glossika_lessons.js','app.js',
 ];
 const DATA_FILES = [

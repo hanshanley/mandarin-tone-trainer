@@ -37,6 +37,7 @@ process.stdout.write(JSON.stringify([...practiceInventory(data,validateLedger(da
         for relative_path in [
             'index.html',
             'style.css',
+            'logo.svg',
             'correction_audio.js',
             'audio_review.js',
             'glossika_examples.js',

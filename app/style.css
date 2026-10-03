@@ -78,17 +78,10 @@ main {
 .app-header { margin-bottom: 1.5rem; }
 .brand { justify-content: flex-start; gap: 0.75rem; min-width: 0; }
 .brand-mark {
-  display: grid;
-  place-items: center;
+  display: block;
   flex-shrink: 0;
   width: 42px;
   height: 42px;
-  border: 1px solid #bfd3c7;
-  border-radius: 12px;
-  color: var(--accent-dark);
-  background: #e5eee8;
-  font-size: 1.45rem;
-  font-family: "Songti SC", "STSong", serif;
 }
 
 h1 { margin: 0; font-size: 1.15rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.03em; }
@@ -249,7 +242,7 @@ code { padding: 0.1rem 0.2rem; background: #e8eee9; border-radius: 4px; font-siz
   .app-header { gap: 0.4rem; margin-bottom: 1rem; align-items: flex-start; flex-wrap: wrap; }
   h1 { font-size: 1rem; }
   .subtitle { font-size: 0.72rem; }
-  .brand-mark { width: 2.25rem; height: 2.25rem; border-radius: 10px; font-size: 1.25rem; }
+  .brand-mark { width: 2.25rem; height: 2.25rem; }
   .progress { flex-basis: 100%; margin-left: auto; font-size: 0.68rem; }
   .card { padding: 16px; border-radius: 16px; }
   .practice-toolbar { gap: 0.6rem; margin-bottom: 1rem; }

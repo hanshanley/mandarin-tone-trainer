@@ -6,6 +6,8 @@
   "scripts": {
     "setup": "python3 scripts/bootstrap.py",
     "verify:setup": "python3 scripts/bootstrap.py --verify-only",
+    "assets:icons": "python3 scripts/generate_brand_assets.py",
+    "assets:icons:check": "python3 scripts/generate_brand_assets.py --check",
     "build:mobile": "node scripts/build_mobile_assets.mjs",
     "build:mobile:local": "node scripts/build_mobile_assets.mjs --local-use",
     "cap:sync": "npm run build:mobile && npx cap sync android",

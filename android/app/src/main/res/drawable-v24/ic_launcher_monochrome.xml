@@ -4,16 +4,16 @@
     android:viewportWidth="108" android:viewportHeight="108">
     <group android:translateX="18" android:translateY="18">
         <path android:pathData="M16 19H29" android:fillColor="#00000000"
-            android:strokeColor="#fffdfa" android:strokeWidth="5.5"
+            android:strokeColor="#FFFFFF" android:strokeWidth="5.5"
             android:strokeLineCap="round" android:strokeLineJoin="round" />
         <path android:pathData="M43 25L55 13" android:fillColor="#00000000"
-            android:strokeColor="#fffdfa" android:strokeWidth="5.5"
+            android:strokeColor="#FFFFFF" android:strokeWidth="5.5"
             android:strokeLineCap="round" android:strokeLineJoin="round" />
         <path android:pathData="M14 47C19 60 25 61 31 45" android:fillColor="#00000000"
-            android:strokeColor="#f3bc96" android:strokeWidth="5.5"
+            android:strokeColor="#FFFFFF" android:strokeWidth="5.5"
             android:strokeLineCap="round" android:strokeLineJoin="round" />
         <path android:pathData="M43 43L56 56" android:fillColor="#00000000"
-            android:strokeColor="#fffdfa" android:strokeWidth="5.5"
+            android:strokeColor="#FFFFFF" android:strokeWidth="5.5"
             android:strokeLineCap="round" android:strokeLineJoin="round" />
     </group>
 </vector>
