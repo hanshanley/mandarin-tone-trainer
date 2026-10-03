@@ -268,7 +268,7 @@ process.stdout.write(JSON.stringify(result));
         native = source.split('function playNative', 1)[1].split(
             'function correctionKey', 1
         )[0]
-        self.assertLess(native.index('stopAllAudio();'), native.index('new Audio'))
+        self.assertLess(native.index('stopAllAudio(keepLesson);'), native.index('new Audio'))
         self.assertIn('isPlaybackInterruption(error)', native)
         self.assertIn('isPlaybackInterruption(error)', source.split("$('playMine').onclick", 1)[1])
         next_word = source.split('function next', 1)[1].split('function grade', 1)[0]

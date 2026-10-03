@@ -103,6 +103,11 @@ function localCompanion(){
   }
   return catalog;
 }
+function decodedGlossikaAudio(){
+  const channels=[Float32Array.from([0,.1,.2,0]),Float32Array.from([0,-.1,-.2,0])];
+  return {sampleRate:48000,numberOfChannels:2,length:4,duration:4/48000,
+    getChannelData:channel=>channels[channel]};
+}
 
 test('Glossika companion schema preserves complete lessons, accompanying pages, and personal scope',()=>{
   const catalog=JSON.parse(fs.readFileSync(path.join(ROOT,'data/glossika_recordings.json'),'utf8'));
@@ -423,6 +428,133 @@ test('Glossika IEEE float WAV preserves selected channel samples exactly',()=>{
   assert.throws(()=>GlossikaExamples.sliceAudioBuffer(context,{...decoded,numberOfChannels:1},source),/channel/);
 });
 
+test('practice and lessons are connected views that preserve the active quiz',async()=>{
+  const app=await appHarness({
+    approvals:allApprovals(),glossikaPractice:glossikaQuizCatalog(),glossikaCompanion:localCompanion(),random:()=>0,
+  });
+  assert.equal(app.get('workspaceNavigation').hidden,false);
+  assert.equal(app.get('lessonsWorkspace').hidden,true);
+  const initial=app.run('current.id'),history=app.run('quizHistory.length');
+  await app.get('lessonsTab').onclick({detail:0});
+  assert.equal(app.get('practiceWorkspace').hidden,true);
+  assert.equal(app.get('lessonsWorkspace').hidden,false);
+  assert.equal(app.get('lessonsTab').getAttribute('aria-pressed'),'true');
+  assert.equal(app.get('lessonBook').hidden,false);
+  assert.equal(app.get('lessonPlayer').hidden,true);
+  assert.equal(app.get('lessonsHeading').focusCalls.length,1);
+  assert.equal(app.get('lessonExampleWord').textContent,'妈妈');
+  assert.equal(app.get('lessonExamplePinyin').textContent,'māmā');
+  assert.equal(app.run('current.id'),initial);
+  assert.equal(app.run('quizHistory.length'),history);
+  await app.get('practiceTab').onclick();
+  assert.equal(app.get('practiceWorkspace').hidden,false);
+  assert.equal(app.get('lessonsWorkspace').hidden,true);
+  assert.equal(app.get('practiceTab').getAttribute('aria-pressed'),'true');
+  assert.equal(app.run('current.id'),initial);
+  assert.equal(app.run('results.length'),0);
+  app.run('recordingStarting=true;setPracticeControlsDisabled(true)');
+  assert.equal(app.get('lessonsTab').disabled,true);
+  assert.equal(await app.get('lessonsTab').onclick(),false);
+  assert.equal(app.get('practiceWorkspace').hidden,false);
+  assert.match(app.get('audioStatus').textContent,/Stop recording/);
+  app.run('recordingStarting=false;setPracticeControlsDisabled(false)');
+});
+
+test('lessons are not offered when their catalog is excluded',async()=>{
+  const app=await appHarness({approvals:allApprovals()});
+  assert.equal(app.get('workspaceNavigation').hidden,true);
+  assert.equal(await app.run("showWorkspace('lessons')"),false);
+  assert.equal(app.get('practiceWorkspace').hidden,false);
+});
+
+test('lesson catalog errors remain visible without breaking the practice view',async()=>{
+  const app=await appHarness({approvals:allApprovals(),glossikaCompanion:{version:99}});
+  assert.equal(app.run('questionVerified'),true);
+  assert.equal(app.get('workspaceNavigation').hidden,false);
+  assert.equal(await app.get('lessonsTab').onclick(),true);
+  assert.equal(app.get('lessonsWorkspace').hidden,false);
+  assert.equal(app.get('lessonStatus').classList.contains('error'),true);
+  assert.match(app.get('lessonStatus').textContent,/Invalid Glossika companion catalog/);
+  assert.equal(app.get('openLesson').disabled,true);
+  await app.get('practiceTab').onclick();
+  assert.equal(app.run('questionVerified'),true);
+});
+
+test('a graded publisher question opens its exact lesson and keeps its answer on return',async()=>{
+  const app=await appHarness({
+    approvals:allApprovals(),glossikaPractice:glossikaQuizCatalog(),glossikaCompanion:localCompanion(),random:()=>0,
+    decodedAudio:decodedGlossikaAudio(),
+  });
+  await app.get('lessonsTab').onclick();
+  await app.get('practiceLessonExample').onclick();
+  app.run("selectedTones=['4','4'];grade('4-4',current._correct)");
+  assert.equal(app.get('viewLesson').hidden,false);
+  const question=app.run('current.id');
+  assert.equal(await app.get('viewLesson').onclick(),true);
+  assert.equal(app.get('lessonsWorkspace').hidden,false);
+  assert.equal(app.get('lessonExampleChoice').value,question);
+  await app.get('practiceTab').onclick();
+  assert.equal(app.run('current.id'),question);
+  assert.equal(app.run("selectedTones.join('-')"),'4-4');
+  assert.equal(app.run('results.length'),1);
+  assert.equal(app.get('viewLesson').hidden,false);
+  await app.run('next(false,true)');
+  assert.equal(app.get('viewLesson').hidden,true);
+  await app.run('back(false)');
+  assert.equal(app.get('viewLesson').hidden,false);
+  assert.equal(app.run('results.length'),1);
+});
+
+test('lesson example status finishes and leaving Lessons stops its playback',async()=>{
+  const app=await appHarness({
+    approvals:allApprovals(),glossikaPractice:glossikaQuizCatalog(),glossikaCompanion:localCompanion(),random:()=>0,
+    decodedAudio:decodedGlossikaAudio(),
+  });
+  await app.get('lessonsTab').onclick();
+  assert.equal(await app.get('playLessonExample').onclick(),true);
+  assert.equal(app.get('lessonStatus').textContent,'Playing this example.');
+  app.run('nativeAudio.onended()');
+  assert.equal(app.get('lessonStatus').textContent,'Finished playing this example.');
+  await app.get('playLessonExample').onclick();
+  await app.get('practiceTab').onclick();
+  assert.equal(app.run('nativeAudio'),null);
+  assert.equal(app.get('lessonStatus').textContent,'');
+});
+
+test('lesson reader reveals controls only for loaded content and clears them on lesson changes',async()=>{
+  const app=await appHarness({
+    approvals:allApprovals(),glossikaPractice:glossikaQuizCatalog(),glossikaCompanion:localCompanion(),random:()=>0,
+  });
+  await app.get('lessonsTab').onclick();
+  assert.equal(await app.get('openLesson').onclick(),true);
+  assert.equal(app.get('lessonPlayer').hidden,false);
+  assert.match(app.get('lessonStatus').textContent,/Full lesson ready/);
+  app.get('zoomLessonPage').onclick();
+  assert.equal(app.get('zoomLessonPage').getAttribute('aria-pressed'),'true');
+  assert.equal(app.get('zoomLessonPage').getAttribute('aria-label'),'Fit book page');
+  app.get('lessonCategory').value='consonants';
+  await app.get('lessonCategory').onchange();
+  assert.equal(app.get('lessonPlayer').hidden,true);
+  assert.equal(app.get('lessonExamplePanel').hidden,true);
+  assert.equal(app.get('lessonBook').hidden,false);
+  assert.match(app.get('lessonPageNumber').textContent,/Book page 4/);
+  assert.equal(app.get('zoomLessonPage').getAttribute('aria-pressed'),'false');
+});
+
+test('lesson availability reflects complete comparisons rather than source eligibility alone',async()=>{
+  const catalog=glossikaQuizCatalog();
+  const app=await appHarness({
+    approvals:allApprovals(),glossikaPractice:catalog,glossikaCompanion:localCompanion(),random:()=>0,
+  });
+  // Remove a comparison from both sources while retaining the publisher's source label.
+  app.run("for(const [key,entry] of audioReviews)if(entry.kind==='comparison'&&entry.key==='ma4')audioReviews.delete(key);audioReviews.comparisonAlternatives.delete('ma4')");
+  app.run('lessonPlayer.refreshExample()');
+  assert.equal(app.get('playLessonExample').disabled,false);
+  assert.equal(app.get('practiceLessonExample').disabled,true);
+  assert.match(app.get('lessonExampleDetails').textContent,/all four tone comparisons are not yet available/);
+  assert.doesNotMatch(app.get('lessonExampleDetails').textContent,/Ready for practice/);
+});
+
 test('Glossika lesson action selects the exact graded item and keeps comparison replay available',async()=>{
   const catalog=glossikaQuizCatalog();
   const decodeControl={};
@@ -438,6 +570,7 @@ test('Glossika lesson action selects the exact graded item and keeps comparison 
     approvals:[],recording:null,glossikaPractice:catalog,
     glossikaCompanion:localCompanion(),decodedAudio,decodeControl,random:()=>0,
   });
+  await app.get('lessonsTab').onclick();
   assert.equal(app.get('lessonChoice').value,'tone-11');
   assert.equal(app.get('lessonExampleChoice').value,'tone-11-0001');
   assert.equal(app.get('playLessonExample').disabled,false);
@@ -466,6 +599,8 @@ test('Glossika lesson action selects the exact graded item and keeps comparison 
   assert.equal(app.run('questionVerified'),false);
   releaseDecode();
   assert.equal(await practice,true);
+  assert.equal(app.get('practiceWorkspace').hidden,false);
+  assert.equal(app.get('lessonsWorkspace').hidden,true);
   assert.equal(app.run('current.id'),'tone-11-0001');
   assert.equal(app.run('currentRec.audio_path'),'audio/glossika/examples/tone-11-0001.wav');
   assert.equal(app.get('wordSource').value,'glossika');

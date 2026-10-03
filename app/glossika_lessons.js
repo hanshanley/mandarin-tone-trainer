@@ -70,24 +70,30 @@
     canPracticeExample=()=>false,createElement=tag=>document.createElement(tag),
   }){
     let catalog=null,current=null,generation=0,pageGeneration=0,pagePosition=0;
-    let audioURL=null,pageURL=null,loading=false,bookVerified=false;
+    let audioURL=null,pageURL=null,loading=false,bookVerified=false,examplePlaying=false,loadFailed=false;
     const panel=get('glossikaLessons'),player=get('lessonPlayer'),status=get('lessonStatus');
     const category=get('lessonCategory'),choice=get('lessonChoice'),image=get('lessonPage');
     const exampleChoice=get('lessonExampleChoice'),exampleDetails=get('lessonExampleDetails');
     const playExampleButton=get('playLessonExample'),practiceExampleButton=get('practiceLessonExample');
     const report=error=>{
       console.error('Glossika companion failed:',error);
-      status.textContent=`Cannot open this companion lesson: ${error.message}`;
+      setStatus(`This lesson could not be opened: ${error.message}`,true);
     };
+    function setStatus(message='',error=false){
+      status.textContent=message;
+      status.classList.toggle('error',error);
+    }
     const revokeAudio=()=>{
       player.pause();player.removeAttribute('src');player.load();
+      player.hidden=true;
       if(audioURL)URL.revokeObjectURL(audioURL);
       audioURL=null;
     };
     function stop(){
       if(!catalog?.available)return;
       generation++;pageGeneration++;player.pause();
-      if(loading){loading=false;get('openLesson').disabled=false;status.textContent='Lesson loading cancelled.';}
+      if(examplePlaying){examplePlaying=false;stopOthers();setStatus();}
+      if(loading){loading=false;get('openLesson').disabled=false;setStatus('Lesson loading cancelled.');}
     }
     async function bytesFor(asset){
       const response=await fetch(`../${asset.audio_path}`);
@@ -99,6 +105,9 @@
       return bytes;
     }
     async function showPage(position,token=generation){
+      if(!current||!Number.isInteger(position)||position<0||position>=current.printed_pages.length){
+        throw new Error('Choose a page from the current lesson');
+      }
       const request=++pageGeneration,printed=current.printed_pages[position];
       const page=catalog.pages.find(item=>item.printed_page===printed);
       const bytes=await bytesFor(page);
@@ -107,7 +116,11 @@
       pageURL=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
       image.src=pageURL;image.alt=`Original Glossika book, printed page ${printed}`;
       image.hidden=false;pagePosition=position;
-      get('lessonPageNumber').textContent=`Book page ${printed} (${position+1} of ${current.printed_pages.length})`;
+      get('lessonBook').hidden=false;
+      get('lessonPageNumber').textContent=`Book page ${printed}`;
+      get('lessonPagePosition').textContent=`${position+1} of ${current.printed_pages.length}`;
+      get('lessonPageViewport').scrollTop=0;
+      get('lessonPageViewport').scrollLeft=0;
       get('previousLessonPage').disabled=position===0;
       get('nextLessonPage').disabled=position===current.printed_pages.length-1;
       return true;
@@ -121,26 +134,30 @@
     function renderExample(){
       const example=selectedExample();
       const runtime=example&&examplesById.get(example.id);
+      const ready=Boolean(example?.quiz_eligible&&canPracticeExample(example));
       playExampleButton.disabled=!runtime?.nativeApproval;
-      practiceExampleButton.disabled=!example||!example.quiz_eligible||!canPracticeExample(example);
+      practiceExampleButton.disabled=!ready;
+      get('lessonExampleWord').textContent=example?.word||'';
+      get('lessonExamplePinyin').textContent=example?.pinyin||'';
       if(!example){
+        get('lessonExamplePanel').hidden=Boolean(practiceCatalog?.available);
         exampleDetails.textContent=practiceCatalog?.available
           ?'This lesson has no indexed drill items.'
           :practiceCatalog?.unavailable_reason||'Individual examples are unavailable in this build.';
         return;
       }
+      get('lessonExamplePanel').hidden=false;
       const lexical=example.lexical_pattern;
       const surface=example.surface_pattern;
       const distinction=!example.quiz_eligible
         ?`Source/lexical pattern ${lexical}.`
         :surface===lexical?`Tone pattern ${surface}.`
           :`Lexical ${lexical}; heard here as ${surface}.`;
-      const label=example.kind==='syllable_drill'?'Pronunciation exercise. ':'';
       const availability=!runtime?.nativeApproval
         ?` Individual playback unavailable: ${example.mapping.reason||example.block_reason||'no verified interval'}.`
-        :example.quiz_eligible?' Ready for graded practice.'
-          :` Listen only: ${example.block_reason||'not admitted for grading'}.`;
-      exampleDetails.textContent=`${label}${example.word} · ${example.pinyin}. ${distinction}${availability}`;
+        :ready?' Ready for practice.'
+          :` Listen only: ${example.block_reason||'all four tone comparisons are not yet available'}.`;
+      exampleDetails.textContent=`${distinction}${availability}`;
     }
     async function showSelectedExamplePage(){
       const lesson=selectedLesson(),example=selectedExample();
@@ -150,8 +167,27 @@
       if(position<0)throw new Error('Indexed example page is outside its lesson');
       return showPage(position);
     }
+    async function show(){
+      if(!catalog?.available)return false;
+      renderExample();
+      try{
+        current=selectedLesson();
+        if(!current)throw new Error('Choose an available lesson');
+        return selectedExample()?await showSelectedExamplePage():await showPage(0);
+      }catch(error){report(error);return false}
+    }
+    function resetPage(){
+      image.hidden=true;get('lessonBook').hidden=true;
+      get('lessonPageNumber').textContent='';get('lessonPagePosition').textContent='';
+      get('previousLessonPage').disabled=true;get('nextLessonPage').disabled=true;
+      get('lessonPageViewport').classList.remove('zoomed');
+      get('zoomLessonPage').setAttribute('aria-pressed','false');
+      get('zoomLessonPage').setAttribute('aria-label','Zoom book page');
+      get('zoomLessonPage').setAttribute('title','Zoom page');
+    }
     function populateExamples(){
       exampleChoice.innerHTML='';
+      exampleChoice.value='';
       const lesson=selectedLesson();
       const examples=practiceCatalog?.available&&lesson
         ?practiceCatalog.examples.filter(item=>item.lesson_id===lesson.id)
@@ -167,43 +203,57 @@
       for(const example of examples){
         const option=createElement('option');
         option.value=example.id;
-        option.textContent=`${example.ordinal}. ${example.word} · ${example.pinyin}`;
+        option.textContent=`${example.ordinal}. ${example.word}`;
         exampleChoice.appendChild(option);
       }
-      exampleChoice.value=examples[0].id;
+      const initial=examples.find(example=>example.quiz_eligible&&canPracticeExample(example))||examples[0];
+      exampleChoice.value=initial.id;
       exampleChoice.disabled=false;
       renderExample();
     }
     function populateLessons(){
-      stop();revokeAudio();current=null;choice.innerHTML='';image.hidden=true;
-      get('lessonPageNumber').textContent='';
-      get('previousLessonPage').disabled=true;get('nextLessonPage').disabled=true;
+      stop();revokeAudio();current=null;choice.innerHTML='';resetPage();
       for(const lesson of catalog.lessons.filter(item=>item.category===category.value)
         .sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}))){
-        const option=createElement('option');option.value=lesson.id;option.textContent=lesson.title;
+        const option=createElement('option');option.value=lesson.id;
+        const tones=/^tone-([1-4]+)$/.exec(lesson.id);
+        option.textContent=tones?`Tones ${tones[1].split('').join(' + ')}`:lesson.title.replace('Vowel Part','Part');
         choice.appendChild(option);
       }
       if(choice.children.length)choice.value=choice.children[0].value;
       populateExamples();
-      status.textContent='Open a complete lesson or choose one of its indexed examples.';
+      setStatus();
+    }
+    async function changeLesson(){
+      stop();revokeAudio();current=null;resetPage();populateExamples();setStatus();
+      return get('lessonsWorkspace').hidden?true:await show();
+    }
+    async function selectExample(id){
+      const example=practiceCatalog?.examples?.find(item=>item.id===id);
+      const lesson=example&&catalog.lessons.find(item=>item.id===example.lesson_id);
+      if(!lesson){report(new Error('This example is not in the lesson catalog'));return false;}
+      category.value=lesson.category;populateLessons();
+      choice.value=lesson.id;populateExamples();
+      exampleChoice.value=example.id;renderExample();
+      return showSelectedExamplePage();
     }
     async function openLesson(){
       stop();revokeAudio();const token=generation;
       current=catalog.lessons.find(item=>item.id===choice.value);
-      if(!current){report(new Error('Choose an available lesson'));return;}
-      loading=true;get('openLesson').disabled=true;image.hidden=true;
-      status.textContent='Verifying the complete recording and accompanying book...';
+      if(!current){report(new Error('Choose an available lesson'));return false;}
+      loading=true;get('openLesson').disabled=true;
+      setStatus('Preparing the full lesson...');
       try{
         if(!bookVerified){await bytesFor(catalog.book);bookVerified=true;}
         if(token!==generation)return;
         const bytes=await bytesFor(current);
         const gain=await playbackGain(bytes,current.audio_path+':'+current.sha256);
         if(token!==generation)return;
-        await showPage(0,token);
-        if(token!==generation)return;
+        if(!await showPage(0,token)||token!==generation)return false;
         audioURL=URL.createObjectURL(new Blob([bytes],{type:'audio/mpeg'}));
-        player.src=audioURL;player.volume=gain;player.playbackRate=1;
-        status.textContent=`${current.title}: complete recording, ready to play.${current.category==='consonants'?' Book pages are associated by section order, not an explicit track number.':''}`;
+        player.src=audioURL;player.volume=gain;player.playbackRate=1;player.hidden=false;
+        setStatus('Full lesson ready. Press play to listen.');
+        return true;
       }catch(error){if(token===generation)report(error);}
       finally{if(token===generation){loading=false;get('openLesson').disabled=false;}}
     }
@@ -216,39 +266,42 @@
         if(!catalog.available)return;
         validatePracticeLinks(catalog,practiceCatalog);
         category.value='two-tone';populateLessons();
-        category.onchange=populateLessons;
-        choice.onchange=()=>{
-          stop();revokeAudio();current=null;image.hidden=true;
-          get('previousLessonPage').disabled=true;get('nextLessonPage').disabled=true;
-          get('lessonPageNumber').textContent='';
-          populateExamples();
-          status.textContent='Press Open lesson to load this recording and its pages.';
+        category.onchange=async()=>{
+          populateLessons();
+          return get('lessonsWorkspace').hidden?true:await show();
         };
+        choice.onchange=changeLesson;
         exampleChoice.onchange=async()=>{
-          renderExample();
+          stop();renderExample();setStatus();
           try{return await showSelectedExamplePage()}
           catch(error){report(error);return false}
         };
         playExampleButton.onclick=async()=>{
           const example=selectedExample(),runtime=example&&examplesById.get(example.id);
           if(!runtime?.nativeApproval||!playExample){
-            status.textContent=`Cannot play this item: ${example?.mapping?.reason||example?.block_reason||'no verified interval'}.`;
+            setStatus(`Cannot play this item: ${example?.mapping?.reason||example?.block_reason||'no verified interval'}.`,true);
             return;
           }
           if(!canPlay()){
-            status.textContent='Stop recording your voice before playing an example.';
+            setStatus('Stop recording your voice before playing an example.');
             return;
           }
+          stop();
+          const request=generation;
           try{
             if(!await showSelectedExamplePage())return false;
-            await playExample(runtime,example);
+            const started=await playExample(runtime,example,(message,error)=>{
+              if(request===generation)setStatus(message,error);
+            });
+            if(started===false||request!==generation)return false;
+            examplePlaying=true;
             return true;
           }catch(error){report(error);return false}
         };
         practiceExampleButton.onclick=async()=>{
           const example=selectedExample(),runtime=example&&examplesById.get(example.id);
           if(!runtime||!practiceExample||!canPracticeExample(example)){
-            status.textContent=`This item is listen-only: ${example?.block_reason||'graded comparison coverage is incomplete'}.`;
+            setStatus(`This item is listen-only: ${example?.block_reason||'graded comparison coverage is incomplete'}.`);
             return;
           }
           try{
@@ -260,19 +313,25 @@
         get('previousLessonPage').onclick=()=>showPage(pagePosition-1).catch(report);
         get('nextLessonPage').onclick=()=>showPage(pagePosition+1).catch(report);
         get('zoomLessonPage').onclick=()=>{
-          const zoomed=get('lessonPageViewport').classList.toggle('zoomed');
+          const zoomed=!get('lessonPageViewport').classList.contains('zoomed');
+          get('lessonPageViewport').classList.toggle('zoomed',zoomed);
           get('zoomLessonPage').setAttribute('aria-pressed',String(zoomed));
+          get('zoomLessonPage').setAttribute('aria-label',zoomed?'Fit book page':'Zoom book page');
+          get('zoomLessonPage').setAttribute('title',zoomed?'Fit page':'Zoom page');
         };
         player.onplay=()=>{
-          if(!canPlay()){player.pause();status.textContent='Stop recording your voice before playing a book lesson.';return;}
-          stopOthers();status.textContent=`Playing ${current.title}, with its original book pages.`;
+          if(!canPlay()){player.pause();setStatus('Stop recording your voice before playing a book lesson.');return;}
+          examplePlaying=false;stopOthers();setStatus(`Playing the full lesson: ${current.title}.`);
         };
-        player.onended=()=>{status.textContent=`${current.title} finished.`;};
+        player.onended=()=>{setStatus('Full lesson finished.');};
+        player.onpause=()=>{
+          if(!player.hidden&&!player.ended&&!loading)setStatus('Full lesson paused.');
+        };
         player.onerror=()=>report(new Error('The browser could not decode this complete lesson'));
-        panel.ontoggle=()=>{if(!panel.open)stop();};
-      }catch(error){panel.hidden=false;get('openLesson').disabled=true;report(error);}
+      }catch(error){loadFailed=true;panel.hidden=false;get('openLesson').disabled=true;report(error);}
     }
-    return {initialize,stop,populateExamples,refreshExample:renderExample,selectedExample};
+    return {initialize,stop,show,selectExample,populateExamples,refreshExample:renderExample,selectedExample,
+      get available(){return Boolean(catalog?.available)},get failed(){return loadFailed}};
   }
   return {validateCatalog,validatePracticeLinks,assetsFor,excludedCatalog,createController};
 });

@@ -43,6 +43,9 @@ terminal or run `source ~/.zprofile` in the current zsh session.
 
 ## Using the trainer
 
+Use **Practice** for listening questions and **Lessons** for guided study with
+the original book. Switching views keeps your current question and results.
+
 1. **Listen.** Choose a word length and press **Play audio**. The word stays
    hidden until you answer.
 2. **Choose the tones.** Select one tone per syllable. Feedback reveals the
@@ -63,10 +66,14 @@ session.
 
 ### Glossika examples and book lessons
 
-Open **Glossika book lessons** to choose a full lesson or an individual example,
-with the original book page alongside it. **Practice this example** sends an
-eligible item to the main quiz; examples with unresolved mappings or tone
-changes remain ungraded.
+Open **Lessons**, choose a focus and lesson, then explore individual examples
+with their original book pages. **Listen** replays the selected example;
+**Practice** sends that exact eligible item into the quiz. After answering a
+Glossika question, **Explore this example in Lessons** opens its place in the
+book. Unresolved mappings or tone changes remain ungraded.
+
+**Full lesson audio** opens the complete recording. Page arrows and zoom stay
+with the reader; source details and the original PDF are available below it.
 
 Local-use builds include **117 complete lessons** and **4,526 individually
 playable examples**. Together with the other sources, the quiz contains **5,465

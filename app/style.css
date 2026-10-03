@@ -76,6 +76,12 @@ main {
 }
 
 .app-header { margin-bottom: 1.5rem; }
+.workspace-navigation { display: flex; gap: 0.25rem; width: min(100%, 17rem); padding: 0.25rem; margin: 0 0 1.15rem; border-radius: 12px; background: #e7ede9; scroll-margin-top: 1rem; }
+.workspace-navigation button { flex: 1; min-width: 0; min-height: 44px; padding: 0.45rem 0.65rem; border: 0; border-radius: 9px; color: var(--muted); background: transparent; font-size: 0.85rem; }
+.workspace-navigation button[aria-pressed="true"] { color: var(--accent-dark); background: #fff; box-shadow: 0 1px 4px #20332e12; }
+.workspace-navigation[hidden], .workspace-panel[hidden], .view-lesson-button[hidden] { display: none; }
+.view-lesson-button { margin-top: 0.6rem; padding-inline: 0; border-color: transparent; background: transparent; color: var(--accent-dark); font-size: 0.8rem; text-align: left; }
+.lessons-active { --nav-space: 0px; }
 .brand { justify-content: flex-start; gap: 0.75rem; min-width: 0; }
 .brand-mark {
   display: block;
@@ -322,14 +328,57 @@ code { padding: 0.1rem 0.2rem; background: #e8eee9; border-radius: 4px; font-siz
   .tone-choice.correct-answer { border: 2px dashed Highlight; }
   .native-button, .primary-button { border: 2px solid ButtonText; }
 }
-/* Original book pages stay readable without widening the practice layout. */
-.lesson-player{display:block;width:100%;margin:12px 0}
-.lesson-page-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0}
-.lesson-page-controls span{flex:1;min-width:120px;text-align:center}
-.lesson-page-viewport{max-width:100%;max-height:70vh;overflow:auto;background:#fff}
-.lesson-page-viewport img{display:block;width:100%;height:auto}
-.lesson-page-viewport img[hidden]{display:none}
-.lesson-page-viewport.zoomed img{width:1000px;max-width:none}
-.lesson-example-panel{display:grid;gap:10px;margin:12px 1.25rem;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--soft)}
-.lesson-example-details{min-height:1.5em;font-size:.82rem;overflow-wrap:anywhere}
-.lesson-example-panel .audio-row{align-items:center}
+.lesson-panel { margin-bottom: 1rem; background: var(--surface); }
+.lesson-header { margin-bottom: 1.25rem; }
+#lessonsHeading:focus { outline: none; }
+.lesson-header > p:last-child { margin: 0.55rem 0 0; color: var(--muted); font-size: 0.82rem; }
+.lesson-content { padding: 0; }
+.lesson-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 0.75rem; }
+.lesson-picker select, .lesson-example-panel select { font-size: 0.85rem; }
+.lesson-example-panel { display: grid; gap: 0.85rem; margin-top: 1rem; padding: 1rem; border-radius: 12px; background: #f3f7f4; }
+.lesson-example-panel .select-control { gap: 0.4rem; }
+.lesson-example-reading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.85rem; min-width: 0; }
+.lesson-word { margin: 0; color: var(--ink); font-size: 1.65rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.lesson-pinyin { margin: 0; color: var(--accent); font-size: 1rem; overflow-wrap: anywhere; }
+.lesson-example-details { margin: 0; color: var(--muted); font-size: 0.76rem; line-height: 1.6; overflow-wrap: anywhere; }
+.lesson-example-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 0.65rem; }
+.lesson-example-actions button { min-height: 46px; padding: 0.6rem 0.45rem; font-size: 0.85rem; }
+.lesson-content svg { flex-shrink: 0; }
+.lesson-listen-button { color: var(--accent-dark); border-color: #c1d6c8; background: #fff; }
+.lesson-full-recording { margin-top: 0.6rem; }
+.lesson-full-button { padding-inline: 0; border-color: transparent; background: transparent; color: var(--muted); font-size: 0.78rem; }
+.lesson-full-button:hover:not(:disabled) { color: var(--accent-dark); border-color: transparent; background: transparent; }
+.lesson-player { display: block; width: 100%; height: 44px; margin-top: 0.25rem; }
+.lesson-status { margin: 0.35rem 0 0.75rem; color: var(--muted); font-size: 0.75rem; line-height: 1.6; overflow-wrap: anywhere; }
+.lesson-status:empty { display: none; }
+.lesson-status.error { color: var(--wrong); }
+.lesson-book { margin-top: 0.6rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.lesson-page-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.35rem 0.5rem; padding: 0.4rem 0.65rem; border-bottom: 1px solid var(--border); }
+.lesson-page-label { display: grid; gap: 0.1rem; min-width: 0; font-size: 0.75rem; font-weight: 650; }
+#lessonPagePosition { font-size: 0.65rem; font-weight: 400; color: var(--muted); }
+.lesson-page-buttons { display: flex; gap: 0.15rem; }
+.lesson-page-buttons button { width: 44px; height: 44px; padding: 0; border-color: transparent; background: transparent; color: var(--muted); }
+.lesson-page-buttons button:disabled { opacity: 0.35; }
+.lesson-page-buttons button[aria-pressed="true"] { color: var(--accent-dark); background: var(--accent-soft); }
+.lesson-page-viewport { max-width: 100%; max-height: min(70vh, 36rem); padding: 0.5rem; overflow: auto; background: var(--soft); }
+.lesson-page-viewport:focus-visible { outline: 3px solid #377fbe; outline-offset: -3px; }
+.lesson-page-viewport img { display: block; width: 100%; height: auto; box-shadow: 0 1px 6px #20332e12; }
+.lesson-page-viewport.zoomed img { width: 1000px; max-width: none; }
+.lesson-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem; margin-top: 0.75rem; color: var(--muted); font-size: 0.7rem; }
+.lesson-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+.lesson-notes { color: var(--muted); font-size: 0.7rem; }
+.lesson-panel .lesson-notes summary { display: list-item; width: fit-content; min-height: 44px; padding: 0.5rem 0; border-radius: 0; list-style: disclosure-closed inside; font-size: inherit; font-weight: 400; }
+.lesson-panel .lesson-notes[open] summary { list-style-type: disclosure-open; }
+.lesson-panel .lesson-notes summary::-webkit-details-marker { display: initial; }
+.lesson-notes p { margin: 0 0 0.5rem; line-height: 1.7; }
+.lesson-content [hidden] { display: none; }
+
+@media (max-width: 680px) {
+  .lesson-example-panel { padding: 0.85rem; }
+  .workspace-navigation { margin-bottom: 0.85rem; }
+}
+
+@media (max-width: 360px) {
+  .lesson-picker { grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 0.6rem; }
+  .lesson-page-controls { padding-inline: 0.45rem; }
+}

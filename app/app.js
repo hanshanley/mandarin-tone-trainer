@@ -1,6 +1,7 @@
 let words=[], recordings=[], correctionRecordings={}, correctionQuality={}, byWord=new Map(), readingsByWord=new Map(), current=null, currentRec=null, currentNative=null, nativeAudio=null, correctionContext=null, correctionSource=null, correctionPlayId=0, mediaRecorder=null, mediaStream=null, recordingStarting=false, mineUrl=null, mineBlob=null, mineAudio=null, overlayAudios=[], selectedTones=[], quizHistory=[];
 let results=[];
 let lessonPlayer=null;
+let currentWorkspace='practice';
 let glossikaPractice=GlossikaExamples.excludedCatalog('Glossika individual practice data has not loaded.');
 let glossikaRuntime=GlossikaExamples.runtimeData(glossikaPractice);
 let audioReviews=new Map(), nativePlayId=0, overlayPlayId=0, nativeObjectURL=null, overlayObjectURL=null, questionLoadId=0, questionVerified=false;
@@ -47,7 +48,8 @@ function syncRecordingPanel(){
 }
 function updateBackButton(){$('back').disabled=!quizHistory.length}
 function setPracticeControlsDisabled(disabled){
-  for(const id of ['play','back','next','wordSource','syllables','correctionSource','sandhiOnly'])$(id).disabled=disabled;
+  for(const id of ['play','back','next','wordSource','syllables','correctionSource','sandhiOnly',
+    'practiceTab','lessonsTab','viewLesson'])$(id).disabled=disabled;
   document.querySelectorAll('.tone-choice').forEach(button=>button.disabled=disabled);
   syncRecordingPanel();
   if(!disabled)updateBackButton();
@@ -137,14 +139,47 @@ async function load(){
     stopOthers:()=>stopAllAudio(true),canPlay:()=>!recordingStarting&&!mediaStream,
     practiceCatalog:glossikaPractice,examplesById:glossikaRuntime.examplesById,
     createElement:tag=>document.createElement(tag),
-    playExample:(runtime,example)=>playAssessedRecording(
+    playExample:(runtime,example,onStatus)=>playAssessedRecording(
       runtime.nativeApproval,
-      `Playing Glossika example ${example.ordinal} from ${example.lesson_id}.`,
+      'Playing this example.',
+      {keepLesson:true,onStatus},
     ),
     canPracticeExample:example=>canPracticeGlossikaExample(example),
     practiceExample:runtime=>practiceGlossikaExample(runtime),
   });
   await lessonPlayer.initialize();
+  $('workspaceNavigation').hidden=!(lessonPlayer.available||lessonPlayer.failed);
+  $('practiceWorkspace').hidden=false;
+  $('lessonsWorkspace').hidden=true;
+  $('viewLesson').hidden=true;
+}
+async function showWorkspace(mode,{focus=false,prepare=true}={}){
+  if(!['practice','lessons'].includes(mode))throw new Error('Unknown app view');
+  if(recordingInProgress()){
+    setAudioStatus('Stop recording before switching views.',true);
+    return false;
+  }
+  if(mode==='lessons'&&!lessonPlayer?.available&&!lessonPlayer?.failed){
+    setAudioStatus('Lessons are not available in this build.',true);
+    return false;
+  }
+  stopAllAudio();
+  currentWorkspace=mode;
+  const lessons=mode==='lessons';
+  $('practiceWorkspace').hidden=lessons;
+  $('lessonsWorkspace').hidden=!lessons;
+  $('progress').hidden=lessons;
+  $('appShell').classList.toggle('lessons-active',lessons);
+  $('practiceTab').setAttribute('aria-pressed',String(!lessons));
+  $('lessonsTab').setAttribute('aria-pressed',String(lessons));
+  $('appShell').scrollIntoView({block:'start'});
+  if(lessons&&prepare)await lessonPlayer.show();
+  if(currentWorkspace!==mode)return false;
+  if(focus)$(lessons?'lessonsHeading':'practiceTab').focus({preventScroll:true});
+  return true;
+}
+function updateLessonLink(){
+  $('viewLesson').hidden=!(current?._graded&&current.source==='glossika'&&lessonPlayer?.available);
 }
 function updatePracticeSettings(){
   const availableSources=new Set();
@@ -220,6 +255,7 @@ async function practiceGlossikaExample(runtime){
     setAudioStatus('This Glossika example is available for listening only.',true);
     return false;
   }
+  if(!await showWorkspace('practice'))return false;
   $('wordSource').value='glossika';
   $('syllables').value='all';
   $('sandhiOnly').checked=false;
@@ -343,12 +379,14 @@ async function back(play=false){
   restoreToneState(state);
   $('reveal').innerHTML=state.revealHTML;
   $('reveal').classList.toggle('hidden',state.revealHidden);
+  updateLessonLink();
   updateBackButton();
   if(play)scrollToPractice();
-  if(currentNative?.playable&&play)playNative();
+  if(currentNative?.playable&&play&&currentWorkspace==='practice')playNative();
   return true;
 }
 async function next(play=false,remember=true,requested=null){
+  $('viewLesson').hidden=true;
   if(remember){
     const snapshot=currentSnapshot();
     if(snapshot){
@@ -399,7 +437,7 @@ async function next(play=false,remember=true,requested=null){
   renderToneChoices();
   updateBackButton();
   if(play)scrollToPractice();
-  if(currentNative?.playable && play)playNative();
+  if(currentNative?.playable&&play&&currentWorkspace==='practice')playNative();
   return true;
 }
 function grade(p,correct){
@@ -436,8 +474,10 @@ function grade(p,correct){
     reference.textContent='Explore this word in Mandarin Native (online)';
     $('reveal').appendChild(reference);
   }
+  updateLessonLink();
 }
 function scrollToPractice({focus=false}={}){
+  if(currentWorkspace!=='practice')return;
   const first=$('answers').children[0];
   if(!first)return;
   const bounds=first.getBoundingClientRect();
@@ -586,20 +626,24 @@ async function prepareApprovalPlayback(approval){
   }
   await approvedAudioBytes(approval);
 }
-async function playAssessedRecording(approval,message){
-  stopAllAudio();
+async function playAssessedRecording(approval,message,{keepLesson=false,onStatus=null}={}){
+  stopAllAudio(keepLesson);
   const playId=nativePlayId;
   try{
     const bytes=await playableAudioBytes(approval);
-    if(playId!==nativePlayId)return;
+    if(playId!==nativePlayId)return false;
     const gain=await safePlaybackGain(bytes,AudioReview.mediaIdentity(approval));
-    if(playId!==nativePlayId)return;
+    if(playId!==nativePlayId)return false;
     nativeObjectURL=URL.createObjectURL(new Blob([bytes]));
     const audio=new Audio(nativeObjectURL);
     audio.volume=gain;
     nativeAudio=audio;
     audio.onended=()=>{
-      if(nativeAudio===audio)stopNative(message.replace(/^Playing /,'Finished playing '));
+      if(nativeAudio===audio){
+        const finished=message.replace(/^Playing /,'Finished playing ');
+        stopNative(finished);
+        onStatus?.(finished,false);
+      }
     };
     await audio.play();
     if(playId===nativePlayId){
@@ -608,17 +652,23 @@ async function playAssessedRecording(approval,message){
         $('playLabel').textContent='Listening…';
       }
       setAudioStatus(message);
+      onStatus?.(message,false);
+      return true;
     }
+    return false;
   }catch(error){
-    if(playId!==nativePlayId)return;
+    if(playId!==nativePlayId)return false;
     stopNative();
-    if(isPlaybackInterruption(error))return;
+    if(isPlaybackInterruption(error))return false;
     if(error.name==='NotAllowedError'){
       setAudioStatus('Tap an audio button to start playback.');
-      return;
+      onStatus?.('Tap Listen again to start playback.',false);
+      return false;
     }
     setAudioStatus(`Native playback blocked: ${error.message}`,true);
+    onStatus?.(`Playback blocked: ${error.message}`,true);
     console.error('Native audio failed',error);
+    return false;
   }
 }
 function correctionKey(pinyin,tone){return CorrectionAudio.correctionKey(pinyin,tone)}
@@ -842,6 +892,14 @@ $('correctionSource').onchange=async()=>{
   setAudioStatus(`Comparison voice preference: ${voice}. Individual tones may use another available voice.`);
 };
 $('sandhiOnly').onchange=async()=>{quizHistory=[];if(await next(true,false))scrollToPractice({focus:true})};
+$('practiceTab').onclick=event=>showWorkspace('practice',{focus:event?.detail===0});
+$('lessonsTab').onclick=event=>showWorkspace('lessons',{focus:event?.detail===0});
+$('viewLesson').onclick=async()=>{
+  if(!current?._graded||current.source!=='glossika')return false;
+  const id=current.id;
+  if(!await showWorkspace('lessons',{prepare:false,focus:true}))return false;
+  return lessonPlayer.selectExample(id);
+};
 $('resetProgress').onclick=()=>{if(confirm('Clear all saved tone-practice results?')){results=[];saveResults()}};
 $('recordingToggle').onclick=event=>{if(recordingInProgress())event.preventDefault()};
 $('recordingTools').ontoggle=()=>{

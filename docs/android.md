@@ -36,12 +36,15 @@ whole-word playback. **Comparison voice** is independent and changes only the
 tone-button examples. Sources absent from a build are not offered as selectable
 practice options.
 
-Local-use builds also include **Glossika book lessons**: 117 complete recordings
+Local-use builds also include a **Lessons** view with 117 complete Glossika recordings
 with their original accompanying PDF and book pages, restored by
 `npm run download:glossika`. Run `npm run audio:glossika-examples` to restore
 individual example mappings (normal setup does both). Eligible complete spoken
-examples participate in the main quiz, and the book panel can select an exact
-example or play the original full lesson. These are timed original-media
+examples participate in the main quiz. The **Practice / Lessons** navigation
+keeps your question and results intact when switching views. **Practice** on a
+lesson example opens that exact quiz item; an answered Glossika question links
+back to its original lesson and page. **Full lesson audio** opens the complete
+recording. These are timed original-media
 intervals, not sentence-word crops or synthesized clips. All companion audio, PDF, and page
 images are excluded from redistributable builds; public availability does not
 grant permission to redistribute the book or its audio.
